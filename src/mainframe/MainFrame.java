@@ -98,8 +98,8 @@ public class MainFrame extends JFrame {
         // Parameter day: startTime1, endTime1, startTime2, endTime2, favorite
         SchuelerDay day1, day2, day3;
                
-        day1 = new SchuelerDay("", "", "", "", "15.50");
-        day2 = new SchuelerDay("16.30", "17.30", "20.00", "21.00", "");
+        day1 = new SchuelerDay("17.15", "18.00", "18.00", "18.05", "");  // ok
+        day2 = new SchuelerDay("", "", "", "", "");
         day3 = new SchuelerDay("", "", "", "", "");
         database.addSchueler(new Schueler("Jarno", "Suda", day1, day2, day3, 30));
 
@@ -123,9 +123,9 @@ public class MainFrame extends JFrame {
         day3 = new SchuelerDay("", "", "", "", "");
         database.addSchueler(new Schueler("Julian", "Merz", day1, day2, day3, 30));
 
-        day1 = new SchuelerDay("", "", "18.15", "19.00", "18.15");
+        day1 = new SchuelerDay("", "", "", "", "");
         day2 = new SchuelerDay("", "", "", "", "");
-        day3 = new SchuelerDay("", "", "16.00", "16.30", "16.00");
+        day3 = new SchuelerDay("", "", "", "", "");
         database.addSchueler(new Schueler("Gabriel", "Sturm", day1, day2, day3, 40));
 
         day1 = new SchuelerDay("", "", "", "", "17.45"); // ok
@@ -133,9 +133,9 @@ public class MainFrame extends JFrame {
         day3 = new SchuelerDay("", "", "", "", "");
         database.addSchueler(new Schueler("Annalisa", "Strübin", day1, day2, day3, 30));
 
-        day1 = new SchuelerDay("", "", "", "", ""); // ok, aber noch unklar wo Favorit
+        day1 = new SchuelerDay("", "", "", "", ""); // ok
         day2 = new SchuelerDay("", "", "", "", "");
-        day3 = new SchuelerDay("12.45", "18.00", "", "", "");
+        day3 = new SchuelerDay("12.45", "18.00", "", "", "17.15");
         database.addSchueler(new Schueler("Juan", "Meier", day1, day2, day3, 30));
 
         day1 = new SchuelerDay("17.00", "18.00", "", "", "17.00"); // ok
@@ -203,7 +203,7 @@ public class MainFrame extends JFrame {
         day3 = new SchuelerDay("13.45", "18.00", "", "", "");
         database.addSchueler(new Schueler("Anis", "Ameti", day1, day2, day3, 30));
 
-        day1 = new SchuelerDay("17.00", "19.00", "", "", ""); // ok 2.
+        day1 = new SchuelerDay("17.00", "19.00", "", "", ""); // ok
         day2 = new SchuelerDay("", "", "", "", "");
         day3 = new SchuelerDay("13.15", "13.30", "17.00", "18.30", "13.15");
         database.addSchueler(new Schueler("Sante", "Demarco", day1, day2, day3, 30));
@@ -223,7 +223,7 @@ public class MainFrame extends JFrame {
         day3 = new SchuelerDay("16.30", "17.00", "", "", "");
         database.addSchueler(new Schueler("Vancy", "Ravindran", day1, day2, day3, 40));
 
-        day1 = new SchuelerDay("15.25", "18.00", "", "", ""); // ok 1. Neu
+        day1 = new SchuelerDay("15.25", "18.00", "", "", ""); // ok
         day2 = new SchuelerDay("15.25", "18.00", "", "", "");
         day3 = new SchuelerDay("13.30", "18.00", "", "", "");
         database.addSchueler(new Schueler("Paul", "Weiland", day1, day2, day3, 30));
