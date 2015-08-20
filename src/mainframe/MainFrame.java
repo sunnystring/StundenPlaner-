@@ -84,7 +84,7 @@ public class MainFrame extends JFrame {
         links.setBackground(Colors.BACKGROUND);
 
         /*---------------Rohfassung: statische Eingabe Stundenplan-Daten-----------------------*/
-        database.addDay(new StundenplanDay("Montag", new Time("13.00"), new Time("21.00")));
+        DataBase.addDay(new StundenplanDay("Montag", new Time("13.00"), new Time("21.00")));
         database.addDay(new StundenplanDay("Dienstag", new Time("15.00"), new Time("20.30")));
         database.addDay(new StundenplanDay("Mittwoch", new Time("12.30"), new Time("19.30")));
         /*---------------------------------------------------------------------------*/
@@ -124,8 +124,8 @@ public class MainFrame extends JFrame {
         database.addSchueler(new Schueler("Julian", "Merz", day1, day2, day3, 30));
 
         day1 = new SchuelerDay("", "", "", "", "");
-        day2 = new SchuelerDay("", "", "", "", "");
-        day3 = new SchuelerDay("", "", "", "", "");
+        day2 = new SchuelerDay("18.00", "20.00", "", "", "");
+        day3 = new SchuelerDay("13.30", "14.00", "", "", "");
         database.addSchueler(new Schueler("Gabriel", "Sturm", day1, day2, day3, 40));
 
         day1 = new SchuelerDay("", "", "", "", "17.45"); // ok
