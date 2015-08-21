@@ -21,7 +21,7 @@ public class Colors {
             DAY_FIELD_SELECTED = new Color(0, 102, 52),
             NAME_FIELD = new Color(204, 150, 0),
             NAME_FIELD_SELECTED = new Color(153, 100, 0),
-            SCHUELER_FIELD_BLUE = new Color(153, 204, 255),
+            STUDENT_FIELD_BLUE = new Color(153, 204, 255),
             FAVORITE = Color.BLUE,
             LECTION_FIELD_OUT_OF_BOUNDS = Color.ORANGE,
             BACKGROUND = Color.WHITE,

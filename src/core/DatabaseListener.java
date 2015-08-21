@@ -12,17 +12,17 @@ package core;
 public interface DatabaseListener {
     
     
-    public void schuelerAdded(Schueler s);
+    public void studentAdded(Student s);
     
-    public void schuelerRemoved(Schueler s);
+    public void studentRemoved(Student s);
     
-    public void schuelerEdited(Schueler s);
+    public void studentEdited(Student s);
     
-    public void dayAdded(StundenplanDay d);
+    public void dayAdded(ScheduleDay d);
     
-    public void dayRemoved(StundenplanDay d);
+    public void dayRemoved(ScheduleDay d);
     
-    public void dayEdited(StundenplanDay d);
+    public void dayEdited(ScheduleDay d);
     
     
     

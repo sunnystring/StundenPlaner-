@@ -5,7 +5,7 @@
  */
 package core;
 
-import stundenplan.LectionField;
+import schedule.LectionField;
 
 /**
  *
@@ -14,10 +14,10 @@ import stundenplan.LectionField;
 public interface ValidTimeListener {
     
 
-    public void validTimeSelected(LectionField lectionField, SchuelerDay day);
+    public void validTimeSelected(LectionField lectionField, StudentDay day);
     
     public void validTimeDeselected();
     
-    public void schuelerSelected(SchuelerDay schuelerDay);
+    public void studentSelected(StudentDay schuelerDay);
 
 }

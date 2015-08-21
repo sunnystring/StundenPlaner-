@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schuelerliste;
+package studentlist;
 
 import java.awt.Font;
 import javax.swing.BorderFactory;
@@ -14,18 +14,18 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class NameField extends SchuelerField {
+public class NameField extends StudentField {
 
-    private String name, vorname;
+    private String name, firstName;
 
-    public NameField(String vorname, String name) {
+    public NameField(String firstName, String name) {
 
-        this.vorname = vorname;
+        this.firstName = firstName;
         this.name = name;
-        super.setVorname(vorname);
+        super.setFirstName(firstName);
         super.setName(name);
 
-        setText(vorname + " " + name);
+        setText(firstName + " " + name);
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));

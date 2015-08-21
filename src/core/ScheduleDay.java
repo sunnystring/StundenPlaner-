@@ -5,7 +5,7 @@
  */
 package core;
 
-import stundenplan.DayColumn;
+import schedule.DayColumn;
 import util.Time;
 
 /**
@@ -14,7 +14,7 @@ import util.Time;
  */
 
 /*  Daten für DayColumn-Instanzen*/
-public class StundenplanDay {
+public class ScheduleDay {
 
     private String day;
 
@@ -27,7 +27,7 @@ public class StundenplanDay {
 //    private static Time absoluteStart = new Time("20.00"); // frühester Beginn aller Tage
 //    private static Time absoluteEnd = new Time();   // spätestes Ende aller Tage
 
-    public StundenplanDay(String day, Time validStart, Time validEnd) {
+    public ScheduleDay(String day, Time validStart, Time validEnd) {
 
         this.day = day;
         this.validStart = validStart;

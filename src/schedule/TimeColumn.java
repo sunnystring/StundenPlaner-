@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package stundenplan;
+package schedule;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -26,8 +26,8 @@ public class TimeColumn extends JPanel {
     public TimeColumn(DayColumn dayCol) {
 
         this.timeList = dayCol.getTimeFieldList();
-        validTimeStart = dayCol.getStundenplanStart();
-        validTimeEnd = dayCol.getStundenplanEnd();
+        validTimeStart = dayCol.getScheduleStart();
+        validTimeEnd = dayCol.getScheduleEnd();
         totalNumberOfFields = dayCol.getTotalNumberOfFields();
 
         setBackground(Colors.BACKGROUND);

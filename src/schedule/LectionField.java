@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package stundenplan;
+package schedule;
 
 import core.DataBase;
-import core.SchuelerDay;
+import core.StudentDay;
 import core.ValidTimeListener;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import schuelerliste.SchuelerField;
+import studentlist.StudentField;
 import util.Colors;
 
 /**
@@ -22,18 +22,18 @@ import util.Colors;
 public class LectionField extends JLabel {
 
     // relevante Schülerdaten für Lectionpanels 
-    private String name, vorname;
-    private int schuelerID;
+    private String name, firstName;
+    private int studentID;
     private int lectionType;
 
-    private SchuelerDay[] schuelerdayList;  // Referenz auf Liste aller Tage eines Schülers (class Schüler)
+    private StudentDay[] studentDayList;  // Referenz auf Liste aller Tage eines Schülers (class Student)
 
     private final ValidTimeListener[] validTimeListener;
     private int listCount;
 
     // bei firstEntry darf nur der aktuelle Tag aktiv sein für validTimes
     private boolean timeColumnEnabled;
-    // falls Schülerzeit ausserhalb Lehrerzeit ( = stundenplanStart, stundenplanEnd) kein TimeColumn-Scrolling
+    // falls Schülerzeit ausserhalb Lehrerzeit ( = scheduleStart, scheduleEnd) kein TimeColumn-Scrolling
     private boolean outOfBounds;
 
     /* Schalter, Panel-Konstruktions-Variablen */
@@ -49,7 +49,7 @@ public class LectionField extends JLabel {
         lectionTemporarySelected = false;
         lectionID = 0;
         fieldPosition = 0;
-        schuelerID = 0;
+        studentID = 0;
 
         validTimeListener = new ValidTimeListener[DataBase.getNumberOfDays()];
         listCount = 0;
@@ -83,22 +83,22 @@ public class LectionField extends JLabel {
         return lectionTemporarySelected;
     }
 
-    /* überträgt relevante Schülerdaten von Schülerfield zu LectionField*/
-    public void transferSchuelerDataFrom(SchuelerField schuelerField) {
-        this.schuelerID = schuelerField.getSchuelerID();
-        this.name = schuelerField.getName();
-        this.vorname = schuelerField.getVorname();
-        this.lectionType = schuelerField.getLectionType();
-        this.schuelerdayList = schuelerField.getSchuelerDayList(); // für Zugriff auf alle SchülerDays
+    /* überträgt relevante Schülerdaten von StudentField zu LectionField*/
+    public void transferStudentDataFrom(StudentField studentField) {
+        this.studentID = studentField.getStudentID();
+        this.name = studentField.getName();
+        this.firstName = studentField.getFirstName();
+        this.lectionType = studentField.getLectionType();
+        this.studentDayList = studentField.getStudentDayList(); // für Zugriff auf alle StudentDays
     }
 
     /* Pseudo-clone(): überträgt relevante Schülerdaten von LectionField zu LectionField */
-    public void transferSchuelerDataFrom(LectionField lectionField) {
-        this.schuelerID = lectionField.getSchuelerID();
+    public void transferStudentDataFrom(LectionField lectionField) {
+        this.studentID = lectionField.getStudentID();
         this.name = lectionField.getName();
-        this.vorname = lectionField.getVorname();
+        this.firstName = lectionField.getFirstName();
         this.lectionType = lectionField.getLectionType();
-        this.schuelerdayList = lectionField.getSchuelerDayList(); // für Zugriff auf alle SchülerDays
+        this.studentDayList = lectionField.getStudentDayList(); // für Zugriff auf alle SchülerDays
     }
 
     /* Getter, Setter für Lection-Panel-Konstruktion */
@@ -127,13 +127,13 @@ public class LectionField extends JLabel {
         return fieldPosition;
     }
 
-    /* Getter, Setter  für Schueler-Daten */
-    public int getSchuelerID() {
-        return schuelerID;
+    /* Getter, Setter für Student-Daten */
+    public int getStudentID() {
+        return studentID;
     }
 
-    public void setSchuelerID(int schuelerID) {
-        this.schuelerID = schuelerID;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
     public String getName() {
@@ -144,12 +144,12 @@ public class LectionField extends JLabel {
         this.name = name;
     }
 
-    public String getVorname() {
-        return vorname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public int getLectionType() {
@@ -160,8 +160,8 @@ public class LectionField extends JLabel {
         this.lectionType = lectionType;
     }
 
-    public SchuelerDay[] getSchuelerDayList() {  // nötig für die Datentransfer LectionField - LectionField
-        return schuelerdayList;
+    public StudentDay[] getStudentDayList() {  // nötig für die Datentransfer LectionField - LectionField
+        return studentDayList;
     }
 
     public void setTimeColumnEnabled(boolean timeColumnEnabled) {
@@ -193,11 +193,11 @@ public class LectionField extends JLabel {
         t1 = System.nanoTime();
 
         for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].validTimeSelected(this, schuelerdayList[i]);
+            validTimeListener[i].validTimeSelected(this, studentDayList[i]);
         }
 
         t2 = System.nanoTime();
-        //    System.out.println("markTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
+           System.out.println("markTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
     }
 
     /* löscht Markierungen in allen TimeColumns */
@@ -215,9 +215,9 @@ public class LectionField extends JLabel {
     }
 
     /*  setzt validTimes in allen DayColumns */
-    public void setSchuelerDays() {
+    public void setStudentDays() {
         for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].schuelerSelected(schuelerdayList[i]);
+            validTimeListener[i].studentSelected(studentDayList[i]);
         }
     }
 }

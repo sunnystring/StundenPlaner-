@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schuelerliste;
+package studentlist;
 
 import core.DataBase;
-import core.SchuelerDay;
+import core.StudentDay;
 import core.ValidTimeListener;
 import java.awt.Font;
 import javax.swing.BorderFactory;
@@ -18,14 +18,14 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class SchuelerField extends JLabel {
+public class StudentField extends JLabel {
 
-    private String name, vorname;
-    private int schuelerID;  // jedes SchuelerField "kennt" seine Position in der Schülerliste
-    private SchuelerDay schuelerDay;
+    private String name, firstName;
+    private int studentID;  // jedes StudentField "kennt" seine Position in der Studentlist
+    private StudentDay studentDay;
     private int lectionType;
 
-    private SchuelerDay[] schuelerdayList;  // Referenz auf Liste aller Tage eines Schülers (class Schüler)
+    private StudentDay[] studentDayList;  // Referenz auf Liste aller Tage eines Schülers (class Student)
 
     private final ValidTimeListener[] validTimeListener;
     private int listCount;
@@ -33,9 +33,9 @@ public class SchuelerField extends JLabel {
     // Schalter
     private boolean fieldSelected;
 
-    public SchuelerField() {
+    public StudentField() {
 
-        this.vorname = vorname;
+        this.firstName = firstName;
         this.name = name;
 
         fieldSelected = false;
@@ -46,7 +46,7 @@ public class SchuelerField extends JLabel {
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 3));
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-        setBackground(Colors.SCHUELER_FIELD_BLUE);
+        setBackground(Colors.STUDENT_FIELD_BLUE);
         setOpaque(true);
 
     }
@@ -61,12 +61,12 @@ public class SchuelerField extends JLabel {
     }
 
     /* Getter, Setter */
-    public String getVorname() {
-        return vorname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getName() {
@@ -77,20 +77,20 @@ public class SchuelerField extends JLabel {
         this.name = name;
     }
 
-    public void setSchuelerIndex(int index) {
-        schuelerID = index;
+    public void setStudentID(int id) {
+        studentID = id;
     }
 
-    public int getSchuelerID() {
-        return schuelerID;
+    public int getStudentID() {
+        return studentID;
     }
 
-    public void setDay(SchuelerDay day) {
-        schuelerDay = day;
+    public void setDay(StudentDay day) {
+        studentDay = day;
     }
 
-    public SchuelerDay getDay() {
-        return schuelerDay;
+    public StudentDay getDay() {
+        return studentDay;
     }
 
     public int getLectionType() {
@@ -107,24 +107,24 @@ public class SchuelerField extends JLabel {
         listCount++;
     }
 
-    public void setSchuelerDays() {
+    public void setStudentDays() {
         for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].schuelerSelected(schuelerdayList[i]);
+            validTimeListener[i].studentSelected(studentDayList[i]);
         }
     }
 
-    /* -----------------Rohfassung: Referenz auf schülerDayList */
-    public SchuelerDay[] getSchuelerDayList() {
-        return schuelerdayList;
+    /* -----------------Rohfassung: Referenz auf studentDayList */
+    public StudentDay[] getStudentDayList() {
+        return studentDayList;
     }
 
-    public void setSchuelerDayList(SchuelerDay[] list) {
-        schuelerdayList = list;
+    public void setStudentDayList(StudentDay[] list) {
+        studentDayList = list;
     }
 
-    /* formatierte Textausgabe der Zeiten aus schülerDay */
+    /* formatierte Textausgabe der Zeiten aus studentDay */
     public void showAvailableTimes() {
-        super.setText("<html>" + schuelerDay + "<font color=blue>" + schuelerDay.getFavoriteAsString() + "</font></html>");
+        super.setText("<html>" + studentDay + "<font color=blue>" + studentDay.getFavoriteAsString() + "</font></html>");
     }
 
 }

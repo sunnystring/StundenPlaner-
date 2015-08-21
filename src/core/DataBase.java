@@ -18,38 +18,38 @@ public final class DataBase {
 
     private static int dayIndex;  // counter für Tage = Position in dayDataList  = Day-ID
     private static int numberOfDays; // vorgegebene Maximalzahl,  ToDo: dynamisch,
-    private static int schuelerIndex;  // counter für Schueler = Position in schülerDataList = Schueler-ID
-    private static int schülerzahl;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
+    private static int studentIndex;  // counter für Student = Position in studentDataList = Student-ID
+    private static int numberOfStudents;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
 
     public DataBase() {
 
         dayIndex = 0;
         numberOfDays = 3;
-        schuelerIndex = 0;
-        schülerzahl = 36;
+        studentIndex = 0;
+        numberOfStudents = 36;
 
     }
 
-    /* ---------------Stundenplan------------------------*/
-    private static final ArrayList<StundenplanDay> dayDataList = new ArrayList<>();  // enthält die StundenplanDay-Rohdaten
+    /* ---------------Schedule------------------------*/
+    private static final ArrayList<ScheduleDay> dayDataList = new ArrayList<>();  // enthält die ScheduleDay-Rohdaten
 
-    /* ----------------Schülerliste------------------------*/
-    private static final ArrayList<Schueler> schuelerDataList = new ArrayList<>();  // enthält die Schueler-Rohdaten
+    /* ----------------Studentlist------------------------*/
+    private static final ArrayList<Student> studentDataList = new ArrayList<>();  // enthält die Student-Rohdaten
 
     /* globale Getter, Setter  */
-    public static int getSchuelerzahl() {
-        return schülerzahl;
+    public static int getNumberOfStudents() {
+        return numberOfStudents;
     }
 
     public static int getNumberOfDays() {
         return numberOfDays;
     }
 
-    public static int getSchuelerIndex() {
-        return schuelerIndex;
+    public static int getStudentIndex() {
+        return studentIndex;
     }
 
-    public static StundenplanDay getDayDataList(int index) {
+    public static ScheduleDay getDayDataList(int index) {
         return dayDataList.get(index);
     }
 
@@ -63,25 +63,25 @@ public final class DataBase {
     }
 
     /*-------------------für Dateneingabe Rohfassung-------------------------*/
-    public static void addDay(StundenplanDay day) {
+    public static void addDay(ScheduleDay day) {
 
         day.setDayIndex(dayIndex);
-        dayDataList.add(day);   // StundenplanDay-Daten in dayDataList speichern
+        dayDataList.add(day);   // ScheduleDay-Daten in dayDataList speichern
         dayIndex++;  // zählt die Anzahl eingebener Tage (= vom Tag unabhängiger Tag-Index)
 
-        for (DatabaseListener l : databaseListener) {  // l = Referenz auf Stundenplan,
+        for (DatabaseListener l : databaseListener) {  // l = Referenz auf Schedule,
             l.dayAdded(day);                  // füllt Daten in DayColumns und zeichnet diese      
         }
     }
 
-    public static void addSchueler(Schueler schueler) {
+    public static void addStudent(Student student) {
     
-        schueler.setSchuelerIndex(schuelerIndex);
-        schuelerDataList.add(schueler);// Schueler-Daten in schülerDataList speichern
-        schuelerIndex++;
+        student.setStudentIndex(studentIndex);
+        studentDataList.add(student);// Student-Daten in studentDataList speichern
+        studentIndex++;
 
-        for (DatabaseListener l : databaseListener) { // l = Referenz auf SchülerListe
-            l.schuelerAdded(schueler);        // füllt Daten in SchülerRows und zeichnet diese      
+        for (DatabaseListener l : databaseListener) { // l = Referenz auf StudentList
+            l.studentAdded(student);        // füllt Daten in Student-Rows und zeichnet diese      
             
         }
     }

@@ -12,7 +12,7 @@ import util.Time;
  * @author Mathias
  */
 /* Wrapperklasse für die Einteilungszeiten eines Tages eines Schülers */
-public class SchuelerDay {
+public class StudentDay {
 
     private Time startTime1;
     private Time endTime1;
@@ -24,7 +24,7 @@ public class SchuelerDay {
 
     private String endString1, endString2;
 
-    public SchuelerDay(String startTime1, String endTime1, String startTime2, String endTime2, String favorite) {
+    public StudentDay(String startTime1, String endTime1, String startTime2, String endTime2, String favorite) {
 
         try {
 
@@ -50,7 +50,7 @@ public class SchuelerDay {
         }
     }
 
-    /* falls keine Zeiteingabe gemacht, muss Platz in SchülerField leer bleiben ( = new Time()) */
+    /* falls keine Zeiteingabe gemacht, muss Platz in StudentField leer bleiben ( = new Time()) */
     private Time createStartTime(String startTime) {
         return startTime.trim().isEmpty() ? new Time() : new Time(startTime);
     }
@@ -98,12 +98,12 @@ public class SchuelerDay {
         return lectionLength;
     }
 
-    /* Favorit muss separater String sein für Formatierung in SchülerField */
+    /* Favorit muss separater String sein für Formatierung in StudentField */
     public String getFavoriteAsString() {
         return favorite.toString();
     }
 
-    /* gibt SchuelerDay-Objekt im richtigen Format (für SchülerField) zurück */
+    /* gibt StudentDay-Objekt im richtigen Format (für StudentField) zurück */
     @Override
     public String toString() {
         return " " + startTime1 + endString1 + " " + startTime2 + endString2 + " ";
