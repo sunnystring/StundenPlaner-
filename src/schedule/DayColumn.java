@@ -2,7 +2,7 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
-  */
+ */
 package schedule;
 
 import core.DataBase;
@@ -374,7 +374,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
 //    }
 
     /*  Schalter */
-    public static boolean dragEnabled() {
+    public static boolean isDragEnabled() {
         return dragEnabled;
     }
 
@@ -418,18 +418,19 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
                 firstEntry = false;
             }
 
-            if (StudentRow.isStudentListEnabled()) { // StudentList gesperrt, damit Lectionfield-Daten nicht überschrieben werden
+            if (StudentRow.isStudentListEnabled()) { // StudentList gesperrt, damit Lectionfield-Daten nicht überschrieben werden kann
 
                 if (s.isFieldSelected()) {
                     /* Datatransfer Schülerdaten von StudentField an Schedule bzw. LectionField */
                     TEMP_LECTIONFIELD.transferStudentDataFrom(s);
                     lectionLength = TEMP_LECTIONFIELD.getLectionType();
-                    dragEnabled = !StudentRow.noFieldSelected(); // sobald mind. ein StudentField selected, kann LectionField gedragt werden (= dragEnabled)
+                    dragEnabled = !StudentRow.noFieldSelected(); // sobald mind. ein StudentField selected, kann LectionField gedragt werden
                     s.setStudentDays();  // setzt validTimes in allen DayColumns
                 /*  markiert die verfügbare Zeit des in StudentField angeklickten Tages */
                     markValidTime(s.getDay());
                     initTimeColumn(true);
                 } else {
+                    dragEnabled = !StudentRow.noFieldSelected(); // falls kein StudentField selected, dragEnabled = false = keine Panel-Aktionen
                     cleanValidTimeMark();
                     initTimeColumn(false);
                 }

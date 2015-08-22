@@ -53,7 +53,6 @@ public class StudentRow extends JPanel implements MouseListener {
         studentListEnabled = true;  // StudentList als ganzes ansprechbar, verhindert Eingaben in StudentList im Lectionfield-Dragmodus 
         noRowSelected = true;  // jede Row ist scrollbar
         noFieldSelected = true;  // falls mind. ein Feld selektiert
-
         studentRowEnabled = true;  // selektierte Row = eingeteilter Student ist nicht mehr ansprechbar
 
         setLayout(new GridLayout(1, columns, 1, 0));
@@ -157,7 +156,7 @@ public class StudentRow extends JPanel implements MouseListener {
         return studentListEnabled;
     }
 
-    /* Getter, Setter usw.  */
+      /* Getter, Setter usw.  */
     public void setStudentIndex(int studentIndex) {
         this.studentIndex = studentIndex;
     }
@@ -170,13 +169,13 @@ public class StudentRow extends JPanel implements MouseListener {
         return studentRow[index];
     }
 
-    /* Listener-Implementationen */
+    /* MouseListener-Implementationen */
     @Override
     public void mouseClicked(MouseEvent m) {
 
         if (studentListEnabled) {
             if (noRowSelected && studentRowEnabled) { // Row-"Hauptschalter" on = jede Row kann selektiert werden
-                if (noFieldSelected) {  // StudentField selektierbar, falls kein nameField selektiert 
+                if (noFieldSelected) {  // StudentField selektierbar, falls kein NameField selektiert 
                     drawRow(m.getSource());
                     noFieldSelected = false;
                 } else // Row-"Hauptschalter" off = nur die aktuelle Row ist selektierbar
@@ -226,6 +225,7 @@ public class StudentRow extends JPanel implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent m) {
     }
+
     @Override
     public void mousePressed(MouseEvent e) {
     }
@@ -259,7 +259,7 @@ public class StudentRow extends JPanel implements MouseListener {
         }
         return false;
     }
-    
+
     /* innere Listenerklassen  */
     private class NameFieldListener extends MouseAdapter {
 

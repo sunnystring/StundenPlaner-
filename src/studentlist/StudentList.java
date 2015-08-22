@@ -22,7 +22,7 @@ import util.Colors;
  *
  * @author Mathias
  */
-public final class StudentList extends JPanel implements MouseListener, DatabaseListener {
+public class StudentList extends JPanel implements MouseListener, DatabaseListener {
 
     private static StudentRow[] studentList;  // Liste mit allen StudentRow-Instanzen
     private static StudentRow header;
@@ -90,17 +90,17 @@ public final class StudentList extends JPanel implements MouseListener, Database
             l = (LectionField) m.getSource();
 
             /* StudentRow als eingeteilt markieren, l.isSelected ->klick auf leeren Stundenplan darf keine Wirkung haben*/
-            if (l.isSelected() && l.getFieldPosition() == 0 && !DayColumn.dragEnabled()) {
+            if (l.isSelected() && l.getFieldPosition() == 0 && !DayColumn.isDragEnabled()) {
                 studentList[l.getStudentID()].cleanStudentRow(true);  // StudentID = Position in StudentList
             } else {
                 StudentRow.setStudentListEnabled(false);  // während Lection-Drag ist Studentlist gesperrt
             }
             /* Doppelklick auf Lectionpanel = StudentRow entsperren  */
-            if (m.getClickCount() == 2 && (l.getFieldPosition() == 3 || l.getFieldPosition() == 4) && !DayColumn.dragEnabled()) {
+            if (m.getClickCount() == 2 && (l.getFieldPosition() == 3 || l.getFieldPosition() == 4) && !DayColumn.isDragEnabled()) {
                 studentList[l.getStudentID()].cleanStudentRow(false);
             }
             /* StudentList nur während Dragen gesperrt, wenn Lection gesetzt, muss StudentList wieder aktiv sein */
-            if (!DayColumn.dragEnabled()) {
+            if (!DayColumn.isDragEnabled()) {
                 StudentRow.setStudentListEnabled(true);
             }
         }

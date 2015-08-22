@@ -18,7 +18,7 @@ import util.Colors;
  *
  * @author Mathias
  */
-public final class Schedule extends JComponent implements DatabaseListener {
+public class Schedule extends JComponent implements DatabaseListener {
 
     private static ArrayList<DayColumn> dayColumnList;
 

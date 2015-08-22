@@ -104,7 +104,7 @@ public class TimeField extends JLabel implements MouseListener {
         LectionField l = (LectionField) m.getSource();
 
         // TimeColumn-Scrolling: nur im Drag-Modus, nur wenn keine gesetzte Lektion, bei firstEntry nur der angewählte Tag
-        if (l.isTimeColumnEnabled() && DayColumn.dragEnabled() && !lectionSelected) {
+        if (l.isTimeColumnEnabled() && DayColumn.isDragEnabled() && !lectionSelected) {
 
             if (validTime && !l.isOutOfBounds()) { // !l.isOutOfBounds() = Schülerzeit muss innerhalb Lehrerzeit liegen
                 setBackground(Colors.LIGHT_GREEN);

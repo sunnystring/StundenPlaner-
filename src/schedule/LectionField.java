@@ -197,7 +197,7 @@ public class LectionField extends JLabel {
         }
 
         t2 = System.nanoTime();
-           System.out.println("markTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
+          // System.out.println("markTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
     }
 
     /* löscht Markierungen in allen TimeColumns */
