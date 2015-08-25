@@ -21,6 +21,7 @@ public class Student {
 
     private int studentListIndex;  // Position in der Schülerdaten-Liste = Student-ID
 
+    /* ToDo: StudentDays dynamische Eingabe  */
     public Student(String firstName, String name, StudentDay day0, StudentDay day1, StudentDay day2, int lectionLength) {
 
         this.firstName = firstName;

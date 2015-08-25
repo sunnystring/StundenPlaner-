@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Mathias
  */
-public final class DataBase {
+public class DataBase {
 
     /* ---------------globale Daten------------------------ */
     private static final ArrayList<DatabaseListener> databaseListener = new ArrayList<>();

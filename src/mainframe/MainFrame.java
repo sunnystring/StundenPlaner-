@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
     private static Schedule schedule;
     private static StudentList studentList;
     private JPanel toolBar;
-    private ScheduleButton b0, b1, b2, b3, b4, b5, b6, b7, b8;
+    private ScheduleButton open, save, print, createSchedule, addStudent, addKGU, automatic, timeFilter, timeOrder;
     private JSplitPane split;
     private JScrollPane left, right;
 
@@ -68,15 +68,15 @@ public class MainFrame extends JFrame {
         toolBar.setPreferredSize(new Dimension(0, 30));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 12, 0, 15));
 
-        b0 = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
-        b1 = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
-        b2 = new ScheduleButton("printer.png", "Stundenplan drucken");
-        b3 = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
-        b4 = new ScheduleButton("boy.png", "Schülerprofil erstellen");
-        b5 = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
-        b6 = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
-        b7 = new ScheduleButton("color.png", "Verteilung der Zeiten anzeigen: je später, desto dunkler");
-        b8 = new ScheduleButton("list.png", "Zeiten chronologisch anordnen");
+        open = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
+        save = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
+        print = new ScheduleButton("printer.png", "Stundenplan drucken");
+        createSchedule = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
+        addStudent = new ScheduleButton("boy.png", "Schülerprofil erstellen");
+        addKGU = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
+        automatic = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
+        timeFilter = new ScheduleButton("color.png", "Verteilung der Zeiten anzeigen: je später, desto dunkler");
+        timeOrder = new ScheduleButton("list.png", "Zeiten chronologisch anordnen");
 
         schedule = new Schedule();
         left = new JScrollPane(schedule);
@@ -84,7 +84,7 @@ public class MainFrame extends JFrame {
         left.setBackground(Colors.BACKGROUND);
 
         /*---------------Rohfassung: statische Eingabe Schedule-Daten-----------------------*/
-        DataBase.addDay(new ScheduleDay("Montag", new Time("13.00"), new Time("21.00")));
+        database.addDay(new ScheduleDay("Montag", new Time("13.00"), new Time("21.00")));
         database.addDay(new ScheduleDay("Dienstag", new Time("15.00"), new Time("20.30")));
         database.addDay(new ScheduleDay("Mittwoch", new Time("12.30"), new Time("19.30")));
         /*---------------------------------------------------------------------------*/
@@ -257,18 +257,22 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout(0, 0));
         add(BorderLayout.CENTER, split);
         add(BorderLayout.PAGE_START, toolBar);
+        
+        
+    //    open.addActionListener(null);
 
-        toolBar.add(b0);
-        toolBar.add(b1);
-        toolBar.add(b2);
+//  Buttons adden:
+        toolBar.add(open);
+        toolBar.add(save);
+        toolBar.add(print);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(b3);
-        toolBar.add(b4);
-        toolBar.add(b5);
+        toolBar.add(createSchedule);
+        toolBar.add(addStudent);
+        toolBar.add(addKGU);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(b6);
-        toolBar.add(b7);
-        toolBar.add(b8);
+        toolBar.add(automatic);
+        toolBar.add(timeFilter);
+        toolBar.add(timeOrder);
 
     }
 
