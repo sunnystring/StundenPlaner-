@@ -31,10 +31,10 @@ public class DataBase {
     }
 
     /* ---------------Schedule------------------------*/
-    private static final ArrayList<ScheduleDay> dayDataList = new ArrayList<>();  // enthält die ScheduleDay-Rohdaten
+    private static ArrayList<ScheduleDay> dayDataList = new ArrayList<>();  // enthält die ScheduleDay-Rohdaten
 
     /* ----------------Studentlist------------------------*/
-    private static final ArrayList<Student> studentDataList = new ArrayList<>();  // enthält die Student-Rohdaten
+    private static ArrayList<Student> studentDataList = new ArrayList<>();  // enthält die Student-Rohdaten
 
     /* globale Getter, Setter  */
     public static int getNumberOfStudents() {
@@ -75,14 +75,14 @@ public class DataBase {
     }
 
     public static void addStudent(Student student) {
-    
+
         student.setStudentIndex(studentIndex);
         studentDataList.add(student);// Student-Daten in studentDataList speichern
         studentIndex++;
 
         for (DatabaseListener l : databaseListener) { // l = Referenz auf StudentList
             l.studentAdded(student);        // füllt Daten in Student-Rows und zeichnet diese      
-            
+
         }
     }
 }

@@ -9,6 +9,8 @@ import core.DataBase;
 import core.ScheduleDay;
 import core.Student;
 import core.StudentDay;
+import dialogs.ScheduleDataEntry;
+import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -36,10 +38,10 @@ import util.Time;
  */
 public class MainFrame extends JFrame {
 
-    private final DataBase database;
+    private static DataBase database; 
 
-    private static Schedule schedule;
-    private static StudentList studentList;
+    private static Schedule schedule;  
+    private static StudentList studentList;  
     private JPanel toolBar;
     private ScheduleButton open, save, print, createSchedule, addStudent, addKGU, automatic, timeFilter, timeOrder;
     private JSplitPane split;
@@ -55,6 +57,7 @@ public class MainFrame extends JFrame {
 
         createWidget();
         addWidget();
+        addListener();
         pack();
         setLocation(0, 0);
 
@@ -257,9 +260,6 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout(0, 0));
         add(BorderLayout.CENTER, split);
         add(BorderLayout.PAGE_START, toolBar);
-        
-        
-    //    open.addActionListener(null);
 
 //  Buttons adden:
         toolBar.add(open);
@@ -273,10 +273,18 @@ public class MainFrame extends JFrame {
         toolBar.add(automatic);
         toolBar.add(timeFilter);
         toolBar.add(timeOrder);
-
+   
     }
+    
+    private void addListener(){
+    
+        createSchedule.addActionListener(new ScheduleEntry());
+        addStudent.addActionListener(new StudentEntry()); 
+    }
+    
+    
 
-    public static StudentList getStudentList() {
+    public static StudentList getStudentList() { // static: es gibt nur eine MainFrame
         return studentList;
     }
 
@@ -290,5 +298,28 @@ public class MainFrame extends JFrame {
 
         }
     }
+    
+    private class StudentEntry implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            StudentDataEntry mask = new StudentDataEntry(MainFrame.this);
+            mask.setLocationRelativeTo(MainFrame.this);
+            mask.setVisible(true);
+        }
+    }
+    private class ScheduleEntry implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ScheduleDataEntry mask = new ScheduleDataEntry(MainFrame.this);
+            mask.setLocationRelativeTo(MainFrame.this);
+            mask.setVisible(true);
+        }
+    }
+    
+    
 
 }
