@@ -261,7 +261,6 @@ public class MainFrame extends JFrame {
         add(BorderLayout.CENTER, split);
         add(BorderLayout.PAGE_START, toolBar);
 
-//  Buttons adden:
         toolBar.add(open);
         toolBar.add(save);
         toolBar.add(print);
@@ -281,8 +280,7 @@ public class MainFrame extends JFrame {
         createSchedule.addActionListener(new ScheduleEntry());
         addStudent.addActionListener(new StudentEntry()); 
     }
-    
-    
+   
 
     public static StudentList getStudentList() { // static: es gibt nur eine MainFrame
         return studentList;
@@ -295,7 +293,6 @@ public class MainFrame extends JFrame {
             setIcon(Icons.setIcon(iconName));
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(60, 0));
-
         }
     }
     
@@ -304,7 +301,7 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             
-            StudentDataEntry mask = new StudentDataEntry(MainFrame.this);
+            StudentDataEntry mask = new StudentDataEntry(MainFrame.this, database);
             mask.setLocationRelativeTo(MainFrame.this);
             mask.setVisible(true);
         }

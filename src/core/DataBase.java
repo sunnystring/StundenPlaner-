@@ -6,12 +6,14 @@
 package core;
 
 import java.util.ArrayList;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author Mathias
  */
-public class DataBase {
+public class DataBase implements TableModel {
 
     /* ---------------globale Daten------------------------ */
     private static final ArrayList<DatabaseListener> databaseListener = new ArrayList<>();
@@ -85,4 +87,108 @@ public class DataBase {
 
         }
     }
+
+    /* Implementierung TableModel für StudentDataEntry */
+    @Override
+    public int getRowCount() {
+        return 7;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 6;
+    }
+
+    @Override
+    public String getColumnName(int col) {
+
+        switch (col) {
+            case 0:
+                return " ";
+            case 1:
+                return "von";
+            case 2:
+                return "bis";
+            case 3:
+                return "von";
+            case 4:
+                return "bis";
+            case 5:
+                return "Wunschzeit";
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int col) {
+
+        switch (col) {
+            case 0:
+                return String.class;
+            case 1:
+                return String.class;
+            case 2:
+                return String.class;
+            case 3:
+                return String.class;
+            case 4:
+                return String.class;
+            case 5:
+                return String.class;
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int col) {
+
+        return row > 0 && col > 0;
+    }
+
+    @Override
+    public Object getValueAt(int row, int col) {
+
+        if (col == 0) {
+            switch (row) {
+
+                case 1:
+                    return "Montag";
+                case 2:
+                    return "Dienstag";
+                case 3:
+                    return "Mittwoch";
+                case 4:
+                    return "Donnerstag";
+                case 5:
+                    return "Freitag";
+                case 6:
+                    return "Samstag";
+                default:
+                    return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setValueAt(Object o, int row, int col) {
+
+        String time;
+        if (row > 0 && col > 0) {
+            time = o.toString();
+            System.out.println(time);
+        }
+    }
+
+    @Override
+    public void addTableModelListener(TableModelListener tl) {
+    }
+
+    @Override
+    public void removeTableModelListener(TableModelListener tl) {
+    }
+
 }

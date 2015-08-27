@@ -5,8 +5,9 @@
  */
 package dialogs;
 
-import core.Student;
+import core.DataBase;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,15 +26,19 @@ import mainframe.MainFrame;
  */
 public class StudentDataEntry extends JDialog {
 
+    DataBase database;
+
     private JPanel top, bottom;
     private JLabel footnote;
     private JTextField firstname, name, lectiontype;
     private JTable selectionTable;
     private JButton cancel, save;
 
-    public StudentDataEntry(MainFrame owner) {
+    public StudentDataEntry(MainFrame owner, DataBase database) {
 
         super(owner);
+        this.database = database;
+
         setModal(true);
         setTitle("Schülerdaten eingeben");
         setLayout(new BorderLayout());
@@ -59,8 +64,14 @@ public class StudentDataEntry extends JDialog {
         name = new JTextField(" Name");
         lectiontype = new JTextField(" Lektionsdauer");
 
-        selectionTable = new JTable(6, 5);
+        selectionTable = new JTable(database);
+        selectionTable.setShowHorizontalLines(true);
+        selectionTable.setShowVerticalLines(true);
 
+//        selectionTable.setValueAt(" ", 0, 0);
+//        selectionTable.setEditingColumn(1);
+//        selectionTable.setEditingRow(1);
+//        selectionTable.setValueAt(" von ", 0, 1);
         cancel = new JButton("Abbrechen");
         save = new JButton("Speichern");
 
