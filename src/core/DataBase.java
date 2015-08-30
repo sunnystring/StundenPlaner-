@@ -23,6 +23,10 @@ public class DataBase implements TableModel {
     private static int studentIndex;  // counter für Student = Position in studentDataList = Student-ID
     private static int numberOfStudents;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
 
+    /* TableModel Implementation */
+    private static final String[] COLUMN_LABELS = {" ", "von", "bis", "von", "bis", "Wunschzeit"};
+    private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+
     public DataBase() {
 
         dayIndex = 0;
@@ -91,83 +95,40 @@ public class DataBase implements TableModel {
     /* Implementierung TableModel für StudentDataEntry */
     @Override
     public int getRowCount() {
-        return 7;
+        
+        return 6;
     }
 
     @Override
     public int getColumnCount() {
+        
         return 6;
     }
 
     @Override
     public String getColumnName(int col) {
-
-        switch (col) {
-            case 0:
-                return " ";
-            case 1:
-                return "von";
-            case 2:
-                return "bis";
-            case 3:
-                return "von";
-            case 4:
-                return "bis";
-            case 5:
-                return "Wunschzeit";
-            default:
-                return null;
-        }
+        
+        return COLUMN_LABELS[col];
     }
 
     @Override
     public Class<?> getColumnClass(int col) {
-
-        switch (col) {
-            case 0:
-                return String.class;
-            case 1:
-                return String.class;
-            case 2:
-                return String.class;
-            case 3:
-                return String.class;
-            case 4:
-                return String.class;
-            case 5:
-                return String.class;
-            default:
-                return null;
-        }
+        
+        return String.class;
     }
 
     @Override
     public boolean isCellEditable(int row, int col) {
-
+        
         return row > 0 && col > 0;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-
+        
+        
         if (col == 0) {
-            switch (row) {
-
-                case 1:
-                    return "Montag";
-                case 2:
-                    return "Dienstag";
-                case 3:
-                    return "Mittwoch";
-                case 4:
-                    return "Donnerstag";
-                case 5:
-                    return "Freitag";
-                case 6:
-                    return "Samstag";
-                default:
-                    return null;
-            }
+            return WEEKDAY_NAMES[row];
         } else {
             return null;
         }
