@@ -50,7 +50,7 @@ public class StudentRow extends JPanel implements MouseListener {
         setBackground(Colors.BACKGROUND);
 
         /* Schalter */
-        studentListEnabled = true;  // StudentList als ganzes ansprechbar, verhindert Eingaben in StudentList im Lectionfield-Dragmodus 
+        studentListEnabled = true;  // Hauptschalter StudentList: diese ist als ganzes ansprechbar, verhindert Eingaben in StudentList im Lectionfield-Dragmodus 
         noRowSelected = true;  // jede Row ist scrollbar
         noFieldSelected = true;  // falls mind. ein Feld selektiert
         studentRowEnabled = true;  // selektierte Row = eingeteilter Student ist nicht mehr ansprechbar

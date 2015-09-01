@@ -5,10 +5,11 @@
  */
 package dialogs;
 
-import core.DataBase;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.TableModel;
 import mainframe.MainFrame;
 
 /**
@@ -26,24 +28,25 @@ import mainframe.MainFrame;
  */
 public class StudentDataEntry extends JDialog {
 
-    DataBase database;
+    private TableModel tableModel;
 
-    private JPanel top, bottom;
+    private JPanel top, center, bottom;
     private JLabel footnote;
     private JTextField firstname, name, lectiontype;
     private JTable selectionTable;
-    private JButton cancel, save;
+    private JButton cancel, save, delete;
 
-    public StudentDataEntry(MainFrame owner, DataBase database) {
+    public StudentDataEntry(MainFrame owner, TableModel tableModel) {
 
         super(owner);
-        this.database = database;
+        this.tableModel = tableModel;
 
         setModal(true);
-        setTitle("Schülerdaten eingeben");
-        setLayout(new BorderLayout());
+        setTitle("Schülerprofil");
+        setPreferredSize(new Dimension(500, 300));
         createWidgets();
         addWidgets();
+        addListener();
         pack();
 
     }
@@ -53,6 +56,7 @@ public class StudentDataEntry extends JDialog {
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
         top.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        center = new JPanel();
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -64,16 +68,14 @@ public class StudentDataEntry extends JDialog {
         name = new JTextField(" Name");
         lectiontype = new JTextField(" Lektionsdauer");
 
-        selectionTable = new JTable(database);
-        selectionTable.setShowHorizontalLines(true);
-        selectionTable.setShowVerticalLines(true);
+        selectionTable = new JTable(tableModel);
+        selectionTable.setShowGrid(true);
+        selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
+        // selectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-//        selectionTable.setValueAt(" ", 0, 0);
-//        selectionTable.setEditingColumn(1);
-//        selectionTable.setEditingRow(1);
-//        selectionTable.setValueAt(" von ", 0, 1);
         cancel = new JButton("Abbrechen");
         save = new JButton("Speichern");
+        delete = new JButton("Profil löschen");
 
     }
 
@@ -82,16 +84,36 @@ public class StudentDataEntry extends JDialog {
         top.add(firstname);
         top.add(name);
         top.add(lectiontype);
-
+        center.add(BorderLayout.PAGE_START, selectionTable.getTableHeader());
+        center.add(BorderLayout.CENTER, selectionTable);
         bottom.add(footnote);
         bottom.add(Box.createHorizontalGlue());
         bottom.add(cancel);
+        bottom.add(delete);
         bottom.add(save);
 
         add(BorderLayout.PAGE_START, top);
-        add(BorderLayout.CENTER, selectionTable);
+        add(BorderLayout.CENTER, center);
         add(BorderLayout.PAGE_END, bottom);
 
+    }
+
+    private void addListener() {
+
+        cancel.addActionListener(new CancelListener());
+        delete.addActionListener(null);
+        save.addActionListener(null);
+
+    }
+    private class CancelListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            StudentDataEntry.this.dispose();
+        }
+
+       
     }
 
 }

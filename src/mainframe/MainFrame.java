@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
         save = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
         print = new ScheduleButton("printer.png", "Stundenplan drucken");
         createSchedule = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
-        addStudent = new ScheduleButton("boy.png", "Schülerprofil erstellen");
+        addStudent = new ScheduleButton("boy.png", "Neues Schülerprofil erstellen");
         addKGU = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
         automatic = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilter = new ScheduleButton("color.png", "Verteilung der Zeiten anzeigen: je später, desto dunkler");
@@ -277,8 +277,8 @@ public class MainFrame extends JFrame {
     
     private void addListener(){
     
-        createSchedule.addActionListener(new ScheduleEntry());
-        addStudent.addActionListener(new StudentEntry()); 
+        createSchedule.addActionListener(new ScheduleEntryListener());
+        addStudent.addActionListener(new StudentEntryListener()); 
     }
    
 
@@ -296,7 +296,7 @@ public class MainFrame extends JFrame {
         }
     }
     
-    private class StudentEntry implements ActionListener {
+    private class StudentEntryListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -306,7 +306,7 @@ public class MainFrame extends JFrame {
             mask.setVisible(true);
         }
     }
-    private class ScheduleEntry implements ActionListener {
+    private class ScheduleEntryListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {

@@ -24,7 +24,7 @@ public class DataBase implements TableModel {
     private static int numberOfStudents;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
 
     /* TableModel Implementation */
-    private static final String[] COLUMN_LABELS = {" ", "von", "bis", "von", "bis", "Wunschzeit"};
+    private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
 
     public DataBase() {
@@ -95,38 +95,37 @@ public class DataBase implements TableModel {
     /* Implementierung TableModel für StudentDataEntry */
     @Override
     public int getRowCount() {
-        
+
         return 6;
     }
 
     @Override
     public int getColumnCount() {
-        
+
         return 6;
     }
 
     @Override
     public String getColumnName(int col) {
-        
+
         return COLUMN_LABELS[col];
     }
 
     @Override
     public Class<?> getColumnClass(int col) {
-        
+
         return String.class;
     }
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        
-        return row > 0 && col > 0;
+
+        return col > 0;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-        
-        
+
         if (col == 0) {
             return WEEKDAY_NAMES[row];
         } else {
@@ -137,11 +136,7 @@ public class DataBase implements TableModel {
     @Override
     public void setValueAt(Object o, int row, int col) {
 
-        String time;
-        if (row > 0 && col > 0) {
-            time = o.toString();
-            System.out.println(time);
-        }
+        System.out.println(o.toString());
     }
 
     @Override
