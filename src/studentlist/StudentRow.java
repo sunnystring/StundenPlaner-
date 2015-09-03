@@ -7,6 +7,7 @@ package studentlist;
 
 import core.DataBase;
 import core.Student;
+import dialogs.StudentDataEntry;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
+import mainframe.MainFrame;
 import schedule.DayColumn;
 import schedule.Schedule;
 
@@ -37,8 +39,6 @@ public class StudentRow extends JPanel implements MouseListener {
     private static boolean noRowSelected;
     private static boolean noFieldSelected;
     private boolean studentRowEnabled;
-
-    private static Object selectedNameField;  // temporäres Vergleichsobjekt beim Scrollen der NameFields
 
     private static int columns = DataBase.getNumberOfDays() + 1; // Anzahl Tage plus nameField
 
@@ -70,7 +70,7 @@ public class StudentRow extends JPanel implements MouseListener {
         for (int i = 1; i < columns; i++) {
             headerRow[i] = new DayField(DataBase.getDayDataList(i - 1).getDayName(), Colors.DAY_FIELD);
             headerRow[i].setFont(this.getFont().deriveFont(Font.BOLD, 10));
-            headerRow[i].addMouseListener(new DayFieldListener());
+        //    headerRow[i].addMouseListener(new DayFieldListener());
             add(headerRow[i]);
         }
     }
@@ -156,7 +156,7 @@ public class StudentRow extends JPanel implements MouseListener {
         return studentListEnabled;
     }
 
-      /* Getter, Setter usw.  */
+    /* Getter, Setter usw.  */
     public void setStudentIndex(int studentIndex) {
         this.studentIndex = studentIndex;
     }
@@ -263,27 +263,19 @@ public class StudentRow extends JPanel implements MouseListener {
     /* innere Listenerklassen  */
     private class NameFieldListener extends MouseAdapter {
 
+        private StudentDataEntry mask;
+
         @Override
         public void mouseClicked(MouseEvent m) {
-            if (studentListEnabled) {
-                if (m.getClickCount() == 2) { //Doppelklick
-                    if (noFieldSelected && studentRowEnabled) {  // Namefield nur selektierbar, wenn kein StudentField selektiert
-                        if (noRowSelected) {     // falls noch kein NameField selekt. -> selektieren
-                            selectedNameField = m.getSource();
-                            studentRow[0].setBackground(Colors.NAME_FIELD_SELECTED);
-                            studentRow[0].setForeground(Color.WHITE);
-                            studentRow[0].setFont(studentRow[0].getFont().deriveFont(Font.BOLD, 10));
-                            noRowSelected = false;
+            if (studentListEnabled && noFieldSelected && studentRowEnabled && m.getClickCount() == 2) {  // Namefield nur selektierbar, wenn kein StudentField selektiert
+                studentRow[0].setBackground(Colors.NAME_FIELD_SELECTED);
+                studentRow[0].setForeground(Color.WHITE);
+                studentRow[0].setFont(studentRow[0].getFont().deriveFont(Font.BOLD, 10));
 
-                        } else if (selectedNameField.equals(studentRow[0])) { // falls NameField selekt. -> wieder deselektieren
-                            studentRow[0].setBackground(Colors.NAME_FIELD);
-                            studentRow[0].setForeground(Color.BLACK);
-                            studentRow[0].setFont(studentRow[0].getFont().deriveFont(Font.PLAIN, 10));
-                            noRowSelected = true;
-                        }
-                    }
-                }
+                mask = new StudentDataEntry();
+                mask.setVisible(true);
             }
+
         }
 
         @Override
@@ -311,22 +303,22 @@ public class StudentRow extends JPanel implements MouseListener {
         }
     }
 
-    private class DayFieldListener extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(MouseEvent m) {
-
-            for (int i = 1; i < columns; i++) {
-                if (m.getSource().equals(headerRow[i])) {
-                    if (!headerRow[i].isSelected()) {
-                        headerRow[i].setBackground(Colors.DAY_FIELD_SELECTED);
-                        headerRow[i].switchSelectionState();
-                    } else {
-                        headerRow[i].setBackground(Colors.DAY_FIELD);
-                        headerRow[i].switchSelectionState();
-                    }
-                }
-            }
-        }
-    }
+//    private class DayFieldListener extends MouseAdapter {
+//
+//        @Override
+//        public void mouseClicked(MouseEvent m) {
+//
+//            for (int i = 1; i < columns; i++) {
+//                if (m.getSource().equals(headerRow[i])) {
+//                    if (!headerRow[i].isSelected()) {
+//                        headerRow[i].setBackground(Colors.DAY_FIELD_SELECTED);
+//                        headerRow[i].switchSelectionState();
+//                    } else {
+//                        headerRow[i].setBackground(Colors.DAY_FIELD);
+//                        headerRow[i].switchSelectionState();
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

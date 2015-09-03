@@ -35,14 +35,11 @@ public class Icons {
     public static ImageIcon setIcon(String name) {
         Image img = getImage(name);
         img = img.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        
+
         if (name.equals("disk.png")) {
             img = img.getScaledInstance(25, 23, Image.SCALE_SMOOTH);
         }
         if (name.equals("color.png")) {
-            img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        }
-        if (name.equals("list.png")) {
             img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         }
         if (name.equals("boy.png")) {

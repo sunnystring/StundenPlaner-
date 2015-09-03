@@ -5,20 +5,17 @@
  */
 package core;
 
-
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mainframe.MainFrame;
-
-
-
 
 /**
  *
  * @author Mathias
  */
 public class Main {
+
+    private static MainFrame mainFrame;
 
     public static void main(String[] args) {
 
@@ -27,15 +24,12 @@ public class Main {
             public void run() {
 
                 // laf version 1:
-                
 //                try {
 //                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); //  "javax.swing.plaf.nimbus.NimbusLookAndFeel"
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
-                
                 // laf version 2:
-                
                 try {
                     for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                         if ("Nimbus".equals(info.getName())) {
@@ -46,10 +40,15 @@ public class Main {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
-                new MainFrame().setVisible(true);
+
+                mainFrame = new MainFrame();
+                mainFrame.setVisible(true);
             }
 
         });
+    }
+
+    public static MainFrame getMainFrame() {
+        return mainFrame;
     }
 }

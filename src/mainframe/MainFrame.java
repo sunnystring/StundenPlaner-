@@ -6,6 +6,7 @@
 package mainframe;
 
 import core.DataBase;
+import core.Main;
 import core.ScheduleDay;
 import core.Student;
 import core.StudentDay;
@@ -25,6 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToggleButton;
+import javax.swing.table.TableModel;
 
 import studentlist.StudentList;
 import schedule.Schedule;
@@ -38,12 +41,13 @@ import util.Time;
  */
 public class MainFrame extends JFrame {
 
-    private static DataBase database; 
+    private static DataBase database;
 
-    private static Schedule schedule;  
-    private static StudentList studentList;  
+    private static Schedule schedule;
+    private static StudentList studentList;
     private JPanel toolBar;
-    private ScheduleButton open, save, print, createSchedule, addStudent, addKGU, automatic, timeFilter, timeOrder;
+    private ScheduleButton open, save, print, createSchedule, addStudent, addKGU, automatic;
+    private JToggleButton timeFilter;
     private JSplitPane split;
     private JScrollPane left, right;
 
@@ -78,8 +82,9 @@ public class MainFrame extends JFrame {
         addStudent = new ScheduleButton("boy.png", "Neues Schülerprofil erstellen");
         addKGU = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
         automatic = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
-        timeFilter = new ScheduleButton("color.png", "Verteilung der Zeiten anzeigen: je später, desto dunkler");
-        timeOrder = new ScheduleButton("list.png", "Zeiten chronologisch anordnen");
+        timeFilter = new JToggleButton(Icons.setIcon("color.png"));
+        timeFilter.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
+        timeFilter.setPreferredSize(new Dimension(60, 0));
 
         schedule = new Schedule();
         left = new JScrollPane(schedule);
@@ -271,19 +276,21 @@ public class MainFrame extends JFrame {
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(automatic);
         toolBar.add(timeFilter);
-        toolBar.add(timeOrder);
-   
+
     }
-    
-    private void addListener(){
-    
+
+    private void addListener() {
+
         createSchedule.addActionListener(new ScheduleEntryListener());
-        addStudent.addActionListener(new StudentEntryListener()); 
+        addStudent.addActionListener(new StudentEntryListener());
     }
-   
 
     public static StudentList getStudentList() { // static: es gibt nur eine MainFrame
         return studentList;
+    }
+
+    public static TableModel getTableModel() {
+        return database;
     }
 
     private class ScheduleButton extends JButton {
@@ -295,28 +302,27 @@ public class MainFrame extends JFrame {
             setPreferredSize(new Dimension(60, 0));
         }
     }
-    
+
     private class StudentEntryListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
-            StudentDataEntry mask = new StudentDataEntry(MainFrame.this, database);
-            mask.setLocationRelativeTo(MainFrame.this);
+
+            StudentDataEntry mask = new StudentDataEntry();
+            //           mask.setLocationRelativeTo(Main.getMainFrame()); // ??? statt MainFrame.this
             mask.setVisible(true);
         }
     }
+
     private class ScheduleEntryListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             ScheduleDataEntry mask = new ScheduleDataEntry(MainFrame.this);
             mask.setLocationRelativeTo(MainFrame.this);
             mask.setVisible(true);
         }
     }
-    
-    
 
 }

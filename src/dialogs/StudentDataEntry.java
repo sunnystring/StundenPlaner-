@@ -5,6 +5,7 @@
  */
 package dialogs;
 
+import core.Main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import mainframe.MainFrame;
 
@@ -29,19 +31,20 @@ import mainframe.MainFrame;
 public class StudentDataEntry extends JDialog {
 
     private TableModel tableModel;
-
+ 
     private JPanel top, center, bottom;
     private JLabel footnote;
     private JTextField firstname, name, lectiontype;
     private JTable selectionTable;
     private JButton cancel, save, delete;
 
-    public StudentDataEntry(MainFrame owner, TableModel tableModel) {
+    public StudentDataEntry() {
 
-        super(owner);
-        this.tableModel = tableModel;
+        super(Main.getMainFrame());
+        this.tableModel = Main.getMainFrame().getTableModel();
 
         setModal(true);
+        setLocationRelativeTo(Main.getMainFrame());
         setTitle("Schülerprofil");
         setPreferredSize(new Dimension(500, 300));
         createWidgets();
@@ -71,7 +74,7 @@ public class StudentDataEntry extends JDialog {
         selectionTable = new JTable(tableModel);
         selectionTable.setShowGrid(true);
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
-        // selectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        selectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         cancel = new JButton("Abbrechen");
         save = new JButton("Speichern");
@@ -105,15 +108,15 @@ public class StudentDataEntry extends JDialog {
         save.addActionListener(null);
 
     }
+
     private class CancelListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             StudentDataEntry.this.dispose();
         }
 
-       
     }
 
 }

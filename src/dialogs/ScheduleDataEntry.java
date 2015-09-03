@@ -59,10 +59,6 @@ public class ScheduleDataEntry extends JDialog {
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
         selectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         selectionTable.setRowHeight(20);
-//        selectionTable.setValueAt(" ", 0, 0);
-//        selectionTable.setValueAt("von", 0, 1);
-//        selectionTable.setValueAt("bis", 0, 2);
-
         selectionTable.setValueAt("Montag", 0, 0);
         selectionTable.setValueAt("Dienstag", 1, 0);
         selectionTable.setValueAt("Mittwoch", 2, 0);

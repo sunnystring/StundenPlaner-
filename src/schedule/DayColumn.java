@@ -465,8 +465,8 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
                     addLectionPanel(start, Colors.LIGHT_GREEN, Color.WHITE, false, true, l.getLectionType()); // false = lection deselected = wieder verschiebbar
                     dragEnabled = true;
 
-                    /* falls gesetzt, provisorische Einteilung, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus  */
-                } else if (l.getFieldPosition() == l.getLectionType() - 1 && !dragEnabled) {
+                    /* Zusatzfunktion: falls gesetzt, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus  */
+                } else if (m.getClickCount() == 2 && l.getFieldPosition() == l.getLectionType() - 1 && !dragEnabled) {
 
                     l.setStudentDays();
                     spaceAvailable = true;
