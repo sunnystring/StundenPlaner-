@@ -19,7 +19,6 @@ public class DayField extends JLabel {
 
     public DayField() {
 
-   //     setVerticalAlignment(this.TOP);
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 3));
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));

@@ -5,6 +5,7 @@
  */
 package core;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mainframe.MainFrame;
@@ -14,8 +15,6 @@ import mainframe.MainFrame;
  * @author Mathias
  */
 public class Main {
-
-    private static MainFrame mainFrame;
 
     public static void main(String[] args) {
 
@@ -41,14 +40,12 @@ public class Main {
                     e.printStackTrace();
                 }
 
-                mainFrame = new MainFrame();
+               JFrame mainFrame = new MainFrame();
                 mainFrame.setVisible(true);
             }
 
         });
     }
 
-    public static MainFrame getMainFrame() {
-        return mainFrame;
-    }
+    
 }

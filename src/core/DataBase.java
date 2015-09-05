@@ -6,26 +6,20 @@
 package core;
 
 import java.util.ArrayList;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 
 /**
  *
  * @author Mathias
  */
-public class DataBase implements TableModel {
+public class DataBase {
 
     /* ---------------globale Daten------------------------ */
-    private static final ArrayList<DatabaseListener> databaseListener = new ArrayList<>();
+    private static ArrayList<DatabaseListener> databaseListener = new ArrayList<>();
 
     private static int dayIndex;  // counter für Tage = Position in dayDataList  = Day-ID
     private static int numberOfDays; // vorgegebene Maximalzahl,  ToDo: dynamisch,
     private static int studentIndex;  // counter für Student = Position in studentDataList = Student-ID
     private static int numberOfStudents;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
-
-    /* TableModel Implementation */
-    private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
-    private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
 
     public DataBase() {
 
@@ -92,59 +86,6 @@ public class DataBase implements TableModel {
         }
     }
 
-    /* Implementierung TableModel für StudentDataEntry */
-    @Override
-    public int getRowCount() {
-
-        return 6;
-    }
-
-    @Override
-    public int getColumnCount() {
-
-        return 6;
-    }
-
-    @Override
-    public String getColumnName(int col) {
-
-        return COLUMN_LABELS[col];
-    }
-
-    @Override
-    public Class<?> getColumnClass(int col) {
-
-        return String.class;
-    }
-
-    @Override
-    public boolean isCellEditable(int row, int col) {
-
-        return col > 0;
-    }
-
-    @Override
-    public Object getValueAt(int row, int col) {
-
-        if (col == 0) {
-            return WEEKDAY_NAMES[row];
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void setValueAt(Object o, int row, int col) {
-
-        System.out.println(o.toString());
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener tl) {
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener tl) {
-    }
+    
 
 }

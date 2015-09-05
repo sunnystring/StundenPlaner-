@@ -20,8 +20,6 @@ import mainframe.MainFrame;
 public class Icons {
 
     private static BufferedImage bufImg;
-    //  private static ImageIcon icon;
-    // private static Image img;
 
     public static BufferedImage getImage(String name) {
         try {

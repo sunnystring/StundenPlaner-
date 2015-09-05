@@ -22,11 +22,16 @@ public class ScheduleDay {
     private Time validEnd;
 
     private int dayListIndex; // Index des Tages (zb. 0 = Montag)
-    
-    
+
+    public ScheduleDay() {
+
+        validStart = new Time("12.00");
+        validEnd = new Time("12.00");
+
+    }
+
 //    private static Time absoluteStart = new Time("20.00"); // frühester Beginn aller Tage
 //    private static Time absoluteEnd = new Time();   // spätestes Ende aller Tage
-
     public ScheduleDay(String day, Time validStart, Time validEnd) {
 
         this.day = day;
@@ -48,6 +53,16 @@ public class ScheduleDay {
 //    public static Time getAbsoluteEnd() {
 //        return absoluteEnd;
 //    }
+     /* Getter, Setter */
+    public void setTime(String time, int i) {
+        switch (i) {
+            case 1:
+                validStart = new Time(time);
+            case 2:
+                validEnd = new Time(time);
+        }
+    }
+
     public Time getValidStart() {
         return validStart;
     }
@@ -63,12 +78,10 @@ public class ScheduleDay {
     public void setDayIndex(int index) {
         dayListIndex = index;
     }
-    
+
     public int getDayIndex() {
-     return dayListIndex;
+        return dayListIndex;
     }
-    
-    
 
 //    public Time getTotalHours() {
 //        return absoluteEnd.minus(absoluteStart);

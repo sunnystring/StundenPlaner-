@@ -26,7 +26,7 @@ public class NameField extends StudentField {
         super.setName(name);
 
         setText(firstName + " " + name);
-
+        setToolTipText("Doppelklick: dieses Schülerprofil ändern oder löschen");
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 3));

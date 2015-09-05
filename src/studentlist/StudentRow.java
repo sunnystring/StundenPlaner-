@@ -6,6 +6,7 @@
 package studentlist;
 
 import core.DataBase;
+import core.Main;
 import core.Student;
 import dialogs.StudentDataEntry;
 import java.awt.Color;
@@ -15,6 +16,7 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mainframe.MainFrame;
 import schedule.DayColumn;
@@ -272,7 +274,7 @@ public class StudentRow extends JPanel implements MouseListener {
                 studentRow[0].setForeground(Color.WHITE);
                 studentRow[0].setFont(studentRow[0].getFont().deriveFont(Font.BOLD, 10));
 
-                mask = new StudentDataEntry();
+                mask = new StudentDataEntry(); // ToDo
                 mask.setVisible(true);
             }
 

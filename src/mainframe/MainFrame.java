@@ -6,7 +6,6 @@
 package mainframe;
 
 import core.DataBase;
-import core.Main;
 import core.ScheduleDay;
 import core.Student;
 import core.StudentDay;
@@ -27,7 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import javax.swing.table.TableModel;
 
 import studentlist.StudentList;
 import schedule.Schedule;
@@ -58,6 +56,7 @@ public class MainFrame extends JFrame {
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
         database = new DataBase();
+      
 
         createWidget();
         addWidget();
@@ -276,7 +275,10 @@ public class MainFrame extends JFrame {
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(automatic);
         toolBar.add(timeFilter);
-
+        
+        StudentDataEntry.setOwner(this);
+        ScheduleDataEntry.setOwner(this);
+ 
     }
 
     private void addListener() {
@@ -287,10 +289,6 @@ public class MainFrame extends JFrame {
 
     public static StudentList getStudentList() { // static: es gibt nur eine MainFrame
         return studentList;
-    }
-
-    public static TableModel getTableModel() {
-        return database;
     }
 
     private class ScheduleButton extends JButton {
@@ -309,7 +307,6 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
 
             StudentDataEntry mask = new StudentDataEntry();
-            //           mask.setLocationRelativeTo(Main.getMainFrame()); // ??? statt MainFrame.this
             mask.setVisible(true);
         }
     }
@@ -319,8 +316,7 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            ScheduleDataEntry mask = new ScheduleDataEntry(MainFrame.this);
-            mask.setLocationRelativeTo(MainFrame.this);
+            ScheduleDataEntry mask = new ScheduleDataEntry();
             mask.setVisible(true);
         }
     }

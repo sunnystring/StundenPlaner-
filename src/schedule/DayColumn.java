@@ -465,7 +465,10 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
                     addLectionPanel(start, Colors.LIGHT_GREEN, Color.WHITE, false, true, l.getLectionType()); // false = lection deselected = wieder verschiebbar
                     dragEnabled = true;
 
-                    /* Zusatzfunktion: falls gesetzt, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus  */
+                    /* falls gesetzt, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus 
+                    ?? ToDo: Aufruf Zusatzfunktion "Lektion abtauschen im bestehenden Stundenplan" (Schüler A möchte seine 
+                     Lektion von Mi 14.15 auf Di 18 verlegen, welche Schüler müssten mit wem abtauschen, damit das geht, falls es überhaupt geht)
+                     */
                 } else if (m.getClickCount() == 2 && l.getFieldPosition() == l.getLectionType() - 1 && !dragEnabled) {
 
                     l.setStudentDays();

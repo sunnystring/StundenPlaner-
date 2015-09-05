@@ -5,6 +5,9 @@
  */
 package core;
 
+import javax.swing.table.TableModel;
+import util.Time;
+
 /**
  *
  * @author Mathias
@@ -14,34 +17,47 @@ public class Student {
 
     private String firstName;
     private String name;
-
-    private StudentDay[] studentList;  //1. Tag = 0, 2. Tag = 1 usw.  
-
+    private StudentTimes times; // implements TableModel
     private int lectionType;  // Anzahl Lection- bzw. TimeFields (= 5 Min.)
 
-    private int studentListIndex;  // Position in der Schülerdaten-Liste = Student-ID
+    private int studentListIndex;  // Position in der Schülerdaten-Liste = Student-ID -> unused
 
-    /* ToDo: StudentDays dynamische Eingabe  */
+    private StudentDay[] dayList;  //statische Demoversion: 1. Tag = 0, 2. Tag = 1 usw.  
+
+    public Student() {
+
+        times = new StudentTimes();
+
+    }
+
+    /* statische Demoversion */
     public Student(String firstName, String name, StudentDay day0, StudentDay day1, StudentDay day2, int lectionLength) {
 
         this.firstName = firstName;
         this.name = name;
+        this.lectionType = lectionLength / 5;
 
-        lectionType = lectionLength / 5;
+        dayList = new StudentDay[DataBase.getNumberOfDays()];
 
-        /* -----------Rohfassung -> später dynamisch ----------------------------*/
-        studentList = new StudentDay[DataBase.getNumberOfDays()];
-
-        studentList[0] = day0;  // 1. Unterrichtstag
-        studentList[0].setLectionLength(lectionLength);  // Lektionsdauer wird später gebraucht
-        studentList[1] = day1;  // usw.
-        studentList[1].setLectionLength(lectionLength);
-        studentList[2] = day2;
-        studentList[2].setLectionLength(lectionLength);
+        dayList[0] = day0;  // 1. Unterrichtstag
+        dayList[0].setLectionLength(lectionLength);  // Lektionsdauer wird später gebraucht
+        dayList[1] = day1;  // usw.
+        dayList[1].setLectionLength(lectionLength);
+        dayList[2] = day2;
+        dayList[2].setLectionLength(lectionLength);
 
         /*--------------------------------------------------------------*/
     }
 
+    public TableModel getStudentTimeModel() {
+        return times;
+    }
+
+    public Time getStudentTime(int row, int col) {
+        return times.getTimeSlot(row, col);
+    }
+
+    // ---------------------------------------------
     public void setStudentIndex(int index) {
         studentListIndex = index;
     }
@@ -59,7 +75,7 @@ public class Student {
     }
 
     public StudentDay getStudentDay(int index) {
-        return studentList[index];
+        return dayList[index];
     }
 
     public int getLectionType() {
@@ -72,6 +88,6 @@ public class Student {
 
     /* -----------------Rohfassung: Referenz auf studentDayList */
     public StudentDay[] getStudentDayList() {
-        return studentList;
-           }
+        return dayList;
+    }
 }

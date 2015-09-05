@@ -11,7 +11,7 @@ import util.Time;
  *
  * @author Mathias
  */
-/* Wrapperklasse für die Einteilungszeiten eines Tages eines Schülers */
+/* Einteilungszeiten eines Tages eines Schülers */
 public class StudentDay {
 
     private Time startTime1;
@@ -19,11 +19,24 @@ public class StudentDay {
     private Time startTime2;
     private Time endTime2;
     private Time favorite;
-    
-    private Time lectionLength; //Lektionsdauer in Minuten
+
+    private Time[] timeSlots;
+
+    private Time lectionLength; //Lektionsdauer in Minuten -> weshalb hier??
 
     private String endString1, endString2;
 
+    public StudentDay() {
+
+        timeSlots = new Time[5];
+      
+        for (int i = 0; i < 5; i++) {
+            timeSlots[i] = new Time("12.00");
+                   
+        }
+    }
+
+    /* statische Demoversion */
     public StudentDay(String startTime1, String endTime1, String startTime2, String endTime2, String favorite) {
 
         try {
@@ -69,6 +82,15 @@ public class StudentDay {
     }
 
     /* Getter, Setter */
+    public void setTime(String time, int i) {
+        timeSlots[i] = new Time(time);
+    }
+
+    public Time getTime(int i) {
+        return timeSlots[i];
+    }
+
+    // --------------------------------
     public Time getStartTime1() {
         return startTime1;
     }
