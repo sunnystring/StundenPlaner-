@@ -5,9 +5,6 @@
  */
 package core;
 
-import javax.swing.table.TableModel;
-import util.Time;
-
 /**
  *
  * @author Mathias
@@ -17,77 +14,53 @@ public class Student {
 
     private String firstName;
     private String name;
-    private StudentTimes times; // implements TableModel
-    private int lectionType;  // Anzahl Lection- bzw. TimeFields (= 5 Min.)
+    private StudentTimes studentTimes; // implements TableModel
+    private int lectionType;  // Achtung: konvertierte Grösse = Anzahl Lection- bzw. TimeFields (= 5 Min.)
+    private int studentID; 
 
-    private int studentListIndex;  // Position in der Schülerdaten-Liste = Student-ID -> unused
-
-    private StudentDay[] dayList;  //statische Demoversion: 1. Tag = 0, 2. Tag = 1 usw.  
-
-    public Student() {
-
-        times = new StudentTimes();
-
+    /* Getter, Setter */
+    public StudentTimes getStudentTimes() {
+        return studentTimes;
     }
 
-    /* statische Demoversion */
-    public Student(String firstName, String name, StudentDay day0, StudentDay day1, StudentDay day2, int lectionLength) {
-
-        this.firstName = firstName;
-        this.name = name;
-        this.lectionType = lectionLength / 5;
-
-        dayList = new StudentDay[DataBase.getNumberOfDays()];
-
-        dayList[0] = day0;  // 1. Unterrichtstag
-        dayList[0].setLectionLength(lectionLength);  // Lektionsdauer wird später gebraucht
-        dayList[1] = day1;  // usw.
-        dayList[1].setLectionLength(lectionLength);
-        dayList[2] = day2;
-        dayList[2].setLectionLength(lectionLength);
-
-        /*--------------------------------------------------------------*/
+    public void setStudentTimes(StudentTimes studentTimes) {
+        this.studentTimes = studentTimes;
     }
 
-    public TableModel getStudentTimeModel() {
-        return times;
+    public void setStudentID(int index) {
+        studentID = index;
     }
 
-    public Time getStudentTime(int row, int col) {
-        return times.getTimeSlot(row, col);
-    }
-
-    // ---------------------------------------------
-    public void setStudentIndex(int index) {
-        studentListIndex = index;
-    }
-
-    public int getStudentIndex() {
-        return studentListIndex;
+    public int getStudentID() {
+        return studentID;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getName() {
         return name;
     }
 
-    public StudentDay getStudentDay(int index) {
-        return dayList[index];
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getLectionType() {
         return lectionType;
     }
 
-    public void setLectionType(int lectionType) {
-        this.lectionType = lectionType;
+    public void setLectionType(int lectionLength) {  
+        lectionType = lectionLength / 5;  // nicht Minuten, sondern Anzahl Fields à 5 Min.
     }
 
-    /* -----------------Rohfassung: Referenz auf studentDayList */
-    public StudentDay[] getStudentDayList() {
-        return dayList;
+    public StudentDay getStudentDay(int index) {
+        return studentTimes.getStudentDay(index);
     }
+
 }

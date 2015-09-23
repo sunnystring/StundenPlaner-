@@ -13,79 +13,56 @@ import java.util.ArrayList;
  */
 public class DataBase {
 
-    /* ---------------globale Daten------------------------ */
-    private static ArrayList<DatabaseListener> databaseListener = new ArrayList<>();
+    private ArrayList<Student> studentDataList;
+    private TeacherTimes scheduleTimes;
 
-    private static int dayIndex;  // counter für Tage = Position in dayDataList  = Day-ID
-    private static int numberOfDays; // vorgegebene Maximalzahl,  ToDo: dynamisch,
-    private static int studentIndex;  // counter für Student = Position in studentDataList = Student-ID
-    private static int numberOfStudents;  // vorgegebene Maximalzahl,  ToDo: dynamisch, 
+    private DatabaseListener databaseListener; // = MainFrame
+
+    private int numberOfDays; //  = Position in scheduleDayList(TeacherTimes)
+    private int numberOfStudents;  // = Position in studentDataList = Schülerzahl, wird für alle GUI Aktionen gebraucht
 
     public DataBase() {
 
-        dayIndex = 0;
-        numberOfDays = 3;
-        studentIndex = 0;
-        numberOfStudents = 36;
-
+        studentDataList = new ArrayList<>();
+        scheduleTimes = new TeacherTimes();
+        numberOfDays = 0;
+        numberOfStudents = 0;
     }
 
-    /* ---------------Schedule------------------------*/
-    private static ArrayList<ScheduleDay> dayDataList = new ArrayList<>();  // enthält die ScheduleDay-Rohdaten
-
-    /* ----------------Studentlist------------------------*/
-    private static ArrayList<Student> studentDataList = new ArrayList<>();  // enthält die Student-Rohdaten
-
-    /* globale Getter, Setter  */
-    public static int getNumberOfStudents() {
+    /* Getter, Setter */
+    public int getNumberOfStudents() {
         return numberOfStudents;
     }
 
-    public static int getNumberOfDays() {
+    public int getNumberOfDays() {
         return numberOfDays;
     }
 
-    public static int getStudentIndex() {
-        return studentIndex;
+    public int getStudentID(Student student) {
+        return studentDataList.indexOf(student);
     }
 
-    public static ScheduleDay getDayDataList(int index) {
-        return dayDataList.get(index);
+    public TeacherTimes getScheduleTimes() {
+        return scheduleTimes;
     }
 
-    /*  Listener */
-    public static void addDatabaseListener(DatabaseListener l) {
-        databaseListener.add(l);
+    public void addSchedule(TeacherTimes scheduleTimes) {
+        
+        this.scheduleTimes = scheduleTimes;   // Schedule "adden"
+        numberOfDays = scheduleTimes.getNumberOfDays(); // Database weiss jetzt die globale Zahl der Tage
+        databaseListener.scheduleAdded(scheduleTimes);
     }
 
-    public static void removeDatabaseListener(DatabaseListener l) {
-        databaseListener.remove(l);
+    public void addStudent(Student student) {
+        
+        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
+        studentDataList.add(student);
+        numberOfStudents = studentDataList.size(); // nächster Student ID = 1 usw. 
+        databaseListener.studentAdded(student);
     }
 
-    /*-------------------für Dateneingabe Rohfassung-------------------------*/
-    public static void addDay(ScheduleDay day) {
-
-        day.setDayIndex(dayIndex);
-        dayDataList.add(day);   // ScheduleDay-Daten in dayDataList speichern
-        dayIndex++;  // zählt die Anzahl eingebener Tage (= vom Tag unabhängiger Tag-Index)
-
-        for (DatabaseListener l : databaseListener) {  // l = Referenz auf Schedule,
-            l.dayAdded(day);                  // füllt Daten in DayColumns und zeichnet diese      
-        }
+    public void addDatabaseListener(DatabaseListener databaseListener) {
+        this.databaseListener = databaseListener;
     }
-
-    public static void addStudent(Student student) {
-
-        student.setStudentIndex(studentIndex);
-        studentDataList.add(student);// Student-Daten in studentDataList speichern
-        studentIndex++;
-
-        for (DatabaseListener l : databaseListener) { // l = Referenz auf StudentList
-            l.studentAdded(student);        // füllt Daten in Student-Rows und zeichnet diese      
-
-        }
-    }
-
-    
 
 }

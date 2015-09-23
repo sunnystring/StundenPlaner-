@@ -5,8 +5,6 @@
  */
 package core;
 
-import schedule.LectionField;
-
 /**
  *
  * @author Mathias
@@ -14,10 +12,10 @@ import schedule.LectionField;
 public interface ValidTimeListener {
     
 
-    public void validTimeSelected(LectionField lectionField, StudentDay day);
+    public void validTimeSelected(StudentDay studentDay);
     
     public void validTimeDeselected();
     
-    public void studentSelected(StudentDay schuelerDay);
+    public void studentSelected(StudentDay studentDay);
 
 }

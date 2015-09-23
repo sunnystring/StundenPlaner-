@@ -5,9 +5,9 @@
  */
 package schedule;
 
-import core.DataBase;
+import mainframe.WidgetInteraction;
 import core.StudentDay;
-import core.ScheduleDay;
+import core.TeacherDay;
 import core.ValidTimeListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,13 +15,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import mainframe.MainFrame;
 import studentlist.StudentField;
-import studentlist.StudentRow;
 
 import util.Colors;
 import util.GridLayout2;
@@ -33,92 +33,68 @@ import util.Time;
  */
 public class DayColumn extends JPanel implements MouseListener, ValidTimeListener {
 
-    private TimeField[] timeFieldList;
-    private LectionField[] lectionFieldList;
-    private DayField dayField;
+    private TimeField[] timeFieldList;        // enthält alle TimeFields
+    private LectionField[] lectionFieldList;  // enthält alle LectionFields
+    private ScheduleDayField dayField;
     private TimeColumn timeColumn1, timeColumn2;
     private LectionColumn lectionColumn1, lectionColumn2;
     private JPanel mainPanel;
 
-    // Unterrichtszeiten
-    private ScheduleDay scheduleDay;
-    private static Time absoluteStart = new Time("23.00"); // obere Grenze initialisieren
-    private static Time absoluteEnd = new Time(); // untere Grenze initialisieren
-    private Time scheduleStart;  // Beginn Untericht gemäss ScheduleDay
-    private Time scheduleEnd;   // Ende Unterricht gemäss ScheduleDay
+    private TeacherDay scheduleDay;
+    private Time absoluteStart;  // untere globale Zeitgrenze Stundenplan
 
     /* von Time zu int konvertierte Grössen */
-    private static int totalNumberOfFields; // globale Anzahl Time- und Lectionfields 
-    private int fieldCountStart;  // Start Unterrichtsbeginn (Zähler, nicht Zeit)
-    private int fieldCountEnd;  // Ende Unterrichtsende (Zähler, nicht Zeit)
+    private int totalNumberOfFields; // globale maximale Anzahl Time- bzw. Lectionfields (= Column-Höhe)
+    private int fieldCountStart;  // lokaler Unterrichtsbeginn (Zähler, nicht Zeit)
+    private int fieldCountEnd;  // lokales Unterrichtsende (Zähler, nicht Zeit)
 
-    /* Zwischenspeicher Schüler-Daten */
-    private static final LectionField TEMP_LECTIONFIELD = new LectionField();
-    private static int lectionLength; // globale Lektionsdauer für den Austausch mit dem Zwischenspeicher
     private StudentDay studentDay;  // lokaler Tag für Zugriff auf die tagspezifischen Einteilungszeiten
 
-    // Schalter für GUI-Management
-    private static boolean dragEnabled; // Hauptschalter für dragLectionpanel
-    private static boolean firstEntry;  // für Initialisierung aller addListener(studentList), falls irgendeine DayColumn angewählt
+    /* Variablen/Schalter für GUI-Management */
+    private WidgetInteraction wi;
     private boolean spaceAvailable;  // macht, dass Lectionpanel verschwindet, wenn zuwenig Platz zum setzen
 
-    //   private int dayID; //1. Tag = 0, 2. Tag = 1 usw.  
-    public DayColumn(ScheduleDay scheduleDay) {
+    public DayColumn(WidgetInteraction wi) {
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
         setBackground(Colors.BACKGROUND);
 
-        this.scheduleDay = scheduleDay;
-        scheduleStart = scheduleDay.getValidStart();
-        scheduleEnd = scheduleDay.getValidEnd();
+        this.wi = wi;
 
-        /* hier wird der abolute Zeitrahmen aller Tage bestimmt */
-        if (scheduleStart.smallerThan(absoluteStart)) {
-            absoluteStart = scheduleStart;
-        }
-        if (scheduleEnd.greaterThan(absoluteEnd)) {
-            absoluteEnd = scheduleEnd;
-        }
-
-        firstEntry = true;
-        dragEnabled = false;
         spaceAvailable = true;
 
-        dayField = new DayField();
-
+        dayField = new ScheduleDayField();
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout2(1, 4, 0, 0));
         mainPanel.setBackground(Colors.BACKGROUND);
     }
 
-    /* hier wird der individuelle Zeitrahmen jeder DayColumn initialisiert und zu int konvertiert*/
-    public void initTimeFrame() {
+    public void setTimeFrame(TeacherDay scheduleDay, ScheduleTimeFrame timeFrame) {
 
-        fieldCountStart = scheduleStart.diff(absoluteStart); // validStart - absoluteStart = Anzahl 5-Min.-Felder
-        fieldCountEnd = scheduleEnd.diff(absoluteStart); // validEnd - absoluteStart = Anzahl 5-Min.-Felder
-        totalNumberOfFields = absoluteEnd.diff(absoluteStart);
+        this.scheduleDay = scheduleDay;
+
+        totalNumberOfFields = timeFrame.getTotalNumberOfFields();
+        absoluteStart = timeFrame.getAbsoluteStart();
+
+        /* von Time zu int konvertierte Grössen */
+        fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart); // validStart - absoluteStart = Anzahl 5-Min.-Felder
+        fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart); // validEnd - absoluteStart = Anzahl 5-Min.-Felder
     }
 
     /* DayColumn zeichnen  */
-    public void createDayColumn() {
+    public void drawDayColumn() {
 
         /* Liste mit allen TimeFields befüllen */
         timeFieldList = new TimeField[totalNumberOfFields];
         for (int i = 0; i < totalNumberOfFields; i++) {
-            timeFieldList[i] = new TimeField();
-            //           timeFieldList[i].setRowIndex(i);  // jedes TimeField "weiss" seine Position in der Liste 
+            timeFieldList[i] = new TimeField(wi);
         }
 
         /* Liste mit allen LectionFields befüllen */
         lectionFieldList = new LectionField[totalNumberOfFields];
-        for (int i = 0; i < totalNumberOfFields; i++) {
+        for (int i = 0; i < lectionFieldList.length; i++) {
             lectionFieldList[i] = new LectionField();
-            lectionFieldList[i].addMouseListener(this); // Listener für Mouse-Aktionen (impl. hier und in TimeField)
-
-            for (DayColumn d : Schedule.getDayColumnList()) {   // jedes LectionField bekommt eine Referenz auf alle DayColumns
-                lectionFieldList[i].addValidTimeListener(d);
-            }
             lectionFieldList[i].setRowIndex(i);  // jedes lectionField "weiss" seine Position in der Liste 
         }
 
@@ -134,7 +110,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
 
         dayField.setBackground(Colors.DAY_FIELD);
         dayField.setPreferredSize(new Dimension(0, 25));
-        dayField.setText(scheduleDay.getDayName());    // ToDo : dynamisch
+        dayField.setText(scheduleDay.getDayName());
         add(BorderLayout.PAGE_START, dayField);
 
         createTimeColumn(timeColumn1, 0, getStartTime());
@@ -188,10 +164,10 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
             /* Datenübergabe */
             if (dataTransferEnabled) {
                 if (setSelected) {
-                    lectionFieldList[i].transferStudentDataFrom(TEMP_LECTIONFIELD); // falls gesetzt
+                    lectionFieldList[i].transferStudentDataFrom(wi.getTemporaryLectionField()); // falls gesetzt
                 } else {
-                    TEMP_LECTIONFIELD.transferStudentDataFrom(lectionFieldList[i]); // falls im Wechsel zum Drag-Modus
-                    lectionLength = TEMP_LECTIONFIELD.getLectionType();
+                    wi.getTemporaryLectionField().transferStudentDataFrom(lectionFieldList[i]); // falls im Wechsel zum Drag-Modus
+                    wi.setLectionLength(wi.getTemporaryLectionField().getLectionType());
                 }
             }
             if (position == 0) {
@@ -221,6 +197,8 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
 
     private void dragLectionPanel(int start) {
 
+        int lectionLength = wi.getLectionLength();
+
         int position = 0;
         int diff = 4;  // Falls auch 50-Lektionen, sonst hätte diff = 2 gereicht (lectionLength40 - lectionLength30)
 
@@ -243,7 +221,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
             }
             spaceAvailable = true;
 
-            lectionFieldList[i].transferStudentDataFrom(TEMP_LECTIONFIELD); // Schülerdaten vom Zwischenspeicher zu LectionField
+            lectionFieldList[i].transferStudentDataFrom(wi.getTemporaryLectionField()); // Schülerdaten vom Zwischenspeicher zu LectionField
             lectionFieldList[i].setBackground(selectValidTimeColor(Colors.LIGHT_GREEN, Color.ORANGE, Colors.LIGHT_GREEN, start, studentDay));
             lectionFieldList[i].setForeground(selectValidTimeColor(Color.WHITE, Color.WHITE, Colors.FAVORITE, start, studentDay));
             lectionFieldList[i].setFont(this.getFont().deriveFont(Font.BOLD, 10));
@@ -284,7 +262,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
             if (i >= fieldCountStart && i <= fieldCountEnd) {
                 timeFieldList[i].setBackground(selectValidTimeColor(Colors.LIGHT_GREEN, Colors.BACKGROUND, Colors.FAVORITE, i, studentDay));
             }
-            if (timeFieldList[i].isHourMarkSelected() && !timeFieldList[i].isFavorite()) {
+            if (timeFieldList[i].isHourMarkSelected() && !timeFieldList[i].isFavorite() && !timeFieldList[i].isValidTime()) {
                 timeFieldList[i].setBackground(Colors.TIMEFIELD_HOUR);
             }
         }
@@ -315,16 +293,31 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
 
         Time listTime = timeFieldList[index].getTime();  // aktuelle Schedule-Zeit
 
+        /* Favorit */
         if (listTime.equals(studentDay.getFavorite())) {  // Favorit zuerst, damit nicht überschrieben werden kann
             timeFieldList[index].setFavorite(true);  // TimeField bekommt seinen Farb-Status
             return favorite;
         }
-        if (listTime.greaterEqualsThan(studentDay.getStartTime1()) && listTime.smallerEqualsThan(studentDay.getEndTime1())) {
-            timeFieldList[index].setValidTime(true); // TimeField bekommt seinen Farb-Status
+        /* StartTime1 */
+        if (listTime.equals(studentDay.getStartTime1())) {
+            timeFieldList[index].setValidTime(true);
             return validColor;
         }
+
+        /* gültiges Intervall Time1 */
+        if (listTime.greaterEqualsThan(studentDay.getStartTime1()) && listTime.smallerEqualsThan(studentDay.getEndTime1())) {
+            timeFieldList[index].setValidTime(true);
+            return validColor;
+        }
+        /* StartTime2 */
+        if (listTime.equals(studentDay.getStartTime2())) {
+            timeFieldList[index].setValidTime(true);
+            return validColor;
+        }
+
+        /* gültiges Intervall Time2 */
         if (listTime.greaterEqualsThan(studentDay.getStartTime2()) && listTime.smallerEqualsThan(studentDay.getEndTime2())) {
-            timeFieldList[index].setValidTime(true); // TimeField bekommt seinen Farb-Status
+            timeFieldList[index].setValidTime(true);
             return validColor;
         }
         return notValidColor;
@@ -352,30 +345,25 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
     }
 
     public Time getStartTime() {
-        Time absStart = new Time();
-        absStart = absoluteStart.clone();
-        return absStart;
+        try {
+            return absoluteStart.clone();//absStart;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DayColumn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public Time getBreakPoint() {
-        Time breakPoint = new Time();
-        breakPoint = absoluteStart.clone();
-        for (int i = 0; i < totalNumberOfFields / 2; i++) {
-            breakPoint.inc();
+        try {
+            Time breakPoint = absoluteStart.clone();
+            for (int i = 0; i < totalNumberOfFields / 2; i++) {
+                breakPoint.inc();
+            }
+            return breakPoint;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DayColumn.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return breakPoint;
-    }
-
-//    public void setDayID(int dayID) {
-//        this.dayID = dayID;
-//    }
-//    public int getDayID() {
-//        return dayID;
-//    }
-
-    /*  Schalter */
-    public static boolean isDragEnabled() {
-        return dragEnabled;
+        return null;
     }
 
     /* ValidTimeListener-Implementation */
@@ -385,7 +373,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
     }
 
     @Override
-    public void validTimeSelected(LectionField l, StudentDay day) {
+    public void validTimeSelected(StudentDay day) {
         markValidTime(day);
         initTimeColumn(true);
     }
@@ -406,31 +394,24 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
         int start;
 
         if (m.getSource() instanceof StudentField) {
-            s = (StudentField) m.getSource();
-            /* dieser MouseListener(StudentList) kann erst im nachhinein geaddet werden,
-             da StudentList in MainFrame noch nicht initialisiert ist: MainFrame.getStudentList() = null! */
-            if (firstEntry) {
-                for (int i = 0; i < DataBase.getNumberOfDays(); i++) {
-                    for (int j = 0; j < totalNumberOfFields; j++) {
-                        Schedule.getDayColumn(i).lectionFieldList[j].addMouseListener(MainFrame.getStudentList());
-                    }
-                }
-                firstEntry = false;
-            }
 
-            if (StudentRow.isStudentListEnabled()) { // StudentList gesperrt, damit Lectionfield-Daten nicht überschrieben werden kann
+            s = (StudentField) m.getSource();
+
+            if (wi.studentListEnabled()) { // StudentList gesperrt, damit Lectionfield-Daten nicht überschrieben werden kann
 
                 if (s.isFieldSelected()) {
                     /* Datatransfer Schülerdaten von StudentField an Schedule bzw. LectionField */
-                    TEMP_LECTIONFIELD.transferStudentDataFrom(s);
-                    lectionLength = TEMP_LECTIONFIELD.getLectionType();
-                    dragEnabled = !StudentRow.noFieldSelected(); // sobald mind. ein StudentField selected, kann LectionField gedragt werden
-                    s.setStudentDays();  // setzt validTimes in allen DayColumns
-                /*  markiert die verfügbare Zeit des in StudentField angeklickten Tages */
-                    markValidTime(s.getDay());
+                    wi.getTemporaryLectionField().transferStudentDataFrom(s);
+                    wi.setLectionLength(wi.getTemporaryLectionField().getLectionType());
+                    wi.setDragEnabled(!wi.noFieldSelected()); // dragEnabled = !noFieldSelected: sobald mind. ein StudentField selected, kann LectionField gedragt werden
+                    /* setzt in allen DayColumns die StudentDays des angeklickten StudentFields, 
+                     damit beim Lectionpanel die ValidTimes farbig angezeigt werden */
+                    s.setStudentDays();
+                    /*  markiert die verfügbare Zeit in der TimeColumn des in StudentField angeklickten Tages */
+                    markValidTime(s.getStudentDay());
                     initTimeColumn(true);
                 } else {
-                    dragEnabled = !StudentRow.noFieldSelected(); // falls kein StudentField selected, dragEnabled = false = keine Panel-Aktionen
+                    wi.setDragEnabled(!wi.noFieldSelected()); // dragEnabled = !noFieldSelected: falls kein StudentField selected, dragEnabled = false = keine Panel-Aktionen
                     cleanValidTimeMark();
                     initTimeColumn(false);
                 }
@@ -446,30 +427,24 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
             if (start >= 0 && start <= totalNumberOfFields) {
 
                 /* falls nicht schon gesetzt, LectionPanel zeichnen (kann nur im Drag-Modus gesetzt werden) */
-                if (!l.isSelected() && dragEnabled) {
+                if (!l.isSelected() && wi.dragEnabled()) {
 
                     addLectionPanel(start, Colors.DARK_GREEN, Color.BLACK, true, true, l.getLectionType()); // true = lectionSelected, true = dataTransferEnabled
-                    dragEnabled = !spaceAvailable; // falls Lection gesetzt, dragen deaktivieren. Falls kein Space, muss Schedule aktiv bleiben für Dragen
-
+                    wi.setDragEnabled(!spaceAvailable); // falls Lection gesetzt, dragen deaktivieren. Falls kein Space, muss Schedule aktiv bleiben für Dragen
                     if (spaceAvailable) {  // beim Klick auf leeren Space (da zuwenig Platz zum Setzen) darf TimeColumn nicht gecleaned werden
                         l.cleanTimeColumns();
                     }
-
-
                     /* falls gesetzt, LectionPanel wieder freimachen (nur erstes Feld von Lectionpanel ist ansprechbar), nur ansprechbar wenn nicht im Drag-Modus */
-                } else if (l.isSelected() && l.getFieldPosition() == 0 && !dragEnabled) {
+                } else if (l.isSelected() && l.getFieldPosition() == 0 && !wi.dragEnabled()) {
 
                     l.setStudentDays();
                     l.markTimeColumns();
                     spaceAvailable = true;
                     addLectionPanel(start, Colors.LIGHT_GREEN, Color.WHITE, false, true, l.getLectionType()); // false = lection deselected = wieder verschiebbar
-                    dragEnabled = true;
+                    wi.setDragEnabled(true);
 
-                    /* falls gesetzt, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus 
-                    ?? ToDo: Aufruf Zusatzfunktion "Lektion abtauschen im bestehenden Stundenplan" (Schüler A möchte seine 
-                     Lektion von Mi 14.15 auf Di 18 verlegen, welche Schüler müssten mit wem abtauschen, damit das geht, falls es überhaupt geht)
-                     */
-                } else if (m.getClickCount() == 2 && l.getFieldPosition() == l.getLectionType() - 1 && !dragEnabled) {
+                    /* falls gesetzt, Panel neu zeichnen, nur letztes Feld ansprechbar und wenn nicht im Drag-Modus */
+                } else if (m.getClickCount() == 2 && l.getFieldPosition() == l.getLectionType() - 1 && !wi.dragEnabled()) {
 
                     l.setStudentDays();
                     spaceAvailable = true;
@@ -485,12 +460,12 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
                     }
 
                     /* Doppelklick auf Field 3 und 4 = Panel löschen */
-                } else if (l.isSelected() && (l.getFieldPosition() == 3 || l.getFieldPosition() == 4) && !dragEnabled) {
+                } else if (l.isSelected() && (l.getFieldPosition() == 3 || l.getFieldPosition() == 4) && !wi.dragEnabled()) {
                     if (m.getClickCount() == 2) {
                         spaceAvailable = true;  // schalter reset
                         cleanLectionPanel(l.getLectionID());
                         initTimeColumn(false);
-                        dragEnabled = false; // Dragen sperren, ausser es werden bereits gesetzte Panels angeklickt
+                        wi.setDragEnabled(false); // Dragen sperren, ausser es werden bereits gesetzte Panels angeklickt
                     }
                 }
             }
@@ -508,7 +483,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
             l = (LectionField) m.getSource();
             start = l.getRowIndex();
 
-            if (!l.isSelected() && start >= 0 && start < totalNumberOfFields && dragEnabled) {
+            if (!l.isSelected() && start >= 0 && start < totalNumberOfFields && wi.dragEnabled()) {
                 dragLectionPanel(start);
             }
         }
@@ -519,6 +494,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
 
         LectionField l;
         int start;
+        int lectionLength = wi.getLectionLength();
 
         if (m.getSource() instanceof LectionField) {
             l = (LectionField) m.getSource();

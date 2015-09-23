@@ -13,17 +13,10 @@ import java.awt.Insets;
 
 /**
  *
- * @author Mathias
+ * @author stolen ;-)
  */
 public class GridLayout2 extends GridLayout {
 
-//    public GridLayout2() {
-//        this(1, 0, 0, 0);
-//    }
-//
-//    public GridLayout2(int rows, int cols) {
-//        this(rows, cols, 0, 0);
-//    }
 
     public GridLayout2(int rows, int cols, int hgap, int vgap) {
         super(rows, cols, hgap, vgap);

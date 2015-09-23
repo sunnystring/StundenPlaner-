@@ -5,10 +5,11 @@
  */
 package studentlist;
 
-import core.DataBase;
 import core.StudentDay;
+import core.StudentTimes;
 import core.ValidTimeListener;
 import java.awt.Font;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -21,34 +22,34 @@ import util.Colors;
 public class StudentField extends JLabel {
 
     private String name, firstName;
-    private int studentID;  // jedes StudentField "kennt" seine Position in der Studentlist
-    private StudentDay studentDay;
+    private int studentID;
+    private StudentDay studentDay;  // der dem StudentField entsprechende Tag (= column)
     private int lectionType;
-
-    private StudentDay[] studentDayList;  // Referenz auf Liste aller Tage eines Schülers (class Student)
-
-    private final ValidTimeListener[] validTimeListener;
-    private int listCount;
+    private StudentTimes studentTimes; // alle Tage des Students (Referenz von class Student)
+    private ArrayList<ValidTimeListener> validTimeListener; // Referenzen auf alle DayColumns
 
     // Schalter
     private boolean fieldSelected;
 
     public StudentField() {
 
-        this.firstName = firstName;
-        this.name = name;
-
+        validTimeListener = new ArrayList<>();
         fieldSelected = false;
-
-        validTimeListener = new ValidTimeListener[DataBase.getNumberOfDays()];
-        listCount = 0;
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 3));
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-        setBackground(Colors.STUDENT_FIELD_BLUE);
         setOpaque(true);
 
+    }
+    /* markiert ValidDays */
+
+    public void setColor() {
+        if (studentDay.isValidDay()) {
+            setBackground(Colors.STUDENT_FIELD_BLUE);
+        } else {
+            setBackground(Colors.LIGHT_GRAY);
+        }
     }
 
     /*   Schalter */
@@ -59,8 +60,16 @@ public class StudentField extends JLabel {
     public void setFieldSelected(boolean fieldSelected) {
         this.fieldSelected = fieldSelected;
     }
-
+    
     /* Getter, Setter */
+    public StudentTimes getStudentTimes() { // nötig für die Datentransfer StudentField - LectionField
+        return studentTimes;
+    }
+
+    public void setStudentTimes(StudentTimes studentTimes) {
+        this.studentTimes = studentTimes;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -77,19 +86,19 @@ public class StudentField extends JLabel {
         this.name = name;
     }
 
-    public void setStudentID(int id) {
-        studentID = id;
+    public void setStudentID(int ID) {
+        studentID = ID;
     }
 
     public int getStudentID() {
         return studentID;
     }
 
-    public void setDay(StudentDay day) {
-        studentDay = day;
+    public void setStudentDay(StudentDay day) {
+        this.studentDay = day;
     }
 
-    public StudentDay getDay() {
+    public StudentDay getStudentDay() {
         return studentDay;
     }
 
@@ -101,29 +110,21 @@ public class StudentField extends JLabel {
         this.lectionType = lectionType;
     }
 
-    /* ValidTimeListener */
+    /* ValidTimeListener = Referenz auf alle DayColumns */
     public void addValidTimeListener(ValidTimeListener l) {
-        validTimeListener[listCount] = l;
-        listCount++;
+        validTimeListener.add(l);
     }
 
+    /* wird beim Klick auf StudentField in DayColumn aufgerufen: jeder DayColumn wird der 
+     entsprechende StudentDay des "selected Students" zugewiesen, damit die ValidTimes beim Lectionpanel farbig angezeigt werden */
     public void setStudentDays() {
-        for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].studentSelected(studentDayList[i]);
+        for (int i = 0; i < validTimeListener.size(); i++) {
+            validTimeListener.get(i).studentSelected(studentTimes.getStudentDay(i));  // in allen DayColumns werden die entspr. studentDays gesetzt
         }
     }
 
-    /* -----------------Rohfassung: Referenz auf studentDayList */
-    public StudentDay[] getStudentDayList() {
-        return studentDayList;
-    }
-
-    public void setStudentDayList(StudentDay[] list) {
-        studentDayList = list;
-    }
-
-    /* formatierte Textausgabe der Zeiten aus studentDay */
-    public void showAvailableTimes() {
+    /* formatierte Textausgabe der Zeiten aus actualDay */
+    public void showValidTimes() {
         super.setText("<html>" + studentDay + "<font color=blue>" + studentDay.getFavoriteAsString() + "</font></html>");
     }
 

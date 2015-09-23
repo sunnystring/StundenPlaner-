@@ -15,9 +15,9 @@ import javax.swing.SwingConstants;
  *
  * @author Mathias
  */
-public class DayField extends JLabel {
+public class ScheduleDayField extends JLabel {
 
-    public DayField() {
+    public ScheduleDayField() {
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 3));

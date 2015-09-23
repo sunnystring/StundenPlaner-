@@ -20,11 +20,11 @@ public class LectionColumn extends JPanel {
 
     private int totalNumberOfFields;
 
-    public LectionColumn(DayColumn dayCol) {
+    public LectionColumn(DayColumn dayColumn) {
 
-        this.lectionList = dayCol.getLectionFieldList();
-        this.timeList = dayCol.getTimeFieldList();
-        totalNumberOfFields = dayCol.getTotalNumberOfFields();
+        this.lectionList = dayColumn.getLectionFieldList();
+        this.timeList = dayColumn.getTimeFieldList();
+        totalNumberOfFields = dayColumn.getTotalNumberOfFields();
 
         setLayout(new GridLayout(0, 1));
         setBackground(Colors.BACKGROUND);

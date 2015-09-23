@@ -6,6 +6,8 @@
 package util;
 
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * Wrapperklasse für Time-Objekte 
@@ -14,12 +16,11 @@ import java.text.DecimalFormat;
 public class Time implements Cloneable {
 
     private int hour, minute; // Zeit aufgeteilt in Stunden/Minuten
-    private double timeDouble; // Zeit als Float
     private String timeString;
 
     // Eingabeprüfung, Formatierung
-    private static final String inputFormat = "([1][0-9]|[2][0-3])[.][0-5][05]";
-    private static final DecimalFormat outputFormat = new DecimalFormat("##.00");
+    private static final String INPUT_FORMAT = "([1][0-9]|[2][0-3])([.][0-5][05])?";
+    private static final DecimalFormat OUTPUT_FORMAT = new DecimalFormat("##.00");
 
     /* Konstruktoren */
     public Time(String inputTime) {
@@ -33,11 +34,9 @@ public class Time implements Cloneable {
 
         this.hour = 0;
         this.minute = 0;
-        this.timeDouble = 0;
         this.timeString = "";
     }
 
-    /* Hilfsmethoden */
     private void extractTimeComponents(String inputTime) {
 
         double time;
@@ -48,12 +47,11 @@ public class Time implements Cloneable {
         time = Math.floor(time * 100 + 0.5) / 100; // Double-Rundungsfehler eliminieren, Kommastellen reduzieren
         time = time * 100;
         minute = (int) time;
-        timeDouble = Math.floor((hour * 100 + minute) + 0.5) / 100;
     }
 
     private void checkEntry() throws IllegalArgumentException {
 
-        if (!timeString.trim().matches(inputFormat)) {
+        if (!timeString.trim().matches(INPUT_FORMAT)) {
             throw new IllegalArgumentException("Ungültige Eingabe!"); // ToDo: Dialogfenster
         }
     }
@@ -61,7 +59,7 @@ public class Time implements Cloneable {
     /*  Setter, Getter */
     public void setTime(String inputTime) {
         this.timeString = inputTime;
-        //    checkEntry();
+        checkEntry();
         extractTimeComponents(inputTime);
     }
 
@@ -74,8 +72,7 @@ public class Time implements Cloneable {
     }
 
     public String getTimeString() {
-        timeDouble = Math.floor((hour * 100 + minute) + 0.5) / 100;
-        return outputFormat.format(timeDouble);
+        return timeString;
     }
 
     public int getHour() {
@@ -206,24 +203,32 @@ public class Time implements Cloneable {
     /* gibt die Differenz zweier Time Instanzen als int = Anzahl 5-Min.-Felder zurück */
     public int diff(Time t) {
 
-        Time temp = new Time();
+        Time temp;
 
         int i = 0;
 
         if (this.equals(t)) {
             return 0;
         } else if (this.smallerThan(t)) {
-            temp = this.clone();
-            while (temp.smallerThan(t)) {
-                temp.inc();
-                i++;
+            try {
+                temp = this.clone();
+                while (temp.smallerThan(t)) {
+                    temp.inc();
+                    i++;
+                }
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(Time.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else if (this.greaterThan(t)) {
-            temp = t.clone();
-            while (temp.smallerThan(this)) {
-                temp.inc();
-                i++;
+            try {
+                temp = t.clone();
+                while (temp.smallerThan(this)) {
+                    temp.inc();
+                    i++;
+                }
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(Time.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return i;
@@ -336,39 +341,29 @@ public class Time implements Cloneable {
         if (this.hour != time.hour) {
             return false;
         }
-//        if (this.timeString != time.timeString) {
-//            return false;
-//        }
-//        if (this.timeDouble != time.timeDouble) {
-//            return false;
-//        }
         return true;
     }
 
     @Override
-    public Time clone() {
-
-        Time temp = null;
-
-        try {
-            temp = (Time) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+    public Time clone() throws CloneNotSupportedException {
+        
+        Time temp = (Time) super.clone();
         return temp;
     }
 
     @Override
     public int hashCode() {
+        
         return hour + minute + timeString.hashCode();
     }
 
     @Override
     public String toString() {
+        
         if (timeString.isEmpty()) {
             return " ";
         } else {
-            return outputFormat.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
+            return OUTPUT_FORMAT.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
         }
     }
 

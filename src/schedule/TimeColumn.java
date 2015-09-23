@@ -23,12 +23,12 @@ public class TimeColumn extends JPanel {
     private int validTimeEnd;
     private int totalNumberOfFields;
 
-    public TimeColumn(DayColumn dayCol) {
+    public TimeColumn(DayColumn dayColumn) {
 
-        this.timeList = dayCol.getTimeFieldList();
-        validTimeStart = dayCol.getScheduleStart();
-        validTimeEnd = dayCol.getScheduleEnd();
-        totalNumberOfFields = dayCol.getTotalNumberOfFields();
+        this.timeList = dayColumn.getTimeFieldList();
+        validTimeStart = dayColumn.getScheduleStart();
+        validTimeEnd = dayColumn.getScheduleEnd();
+        totalNumberOfFields = dayColumn.getTotalNumberOfFields();
 
         setBackground(Colors.BACKGROUND);
         setLayout(new GridLayout(0, 1));

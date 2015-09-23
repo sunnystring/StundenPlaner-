@@ -5,9 +5,9 @@
  */
 package core;
 
+import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import util.Time;
 
 /**
  *
@@ -15,77 +15,86 @@ import util.Time;
  */
 public class StudentTimes implements TableModel {
 
-    private StudentDay[] studentDayList;
+    private static final int DAYS = 6, COLUMNS = 6; // DAYS = 6 = Mo-Sa
 
+    private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS]; // fixe Liste aller Unterrichtstage für TableModel
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
 
+    private ArrayList<StudentDay> studentDayList; // dynamische Liste und neues Mapping mit den ausgewählten Unterrichtstagen zur Weiterverwendung nach aussen
+
     public StudentTimes() {
 
-        studentDayList = new StudentDay[6];
-
-        for (int i = 0; i < 6; i++) {
-            studentDayList[i] = new StudentDay();
+        for (int i = 0; i < DAYS; i++) {
+            STUDENTDAY_LIST[i] = new StudentDay(COLUMNS - 1);
         }
-
+        studentDayList = new ArrayList<>();
     }
 
-    public StudentDay getStudentDay(int index) {
-        return studentDayList[index];
+    public StudentDay getStudentDay(int i) {
+        return studentDayList.get(i);  // = StudentDay gemäss dynamischem Mapping 
     }
 
-    public Time getTimeSlot(int row, int col) {
-        return studentDayList[row].getTime(col);
-    }
+    /* dynamische Liste mit gültigen ScheduleDays befüllen*/
+    public void finalizeStudentTimes() {
 
+        for (int i = 0; i < DAYS; i++) {
+               studentDayList.add(STUDENTDAY_LIST[i]); // hier entsteht neues Mapping: 1. Unterrichtstag = 0 usw.
+        }
+    }
 
     /* Implementierung TableModel für StudentDataEntry */
     @Override
     public int getRowCount() {
-
-        return 6;
+        return DAYS;
     }
 
     @Override
     public int getColumnCount() {
-
-        return 6;
+        return COLUMNS;
     }
 
     @Override
     public String getColumnName(int col) {
-
         return COLUMN_LABELS[col];
     }
 
     @Override
     public Class<?> getColumnClass(int col) {
-
         return String.class;
     }
 
     @Override
     public boolean isCellEditable(int row, int col) {
-
         return col > 0;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
 
-        if (col == 0) {
-            return WEEKDAY_NAMES[row];
-        } else {
-            return null;
+        switch (col) {
+            case 0:
+                return WEEKDAY_NAMES[row]; // 1. Spalte
+            case 1:
+                return STUDENTDAY_LIST[row].getStartTime1();
+            case 2:
+                return STUDENTDAY_LIST[row].getEndTime1();
+            case 3:
+                return STUDENTDAY_LIST[row].getStartTime2();
+            case 4:
+                return STUDENTDAY_LIST[row].getEndTime2();
+            case 5:
+                return STUDENTDAY_LIST[row].getFavorite();
+            default:
+                return null;
         }
     }
 
     @Override
-    public void setValueAt(Object o, int row, int col) {
+    public void setValueAt(Object o, int row, int col) {  // col = 1,2,..5
 
-        String time = (String) o;
-        studentDayList[row].setTime(time, col - 1);
-
+        String timeString = (String) o;
+        STUDENTDAY_LIST[row].setStudentTime(timeString, col); // timeString an die richtigen Koordinaten der JTable setzen
     }
 
     @Override

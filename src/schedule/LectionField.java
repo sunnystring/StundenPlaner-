@@ -5,11 +5,11 @@
  */
 package schedule;
 
-import core.DataBase;
-import core.StudentDay;
+import core.StudentTimes;
 import core.ValidTimeListener;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import studentlist.StudentField;
@@ -21,15 +21,13 @@ import util.Colors;
  */
 public class LectionField extends JLabel {
 
-    // relevante Schülerdaten für Lectionpanels 
     private String name, firstName;
     private int studentID;
     private int lectionType;
+    private StudentTimes studentTimes; // alle Tage des Students (Referenz von Student-> StudentField) 
 
-    private StudentDay[] studentDayList;  // Referenz auf Liste aller Tage eines Schülers (class Student)
-
-    private final ValidTimeListener[] validTimeListener;
-    private int listCount;
+  //  private StudentDay[] studentDayList;  // Referenz auf Liste aller Tage eines Schülers (class Student)
+    private ArrayList<ValidTimeListener> validTimeListener;  // ValidTimeListener = Refernz auf eine DayColumn
 
     // bei firstEntry darf nur der aktuelle Tag aktiv sein für validTimes
     private boolean timeColumnEnabled;
@@ -45,14 +43,13 @@ public class LectionField extends JLabel {
 
     public LectionField() {
 
+        validTimeListener = new ArrayList<>();
+
         lectionSelected = false;
         lectionTemporarySelected = false;
         lectionID = 0;
         fieldPosition = 0;
         studentID = 0;
-
-        validTimeListener = new ValidTimeListener[DataBase.getNumberOfDays()];
-        listCount = 0;
 
         timeColumnEnabled = false;  // enabled: DayColumn#markValidTime(), disabled: DayColumn#cleanValidTimeMark() 
         outOfBounds = false;
@@ -89,7 +86,8 @@ public class LectionField extends JLabel {
         this.name = studentField.getName();
         this.firstName = studentField.getFirstName();
         this.lectionType = studentField.getLectionType();
-        this.studentDayList = studentField.getStudentDayList(); // für Zugriff auf alle StudentDays
+        this.studentTimes = studentField.getStudentTimes(); // für Zugriff auf alle StudentDays
+        //    this.studentDayList = studentField.getStudentDayList(); // für Zugriff auf alle StudentDays
     }
 
     /* Pseudo-clone(): überträgt relevante Schülerdaten von LectionField zu LectionField */
@@ -98,7 +96,8 @@ public class LectionField extends JLabel {
         this.name = lectionField.getName();
         this.firstName = lectionField.getFirstName();
         this.lectionType = lectionField.getLectionType();
-        this.studentDayList = lectionField.getStudentDayList(); // für Zugriff auf alle SchülerDays
+        this.studentTimes = lectionField.getStudentTimes();  // für Zugriff auf alle StudentDays
+        //     this.studentDayList = lectionField.getStudentDayList(); // für Zugriff auf alle SchülerDays
     }
 
     /* Getter, Setter für Lection-Panel-Konstruktion */
@@ -127,7 +126,7 @@ public class LectionField extends JLabel {
         return fieldPosition;
     }
 
-    /* Getter, Setter für Student-Daten */
+    /* Getter für Student-Daten */
     public int getStudentID() {
         return studentID;
     }
@@ -135,33 +134,22 @@ public class LectionField extends JLabel {
     public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getFirstName() {
         return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public int getLectionType() {
         return lectionType;
     }
 
-    public void setLectionType(int lectionType) {
-        this.lectionType = lectionType;
-    }
 
-    public StudentDay[] getStudentDayList() {  // nötig für die Datentransfer LectionField - LectionField
-        return studentDayList;
+    public StudentTimes getStudentTimes() {   // nötig für die Datentransfer LectionField - LectionField
+        return studentTimes;
     }
 
     public void setTimeColumnEnabled(boolean timeColumnEnabled) {
@@ -180,44 +168,37 @@ public class LectionField extends JLabel {
         return outOfBounds;
     }
 
-    /* ValidTimeListener adden*/
-    public void addValidTimeListener(ValidTimeListener l) {
-        validTimeListener[listCount] = l;
-        listCount++;
-    }
-
     /* malt TimeColumns in allen DayColumn-Instanzen */
     public void markTimeColumns() {
 
-        long t1, t2;   // Timestamps
-        t1 = System.nanoTime();
-
-        for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].validTimeSelected(this, studentDayList[i]);
+        for (int i = 0; i < validTimeListener.size(); i++) {
+            validTimeListener.get(i).validTimeSelected(studentTimes.getStudentDay(i));  //
         }
-
-        t2 = System.nanoTime();
-          // System.out.println("markTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
     }
 
     /* löscht Markierungen in allen TimeColumns */
     public void cleanTimeColumns() {
 
-        long t1, t2;  // Timestamps
-        t1 = System.nanoTime();
-
-        for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].validTimeDeselected();
+        for (ValidTimeListener l : validTimeListener) {
+            l.validTimeDeselected();
         }
-
-        t2 = System.nanoTime();
-        //    System.out.println("cleanTimeColumns(): " + (t2 - t1) / 1000 + " microsec");
     }
 
     /*  setzt validTimes in allen DayColumns */
     public void setStudentDays() {
-        for (int i = 0; i < validTimeListener.length; i++) {
-            validTimeListener[i].studentSelected(studentDayList[i]);
+
+        for (int i = 0; i < validTimeListener.size(); i++) {
+            validTimeListener.get(i).studentSelected(studentTimes.getStudentDay(i));  // in allen DayColumns werden die entspr. studentDays gesetzt
         }
     }
+
+    /* ValidTimeListener*/
+    public void addValidTimeListener(ValidTimeListener l) {
+        validTimeListener.add(l);
+    }
+
+    public void removeValidTimeListener(ValidTimeListener l) {
+        validTimeListener.remove(l);
+    }
+
 }

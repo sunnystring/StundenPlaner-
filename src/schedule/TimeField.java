@@ -5,10 +5,13 @@
  */
 package schedule;
 
+import mainframe.WidgetInteraction;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import util.Colors;
@@ -20,18 +23,18 @@ import util.Time;
  */
 public class TimeField extends JLabel implements MouseListener {
 
+    private WidgetInteraction wi;
     /* TimeField-Status, TimeField-ID */
     private boolean lectionSelected;
     private boolean hourMarkSelected;
-//    private int rowIndexTimeField;
-
     // Farb-Status 
     private boolean validTime, favorite;
 
     private Time time;
 
-    public TimeField() {
+    public TimeField(WidgetInteraction wi) {
 
+        this.wi = wi;
         lectionSelected = false;
         hourMarkSelected = false;
 
@@ -49,7 +52,11 @@ public class TimeField extends JLabel implements MouseListener {
 
     /* Setter, Getter  */
     public void setTime(Time time) {
-        this.time = time.clone();
+        try {
+            this.time = time.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(TimeField.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Time getTime() {
@@ -59,14 +66,6 @@ public class TimeField extends JLabel implements MouseListener {
     public void setText(int hour) {
         super.setText(String.valueOf(hour));
     }
-
-//    public void setRowIndex(int rowIndex) {
-//        this.rowIndexTimeField = rowIndex;
-//    }
-
-//    public int getRowIndex() {
-//        return rowIndexTimeField;
-//    }
 
     public void setHourMarkSelected() {
         hourMarkSelected = true;
@@ -104,7 +103,7 @@ public class TimeField extends JLabel implements MouseListener {
         LectionField l = (LectionField) m.getSource();
 
         // TimeColumn-Scrolling: nur im Drag-Modus, nur wenn keine gesetzte Lektion, bei firstEntry nur der angewählte Tag
-        if (l.isTimeColumnEnabled() && DayColumn.isDragEnabled() && !lectionSelected) {
+        if (l.isTimeColumnEnabled() && wi.dragEnabled() && !lectionSelected) {
 
             if (validTime && !l.isOutOfBounds()) { // !l.isOutOfBounds() = Schülerzeit muss innerhalb Lehrerzeit liegen
                 setBackground(Colors.LIGHT_GREEN);
