@@ -25,8 +25,8 @@ public class ScheduleDay {
 
     public ScheduleDay() {
 
-        validStart = new Time("12.00");
-        validEnd = new Time("12.00");
+        validStart = new Time();
+        validEnd = new Time();
 
     }
 

@@ -41,6 +41,13 @@ public class ScheduleTimes implements TableModel {
 
     }
 
+    public void printScheduleDayList() {
+
+        for (ScheduleDay d : scheduleDayList) {
+            System.out.println("start: " + d.getValidStart() + "  end: " + d.getValidEnd().toString());
+        }
+    }
+
     /* Implementierung TableModel für ScheduleDataEntry */
     @Override
     public int getRowCount() {
@@ -87,7 +94,8 @@ public class ScheduleTimes implements TableModel {
 
         String time = (String) o;
         scheduleDayList[row].setTime(time, col);
-  
+        System.out.println(time);
+
     }
 
     @Override

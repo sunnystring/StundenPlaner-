@@ -56,7 +56,7 @@ public class StudentDataEntry extends JDialog {
         setLocationRelativeTo(null);
         setModal(true);
         setTitle("Schülerprofil");
-        setPreferredSize(new Dimension(500, 300));
+        setPreferredSize(new Dimension(500, 273));
         createWidgets();
         addWidgets();
         addListener();
@@ -69,6 +69,8 @@ public class StudentDataEntry extends JDialog {
         selectionTable = new JTable(student.getStudentTimeModel()); // TableModel (StudentTimes) übergeben
         selectionTable.setShowGrid(true);
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
+        selectionTable.setFillsViewportHeight(true);
+        selectionTable.setRowHeight(25); // ToDo: dynamisch
 
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));

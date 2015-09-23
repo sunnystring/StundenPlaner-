@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 import mainframe.MainFrame;
 
@@ -33,7 +34,7 @@ import mainframe.MainFrame;
  */
 public class ScheduleDataEntry extends JDialog {
 
-    private ScheduleTimes schedule; // = TableModel
+    private ScheduleTimes scheduleTimes; // = TableModel
 
     private JScrollPane center;
     private JPanel bottom;
@@ -41,19 +42,18 @@ public class ScheduleDataEntry extends JDialog {
     private JTextField numberOfStudents;
     private JTable selectionTable;
     private JButton cancel, save;
-    
-        private static JFrame owner;
 
+    private static JFrame owner;
 
     public ScheduleDataEntry() {
 
         super(owner);
-        schedule = new ScheduleTimes();
+        scheduleTimes = new ScheduleTimes();
 
         setLocationRelativeTo(null);
         setModal(true);
-        setTitle("Stundenplan");
-        setPreferredSize(new Dimension(300, 220));
+        setTitle("Stundenplan erstellen");
+        setPreferredSize(new Dimension(300, 236));
         createWidgets();
         addWidgets();
         addListener();
@@ -63,9 +63,14 @@ public class ScheduleDataEntry extends JDialog {
 
     private void createWidgets() {
 
-        selectionTable = new JTable(schedule);
+        selectionTable = new JTable(scheduleTimes);
         selectionTable.setShowGrid(true);
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
+       //   selectionTable.setFillsViewportHeight(true);
+        //  selectionTable.setPreferredScrollableViewportSize(selectionTable.getPreferredSize());
+        selectionTable.setRowHeight(25); // ToDo: dynamisch
+  //      System.out.println(selectionTable.getPreferredScrollableViewportSize());
+       
 
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -100,8 +105,8 @@ public class ScheduleDataEntry extends JDialog {
         cancel.addActionListener(new CancelButtonListener());
         save.addActionListener(new SaveButtonListener());
     }
-    
-     public static void setOwner(JFrame mainframe) {
+
+    public static void setOwner(JFrame mainframe) {
         owner = mainframe;
     }
 
@@ -118,7 +123,8 @@ public class ScheduleDataEntry extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(schedule.getTeacherTime(0, 1));
+         //   System.out.println(scheduleTimes.getTeacherTime(0, 1));
+            scheduleTimes.printScheduleDayList();
 
         }
 

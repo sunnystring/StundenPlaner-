@@ -42,6 +42,7 @@ public class Time implements Cloneable {
 
         double time;
 
+        
         time = Double.parseDouble(inputTime);
         hour = (int) time;
         time = time - hour;  // Nachkommastelle = Minuten
@@ -61,7 +62,7 @@ public class Time implements Cloneable {
     /*  Setter, Getter */
     public void setTime(String inputTime) {
         this.timeString = inputTime;
-        //    checkEntry();
+        checkEntry();
         extractTimeComponents(inputTime);
     }
 

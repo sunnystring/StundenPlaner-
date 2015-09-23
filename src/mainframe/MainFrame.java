@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
     private static Schedule schedule;
     private static StudentList studentList;
     private JPanel toolBar;
-    private ScheduleButton open, save, print, createSchedule, addStudent, addKGU, automatic;
+    private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
     private JToggleButton timeFilter;
     private JSplitPane split;
     private JScrollPane left, right;
@@ -56,7 +56,6 @@ public class MainFrame extends JFrame {
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
         database = new DataBase();
-      
 
         createWidget();
         addWidget();
@@ -74,13 +73,13 @@ public class MainFrame extends JFrame {
         toolBar.setPreferredSize(new Dimension(0, 30));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 12, 0, 15));
 
-        open = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
-        save = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
-        print = new ScheduleButton("printer.png", "Stundenplan drucken");
-        createSchedule = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
-        addStudent = new ScheduleButton("boy.png", "Neues Schülerprofil erstellen");
-        addKGU = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
-        automatic = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
+        openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
+        saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
+        printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
+        createScheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
+        addStudentButton = new ScheduleButton("boy.png", "Neues Schülerprofil erstellen");
+        addKGUButton = new ScheduleButton("boy&girl.png", "KGU-Profil erstellen");
+        automaticButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilter = new JToggleButton(Icons.setIcon("color.png"));
         timeFilter.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilter.setPreferredSize(new Dimension(60, 0));
@@ -265,26 +264,26 @@ public class MainFrame extends JFrame {
         add(BorderLayout.CENTER, split);
         add(BorderLayout.PAGE_START, toolBar);
 
-        toolBar.add(open);
-        toolBar.add(save);
-        toolBar.add(print);
+        toolBar.add(openButton);
+        toolBar.add(saveButton);
+        toolBar.add(printButton);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(createSchedule);
-        toolBar.add(addStudent);
-        toolBar.add(addKGU);
+        toolBar.add(createScheduleButton);
+        toolBar.add(addStudentButton);
+        toolBar.add(addKGUButton);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(automatic);
+        toolBar.add(automaticButton);
         toolBar.add(timeFilter);
-        
+
         StudentDataEntry.setOwner(this);
         ScheduleDataEntry.setOwner(this);
- 
+
     }
 
     private void addListener() {
 
-        createSchedule.addActionListener(new ScheduleEntryListener());
-        addStudent.addActionListener(new StudentEntryListener());
+        createScheduleButton.addActionListener(new ScheduleEntryListener());
+        addStudentButton.addActionListener(new StudentEntryListener());
     }
 
     public static StudentList getStudentList() { // static: es gibt nur eine MainFrame
