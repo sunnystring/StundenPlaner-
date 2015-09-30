@@ -6,7 +6,7 @@
 package dialogs;
 
 import core.DataBase;
-import core.TeacherTimes;
+import core.ScheduleTimes;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,7 +27,7 @@ import javax.swing.JTable;
  */
 public class ScheduleDataEntry extends JDialog {
 
-    private TeacherTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
+    private ScheduleTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
     private DataBase database;
 
     private JScrollPane center;
@@ -42,12 +42,12 @@ public class ScheduleDataEntry extends JDialog {
         super(owner);
         this.database = database;
 
-        scheduleTimes = new TeacherTimes(); // "Null"- Initialisierung für TableModel
+        scheduleTimes = new ScheduleTimes(); // "Null"- Initialisierung für TableModel
 
         setLocationRelativeTo(owner);
         setModal(true);
-        setTitle("Stundenplan");
-        setPreferredSize(new Dimension(300, 220));
+        setTitle("Stundenplan erstellen");
+        setPreferredSize(new Dimension(300, 236));
         createWidgets();
         addWidgets();
         addListener();
@@ -58,9 +58,12 @@ public class ScheduleDataEntry extends JDialog {
     private void createWidgets() {
 
         selectionTable = new JTable(scheduleTimes);
+        selectionTable.setFillsViewportHeight(true);
         selectionTable.setShowGrid(true);
+         selectionTable.setRowHeight(25); 
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
-  
+ //  selectionTable.getColumnModel().getSelectionModel().set;
+        
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -106,7 +109,7 @@ public class ScheduleDataEntry extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            scheduleTimes.finalizeTeacherTimes();
+            scheduleTimes.finalizeScheduleTimes();
             database.addSchedule(scheduleTimes);
             ScheduleDataEntry.this.dispose();
 

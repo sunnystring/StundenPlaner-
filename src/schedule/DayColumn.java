@@ -7,7 +7,7 @@ package schedule;
 
 import mainframe.WidgetInteraction;
 import core.StudentDay;
-import core.TeacherDay;
+import core.ScheduleDay;
 import core.ValidTimeListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -40,7 +40,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
     private LectionColumn lectionColumn1, lectionColumn2;
     private JPanel mainPanel;
 
-    private TeacherDay scheduleDay;
+    private ScheduleDay scheduleDay;
     private Time absoluteStart;  // untere globale Zeitgrenze Stundenplan
 
     /* von Time zu int konvertierte Grössen */
@@ -70,7 +70,7 @@ public class DayColumn extends JPanel implements MouseListener, ValidTimeListene
         mainPanel.setBackground(Colors.BACKGROUND);
     }
 
-    public void setTimeFrame(TeacherDay scheduleDay, ScheduleTimeFrame timeFrame) {
+    public void setTimeFrame(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
 
         this.scheduleDay = scheduleDay;
 

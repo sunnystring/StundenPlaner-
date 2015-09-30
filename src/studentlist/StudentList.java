@@ -7,7 +7,7 @@ package studentlist;
 
 import core.DataBase;
 import mainframe.WidgetInteraction;
-import core.TeacherTimes;
+import core.ScheduleTimes;
 import core.Student;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,7 +41,7 @@ public class StudentList extends JComponent implements MouseListener {
     }
 
     /* StudentList initialisieren (noch ohne Student-Einträge) */
-    public void createEmptyStudentList(TeacherTimes scheduleTimes) { // Liste mit MAX_ROWS EmptyRows anfüllen
+    public void createEmptyStudentList(ScheduleTimes scheduleTimes) { // Liste mit MAX_ROWS EmptyRows anfüllen
 
         StudentRow headerRow = new StudentRow(wi, database.getNumberOfDays());
         headerRow.createHeaderRow(scheduleTimes);

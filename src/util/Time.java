@@ -41,6 +41,7 @@ public class Time implements Cloneable {
 
         double time;
 
+        
         time = Double.parseDouble(inputTime);
         hour = (int) time;
         time = time - hour;  // Nachkommastelle = Minuten

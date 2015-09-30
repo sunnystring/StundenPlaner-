@@ -6,7 +6,7 @@
 package studentlist;
 
 import mainframe.WidgetInteraction;
-import core.TeacherTimes;
+import core.ScheduleTimes;
 import core.Student;
 import dialogs.StudentDataEntry;
 import java.awt.Color;
@@ -59,7 +59,7 @@ public class StudentRow extends JPanel implements MouseListener {
     }
 
     /* HeaderRow initialisieren */
-    public void createHeaderRow(TeacherTimes scheduleTimes) {
+    public void createHeaderRow(ScheduleTimes scheduleTimes) {
 
         headerFieldList[0] = new VariableField("Vorname Name", Colors.NAME_FIELD_SELECTED);
         headerFieldList[0].setFont(this.getFont().deriveFont(Font.BOLD, 10));

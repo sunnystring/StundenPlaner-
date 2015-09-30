@@ -6,7 +6,7 @@
 package schedule;
 
 import mainframe.WidgetInteraction;
-import core.TeacherTimes;
+import core.ScheduleTimes;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -45,14 +45,14 @@ public class Schedule extends JComponent {
     }
 
     /* alle DayColumns erzeugen und initialisieren */
-    public void initSchedule(TeacherTimes scheduleTimes) {
+    public void initSchedule(ScheduleTimes scheduleTimes) {
 
         for (int i = 0; i < scheduleTimes.getNumberOfDays(); i++) {
             dayColumnList.add(new DayColumn(wi)); // alle DayColumns erzeugen
-            timeFrame.initTimeFrame(scheduleTimes.getTeacherDay(i)); // absolutStart und absolutEnd bestimmen
+            timeFrame.initTimeFrame(scheduleTimes.getScheduleDay(i)); // absolutStart und absolutEnd bestimmen
         }
         for (int i = 0; i < scheduleTimes.getNumberOfDays(); i++) {
-            dayColumnList.get(i).setTimeFrame(scheduleTimes.getTeacherDay(i), timeFrame); // TeacherDay, TotalNumberOfFields, FieldCounts einsetzen
+            dayColumnList.get(i).setTimeFrame(scheduleTimes.getScheduleDay(i), timeFrame); // ScheduleDay, TotalNumberOfFields, FieldCounts einsetzen
         }
     }
 

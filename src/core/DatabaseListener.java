@@ -18,11 +18,11 @@ public interface DatabaseListener {
     
     public void studentEdited(Student s);
     
-    public void scheduleAdded(TeacherTimes t);
+    public void scheduleAdded(ScheduleTimes t);
     
-    public void scheduleRemoved(TeacherTimes t);
+    public void scheduleRemoved(ScheduleTimes t);
     
-    public void scheduleEdited(TeacherTimes t);
+    public void scheduleEdited(ScheduleTimes t);
     
     
     

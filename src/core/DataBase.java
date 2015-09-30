@@ -14,17 +14,17 @@ import java.util.ArrayList;
 public class DataBase {
 
     private ArrayList<Student> studentDataList;
-    private TeacherTimes scheduleTimes;
+    private ScheduleTimes scheduleTimes;
 
     private DatabaseListener databaseListener; // = MainFrame
 
-    private int numberOfDays; //  = Position in scheduleDayList(TeacherTimes)
+    private int numberOfDays; //  = Position in scheduleDayList(ScheduleTimes)
     private int numberOfStudents;  // = Position in studentDataList = Schülerzahl, wird für alle GUI Aktionen gebraucht
 
     public DataBase() {
 
         studentDataList = new ArrayList<>();
-        scheduleTimes = new TeacherTimes();
+        scheduleTimes = new ScheduleTimes();
         numberOfDays = 0;
         numberOfStudents = 0;
     }
@@ -42,11 +42,11 @@ public class DataBase {
         return studentDataList.indexOf(student);
     }
 
-    public TeacherTimes getScheduleTimes() {
+    public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
     }
 
-    public void addSchedule(TeacherTimes scheduleTimes) {
+    public void addSchedule(ScheduleTimes scheduleTimes) {
         
         this.scheduleTimes = scheduleTimes;   // Schedule "adden"
         numberOfDays = scheduleTimes.getNumberOfDays(); // Database weiss jetzt die globale Zahl der Tage

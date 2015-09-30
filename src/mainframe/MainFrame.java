@@ -7,7 +7,7 @@ package mainframe;
 
 import core.DataBase;
 import core.DatabaseListener;
-import core.TeacherTimes;
+import core.ScheduleTimes;
 import core.Student;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
@@ -45,6 +45,9 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private JToggleButton timeFilterButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
+    private JToggleButton timeFilter;
+    private JSplitPane split;
+    private JScrollPane left, right;
 
     public MainFrame() {
 
@@ -158,7 +161,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     @Override
     /* Schedule erzeugen */
-    public void scheduleAdded(TeacherTimes scheduleTimes) {
+    public void scheduleAdded(ScheduleTimes scheduleTimes) {
         schedule.initSchedule(scheduleTimes); // DayColumns initialisieren
         schedule.drawSchedule();
         schedule.addListener(studentList); 
@@ -166,11 +169,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
       }
 
     @Override
-    public void scheduleRemoved(TeacherTimes t) {
+    public void scheduleRemoved(ScheduleTimes t) {
     }
 
     @Override
-    public void scheduleEdited(TeacherTimes t) {
+    public void scheduleEdited(ScheduleTimes t) {
     }
 
     /* innere Klassen */

@@ -13,12 +13,12 @@ import util.Time;
  */
 
 /*  Daten für DayColumn-Instanzen*/
-public class TeacherDay {
+public class ScheduleDay {
 
     private String day;
     private Time[] timeSlots;
 
-    public TeacherDay() {
+    public ScheduleDay() {
 
         timeSlots = new Time[2];
 
@@ -27,7 +27,7 @@ public class TeacherDay {
         }
     }
 
-    public void setTeacherTime(String time, int i) throws IllegalArgumentException { // i = 1,2
+    public void setScheduleTime(String time, int i) throws IllegalArgumentException { // i = 1,2
         if (invalidSlot(time, i - 1)) {
             throw new IllegalArgumentException(" Unkorrekte Eingabe!");
         }

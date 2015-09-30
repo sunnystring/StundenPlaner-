@@ -5,7 +5,7 @@
  */
 package schedule;
 
-import core.TeacherDay;
+import core.ScheduleDay;
 import util.Time;
 
 /**
@@ -35,7 +35,7 @@ public class ScheduleTimeFrame {
     }
 
     /* hier wird der Zeitrahmen jeder DayColumn initialisiert und zu int konvertiert*/
-    public void initTimeFrame(TeacherDay scheduleDay) {
+    public void initTimeFrame(ScheduleDay scheduleDay) {
 
         Time scheduleStart;
         Time scheduleEnd;
