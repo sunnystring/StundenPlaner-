@@ -5,9 +5,9 @@
  */
 package dialogs;
 
-import core.DataBase;
 import core.Student;
 import core.StudentTimes;
+import core2.StudentData;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -27,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import mainframe.MainFrame;
 
 /**
  *
@@ -36,8 +37,8 @@ public class StudentDataEntry extends JDialog {
 
     private String firstName, name, lectionType = "30";
 
-    private DataBase database;
-
+//    private DataBase database;
+    private StudentData studentData;
     private Student student;
     private StudentTimes studentTimes;
 
@@ -48,12 +49,11 @@ public class StudentDataEntry extends JDialog {
     private JTable selectionTable;
     private JButton cancelButton, saveButton, deleteButton;
 
-    private static JFrame owner; // = MainFrame
-
-    public StudentDataEntry(DataBase database) {
+    public StudentDataEntry(StudentData studentData, MainFrame owner) {
 
         super(owner);
-        this.database = database;
+     //   this.database = database;
+        this.studentData = studentData;
 
         student = new Student();
         studentTimes = new StudentTimes(); // "Null"- Initialisierung für TableModel
@@ -158,10 +158,6 @@ public class StudentDataEntry extends JDialog {
 
     }
 
-    public static void setOwner(JFrame mainframe) {
-        owner = mainframe;
-    }
-
     private class CancelButtonListener implements ActionListener {
 
         @Override
@@ -181,7 +177,7 @@ public class StudentDataEntry extends JDialog {
             student.setFirstName(firstName);
             student.setName(name);
             student.setLectionType(Integer.parseInt(lectionType));
-            database.addStudent(student);
+            studentData.addStudent(student);
             StudentDataEntry.this.dispose();
 
         }

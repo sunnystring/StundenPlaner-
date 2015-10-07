@@ -45,7 +45,7 @@ public class Schedule extends JComponent {
     }
 
     /* alle DayColumns erzeugen und initialisieren */
-    public void initSchedule(ScheduleTimes scheduleTimes) {
+    public void initSchedusetle(ScheduleTimes scheduleTimes) {
 
         for (int i = 0; i < scheduleTimes.getNumberOfDays(); i++) {
             dayColumnList.add(new DayColumn(wi)); // alle DayColumns erzeugen

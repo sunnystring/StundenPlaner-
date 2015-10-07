@@ -5,10 +5,8 @@
  */
 package mainframe;
 
-import core.DataBase;
-import core.DatabaseListener;
-import core.ScheduleTimes;
-import core.Student;
+import core2.ScheduleData;
+import core2.StudentData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
@@ -26,20 +24,23 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import studentlist.StudentList;
-import schedule.Schedule;
+import schedule2.Schedule2;
+import schedule2.TimeTable_Only;
+import studentlist2.StudentList2;
 import util.Icons;
 
 /**
  *
  * @author Mathias
  */
-public class MainFrame extends JFrame implements DatabaseListener {
+public class MainFrame extends JFrame { // alte Version: implements DatabaseListener 
 
-    private final DataBase database;
+    //  private final DataBase database;
+    private final ScheduleData scheduleData;
+    private final StudentData studentData;
     private final WidgetInteraction widgetInteraction;  // Model für globale Schalter GUI-Management
-    private Schedule schedule;
-    private StudentList studentList;
+    private Schedule2 schedule;
+    private StudentList2 studentList;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
     private JToggleButton timeFilterButton;
@@ -57,7 +58,9 @@ public class MainFrame extends JFrame implements DatabaseListener {
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
-        database = new DataBase();
+        //      database = new DataBase();
+        scheduleData = new ScheduleData();
+        studentData = new StudentData();
         widgetInteraction = new WidgetInteraction(); // globale Variablen für GUI-Management
 
         createWidgets();
@@ -87,12 +90,16 @@ public class MainFrame extends JFrame implements DatabaseListener {
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
 
-        schedule = new Schedule(widgetInteraction);
-        leftScroll = new JScrollPane(schedule);
+//        schedule = new Schedule(widgetInteraction);
+        schedule = new Schedule2();
+        
+        
+        leftScroll = new JScrollPane(new TimeTable_Only());
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         //  leftScroll.setBackground(Colors.BACKGROUND);
 
-        studentList = new StudentList(database, widgetInteraction);
+        //       studentList = new StudentList(database, widgetInteraction);
+        studentList = new StudentList2();
         rightScroll = new JScrollPane(studentList);
         rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         //  rightScroll.setBackground(Colors.BACKGROUND);
@@ -119,18 +126,16 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.add(automaticButton);
         toolBar.add(timeFilterButton);
 
-        StudentDataEntry.setOwner(this);
-        ScheduleDataEntry.setOwner(this);
     }
 
     private void addListeners() {
 
-        database.addDatabaseListener(this);
+        //   database.addDatabaseListener(this);
         createScheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                ScheduleDataEntry mask = new ScheduleDataEntry(database);
+                ScheduleDataEntry mask = new ScheduleDataEntry(scheduleData, MainFrame.this);
                 mask.setVisible(true);
             }
         });
@@ -138,7 +143,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         addStudentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                StudentDataEntry mask = new StudentDataEntry(database);
+                StudentDataEntry mask = new StudentDataEntry(studentData, MainFrame.this);
                 mask.setVisible(true);
             }
         });
@@ -146,35 +151,35 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
 
     /* Implementierung DataBaseListener */
-    @Override
-    public void studentAdded(Student student) {
-        studentList.addStudentRow(student, schedule);
-    }
-
-    @Override
-    public void studentRemoved(Student s) {
-    }
-
-    @Override
-    public void studentEdited(Student s) {
-    }
-
-    @Override
-    /* Schedule erzeugen */
-    public void scheduleAdded(ScheduleTimes scheduleTimes) {
-        schedule.initSchedule(scheduleTimes); // DayColumns initialisieren
-        schedule.drawSchedule();
-        schedule.addListener(studentList); 
-        studentList.createEmptyStudentList(scheduleTimes);
-      }
-
-    @Override
-    public void scheduleRemoved(ScheduleTimes t) {
-    }
-
-    @Override
-    public void scheduleEdited(ScheduleTimes t) {
-    }
+//    @Override
+//    public void studentAdded(Student student) {
+//        studentList.addStudentRow(student, schedule);
+//    }
+//
+//    @Override
+//    public void studentRemoved(Student s) {
+//    }
+//
+//    @Override
+//    public void studentEdited(Student s) {
+//    }
+//
+//    @Override
+//    /* Schedule erzeugen */
+//    public void scheduleAdded(ScheduleTimes scheduleTimes) {
+//        schedule.initSchedule(scheduleTimes); // DayColumns initialisieren
+//        schedule.drawSchedule();
+//        schedule.addListener(studentList); 
+//        studentList.createEmptyStudentList(scheduleTimes);
+//      }
+//
+//    @Override
+//    public void scheduleRemoved(ScheduleTimes t) {
+//    }
+//
+//    @Override
+//    public void scheduleEdited(ScheduleTimes t) {
+//    }
 
     /* innere Klassen */
     private class ScheduleButton extends JButton {

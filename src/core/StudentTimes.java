@@ -17,7 +17,7 @@ public class StudentTimes implements TableModel {
 
     private static final int DAYS = 6, COLUMNS = 6; // DAYS = 6 = Mo-Sa
 
-    private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS]; // fixe Liste aller Unterrichtstage für TableModel
+    private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS]; // fixe interne Liste aller Unterrichtstage für TableModel
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
 

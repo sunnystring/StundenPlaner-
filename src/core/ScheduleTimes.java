@@ -17,7 +17,7 @@ public class ScheduleTimes implements TableModel {
 
     private static final int DAYS = 6, COLUMNS = 3; // 6 = Mo-Sa <-> WEEKDAY_NAMES
 
-    private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];  // fixe Liste aller Unterrichtstage für TableModel
+    private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];  // fixe interne Liste aller Unterrichtstage für TableModel
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"}; // fixes Mapping: Mo = 0, Di = 1 usw.
 

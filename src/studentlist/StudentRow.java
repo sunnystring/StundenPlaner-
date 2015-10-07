@@ -263,7 +263,7 @@ public class StudentRow extends JPanel implements MouseListener {
                 studentFieldList[0].setForeground(Color.WHITE);
                 studentFieldList[0].setFont(studentFieldList[0].getFont().deriveFont(Font.BOLD, 10));
 
-                mask = new StudentDataEntry(null); // ToDo...
+                mask = new StudentDataEntry(null, null); // ToDo...
                 mask.setVisible(true);
             }
         }
