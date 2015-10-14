@@ -79,10 +79,18 @@ public class Time implements Cloneable {
     public int getHour() {
         return this.hour;
     }
+   
+//    public String getHour() {
+//        return String.valueOf(this.hour);
+//    }
 
     public int getMinute() {
         return this.minute;
     }
+    
+//     public String getMinute() {
+//        return String.valueOf(this.minute);
+//    }
 
     /* Operatoren: 
      *

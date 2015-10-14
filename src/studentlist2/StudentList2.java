@@ -10,7 +10,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-
+import schedule_new.DayField_new;
+import util.Colors;
 
 /**
  *
@@ -18,19 +19,20 @@ import javax.swing.ListSelectionModel;
  */
 public class StudentList2 extends JTable {
 
-  
- 
     public StudentList2() {
-   
-         super(35, 4);
+
+        super(35, 4);
         setShowGrid(true);
-        getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
+        // getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
         setFillsViewportHeight(true);
-         setPreferredSize(new Dimension(600, 0));
+         setSelectionBackground(Colors.LIGHT_GREEN);
+        setBackground(Colors.LIGHT_GRAY);
+        setColumnSelectionAllowed(true);
+        setRowSelectionAllowed(true);
+        setCellSelectionEnabled(true);
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        getTableHeader().setDefaultRenderer(new DayField_new());  //dynamisch
+
     }
-
- 
-
-
 
 }

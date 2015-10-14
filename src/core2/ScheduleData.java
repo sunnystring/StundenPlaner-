@@ -6,65 +6,52 @@
 package core2;
 
 import core.ScheduleTimes;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import schedule.ScheduleTimeFrame;
 
 /**
  *
  * @author Mathias
  */
-public class ScheduleData implements TableModel {
+public class ScheduleData {
 
     private ScheduleTimes scheduleTimes;
-    private int numberOfDays = 0;
+    private int numberOfDays;
+    private ArrayList<DayColumnModel> dayColumnModelList;  // Jeder Tag hat sein TableModel
+    private ScheduleTimeFrame timeFrame;
 
-    
-    
-    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+    public ScheduleData() {
+
+        numberOfDays = 0;
+        dayColumnModelList = new ArrayList<>();
+        timeFrame = new ScheduleTimeFrame();
+    }
+
+    // aufgerufen bei DataEntry -> ScheduleData definieren
+    public void defineData(ScheduleTimes scheduleTimes) {
+
         this.scheduleTimes = scheduleTimes;
         numberOfDays = scheduleTimes.getNumberOfDays();
+       
+        // DayColumnModels instantiieren und globaler Zeitrahmen aller Tage festlegen
+        for (int i = 0; i < numberOfDays; i++) {
+            dayColumnModelList.add(new DayColumnModel()); 
+            timeFrame.initTimeFrame(scheduleTimes.getScheduleDay(i));
+        }
+
+        // Zeitrahmen in Tage einsetzen 
+        for (int i = 0; i < numberOfDays; i++) {
+            dayColumnModelList.get(i).setTimeFrame(scheduleTimes.getScheduleDay(i), timeFrame);
+         //   dayColumnModelList.get(i).fireTableDataChanged();
+        }
     }
 
-    @Override
-    public int getRowCount() {
-        return 0;
+    public int getNumberOfDays() {
+        return numberOfDays;
     }
 
-    @Override
-    public int getColumnCount() {
-        return 0;
-    }
-
-    @Override
-    public String getColumnName(int i) {
-        return null;
-    }
-
-    @Override
-    public Class<?> getColumnClass(int i) {
-        return null;
-    }
-
-    @Override
-    public boolean isCellEditable(int i, int i1) {
-        return false;
-    }
-
-    @Override
-    public Object getValueAt(int i, int i1) {
-        return null;
-    }
-
-    @Override
-    public void setValueAt(Object o, int i, int i1) {
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener tl) {
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener tl) {
+    public DayColumnModel getDayColumnModel(int i) {
+        return dayColumnModelList.get(i);
     }
 
 }

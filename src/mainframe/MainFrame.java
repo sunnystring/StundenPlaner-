@@ -10,6 +10,7 @@ import core2.StudentData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -20,11 +21,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import schedule2.Schedule2;
+import schedule_new.Schedule_new;
+import schedule2.ScheduleGrid;
 import schedule2.TimeTable_Only;
 import studentlist2.StudentList2;
 import util.Icons;
@@ -36,10 +39,10 @@ import util.Icons;
 public class MainFrame extends JFrame { // alte Version: implements DatabaseListener 
 
     //  private final DataBase database;
-    private final ScheduleData scheduleData;
-    private final StudentData studentData;
-    private final WidgetInteraction widgetInteraction;  // Model für globale Schalter GUI-Management
-    private Schedule2 schedule;
+    private ScheduleData scheduleData;
+    private StudentData studentData;
+    private WidgetInteraction widgetInteraction;  // Model für globale Schalter GUI-Management
+    private Schedule_new schedule;
     private StudentList2 studentList;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
@@ -91,22 +94,27 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
 
 //        schedule = new Schedule(widgetInteraction);
-        schedule = new Schedule2();
-        
-        
-        leftScroll = new JScrollPane(new TimeTable_Only());
+        schedule = new Schedule_new(scheduleData);  // ScheduleData wird erst nach DataEntry definiert
+        leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        //  leftScroll.setBackground(Colors.BACKGROUND);
 
         //       studentList = new StudentList(database, widgetInteraction);
         studentList = new StudentList2();
         rightScroll = new JScrollPane(studentList);
         rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        //  rightScroll.setBackground(Colors.BACKGROUND);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScroll, rightScroll);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
-        splitPane.setResizeWeight(0.5);  // ToDo: anpassen, wenn gefüllt?
+        splitPane.setResizeWeight(0.5);  
+
+    }
+
+    public void createSchedule() {
+
+        schedule.createDayColumns();
+        splitPane.setLeftComponent(leftScroll);
+
+        splitPane.setRightComponent(rightScroll);
 
     }
 
@@ -149,6 +157,9 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         });
     }
 
+//    public Schedule_new getSchedule() { // ev. unnötig
+//        return schedule;
+//    }
 
     /* Implementierung DataBaseListener */
 //    @Override

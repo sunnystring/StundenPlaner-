@@ -19,7 +19,9 @@ public class StudentData implements TableModel {
     private ArrayList<Student> studentDataList;
     private ArrayList<TableModelListener> tableModelListener;
 
+    private int numberOfDays = 0;
     private int numberOfStudents = 0;
+    
 
     public void addStudent(Student student) {
 
