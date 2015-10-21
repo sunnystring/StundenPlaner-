@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import mainframe.MainFrame;
-import schedule_new.Schedule_new;
 
 /**
  *
@@ -29,7 +28,6 @@ import schedule_new.Schedule_new;
 public class ScheduleDataEntry extends JDialog {
 
     private ScheduleTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
-    //   private DataBase database;
     private MainFrame mainFrame;
     private ScheduleData scheduleData;
 
@@ -41,15 +39,15 @@ public class ScheduleDataEntry extends JDialog {
     public ScheduleDataEntry(ScheduleData scheduleData, MainFrame mainFrame) {
 
         super(mainFrame); // mainFrame = owner
-        //  this.database = database;
         this.scheduleData = scheduleData;
         this.mainFrame = mainFrame;
-        scheduleTimes = new ScheduleTimes(); // "Null"- Initialisierung für TableModel
+        scheduleTimes  = scheduleData.getScheduleTimes();
 
         setLocationRelativeTo(mainFrame);
         setModal(true);
         setTitle("Stundenplan erstellen");
-        setPreferredSize(new Dimension(300, 236));
+        setPreferredSize(new Dimension(300, 244));
+        setResizable(false);
         createWidgets();
         addWidgets();
         addListener();
@@ -65,7 +63,7 @@ public class ScheduleDataEntry extends JDialog {
         selectionTable.setRowHeight(25);
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
 
-        center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+        center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER, // Scrollbar nur wegen autom. JTable-Header
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         bottom = new JPanel();
@@ -106,11 +104,9 @@ public class ScheduleDataEntry extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            scheduleTimes.finalizeScheduleTimes();
-            scheduleData.defineData(scheduleTimes); 
-         //   mainFrame.getSchedule().createDayColumns();
-           mainFrame.createSchedule();
-            //           database.addSchedule(scheduleTimes);
+            
+            mainFrame.createSchedule(scheduleTimes);
+            mainFrame.prepareStudentList();
             ScheduleDataEntry.this.dispose();
 
         }

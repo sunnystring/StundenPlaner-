@@ -17,6 +17,7 @@ public class ScheduleDay {
 
     private String day;
     private Time[] timeSlots;
+    private int dayID;
 
     public ScheduleDay() {
 
@@ -48,6 +49,14 @@ public class ScheduleDay {
 
     public String getDayName() {
         return day;
+    }
+
+    public void setDayID(int dayID) {
+        this.dayID = dayID;
+    }
+
+    public int getDayID() {
+        return dayID;
     }
 
     /* beide oder keine Zeit eingeben */

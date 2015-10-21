@@ -19,7 +19,6 @@ public class StudentDay {
     public StudentDay(int slots) {  // slots = COLUMNS - 1 = 5
 
         timeSlots = new Time[slots];
-
         for (int i = 0; i < slots; i++) {
             timeSlots[i] = new Time();
         }
@@ -71,7 +70,7 @@ public class StudentDay {
         return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
     }
 
-    public boolean isValidDay() {
+    public boolean isValidDay() { // unnötig in neuer Version
 
         for (Time t : timeSlots) {
             if (!t.toString().trim().isEmpty()) {
@@ -93,5 +92,4 @@ public class StudentDay {
                 return false;
         }
     }
-
 }

@@ -5,8 +5,8 @@
  */
 package schedule_new;
 
-import core2.DayColumnModel;
-import java.awt.Dimension;
+import core.StudentDay;
+import core2.DayColumnData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import util.Colors;
@@ -17,32 +17,48 @@ import util.Colors;
  */
 public class TimeTable extends JTable {
 
-    public TimeTable(DayColumnModel model) {
+    private TimeField_new timeField; // Renderer und MouseListener
+    private LectionField_new lectionField;
+    
+    
+    
+    public TimeTable(DayColumnData dayColumnData) {
 
-        super(model);
-        setShowGrid(true);
+        setModel(dayColumnData);
+        // setShowGrid(true);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-      
-        
         //   setSelectionBackground(Colors.LIGHT_GREEN);
-
-        getColumnModel().setColumnSelectionAllowed(true);
-
+      //  getColumnModel().setColumnSelectionAllowed(true);
         setRowSelectionAllowed(true);
         setCellSelectionEnabled(true);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        getColumnModel().getColumn(0).setCellRenderer(new TimeField_new(model));
-        getColumnModel().getColumn(1).setCellRenderer(new LectionField_new());
-        getColumnModel().getColumn(2).setCellRenderer(new TimeField_new(model));
-        getColumnModel().getColumn(3).setCellRenderer(new LectionField_new());
+     
+        timeField = new TimeField_new(dayColumnData);
+        lectionField  = new LectionField_new();
+        
+        getColumnModel().getColumn(0).setCellRenderer(timeField);
+        getColumnModel().getColumn(1).setCellRenderer(lectionField);
+        getColumnModel().getColumn(2).setCellRenderer(timeField);
+        getColumnModel().getColumn(3).setCellRenderer(lectionField);
 
-        getColumnModel().getColumn(0).setPreferredWidth(5);  // ToDo: Width dynamisch kalkulieren
-        getColumnModel().getColumn(1).setPreferredWidth(100);
-        getColumnModel().getColumn(2).setPreferredWidth(5);
-        getColumnModel().getColumn(3).setPreferredWidth(100);
-
+        getColumnModel().getColumn(0).setMaxWidth(10);
+        getColumnModel().getColumn(1).setMinWidth(50);
+        getColumnModel().getColumn(2).setMaxWidth(10);
+        getColumnModel().getColumn(3).setMinWidth(50);
+        
+        addMouseListener(timeField);
+        addMouseListener(lectionField);
     }
+
+    public TimeField_new getTimeField() {
+        return timeField;
+    }
+
+    public LectionField_new getLectionField() {
+        return lectionField;
+    }
+    
 
 }

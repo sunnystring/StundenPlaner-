@@ -38,7 +38,7 @@ public class TimeTable_Only extends JPanel {
      //   timeTable.setShowHorizontalLines(false);
 
         for (int i = 0; i < 3; i++) {
-            header = new JLabel("...Tag....");
+            header = new JLabel("    ...Tag....");
             header.setPreferredSize(new Dimension(0, 25));
             header.setBackground(Colors.DAY_FIELD);
             header.setOpaque(true);

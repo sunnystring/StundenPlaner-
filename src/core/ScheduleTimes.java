@@ -15,7 +15,7 @@ import javax.swing.table.TableModel;
  */
 public class ScheduleTimes implements TableModel {
 
-    private static final int DAYS = 6, COLUMNS = 3; // 6 = Mo-Sa <-> WEEKDAY_NAMES
+    private static final int DAYS = 6, COLUMNS = 3; // 6 = Mo-Sa 
 
     private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];  // fixe interne Liste aller Unterrichtstage für TableModel
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
@@ -26,7 +26,7 @@ public class ScheduleTimes implements TableModel {
     public ScheduleTimes() {
 
         for (int i = 0; i < DAYS; i++) {
-            SCHEDULEDAY_LIST[i] = new ScheduleDay();
+            SCHEDULEDAY_LIST[i] = new ScheduleDay();  // ScheduleDays werden setValueAt() definiert
         }
         scheduleDayList = new ArrayList<>();
     }
@@ -45,14 +45,22 @@ public class ScheduleTimes implements TableModel {
     }
 
     /* dynamische Liste mit gültigen ScheduleDays befüllen*/
-    public void finalizeScheduleTimes() {
+    public void createList() {
 
         for (int i = 0; i < DAYS; i++) {
-            if (!SCHEDULEDAY_LIST[i].getValidStart().toString().trim().isEmpty()) {
+            if (isValidScheduleDay(i)) {
                 SCHEDULEDAY_LIST[i].setDayName(WEEKDAY_NAMES[i]);
                 scheduleDayList.add(SCHEDULEDAY_LIST[i]); // hier entsteht neues Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
+        for (int i = 0; i < scheduleDayList.size(); i++) {
+            scheduleDayList.get(i).setDayID(i);     // DayID setzen
+        }
+    }
+
+    // falls kein leerer Slot
+    public boolean isValidScheduleDay(int i) {
+        return !SCHEDULEDAY_LIST[i].getValidStart().toString().trim().isEmpty();
     }
 
     /* Implementierung TableModel für ScheduleDataEntry */

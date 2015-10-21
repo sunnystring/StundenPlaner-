@@ -20,28 +20,28 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class DayField_new extends JLabel implements TableCellRenderer {
+public class DayField extends JLabel implements TableCellRenderer {
 
-    public DayField_new() {
-        this("");
+//    public DayField() {
+//        this("");
+//
+//    }
 
-    }
+    public DayField(String text) {
 
-    public DayField_new(String text) {
-
-        super("  " + text);
+        setText("  " + text);
         setBackground(Colors.DAY_FIELD);
         setForeground(Color.WHITE);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.LIGHT_GRAY));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.BACKGROUND));
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
 
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         return this;
     }
 

@@ -18,6 +18,11 @@ public class Student {
     private int lectionType;  // Achtung: konvertierte Grösse = Anzahl Lection- bzw. TimeFields (= 5 Min.)
     private int studentID; 
 
+    public Student() {
+        
+        studentTimes  = new StudentTimes();
+    }
+
     /* Getter, Setter */
     public StudentTimes getStudentTimes() {
         return studentTimes;

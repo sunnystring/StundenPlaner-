@@ -17,41 +17,46 @@ public class ScheduleData {
 
     private ScheduleTimes scheduleTimes;
     private int numberOfDays;
-    private ArrayList<DayColumnModel> dayColumnModelList;  // Jeder Tag hat sein TableModel
+    private ArrayList<DayColumnData> dayColumnDataList;  // Jeder Tag hat sein TableModel
     private ScheduleTimeFrame timeFrame;
 
     public ScheduleData() {
 
-        numberOfDays = 0;
-        dayColumnModelList = new ArrayList<>();
+        scheduleTimes = new ScheduleTimes();
+        dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
+        numberOfDays = 0;
     }
 
     // aufgerufen bei DataEntry -> ScheduleData definieren
-    public void defineData(ScheduleTimes scheduleTimes) {
+    public void defineScheduleData(ScheduleTimes scheduleTimes) {
 
         this.scheduleTimes = scheduleTimes;
+        scheduleTimes.createList();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
         numberOfDays = scheduleTimes.getNumberOfDays();
-       
+
         // DayColumnModels instantiieren und globaler Zeitrahmen aller Tage festlegen
         for (int i = 0; i < numberOfDays; i++) {
-            dayColumnModelList.add(new DayColumnModel()); 
+            dayColumnDataList.add(new DayColumnData());
             timeFrame.initTimeFrame(scheduleTimes.getScheduleDay(i));
         }
 
         // Zeitrahmen in Tage einsetzen 
         for (int i = 0; i < numberOfDays; i++) {
-            dayColumnModelList.get(i).setTimeFrame(scheduleTimes.getScheduleDay(i), timeFrame);
-         //   dayColumnModelList.get(i).fireTableDataChanged();
+            dayColumnDataList.get(i).setTimeFrame(scheduleTimes.getScheduleDay(i), timeFrame);
         }
+    }
+
+    public ScheduleTimes getScheduleTimes() {
+        return scheduleTimes;
     }
 
     public int getNumberOfDays() {
         return numberOfDays;
     }
 
-    public DayColumnModel getDayColumnModel(int i) {
-        return dayColumnModelList.get(i);
+    public DayColumnData getDayColumnData(int i) {
+        return dayColumnDataList.get(i);
     }
 
 }

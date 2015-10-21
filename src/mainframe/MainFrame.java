@@ -5,15 +5,16 @@
  */
 package mainframe;
 
+import core.ScheduleTimes;
 import core2.ScheduleData;
 import core2.StudentData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -21,15 +22,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import schedule_new.Schedule_new;
 import schedule2.ScheduleGrid;
-import schedule2.TimeTable_Only;
-import studentlist2.StudentList2;
+import schedule_new.Schedule_new;
+import studentlist_new.StudentList2;
 import util.Icons;
 
 /**
@@ -49,9 +48,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     private JToggleButton timeFilterButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
-    private JToggleButton timeFilter;
-    private JSplitPane split;
-    private JScrollPane left, right;
 
     public MainFrame() {
 
@@ -61,15 +57,15 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
-        //      database = new DataBase();
         scheduleData = new ScheduleData();
         studentData = new StudentData();
+
         widgetInteraction = new WidgetInteraction(); // globale Variablen für GUI-Management
 
         createWidgets();
         addWidgets();
         addListeners();
-
+        setMinimumSize(new Dimension(1000, 400));
         pack();
         setLocation(0, 0);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,35 +83,45 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         createScheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
         addStudentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
+        addStudentButton.setEnabled(false);
         addKGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
+        addKGUButton.setEnabled(false);
         automaticButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
 
-//        schedule = new Schedule(widgetInteraction);
-        schedule = new Schedule_new(scheduleData);  // ScheduleData wird erst nach DataEntry definiert
-        leftScroll = new JScrollPane(schedule);
-        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
-        //       studentList = new StudentList(database, widgetInteraction);
-        studentList = new StudentList2();
-        rightScroll = new JScrollPane(studentList);
-        rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
+        // Test
+        //  JScrollPane pane = new JScrollPane(new ScheduleGrid());
+        //   pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
-        splitPane.setResizeWeight(0.5);  
+        splitPane.setResizeWeight(0.5);
 
     }
 
-    public void createSchedule() {
+    public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
+        scheduleData.defineScheduleData(scheduleTimes);
+        schedule = new Schedule_new(scheduleData, studentData);
         schedule.createDayColumns();
-        splitPane.setLeftComponent(leftScroll);
+        leftScroll = new JScrollPane(schedule);
+        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...
+    }
 
-        splitPane.setRightComponent(rightScroll);
+    public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
+        if (scheduleData.getNumberOfDays() > 0) {
+
+            studentData.setScheduleData(scheduleData);  // StudentData braucht ScheduleData: numberOfDays, validDays
+            studentList = new StudentList2(studentData, schedule);
+            rightScroll = new JScrollPane(studentList);
+            rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+            splitPane.setRightComponent(rightScroll);
+            addStudentButton.setEnabled(true);
+            addKGUButton.setEnabled(true);
+        }
     }
 
     private void addWidgets() {
@@ -133,7 +139,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(automaticButton);
         toolBar.add(timeFilterButton);
-
     }
 
     private void addListeners() {
@@ -156,41 +161,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
             }
         });
     }
-
-//    public Schedule_new getSchedule() { // ev. unnötig
-//        return schedule;
-//    }
-
-    /* Implementierung DataBaseListener */
-//    @Override
-//    public void studentAdded(Student student) {
-//        studentList.addStudentRow(student, schedule);
-//    }
-//
-//    @Override
-//    public void studentRemoved(Student s) {
-//    }
-//
-//    @Override
-//    public void studentEdited(Student s) {
-//    }
-//
-//    @Override
-//    /* Schedule erzeugen */
-//    public void scheduleAdded(ScheduleTimes scheduleTimes) {
-//        schedule.initSchedule(scheduleTimes); // DayColumns initialisieren
-//        schedule.drawSchedule();
-//        schedule.addListener(studentList); 
-//        studentList.createEmptyStudentList(scheduleTimes);
-//      }
-//
-//    @Override
-//    public void scheduleRemoved(ScheduleTimes t) {
-//    }
-//
-//    @Override
-//    public void scheduleEdited(ScheduleTimes t) {
-//    }
 
     /* innere Klassen */
     private class ScheduleButton extends JButton {
