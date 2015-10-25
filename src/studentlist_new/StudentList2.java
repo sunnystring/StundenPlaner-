@@ -54,5 +54,5 @@ public class StudentList2 extends JTable {
     public StudentData getStudentData() {
         return studentData;
     }
-   
+
 }

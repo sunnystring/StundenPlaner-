@@ -29,27 +29,26 @@ import util.Time;
  */
 public class TimeField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
-    private DayColumnData dayColumnData;
+    private DayColumnData dayColumn;
     private int scheduleDayID;
     private JTable timeTable;
-    private int rowIndex, colIndex; //  Indexes TimeTable ( = Position in TimeColumn in DayColumndata)
+    private int rowIndex, colIndex; // temporäre Koordinaten TimeTable während Rendering
     private static final int TIME_COL1 = 0, TIME_COL2 = 2;
-    private int colMoved, studentID, studentDayID; // Koordinaten StudentList und TimeTable
+    private int studentID, studentDayID; // Koordinaten StudentList und TimeTable
     private int validStart1, validStart2, validEnd1, validEnd2, favorite;
 
-    public TimeField_new(DayColumnData dayColumnData) {
+    public TimeField_new(DayColumnData dayColumn) {
 
-        this.dayColumnData = dayColumnData;
-        scheduleDayID = dayColumnData.getScheduleDay().getDayID();
+        this.dayColumn = dayColumn;
+        scheduleDayID = dayColumn.getScheduleDay().getDayID();
 
-        System.out.println("ScheduleDay Name (Konstruktor): " + dayColumnData.getScheduleDay().getDayName());
+        System.out.println("ScheduleDay Name (Konstruktor): " + dayColumn.getScheduleDay().getDayName());
         System.out.println("ScheduleDayID (Konstruktor): " + scheduleDayID + "\n");
 
-        rowIndex = -2;
+        //rowIndex = -2;
 //        colMoved = -2;
 //        rowClicked = -2;
 //        colClicked = -2;
-
         validStart1 = validStart2 = validEnd1 = validEnd2 = favorite = -2; // init. ausserhalb Range
 
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,9 +57,9 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
     }
 
     private void setValidTimeMarks(StudentDay day) {
-        for (int i = 0; i < dayColumnData.getTotalNumberOfFields(); i++) {
+        for (int i = 0; i < dayColumn.getTotalNumberOfFields(); i++) {
 
-            Time columnTime = dayColumnData.getTimeColumn().get(i);
+            Time columnTime = dayColumn.getTimeColumn().get(i);
 
             if (columnTime.equals(day.getStartTime1())) {
                 validStart1 = i;
@@ -72,7 +71,7 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
                 validStart2 = i;
             }
             if (columnTime.equals(day.getEndTime2())) {
-                validEnd1 = i;
+                validEnd2 = i;
             }
             if (columnTime.equals(day.getFavorite())) {
                 favorite = i;
@@ -97,40 +96,40 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
 
         timeTable = table;  // Referenz auf die zugeordnete TimeTable
         colIndex = col;
-        
+        rowIndex = row;
+
         // Spalte auswählen
         if (colIndex == TIME_COL1) {
             rowIndex = row;
         }
         if (colIndex == TIME_COL2) {
-            rowIndex = row + dayColumnData.getTotalNumberOfFields() / 2;
+            rowIndex = row + dayColumn.getTotalNumberOfFields() / 2;
         }
-
-        // Background zeichnen
-        if (dayColumnData.isMinute(rowIndex)) {
-            setText(dayColumnData.getMinute(rowIndex));
-            setBackground(Color.WHITE);
+        // Text ausgeben
+        if (dayColumn.isMinute(rowIndex)) {
+            setText(dayColumn.getMinute(rowIndex));
         } else {
-            setText(dayColumnData.getHour(rowIndex));
-            setBackground(Colors.TIMEFIELD_HOUR);
+            setText(dayColumn.getHour(rowIndex));
         }
-
         // Foreground zeichen
-        if (dayColumnData.isValidTime(rowIndex)) {
+        if (dayColumn.isValidTime(rowIndex)) {
             setForeground(Color.BLACK);
         } else {
             setForeground(Color.LIGHT_GRAY);
         }
-
-        // ValidTimes zeichnen
-        if (colIndex >= validStart1 && colIndex <= validEnd1) {
-            setBackground(Colors.LIGHT_GREEN);
-        }
-        if (colIndex >= validStart2 && colIndex <= validEnd2) {
-            setBackground(Colors.LIGHT_GREEN);
-        }
-        if (colIndex == favorite) {
+        // Background zeichnen
+        if (favorite == rowIndex) {
             setBackground(Colors.FAVORITE);
+        } else if ((validStart1 <= rowIndex && validEnd1 >= rowIndex) || (validStart2 <= rowIndex && validEnd2 >= rowIndex)) {
+            setBackground(Colors.LIGHT_GREEN);
+            if (favorite == rowIndex) { // Falls Favorite innerhalb ValidTime liegt
+                setBackground(Colors.FAVORITE);
+            }
+        } else if (dayColumn.isMinute(rowIndex)) {
+            setBackground(Color.WHITE);
+        }
+        if (!dayColumn.isMinute(rowIndex) && favorite != rowIndex) {
+            setBackground(Colors.TIMEFIELD_HOUR);
         }
 
         return this;
@@ -155,14 +154,13 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
 //                    StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID);
 //                    setValidTimeMarks(studentDay);
 //                    timeTable.repaint(timeTable.getCellRect(rowIndex, colIndex, false));
-        
         if (m.getSource() instanceof StudentList2) {
 
             StudentList2 studentList = (StudentList2) m.getSource();
             studentID = studentList.rowAtPoint(m.getPoint());
             studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
 
-         //   System.out.println("ScheduleDayID: " + scheduleDayID);
+            //   System.out.println("ScheduleDayID: " + scheduleDayID);
             //  System.out.println("StudentDayID: " + (studentList.columnAtPoint(m.getPoint()) - 1));
             if (scheduleDayID == studentDayID) {  // Tag wählen
 
@@ -177,6 +175,8 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
                 System.out.println("ScheduleDayID: " + scheduleDayID);
                 System.out.println("rowIndex = " + rowIndex + "    colIndex = " + colIndex);
                 System.out.println("validStart1 = " + validStart1 + "    validEnd1 = " + validEnd1 + "\n");
+                System.out.println("validStart2 = " + validStart2 + "    validEnd2 = " + validEnd2 + "\n");
+
             }
         }
 

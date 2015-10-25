@@ -9,7 +9,6 @@ import core.ScheduleDay;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import schedule.ScheduleTimeFrame;
-import schedule_new.TimeTable;
 import util.Time;
 
 /**

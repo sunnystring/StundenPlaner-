@@ -40,7 +40,7 @@ public class StudentData implements TableModel {
         studentDataList.add(student);
 
         for (TableModelListener l : tableModelListener) {
-            l.tableChanged(new TableModelEvent(this, numberOfStudents));  // nur aktuell eingefügte Row updaten -> performanter ??
+            l.tableChanged(new TableModelEvent(this));  // nur aktuell eingefügte Row updaten -> performanter ??
         }
         numberOfStudents = studentDataList.size(); // nächster Student ID = 1 usw. 
     }
@@ -57,7 +57,7 @@ public class StudentData implements TableModel {
     public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
     }
-   
+
     public int getNumberOfStudents() {
         return numberOfStudents;
     }
@@ -65,7 +65,7 @@ public class StudentData implements TableModel {
     public Student getStudent(int i) {
         return studentDataList.get(i);
     }
-    
+
 
     /* TableModel */
     @Override
@@ -80,6 +80,7 @@ public class StudentData implements TableModel {
 
     @Override
     public String getColumnName(int col) {
+
         if (col > 0) {
             return scheduleData.getDayColumnData(col - 1).getDayName();
         } else {

@@ -41,7 +41,7 @@ public class HeaderField extends JLabel implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int row, int col) {
-
+     
         if (col == 0) {
             // setText("<html>" + "Vorname Name " + "<font color=yellow>" + "(" + String.valueOf(studentData.getNumberOfStudents()) + ")" + "</font></html>");
             setText("  Vorname Name  (" + String.valueOf(studentData.getNumberOfStudents()) + ")");
