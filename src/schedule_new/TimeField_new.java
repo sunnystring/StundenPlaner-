@@ -141,6 +141,20 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
     public void mousePressed(MouseEvent m) {
 
         // Events von StudentList
+//        if (m.getSource() instanceof StudentList2) {
+//
+//            StudentList2 studentList = (StudentList2) m.getSource();
+//            studentID = studentList.rowAtPoint(m.getPoint());
+//            studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
+//
+//         //   System.out.println("ScheduleDayID: " + scheduleDayID);
+//            //  System.out.println("StudentDayID: " + (studentList.columnAtPoint(m.getPoint()) - 1));
+//            if (scheduleDayID == studentDayID) {  // Tag wählen
+//
+//                if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
+//                    StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID);
+//                    setValidTimeMarks(studentDay);
+//                    timeTable.repaint(timeTable.getCellRect(rowIndex, colIndex, false));
         
         if (m.getSource() instanceof StudentList2) {
 
