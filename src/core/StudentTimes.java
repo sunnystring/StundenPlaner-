@@ -42,9 +42,9 @@ public class StudentTimes implements TableModel {
 
     // studentDayList mit leeren StudentDays bekommt gerade die richtige Size 
     public void createList() {
-    
         for (int i = 0; i < DAYS; i++) {
-            if (scheduleTimes.isValidScheduleDay(i)) {          
+            STUDENTDAY_LIST[i].setSingleLections(); // falls nur validStart eingegeben, validEnd = validStart
+            if (scheduleTimes.isValidScheduleDay(i)) {
                 studentDayList.add(STUDENTDAY_LIST[i]); // neues Mapping: 1. Tag = 0 usw.
             }
         }
@@ -73,12 +73,12 @@ public class StudentTimes implements TableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
+        // empty Slots in SCHEDULEDAY_LIST dürfen in der entspr. STUDENTDAY_LIST nicht editierbar sein
         return col > 0 && scheduleTimes.isValidScheduleDay(row);
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-
         switch (col) {
             case 0:
                 return WEEKDAY_NAMES[row]; // 1. Spalte
@@ -98,10 +98,9 @@ public class StudentTimes implements TableModel {
     }
 
     @Override
-    public void setValueAt(Object o, int row, int col) {  // col = 1,2,..5
-
+    public void setValueAt(Object o, int row, int col) {
         String timeString = (String) o;
-        STUDENTDAY_LIST[row].setStudentTime(timeString, col); // timeString an die richtigen Koordinaten der JTable setzen
+        STUDENTDAY_LIST[row].setStudentTime(timeString, col - 1); // col = 0 = WEEKDAY_NAMES
     }
 
     @Override

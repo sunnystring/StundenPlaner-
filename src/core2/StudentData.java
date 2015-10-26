@@ -36,7 +36,7 @@ public class StudentData implements TableModel {
     public void addStudent(Student student) {
 
         student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
-        student.getStudentTimes().createList(); // // StudentTimes braucht ScheduleTimes
+        student.getStudentTimes().createList(); // StudentDayList mit nur gültigen Zeiteinträgen erstellen
         studentDataList.add(student);
 
         for (TableModelListener l : tableModelListener) {

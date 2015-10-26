@@ -25,12 +25,13 @@ public class StudentDay {
     }
 
     /* Getter, Setter */
-    public void setStudentTime(String time, int i) throws IllegalArgumentException { // i = 1,2,..5
-
-        if (invalidSlot(time, i - 1)) {
-            throw new IllegalArgumentException(" Unkorrekte Eingabe!");
+    public void setStudentTime(String timeString, int slot) throws IllegalArgumentException {
+        if (slot == 1 || slot == 3) {   // endTime1 und endTime2 checken
+            if (!timeString.trim().isEmpty() & timeSlots[slot - 1].toString().trim().isEmpty()) {
+                throw new IllegalArgumentException(" Kein Anfangswert eingegeben!");
+            }
         }
-        timeSlots[i - 1].setTime(time);
+        timeSlots[slot].setTime(timeString);
     }
 
     public Time getStartTime1() {
@@ -70,7 +71,16 @@ public class StudentDay {
         return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
     }
 
-    public boolean isValidDay() { // unnötig in neuer Version
+    public void setSingleLections() {
+        if (!getStartTime1().toString().trim().isEmpty() & getEndTime1().toString().trim().isEmpty()) {
+            timeSlots[1] = getStartTime1();
+        }
+        if (!getStartTime2().toString().trim().isEmpty() & getEndTime2().toString().trim().isEmpty()) {
+            timeSlots[3] = getStartTime2();
+        }
+    }
+
+    public boolean isValidDay() { // -> unnötig in neuer Version
 
         for (Time t : timeSlots) {
             if (!t.toString().trim().isEmpty()) {
@@ -78,18 +88,5 @@ public class StudentDay {
             }
         }
         return false;
-    }
-
-    /* falls EndTime ohne StartTime einegeben */
-    private boolean invalidSlot(String time, int i) {
-
-        switch (i) {
-            case 1:
-                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
-            case 3:
-                return timeSlots[2].toString().trim().isEmpty() && !time.trim().isEmpty() || (timeSlots[2].greaterEqualsThan(new Time(time)));
-            default:
-                return false;
-        }
     }
 }
