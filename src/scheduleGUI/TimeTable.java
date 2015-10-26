@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package scheduleGUI;
 
-import core.StudentDay;
-import core2.DayColumnData;
+import studentData.StudentDay;
+import scheduleData.DayColumnData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import util.Colors;
@@ -17,26 +17,23 @@ import util.Colors;
  */
 public class TimeTable extends JTable {
 
-    private TimeField_new timeField; // Renderer und MouseListener
-    private LectionField_new lectionField;
+    private TimeField timeField; // Renderer und MouseListener
+    private LectionField lectionField;
     
     
     
     public TimeTable(DayColumnData dayColumnData) {
 
         setModel(dayColumnData);
-        // setShowGrid(true);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-        //   setSelectionBackground(Colors.LIGHT_GREEN);
-      //  getColumnModel().setColumnSelectionAllowed(true);
         setRowSelectionAllowed(true);
         setCellSelectionEnabled(true);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
      
-        timeField = new TimeField_new(dayColumnData);
-        lectionField  = new LectionField_new();
+        timeField = new TimeField(dayColumnData);
+        lectionField  = new LectionField();
         
         getColumnModel().getColumn(0).setCellRenderer(timeField);
         getColumnModel().getColumn(1).setCellRenderer(lectionField);
@@ -52,11 +49,11 @@ public class TimeTable extends JTable {
         addMouseListener(lectionField);
     }
 
-    public TimeField_new getTimeField() {
+    public TimeField getTimeField() {
         return timeField;
     }
 
-    public LectionField_new getLectionField() {
+    public LectionField getLectionField() {
         return lectionField;
     }
     

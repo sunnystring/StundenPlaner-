@@ -5,16 +5,15 @@
  */
 package mainframe;
 
-import core.ScheduleTimes;
-import core2.ScheduleData;
-import core2.StudentData;
+import scheduleData.ScheduleTimes;
+import scheduleData.ScheduleData;
+import studentData.StudentData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -26,9 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import schedule2.ScheduleGrid;
-import schedule_new.Schedule_new;
-import studentlist_new.StudentList2;
+import scheduleGUI.Schedule;
+import studentlistGUI.StudentList;
 import util.Icons;
 
 /**
@@ -40,9 +38,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     //  private final DataBase database;
     private ScheduleData scheduleData;
     private StudentData studentData;
-    private WidgetInteraction widgetInteraction;  // Model für globale Schalter GUI-Management
-    private Schedule_new schedule;
-    private StudentList2 studentList;
+    private Schedule schedule;
+    private StudentList studentList;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
     private JToggleButton timeFilterButton;
@@ -59,8 +56,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         scheduleData = new ScheduleData();
         studentData = new StudentData();
-
-        widgetInteraction = new WidgetInteraction(); // globale Variablen für GUI-Management
 
         createWidgets();
         addWidgets();
@@ -103,7 +98,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
         scheduleData.defineScheduleData(scheduleTimes);
-        schedule = new Schedule_new(scheduleData, studentData);
+        schedule = new Schedule(scheduleData, studentData);
         schedule.createDayColumns();
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -115,7 +110,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         if (scheduleData.getNumberOfDays() > 0) {
 
             studentData.setScheduleData(scheduleData);  // StudentData braucht ScheduleData: numberOfDays, validDays
-            studentList = new StudentList2(studentData, schedule);
+            studentList = new StudentList(studentData, schedule);
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);

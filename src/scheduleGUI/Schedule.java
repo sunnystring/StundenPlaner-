@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package scheduleGUI;
 
-import core2.ScheduleData;
-import core2.StudentData;
+import scheduleData.ScheduleData;
+import studentData.StudentData;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class Schedule_new extends JPanel {
+public class Schedule extends JPanel {
 
     private JPanel dayColumn;
     private JLabel header;
@@ -27,15 +27,12 @@ public class Schedule_new extends JPanel {
     private StudentData studentData;
     private ArrayList<TimeTable> dayColumnList;
 
-    public Schedule_new(ScheduleData scheduleData, StudentData studentData) {
+    public Schedule(ScheduleData scheduleData, StudentData studentData) {
 
         this.scheduleData = scheduleData;
         this.studentData = studentData;
-
         dayColumnList = new ArrayList<>();
-
         setBackground(Colors.BACKGROUND);
-
     }
 
     public void createDayColumns() {
@@ -60,46 +57,4 @@ public class Schedule_new extends JPanel {
     public ArrayList<TimeTable> getDayColumnList() {
         return dayColumnList;
     }
-
-//
-//    @Override
-//    public void mousePressed(MouseEvent m) {
-//
-//        JTable table = (JTable) m.getSource();
-//        int row = table.rowAtPoint(m.getPoint());  //  = StudentID
-//        int col = table.columnAtPoint(m.getPoint());
-//
-//      //  if (m.getSource() instanceof StudentList2) {  // Events von StudentList
-//
-//      //      System.out.println("StudentList:  " + "row = " + row + "    col = " + col);
-//            
-//           
-//   //   studentData.getStudent(row).getStudentTimes().getStudentDay(col-1)
-//     //        dayColumnList.get(col-1).getTimeField().setXXX(studentDay).......
-//            
-//            
-//     //   }
-//
-//    }
-//    
-//    // Test
-//    
-//    
-//
-//   
-//    @Override
-//    public void mouseClicked(MouseEvent me) {
-//    }
-//
-//    @Override
-//    public void mouseReleased(MouseEvent me) {
-//    }
-//
-//    @Override
-//    public void mouseEntered(MouseEvent me) {
-//    }
-//
-//    @Override
-//    public void mouseExited(MouseEvent me) {
-//    }
 }

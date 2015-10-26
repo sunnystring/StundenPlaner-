@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist_new;
+package studentlistGUI;
 
-import core2.StudentData;
+import studentData.StudentData;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;

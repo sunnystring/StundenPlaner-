@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package core2;
+package scheduleData;
 
-import core.ScheduleDay;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import schedule.ScheduleTimeFrame;
+
 import util.Time;
 
 /**
@@ -25,12 +24,11 @@ public class DayColumnData extends DefaultTableModel {
     private int fieldCountEnd;  // Index lokales Unterrichtsende 
 
     private ScheduleDay scheduleDay;
-  
+
     // Ein TableModel ist aus Flexibilitätsgründen nicht fest an eine JTable gekoppelt, es kann gleichzeitig für 
     // verschiedene JTables eingesetzt werden, deshalb kann es auch keine eindeutige Zuordnung TableModel-> JTable geben, 
     //die Zuordnung muss hier gesetzt werden:
-   // private TimeTable timeTable;
-
+    // private TimeTable timeTable;
     public DayColumnData() {
 
         timeColumn = new ArrayList<>();
@@ -92,15 +90,6 @@ public class DayColumnData extends DefaultTableModel {
         return scheduleDay;
     }
 
-//    public void setTimeTable(TimeTable timeTable) {
-//        this.timeTable = timeTable;
-//    }
-//
-//    public TimeTable getTimeTable() {
-//        return timeTable;
-//    }
-
-
     /* Schalter   */
     public Boolean isMinute(int index) {
         return timeColumn.get(index).getMinute() != 0;
@@ -130,5 +119,4 @@ public class DayColumnData extends DefaultTableModel {
     public boolean isCellEditable(int i, int i1) {
         return false;
     }
-
 }

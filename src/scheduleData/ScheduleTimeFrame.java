@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule;
+package scheduleData;
 
-import core.ScheduleDay;
 import util.Time;
 
 /**
@@ -13,7 +12,7 @@ import util.Time;
  * @author Mathias
  */
 public class ScheduleTimeFrame {
-
+    
     private Time absoluteStart;  // untere globale Zeitgrenze Stundenplan
     private Time absoluteEnd;   // obere globale Zeitgrenze Stundenplan
 
@@ -54,4 +53,5 @@ public class ScheduleTimeFrame {
 
     }
 
+    
 }

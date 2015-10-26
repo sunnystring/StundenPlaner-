@@ -3,25 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist_new;
+package studentlistGUI;
 
-import core2.StudentData;
+import studentData.StudentData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import schedule_new.Schedule_new;
-import schedule_new.TimeTable;
+import scheduleGUI.Schedule;
+import scheduleGUI.TimeTable;
 import util.Colors;
 
 /**
  *
  * @author Mathias
  */
-public class StudentList2 extends JTable {
+public class StudentList extends JTable {
 
     private StudentData studentData;
-    private StudentField_new studentField;  // Renderer und MouseListener
+    private StudentField studentField;  // Renderer und MouseListener
 
-    public StudentList2(StudentData studentData, Schedule_new schedule) { // studentData = TableModel
+    public StudentList(StudentData studentData, Schedule schedule) { // studentData = TableModel
 
         this.studentData = studentData;
 
@@ -37,7 +37,7 @@ public class StudentList2 extends JTable {
         setCellSelectionEnabled(true);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        studentField = new StudentField_new(studentData);
+        studentField = new StudentField(studentData);
 
         getTableHeader().setDefaultRenderer(new HeaderField(studentData));
         setDefaultRenderer(String.class, studentField);

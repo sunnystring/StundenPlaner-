@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist_new;
+package studentlistGUI;
 
-import core2.StudentData;
+import studentData.StudentData;
 import dialogs.StudentDataEntry;
 import java.awt.Component;
 import java.awt.Font;
@@ -25,13 +25,13 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class StudentField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
+public class StudentField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
     private StudentData studentData;
     private int selectedRow, selectedCol;
     private Boolean fieldSelected, rowSelected;
 
-    public StudentField_new(StudentData studentData) {
+    public StudentField(StudentData studentData) {
 
         this.studentData = studentData;
         fieldSelected = false;
@@ -95,7 +95,7 @@ public class StudentField_new extends JLabel implements TableCellRenderer, Mouse
     @Override
     public void mousePressed(MouseEvent m) {
 
-        if (m.getSource() instanceof StudentList2) {
+        if (m.getSource() instanceof StudentList) {
 
             JTable table = (JTable) m.getSource();
             // Zellen selektieren 

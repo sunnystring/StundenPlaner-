@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in thed editor.
  */
-package core;
+package studentData;
 
+import scheduleData.ScheduleTimes;
 import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;

@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package core2;
+package studentData;
 
-import core.ScheduleTimes;
-import core.Student;
+
+import scheduleData.ScheduleData;
+import scheduleData.ScheduleTimes;
+
 import java.util.ArrayList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -46,12 +48,10 @@ public class StudentData implements TableModel {
     }
 
     /*  Getter, Setter */
-    public void setScheduleData(ScheduleData scheduleData) {  // in MainFrame aufgerufen
-
+    public void setScheduleData( ScheduleData scheduleData) {  // in MainFrame aufgerufen
         this.scheduleData = scheduleData;
         numberOfDays = scheduleData.getNumberOfDays();
         scheduleTimes = scheduleData.getScheduleTimes();
-
     }
 
     public ScheduleTimes getScheduleTimes() {
@@ -65,7 +65,6 @@ public class StudentData implements TableModel {
     public Student getStudent(int i) {
         return studentDataList.get(i);
     }
-
 
     /* TableModel */
     @Override
@@ -82,7 +81,7 @@ public class StudentData implements TableModel {
     public String getColumnName(int col) {
 
         if (col > 0) {
-            return scheduleData.getDayColumnData(col - 1).getDayName();
+           return scheduleData.getDayColumnData(col - 1).getDayName();
         } else {
             return null;
         }

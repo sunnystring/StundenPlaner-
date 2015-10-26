@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package scheduleGUI;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,9 +21,9 @@ import util.Colors;
  *
  * @author mathiaskielholz
  */
-public class LectionField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
+public class LectionField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
-    public LectionField_new() {
+    public LectionField() {
         
         
         setHorizontalAlignment(SwingConstants.LEADING);

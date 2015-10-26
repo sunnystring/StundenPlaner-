@@ -5,9 +5,9 @@
  */
 package dialogs;
 
-import core.Student;
-import core.StudentTimes;
-import core2.StudentData;
+import studentData.Student;
+import studentData.StudentTimes;
+import studentData.StudentData;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

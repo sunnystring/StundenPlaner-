@@ -5,8 +5,8 @@
  */
 package dialogs;
 
-import core.ScheduleTimes;
-import core2.ScheduleData;
+import scheduleData.ScheduleTimes;
+import scheduleData.ScheduleData;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

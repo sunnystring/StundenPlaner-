@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package scheduleGUI;
 
-import core.Student;
-import core.StudentDay;
-import core2.DayColumnData;
+import studentData.Student;
+import studentData.StudentDay;
+import scheduleData.DayColumnData;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
-import studentlist_new.StudentList2;
+import studentlistGUI.StudentList;
 import util.Colors;
 import util.Time;
 
@@ -27,7 +27,7 @@ import util.Time;
  *
  * @author mathiaskielholz
  */
-public class TimeField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
+public class TimeField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
     private DayColumnData dayColumn;
     private int scheduleDayID;
@@ -37,7 +37,7 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
     private int studentID, studentDayID; // Koordinaten StudentList und TimeTable
     private int validStart1, validStart2, validEnd1, validEnd2, favorite;
 
-    public TimeField_new(DayColumnData dayColumn) {
+    public TimeField(DayColumnData dayColumn) {
 
         this.dayColumn = dayColumn;
         scheduleDayID = dayColumn.getScheduleDay().getDayID();
@@ -123,9 +123,9 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
         validStart1 = validStart2 = dayColumn.getTotalNumberOfFields() + 2;  // reset
         validEnd1 = validEnd2 = favorite = -2;  // reset
 
-        if (m.getSource() instanceof StudentList2) {
+        if (m.getSource() instanceof StudentList) {
 
-            StudentList2 studentList = (StudentList2) m.getSource();
+            StudentList studentList = (StudentList) m.getSource();
             studentID = studentList.rowAtPoint(m.getPoint());
             studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
 
@@ -136,14 +136,13 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
                     setValidTimeMarks(studentDay);
                     timeTable.repaint();
                 }
-                System.out.println("StudentList:  ");
-                System.out.println("studentID = " + studentID + "    studentDayID = " + studentDayID + "\n");
-                System.out.println("TimeTable:  ");
-                System.out.println("ScheduleDayID: " + scheduleDayID);
-                System.out.println("rowIndex = " + rowIndex + "    colIndex = " + colIndex);
-                System.out.println("validStart1 = " + validStart1 + "    validEnd1 = " + validEnd1 + "\n");
-                System.out.println("validStart2 = " + validStart2 + "    validEnd2 = " + validEnd2 + "\n");
-
+//                System.out.println("StudentList:  ");
+//                System.out.println("studentID = " + studentID + "    studentDayID = " + studentDayID + "\n");
+//                System.out.println("TimeTable:  ");
+//                System.out.println("ScheduleDayID: " + scheduleDayID);
+//                System.out.println("rowIndex = " + rowIndex + "    colIndex = " + colIndex);
+//                System.out.println("validStart1 = " + validStart1 + "    validEnd1 = " + validEnd1 + "\n");
+//                System.out.println("validStart2 = " + validStart2 + "    validEnd2 = " + validEnd2 + "\n");
             }
         }
 

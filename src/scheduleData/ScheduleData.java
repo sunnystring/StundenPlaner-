@@ -1,13 +1,16 @@
+package scheduleData;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package core2;
 
-import core.ScheduleTimes;
+
 import java.util.ArrayList;
-import schedule.ScheduleTimeFrame;
+import scheduleData.DayColumnData;
+import scheduleData.ScheduleTimeFrame;
+import scheduleData.ScheduleTimes;
 
 /**
  *
