@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in thed editor.
  */
-package studentData;
+package studentListData;
 
 import scheduleData.ScheduleTimes;
 import java.util.ArrayList;

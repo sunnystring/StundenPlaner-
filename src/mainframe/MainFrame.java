@@ -7,7 +7,7 @@ package mainframe;
 
 import scheduleData.ScheduleTimes;
 import scheduleData.ScheduleData;
-import studentData.StudentData;
+import studentListData.StudentListData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
 import java.awt.BorderLayout;
@@ -37,7 +37,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
     //  private final DataBase database;
     private ScheduleData scheduleData;
-    private StudentData studentData;
+    private StudentListData studentData;
     private Schedule schedule;
     private StudentList studentList;
     private JPanel toolBar;
@@ -55,7 +55,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
         scheduleData = new ScheduleData();
-        studentData = new StudentData();
+        studentData = new StudentListData();
 
         createWidgets();
         addWidgets();
@@ -86,9 +86,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
 
-        // Test
-        //  JScrollPane pane = new JScrollPane(new ScheduleGrid());
-        //   pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
@@ -97,8 +94,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
     public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
-        scheduleData.defineScheduleData(scheduleTimes);
-        schedule = new Schedule(scheduleData, studentData);
+        scheduleData.initScheduleData(scheduleTimes);
+        schedule = new Schedule(scheduleData);
         schedule.createDayColumns();
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -108,9 +105,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
         if (scheduleData.getNumberOfDays() > 0) {
-
-            studentData.setScheduleData(scheduleData);  // StudentData braucht ScheduleData: numberOfDays, validDays
-            studentList = new StudentList(studentData, schedule);
+            studentData.setScheduleData(scheduleData);  // StudentListData braucht ScheduleData: numberOfDays, validDays
+            studentList = new StudentList(studentData, schedule);  // schedule für Listener Registrierung
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);

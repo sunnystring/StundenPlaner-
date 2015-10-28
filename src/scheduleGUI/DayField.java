@@ -6,26 +6,18 @@
 package scheduleGUI;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableCellRenderer;
 import util.Colors;
 
 /**
  *
  * @author Mathias
  */
-public class DayField extends JLabel implements TableCellRenderer {
-
-//    public DayField() {
-//        this("");
-//
-//    }
+public class DayField extends JLabel {
 
     public DayField(String text) {
 
@@ -38,11 +30,6 @@ public class DayField extends JLabel implements TableCellRenderer {
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
 
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        return this;
     }
 
 }

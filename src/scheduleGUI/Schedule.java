@@ -6,7 +6,6 @@
 package scheduleGUI;
 
 import scheduleData.ScheduleData;
-import studentData.StudentData;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -24,13 +23,11 @@ public class Schedule extends JPanel {
     private JLabel header;
     private TimeTable timeTable;
     private ScheduleData scheduleData;
-    private StudentData studentData;
     private ArrayList<TimeTable> dayColumnList;
 
-    public Schedule(ScheduleData scheduleData, StudentData studentData) {
+    public Schedule(ScheduleData scheduleData) {
 
         this.scheduleData = scheduleData;
-        this.studentData = studentData;
         dayColumnList = new ArrayList<>();
         setBackground(Colors.BACKGROUND);
     }
@@ -43,9 +40,8 @@ public class Schedule extends JPanel {
 
             dayColumn = new JPanel(new BorderLayout());
             header = new DayField(scheduleData.getDayColumnData(i).getDayName());
-            timeTable = new TimeTable(scheduleData.getDayColumnData(i));
-          //  scheduleData.getDayColumnData(i).setTimeTable(timeTable); // DayColumnData(= TableModel) braucht Referenz auf "seine" TimeTable
-            dayColumnList.add(timeTable);   // TimeTables = DayColumns speichern
+            timeTable = new TimeTable(scheduleData.getDayColumnData(i)); // Referenz auf entpr. DayColumn = TableModel
+            dayColumnList.add(timeTable);   // TimeTables = DayColumns in Liste speichern
             dayColumn.add(header);
             dayColumn.add(BorderLayout.NORTH, header);
             dayColumn.add(BorderLayout.CENTER, timeTable);

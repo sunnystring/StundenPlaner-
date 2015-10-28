@@ -5,7 +5,7 @@
  */
 package studentlistGUI;
 
-import studentData.StudentData;
+import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import scheduleGUI.Schedule;
@@ -18,10 +18,11 @@ import util.Colors;
  */
 public class StudentList extends JTable {
 
-    private StudentData studentData;
+    private StudentListData studentData;
     private StudentField studentField;  // Renderer und MouseListener
+    private HeaderField headerField;
 
-    public StudentList(StudentData studentData, Schedule schedule) { // studentData = TableModel
+    public StudentList(StudentListData studentData, Schedule schedule) { // studentData = TableModel
 
         this.studentData = studentData;
 
@@ -37,22 +38,24 @@ public class StudentList extends JTable {
         setCellSelectionEnabled(true);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        studentField = new StudentField(studentData);
+        headerField = new HeaderField();
+        getTableHeader().setDefaultRenderer(headerField);
 
-        getTableHeader().setDefaultRenderer(new HeaderField(studentData));
+        studentField = new StudentField(studentData);
         setDefaultRenderer(String.class, studentField);
         setRowHeight(25);  // ev. dynam.
+
         /* StudentList-Renderer registrieren*/
         addMouseMotionListener(studentField);
         addMouseListener(studentField);
+
         /* TimeTable-Renderer registrieren */
         for (TimeTable table : schedule.getDayColumnList()) {
             addMouseListener(table.getTimeField());
         }
     }
 
-    public StudentData getStudentData() {
+    public StudentListData getStudentData() {
         return studentData;
     }
-
 }

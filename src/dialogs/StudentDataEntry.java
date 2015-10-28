@@ -5,9 +5,9 @@
  */
 package dialogs;
 
-import studentData.Student;
-import studentData.StudentTimes;
-import studentData.StudentData;
+import studentListData.Student;
+import studentListData.StudentTimes;
+import studentListData.StudentListData;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,7 +39,7 @@ public class StudentDataEntry extends JDialog {
     
     private String firstName, name, lectionType = "30";
     
-    private StudentData studentData;
+    private StudentListData studentData;
     private Student student;
     private StudentTimes studentTimes;
     
@@ -50,7 +50,7 @@ public class StudentDataEntry extends JDialog {
     private JTable selectionTable;
     private JButton cancelButton, saveButton, deleteButton;
     
-    public StudentDataEntry(StudentData studentData, MainFrame owner) {
+    public StudentDataEntry(StudentListData studentData, MainFrame owner) {
         
         super(owner);
         this.studentData = studentData;  // Referenz gebraucht für addStudent()

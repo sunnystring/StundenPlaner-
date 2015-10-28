@@ -5,12 +5,8 @@ package scheduleData;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import java.util.ArrayList;
-import scheduleData.DayColumnData;
-import scheduleData.ScheduleTimeFrame;
-import scheduleData.ScheduleTimes;
+import util.Time;
 
 /**
  *
@@ -31,8 +27,8 @@ public class ScheduleData {
         numberOfDays = 0;
     }
 
-    // aufgerufen bei DataEntry -> ScheduleData definieren
-    public void defineScheduleData(ScheduleTimes scheduleTimes) {
+    // Initialisierung, in MainFrame aufgerufen
+    public void initScheduleData(ScheduleTimes scheduleTimes) {
 
         this.scheduleTimes = scheduleTimes;
         scheduleTimes.createList();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
@@ -44,12 +40,13 @@ public class ScheduleData {
             timeFrame.initTimeFrame(scheduleTimes.getScheduleDay(i));
         }
 
-        // Zeitrahmen in Tage einsetzen 
+        // Zeitrahmen in alle Tage einsetzen 
         for (int i = 0; i < numberOfDays; i++) {
             dayColumnDataList.get(i).setTimeFrame(scheduleTimes.getScheduleDay(i), timeFrame);
         }
     }
 
+    /* Getter, Setter */
     public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
     }
@@ -61,5 +58,4 @@ public class ScheduleData {
     public DayColumnData getDayColumnData(int i) {
         return dayColumnDataList.get(i);
     }
-
 }

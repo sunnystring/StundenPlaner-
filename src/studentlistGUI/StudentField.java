@@ -5,12 +5,11 @@
  */
 package studentlistGUI;
 
-import studentData.StudentData;
+import studentListData.StudentListData;
 import dialogs.StudentDataEntry;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -25,13 +24,13 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class StudentField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
+public class StudentField extends JLabel implements MouseMotionListener, MouseListener, TableCellRenderer {
 
-    private StudentData studentData;
+    private StudentListData studentData;
     private int selectedRow, selectedCol;
     private Boolean fieldSelected, rowSelected;
 
-    public StudentField(StudentData studentData) {
+    public StudentField(StudentListData studentData) {
 
         this.studentData = studentData;
         fieldSelected = false;
@@ -45,15 +44,15 @@ public class StudentField extends JLabel implements TableCellRenderer, MouseMoti
     @Override
     public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
 
-        
-        setText(studentData.getValueAt(row, col).toString());
+        String msg = (String) o;
+        setText(msg);
+
         // Grundfarben
         if (col == 0) {
             setBackground(Colors.NAME_FIELD);
 
         } else {
             setBackground(Colors.STUDENT_FIELD_BLUE);
-
         }
 
         // Mouseover

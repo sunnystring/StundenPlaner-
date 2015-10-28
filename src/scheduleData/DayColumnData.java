@@ -6,7 +6,8 @@
 package scheduleData;
 
 import java.util.ArrayList;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
+import studentListData.StudentDay;
 
 import util.Time;
 
@@ -14,9 +15,12 @@ import util.Time;
  *
  * @author mathiaskielholz
  */
-public class DayColumnData extends DefaultTableModel {
+public class DayColumnData extends AbstractTableModel {
 
-    private ArrayList<Time> timeColumn;
+    // fort
+ //   private ArrayList<Time> timeColumn;
+
+    private ArrayList<FieldData> fieldDataList;
 
     /* von Time zu int konvertierte Grössen */
     private int totalNumberOfFields; // globale Anzahl Time- bzw. Lectionfields (= Column-Höhe)
@@ -25,19 +29,16 @@ public class DayColumnData extends DefaultTableModel {
 
     private ScheduleDay scheduleDay;
 
-    // Ein TableModel ist aus Flexibilitätsgründen nicht fest an eine JTable gekoppelt, es kann gleichzeitig für 
-    // verschiedene JTables eingesetzt werden, deshalb kann es auch keine eindeutige Zuordnung TableModel-> JTable geben, 
-    //die Zuordnung muss hier gesetzt werden:
-    // private TimeTable timeTable;
     public DayColumnData() {
 
-        timeColumn = new ArrayList<>();
+      //  timeColumn = new ArrayList<>();
+        fieldDataList = new ArrayList<>();
+        
     }
 
     public void setTimeFrame(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
 
         this.scheduleDay = scheduleDay;
-
         totalNumberOfFields = timeFrame.getTotalNumberOfFields();
         Time absoluteStart = timeFrame.getAbsoluteStart(); // untere globale Zeitgrenze Stundenplan
 
@@ -49,11 +50,49 @@ public class DayColumnData extends DefaultTableModel {
         try {
             Time time = absoluteStart.clone();
             for (int i = 0; i < totalNumberOfFields; i++) {
-                timeColumn.add(time.clone());
+                FieldData fieldData = new FieldData();
+                fieldData.setTime(time.clone());
+                fieldDataList.add(fieldData);
+                //  timeColumn.add(time.clone());
                 time.inc();
             }
         } catch (CloneNotSupportedException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void setValidTimeMarks(StudentDay day) {
+
+        for (int i = 0; i < totalNumberOfFields; i++) {
+
+            FieldData fieldData = fieldDataList.get(i);
+
+            if (fieldData.getTime().equals(day.getStartTime1())) {
+                fieldData.setValidStart1(i);
+            }
+            if (fieldData.getTime().equals(day.getEndTime1())) {
+                fieldData.setValidEnd1(i);
+            }
+            if (fieldData.getTime().equals(day.getStartTime2())) {
+                fieldData.setValidStart2(i);
+            }
+            if (fieldData.getTime().equals(day.getEndTime2())) {
+                fieldData.setValidEnd2(i);
+            }
+            if (fieldData.getTime().equals(day.getFavorite())) {
+                fieldData.setFavorite(i);
+            }
+        }
+    }
+
+    public void resetValidTimeMarks() {
+
+        for (int i = 0; i < totalNumberOfFields; i++) {
+            fieldDataList.get(i).setValidStart1(totalNumberOfFields + 2);
+            fieldDataList.get(i).setValidEnd1(-2);
+            fieldDataList.get(i).setValidStart2(totalNumberOfFields + 2);
+            fieldDataList.get(i).setValidEnd2(-2);
+            fieldDataList.get(i).setFavorite(-2);
         }
     }
 
@@ -77,10 +116,12 @@ public class DayColumnData extends DefaultTableModel {
     public ArrayList<Time> getTimeColumn() {
         return timeColumn;
     }
+// fort
 
     public String getMinute(int index) {
         return String.valueOf(timeColumn.get(index).getMinute());
     }
+// fort
 
     public String getHour(int index) {
         return String.valueOf(timeColumn.get(index).getHour());
@@ -91,11 +132,12 @@ public class DayColumnData extends DefaultTableModel {
     }
 
     /* Schalter   */
+// fort
     public Boolean isMinute(int index) {
         return timeColumn.get(index).getMinute() != 0;
     }
 
-    public Boolean isValidTime(int index) {
+    public Boolean isValidTime(int index) {     // vom Lehrer vorgegebene Unterrichtszeit
         return index >= fieldCountStart && index <= fieldCountEnd;
     }
 
@@ -112,11 +154,20 @@ public class DayColumnData extends DefaultTableModel {
 
     @Override
     public Object getValueAt(int row, int col) {  // damit Renderer "Values" in Zellen schreiben kann
-        return null;
+
+        if (col == 0 || col == 2) {
+            if (col == 2) {
+                row = row + totalNumberOfFields / 2;
+            }
+            return timeColumn.get(row);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean isCellEditable(int i, int i1) {
         return false;
     }
+
 }

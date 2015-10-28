@@ -3,8 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentData;
-
+package studentListData;
 
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleTimes;
@@ -12,43 +11,46 @@ import scheduleData.ScheduleTimes;
 import java.util.ArrayList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+import studentlistGUI.StudentList;
 
 /**
  *
  * @author Mathias
  */
-public class StudentData implements TableModel {
+public class StudentListData implements TableModel {
 
-    private ArrayList<Student> studentDataList;
+    private ArrayList<Student> studentList;
     private ArrayList<TableModelListener> tableModelListener;
     private int numberOfDays;
     private int numberOfStudents;
     private ScheduleData scheduleData;
     private ScheduleTimes scheduleTimes;
 
-    public StudentData() {
-
-        studentDataList = new ArrayList<>();
+    public StudentListData() {
+        studentList = new ArrayList<>();
         tableModelListener = new ArrayList<>();
         numberOfDays = 0;
         numberOfStudents = 0;
     }
 
     public void addStudent(Student student) {
-
         student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
-        student.getStudentTimes().createList(); // StudentDayList mit nur gültigen Zeiteinträgen erstellen
-        studentDataList.add(student);
-
+        student.getStudentTimes().createList(); // StudentDayList mit gültigen Zeiteinträgen erstellen
+        studentList.add(student);
         for (TableModelListener l : tableModelListener) {
-            l.tableChanged(new TableModelEvent(this));  // nur aktuell eingefügte Row updaten -> performanter ??
+            l.tableChanged(new TableModelEvent(this));
+            numberOfStudents = studentList.size(); // numberOfStudents++
+            StudentList s = (StudentList) l; // 1. HeaderField updaten
+            JTableHeader h = s.getTableHeader();
+            h.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
+            h.repaint();
         }
-        numberOfStudents = studentDataList.size(); // nächster Student ID = 1 usw. 
     }
 
     /*  Getter, Setter */
-    public void setScheduleData( ScheduleData scheduleData) {  // in MainFrame aufgerufen
+    public void setScheduleData(ScheduleData scheduleData) {  // in MainFrame aufgerufen
         this.scheduleData = scheduleData;
         numberOfDays = scheduleData.getNumberOfDays();
         scheduleTimes = scheduleData.getScheduleTimes();
@@ -63,7 +65,7 @@ public class StudentData implements TableModel {
     }
 
     public Student getStudent(int i) {
-        return studentDataList.get(i);
+        return studentList.get(i);
     }
 
     /* TableModel */
@@ -79,9 +81,11 @@ public class StudentData implements TableModel {
 
     @Override
     public String getColumnName(int col) {
-
+        if (col == 0) {
+            return "  Vorname Name  (" + String.valueOf(numberOfStudents) + ")"; //numberOfStudentString
+        }
         if (col > 0) {
-           return scheduleData.getDayColumnData(col - 1).getDayName();
+            return "  " + scheduleData.getDayColumnData(col - 1).getDayName();
         } else {
             return null;
         }
@@ -99,8 +103,7 @@ public class StudentData implements TableModel {
 
     @Override
     public Object getValueAt(int row, int col) {
-
-        Student student = studentDataList.get(row);
+        Student student = studentList.get(row);
         if (col == 0) {
             return student.getFirstName() + " " + student.getName();
         } else {
