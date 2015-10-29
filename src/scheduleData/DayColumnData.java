@@ -17,9 +17,6 @@ import util.Time;
  */
 public class DayColumnData extends AbstractTableModel {
 
-    // fort
- //   private ArrayList<Time> timeColumn;
-
     private ArrayList<FieldData> fieldDataList;
 
     /* von Time zu int konvertierte Grössen */
@@ -31,9 +28,7 @@ public class DayColumnData extends AbstractTableModel {
 
     public DayColumnData() {
 
-      //  timeColumn = new ArrayList<>();
         fieldDataList = new ArrayList<>();
-        
     }
 
     public void setTimeFrame(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
@@ -43,17 +38,16 @@ public class DayColumnData extends AbstractTableModel {
         Time absoluteStart = timeFrame.getAbsoluteStart(); // untere globale Zeitgrenze Stundenplan
 
         /* von Time zu int konvertierte Grössen */
-        fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart); // validStart - absoluteStart = Anzahl 5-Min.-Felder
-        fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart); // validEnd - absoluteStart = Anzahl 5-Min.-Felder
+        fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart); // Anzahl 5-Min.-Felder
+        fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart);
 
-        // timeColumn befüllen
+        // FieldDataList init.
         try {
             Time time = absoluteStart.clone();
             for (int i = 0; i < totalNumberOfFields; i++) {
                 FieldData fieldData = new FieldData();
                 fieldData.setTime(time.clone());
                 fieldDataList.add(fieldData);
-                //  timeColumn.add(time.clone());
                 time.inc();
             }
         } catch (CloneNotSupportedException ex) {
@@ -63,36 +57,24 @@ public class DayColumnData extends AbstractTableModel {
 
     public void setValidTimeMarks(StudentDay day) {
 
+        FieldData fieldData;
         for (int i = 0; i < totalNumberOfFields; i++) {
-
-            FieldData fieldData = fieldDataList.get(i);
-
-            if (fieldData.getTime().equals(day.getStartTime1())) {
-                fieldData.setValidStart1(i);
+            fieldData = fieldDataList.get(i);
+            if (fieldData.getTime().greaterEqualsThan(day.getStartTime1()) && fieldData.getTime().smallerEqualsThan(day.getEndTime1())) {
+                fieldData.setValidTime(FieldData.TIME_INTERVAL_1);
             }
-            if (fieldData.getTime().equals(day.getEndTime1())) {
-                fieldData.setValidEnd1(i);
-            }
-            if (fieldData.getTime().equals(day.getStartTime2())) {
-                fieldData.setValidStart2(i);
-            }
-            if (fieldData.getTime().equals(day.getEndTime2())) {
-                fieldData.setValidEnd2(i);
+            if (fieldData.getTime().greaterEqualsThan(day.getStartTime2()) && fieldData.getTime().smallerEqualsThan(day.getEndTime2())) {
+                fieldData.setValidTime(FieldData.TIME_INTERVAL_2);
             }
             if (fieldData.getTime().equals(day.getFavorite())) {
-                fieldData.setFavorite(i);
+                fieldData.setValidTime(FieldData.FAVORITE);
             }
         }
     }
 
     public void resetValidTimeMarks() {
-
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldDataList.get(i).setValidStart1(totalNumberOfFields + 2);
-            fieldDataList.get(i).setValidEnd1(-2);
-            fieldDataList.get(i).setValidStart2(totalNumberOfFields + 2);
-            fieldDataList.get(i).setValidEnd2(-2);
-            fieldDataList.get(i).setFavorite(-2);
+            fieldDataList.get(i).setValidTime(0);
         }
     }
 
@@ -113,30 +95,11 @@ public class DayColumnData extends AbstractTableModel {
         return scheduleDay.getDayName();
     }
 
-    public ArrayList<Time> getTimeColumn() {
-        return timeColumn;
-    }
-// fort
-
-    public String getMinute(int index) {
-        return String.valueOf(timeColumn.get(index).getMinute());
-    }
-// fort
-
-    public String getHour(int index) {
-        return String.valueOf(timeColumn.get(index).getHour());
-    }
-
     public ScheduleDay getScheduleDay() {
         return scheduleDay;
     }
 
     /* Schalter   */
-// fort
-    public Boolean isMinute(int index) {
-        return timeColumn.get(index).getMinute() != 0;
-    }
-
     public Boolean isValidTime(int index) {     // vom Lehrer vorgegebene Unterrichtszeit
         return index >= fieldCountStart && index <= fieldCountEnd;
     }
@@ -159,7 +122,7 @@ public class DayColumnData extends AbstractTableModel {
             if (col == 2) {
                 row = row + totalNumberOfFields / 2;
             }
-            return timeColumn.get(row);
+            return fieldDataList.get(row);
         } else {
             return null;
         }
