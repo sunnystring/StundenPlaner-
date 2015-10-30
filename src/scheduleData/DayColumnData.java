@@ -41,7 +41,7 @@ public class DayColumnData extends AbstractTableModel {
         fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart); // Anzahl 5-Min.-Felder
         fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart);
 
-        // FieldDataList init.
+        // FieldDataList initialisieren
         try {
             Time time = absoluteStart.clone();
             for (int i = 0; i < totalNumberOfFields; i++) {
@@ -106,7 +106,7 @@ public class DayColumnData extends AbstractTableModel {
 
     /*  TableModel Implementierung*/
     @Override
-    public int getRowCount() {
+    public int getRowCount() { 
         return totalNumberOfFields / 2;
     }
 
@@ -115,6 +115,13 @@ public class DayColumnData extends AbstractTableModel {
         return 4;
     }
 
+    @Override
+    public Class<?> getColumnClass(int i) {
+        return String.class;
+    }
+
+    
+    
     @Override
     public Object getValueAt(int row, int col) {  // damit Renderer "Values" in Zellen schreiben kann
 

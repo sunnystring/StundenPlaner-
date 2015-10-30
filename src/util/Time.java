@@ -72,9 +72,9 @@ public class Time implements Cloneable {
         this.minute = minute;
     }
 
-    public String getTimeString() {
-        return timeString;
-    }
+//    public String getTimeString() {
+//        return timeString;
+//    }
 
     public int getHour() {
         return this.hour;

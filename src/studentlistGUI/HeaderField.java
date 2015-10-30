@@ -24,7 +24,7 @@ public class HeaderField extends JLabel implements TableCellRenderer {
 
     public HeaderField() {
 
-        setForeground(Color.WHITE);
+        setForeground(Colors.BACKGROUND);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.LIGHT_GRAY));

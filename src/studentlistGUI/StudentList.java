@@ -5,6 +5,7 @@
  */
 package studentlistGUI;
 
+import java.awt.Color;
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -28,11 +29,11 @@ public class StudentList extends JTable {
 
         setModel(studentData);
         setShowGrid(true);
-        setGridColor(Colors.LIGHT_GRAY);
+        setGridColor(Colors.BACKGROUND);
         // getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
         setFillsViewportHeight(true);
 
-        setBackground(Colors.LIGHT_GRAY);
+        setBackground(Colors.BACKGROUND);
         setColumnSelectionAllowed(true);
         setRowSelectionAllowed(true);
         setCellSelectionEnabled(true);
@@ -40,6 +41,9 @@ public class StudentList extends JTable {
 
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
+      
+      
+              
 
         studentField = new StudentField(studentData);
         setDefaultRenderer(String.class, studentField);

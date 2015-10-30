@@ -42,10 +42,10 @@ public class StudentListData implements TableModel {
         for (TableModelListener l : tableModelListener) {
             l.tableChanged(new TableModelEvent(this));
             numberOfStudents = studentList.size(); // numberOfStudents++
-            StudentList s = (StudentList) l; // 1. HeaderField updaten
-            JTableHeader h = s.getTableHeader();
-            h.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
-            h.repaint();
+            StudentList studentList = (StudentList) l; // 1. HeaderField updaten
+            JTableHeader header = studentList.getTableHeader();
+            header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
+            header.repaint();
         }
     }
 

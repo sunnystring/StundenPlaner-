@@ -19,33 +19,49 @@ import util.Colors;
  */
 public class Schedule extends JPanel {
 
-    private JPanel dayColumn;
-    private JLabel header;
-    private TimeTable timeTable;
     private ScheduleData scheduleData;
-    private ArrayList<TimeTable> dayColumnList;
+    private ArrayList<TimeTable> dayColumnList;  // gleiches Mapping wie DayColumnDataList
+    private int tempScheduleDayID, tempStudentID; // globale Zwischenspeicher für DayColumn-Management
+            
+            //selectedRow, selectedCol;  
 
     public Schedule(ScheduleData scheduleData) {
 
         this.scheduleData = scheduleData;
         dayColumnList = new ArrayList<>();
+        tempScheduleDayID = 0;
+        tempStudentID = 0;
+   //     tempSelectedRow = -2;
+
+
         setBackground(Colors.BACKGROUND);
     }
 
+    // DayColumn-Widget erzeugen und anzeigen, Listener adden 
     public void createDayColumns() {
 
         setLayout(new GridLayout(1, scheduleData.getNumberOfDays()));
 
         for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
 
-            dayColumn = new JPanel(new BorderLayout());
-            header = new DayField(scheduleData.getDayColumnData(i).getDayName());
-            timeTable = new TimeTable(scheduleData.getDayColumnData(i)); // Referenz auf entpr. DayColumn = TableModel
-            dayColumnList.add(timeTable);   // TimeTables = DayColumns in Liste speichern
+            JPanel dayColumn = new JPanel(new BorderLayout());
+            JLabel header = new DayField(scheduleData.getDayColumnData(i).getDayName());
+            TimeTable timeTable = new TimeTable(scheduleData.getDayColumnData(i)); // Referenz auf entpr. DayColumn = TableModel
+            timeTable.createTimeFieldRenderer(this); // Renderer und Listener mit Referenz auf "Verwaltungszentrale" (= Schedule)
+            timeTable.createLectionFieldRenderer(this);
+            dayColumnList.add(timeTable);  // Nur die timeTables müssen später ansprechbar sein, nicht die ganze DayColumn
             dayColumn.add(header);
             dayColumn.add(BorderLayout.NORTH, header);
             dayColumn.add(BorderLayout.CENTER, timeTable);
             add(dayColumn); // zeichnen
+        }
+        // alle Listener an alle TimeTables hängen (Listener = Renderer = Time-/LectionFields)
+        for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
+            TimeField timeField = dayColumnList.get(i).getTimeField();
+            LectionField lectionField = dayColumnList.get(i).getLectionField();
+            for (int j = 0; j < scheduleData.getNumberOfDays(); j++) {
+                dayColumnList.get(j).addListeners(timeField, lectionField);
+            }
         }
     }
 
@@ -53,4 +69,42 @@ public class Schedule extends JPanel {
     public ArrayList<TimeTable> getDayColumnList() {
         return dayColumnList;
     }
+
+    public TimeTable getTimeTable(int i) {
+        return dayColumnList.get(i);
+
+    }
+
+//    public int getTempSelectedRow() {
+//        return tempSelectedRow;
+//    }
+//
+//    public void setTempSelectedRow(int selectedRow) {
+//        this.tempSelectedRow = selectedRow;
+//    }
+
+//    public int getTempSelectedCol() {
+//        return selectedCol;
+//    }
+//
+//    public void setTempSelectedCol(int selectedCol) {
+//        this.selectedCol = selectedCol;
+//    }
+
+    public int getTempScheduleDayID() {
+        return tempScheduleDayID;
+    }
+
+    public void setTempScheduleDayID(int tempScheduleDayID) {
+        this.tempScheduleDayID = tempScheduleDayID;
+    }
+
+    public int getTempStudentID() {
+        return tempStudentID;
+    }
+
+    public void setTempStudentID(int tempStudentID) {
+        this.tempStudentID = tempStudentID;
+    }
+    
 }

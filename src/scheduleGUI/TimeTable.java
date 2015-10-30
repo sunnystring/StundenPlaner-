@@ -17,40 +17,51 @@ public class TimeTable extends JTable {
 
     private TimeField timeField; // Renderer und MouseListener
     private LectionField lectionField;
+    private DayColumnData dayColumnData;
 
     public TimeTable(DayColumnData dayColumnData) {
 
+        this.dayColumnData = dayColumnData;
+        
         setModel(dayColumnData);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowSelectionAllowed(true);
         setCellSelectionEnabled(true);
-       // setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setRowHeight(13);
-        
-        timeField = new TimeField(dayColumnData);
-        lectionField = new LectionField();
-
-        getColumnModel().getColumn(0).setCellRenderer(timeField);
-        getColumnModel().getColumn(1).setCellRenderer(lectionField);
-        getColumnModel().getColumn(2).setCellRenderer(timeField);
-        getColumnModel().getColumn(3).setCellRenderer(lectionField);
-
         getColumnModel().getColumn(0).setMaxWidth(10);
         getColumnModel().getColumn(1).setMinWidth(50);
         getColumnModel().getColumn(2).setMaxWidth(10);
         getColumnModel().getColumn(3).setMinWidth(50);
 
+    }
+
+    public void addListeners(TimeField timeField, LectionField lectionField) {
         addMouseListener(timeField);
+        addMouseMotionListener(timeField);
         addMouseListener(lectionField);
+        addMouseMotionListener(lectionField);
     }
 
     public TimeField getTimeField() {
         return timeField;
     }
 
+    public void createTimeFieldRenderer(Schedule schedule) {
+        this.timeField = new TimeField(dayColumnData, schedule);
+        getColumnModel().getColumn(0).setCellRenderer(timeField);
+        getColumnModel().getColumn(2).setCellRenderer(timeField);
+    }
+
     public LectionField getLectionField() {
         return lectionField;
+    }
+
+    public void createLectionFieldRenderer(Schedule schedule) {
+        this.lectionField = new LectionField();
+        getColumnModel().getColumn(1).setCellRenderer(lectionField);
+        getColumnModel().getColumn(3).setCellRenderer(lectionField);
     }
 
 }
