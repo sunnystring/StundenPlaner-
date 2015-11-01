@@ -13,6 +13,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+import scheduleData_new.ScheduleData_new;
+import scheduleData_new.ScheduleTimes_new;
 import studentlistGUI.StudentList;
 
 /**
@@ -25,10 +27,11 @@ public class StudentListData implements TableModel {
     private ArrayList<TableModelListener> tableModelListener;
     private int numberOfDays;
     private int numberOfStudents;
-    private ScheduleData scheduleData;
-    private ScheduleTimes scheduleTimes;
+    private ScheduleData_new scheduleData;
+    private ScheduleTimes_new scheduleTimes;
 
     public StudentListData() {
+        
         studentList = new ArrayList<>();
         tableModelListener = new ArrayList<>();
         numberOfDays = 0;
@@ -36,6 +39,7 @@ public class StudentListData implements TableModel {
     }
 
     public void addStudent(Student student) {
+        
         student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
         student.getStudentTimes().createList(); // StudentDayList mit gültigen Zeiteinträgen erstellen
         studentList.add(student);
@@ -50,13 +54,14 @@ public class StudentListData implements TableModel {
     }
 
     /*  Getter, Setter */
-    public void setScheduleData(ScheduleData scheduleData) {  // in MainFrame aufgerufen
+    public void setScheduleData(ScheduleData_new scheduleData) {  // in MainFrame aufgerufen
+        
         this.scheduleData = scheduleData;
         numberOfDays = scheduleData.getNumberOfDays();
         scheduleTimes = scheduleData.getScheduleTimes();
     }
 
-    public ScheduleTimes getScheduleTimes() {
+    public ScheduleTimes_new getScheduleTimes() {
         return scheduleTimes;
     }
 
@@ -85,7 +90,7 @@ public class StudentListData implements TableModel {
             return "  Vorname Name  (" + String.valueOf(numberOfStudents) + ")"; //numberOfStudentString
         }
         if (col > 0) {
-            return "  " + scheduleData.getDayColumnData(col - 1).getDayName();
+            return "  " + scheduleData.getDayColumn(col - 1).getDayName();
         } else {
             return null;
         }

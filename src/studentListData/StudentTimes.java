@@ -9,6 +9,7 @@ import scheduleData.ScheduleTimes;
 import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import scheduleData_new.ScheduleTimes_new;
 
 /**
  *
@@ -17,7 +18,7 @@ import javax.swing.table.TableModel;
 public class StudentTimes implements TableModel {
 
     private static final int DAYS = 6, COLUMNS = 6; // DAYS = 6 = Mo-Sa,
-    private ScheduleTimes scheduleTimes;
+    private ScheduleTimes_new scheduleTimes;
 
     private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS]; // fixe interne Liste aller Unterrichtstage für TableModel
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
@@ -37,7 +38,7 @@ public class StudentTimes implements TableModel {
         return studentDayList.get(i);  // = StudentDay gemäss dynamischem Mapping in ScheduleTimes
     }
 
-    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+    public void setScheduleTimes(ScheduleTimes_new scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
     }
 

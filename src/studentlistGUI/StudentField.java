@@ -28,12 +28,11 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
 
     private StudentListData studentData;
     private int selectedRow, selectedCol;
-    private Boolean fieldSelected, rowSelected;
+    private Boolean rowSelected;
 
     public StudentField(StudentListData studentData) {
 
         this.studentData = studentData;
-        fieldSelected = false;
         rowSelected = false;
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
@@ -66,7 +65,7 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         }
         // MousePressed
         if (col > 0 && row == selectedRow && col == selectedCol) {
-            if (fieldSelected) {
+            if (rowSelected) {
                 setBackground(Colors.DARK_GREEN);
             } else {
                 setBackground(Colors.LIGHT_GREEN);
@@ -103,21 +102,17 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
                 if (!rowSelected) {  // Falls noch keine Selektion gemacht
                     selectedRow = studentList.rowAtPoint(m.getPoint());  //  = StudentID
                     selectedCol = studentList.columnAtPoint(m.getPoint());
-                    fieldSelected = true;
                     rowSelected = true;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
                     // 1. Selektion bzw. mehrere auf in gleicher Zelle
                 } else if (selectedRow == studentList.rowAtPoint(m.getPoint()) && selectedCol == studentList.columnAtPoint(m.getPoint())) {
-                    fieldSelected = !fieldSelected;
                     rowSelected = !rowSelected;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
                     // nachfolgende Selektionen
                 } else if (selectedRow == studentList.rowAtPoint(m.getPoint()) && selectedCol != studentList.columnAtPoint(m.getPoint())) {
-                    fieldSelected = false;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // alte Zelle löschen
                     selectedRow = studentList.rowAtPoint(m.getPoint());  //  neue Koordinaten setzen
                     selectedCol = studentList.columnAtPoint(m.getPoint());
-                    fieldSelected = true;
                     rowSelected = true;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // neue Zelle zeichnen
                 }

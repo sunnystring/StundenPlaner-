@@ -5,8 +5,6 @@
  */
 package mainframe;
 
-import scheduleData.ScheduleTimes;
-import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
@@ -25,7 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import scheduleGUI.Schedule;
+import scheduleData_new.ScheduleData_new;
+import scheduleData_new.ScheduleTimes_new;
+import schedule_new.Schedule_new;
 import studentlistGUI.StudentList;
 import util.Icons;
 
@@ -36,9 +36,9 @@ import util.Icons;
 public class MainFrame extends JFrame { // alte Version: implements DatabaseListener 
 
     //  private final DataBase database;
-    private ScheduleData scheduleData;
-    private StudentListData studentData;
-    private Schedule schedule;
+    private ScheduleData_new scheduleData;
+    private StudentListData studentListData;
+    private Schedule_new schedule;
     private StudentList studentList;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
@@ -54,8 +54,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
-        scheduleData = new ScheduleData();
-        studentData = new StudentListData();
+        scheduleData = new ScheduleData_new();
+        studentListData = new StudentListData();
 
         createWidgets();
         addWidgets();
@@ -85,18 +85,17 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
-
+        
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
 
     }
 
-    public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
+    public void createSchedule(ScheduleTimes_new scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
         scheduleData.initScheduleData(scheduleTimes);
-        schedule = new Schedule(scheduleData);
-        schedule.createDayColumns();
+        schedule = new Schedule_new(scheduleData);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...
@@ -105,8 +104,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
         if (scheduleData.getNumberOfDays() > 0) {
-            studentData.setScheduleData(scheduleData);  // StudentListData braucht ScheduleData: numberOfDays, validDays
-            studentList = new StudentList(studentData, schedule);  // schedule für Listener Registrierung
+            studentListData.setScheduleData(scheduleData);  // StudentListData braucht ScheduleData: numberOfDays, validDays
+            studentList = new StudentList(studentListData, scheduleData);  // schedule für Listener Registrierung
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);
@@ -147,7 +146,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         addStudentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                StudentDataEntry mask = new StudentDataEntry(studentData, MainFrame.this);
+                StudentDataEntry mask = new StudentDataEntry(studentListData, MainFrame.this);
                 mask.setVisible(true);
             }
         });

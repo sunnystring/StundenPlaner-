@@ -5,7 +5,6 @@
  */
 package dialogs;
 
-import scheduleData.ScheduleTimes;
 import scheduleData.ScheduleData;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import mainframe.MainFrame;
+import scheduleData_new.ScheduleData_new;
+import scheduleData_new.ScheduleTimes_new;
 
 /**
  *
@@ -27,16 +28,16 @@ import mainframe.MainFrame;
  */
 public class ScheduleDataEntry extends JDialog {
 
-    private ScheduleTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
+    private ScheduleTimes_new scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
     private MainFrame mainFrame;
-    private ScheduleData scheduleData;
+    private ScheduleData_new scheduleData;
 
     private JScrollPane center;
     private JPanel bottom;
     private JTable selectionTable;
     private JButton cancel, save;
 
-    public ScheduleDataEntry(ScheduleData scheduleData, MainFrame mainFrame) {
+    public ScheduleDataEntry(ScheduleData_new scheduleData, MainFrame mainFrame) {
 
         super(mainFrame); // mainFrame = owner
         this.scheduleData = scheduleData;
