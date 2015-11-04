@@ -85,7 +85,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
-        
+
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
@@ -96,7 +96,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         scheduleData.initScheduleData(scheduleTimes);
         schedule = new Schedule_new(scheduleData);
-        scheduleData.fireTableDataChanged();
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...
