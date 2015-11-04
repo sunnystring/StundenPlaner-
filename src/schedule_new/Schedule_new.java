@@ -73,11 +73,12 @@ public class Schedule_new extends JPanel {
                 timeTable.getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
-        timeTable.addMouseListener(scheduleData);
-       timeTable.addMouseMotionListener(timeField);
-//        timeTable.addMouseListener(lectionField);
-//        timeTable.addMouseMotionListener(lectionField);
-        //      timeTable.prepareRenderer(timeField, WIDTH, WIDTH)
+        timeTable.addMouseListener(scheduleData); // Click in timeTable ändert TableModel (scheduleData)
+        timeTable.addMouseMotionListener(timeField);  // Anzeige: bewirkt keine Änderung im TableModel
+        timeTable.addMouseListener(timeField);
+        timeTable.addMouseMotionListener(lectionField);
+        timeTable.addMouseListener(lectionField);
+
     }
 
     public TimeField_new getTimeField() {
@@ -87,5 +88,5 @@ public class Schedule_new extends JPanel {
     public LectionField_new getLectionField() {
         return lectionField;
     }
-   
+
 }

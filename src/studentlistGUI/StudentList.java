@@ -47,9 +47,7 @@ public class StudentList extends JTable {
         /* Renderer sind auch Listener-Objekte */
         addMouseMotionListener(studentField);
         addMouseListener(studentField);
-
-        /* Schedule reagiert auf StudentList-Events */
-        addMouseListener(scheduleData);
+        addMouseListener(scheduleData); // Click in StudentList ändert Schedule-TableModel (scheduleData)
     }
 
     public StudentListData getStudentData() {

@@ -96,6 +96,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         scheduleData.initScheduleData(scheduleTimes);
         schedule = new Schedule_new(scheduleData);
+        scheduleData.fireTableDataChanged();
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...

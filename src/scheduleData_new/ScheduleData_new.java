@@ -96,12 +96,7 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
     @Override
     public Object getValueAt(int row, int col) {
-
-        if (col % 2 == 0) {   // nur TimeColumns zeichnen
-            return fieldDataMatrix[col][row];
-        } else {
-            return null;
-        }
+        return fieldDataMatrix[col][row];
     }
 
     @Override
@@ -114,15 +109,19 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
         // StudentList 
         if (m.getSource() instanceof StudentList) {
+            
             StudentList studentList = (StudentList) m.getSource();
+            
             int studentID = studentList.rowAtPoint(m.getPoint());
             int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
+            
             if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
                 DayColumnData_new dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
                 dayColumn.resetValidTimeMarks();
                 StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID); // ????
                 dayColumn.setValidTimeMarks(studentDay);  // setzt die Timemarks des angeklickten StudentList-Tages
-                fireTableDataChanged();
+                fireTableDataChanged();  
+                
             }
         }
     }

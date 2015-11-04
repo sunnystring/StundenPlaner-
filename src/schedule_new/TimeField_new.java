@@ -29,20 +29,24 @@ import util.Colors;
  *
  * @author mathiaskielholz
  */
-public class TimeField_new extends JLabel implements TableCellRenderer, MouseMotionListener {
+public class TimeField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
     private JTable timeTable;
     private ScheduleData_new scheduleData;
     private int selectedRow, selectedCol; // MouseEvent: Koordinaten TimeTable
     private int tempRow, tempCol;
+    private int rowCount, columnCount;
 
     public TimeField_new(JTable timeTable) {
 
         this.timeTable = timeTable;
         scheduleData = (ScheduleData_new) timeTable.getModel();
         selectedRow = -1;
+        selectedCol = -1;
         tempRow = -1;
-        tempCol = 0;
+        tempCol = -1;
+        rowCount = scheduleData.getRowCount();
+        columnCount = scheduleData.getColumnCount();
 
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
@@ -81,7 +85,7 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
                 setBackground(Colors.TIMEFIELD_HOUR);
             }
         }
-        // Mouseover 
+        // Mouseover Schedule
         if (row == selectedRow && col == selectedCol) {
             setBackground(Color.GRAY);
             setForeground(Color.WHITE);
@@ -93,46 +97,109 @@ public class TimeField_new extends JLabel implements TableCellRenderer, MouseMot
     @Override
     public void mouseMoved(MouseEvent m) {
 
-        // Schedule    
+        //  System.out.println("mouse timefield:" + m.getPoint());
+      //  System.out.println("mouse lectionfield:" + m.getPoint());
+
         Point p = m.getPoint();
         selectedCol = timeTable.columnAtPoint(p) - 1;
         selectedRow = timeTable.rowAtPoint(p);
 
-        if (selectedRow > tempRow) {  // abwärts
-            for (int i = 0; i < scheduleData.getRowCount(); i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow - i, selectedCol, false));
-            }
-
-        } else {   // aufwärts
-            for (int i = 0; i < scheduleData.getRowCount(); i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false));
+        timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
+        if (selectedRow != tempRow) {
+            cleanDirtyColumn(selectedRow, selectedRow < tempRow);
+        }
+        if (selectedCol != tempCol) {
+            cleanDirtyRow(selectedCol, selectedCol < tempCol);
+        }
+        // Border unten, wird nicht erfasst durch mouseExited 
+        if (selectedRow < 0) {
+            selectedCol = -1;
+            selectedRow = -1;
+            for (int i = 0; i < columnCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(rowCount - 1, i, false));
             }
         }
-        if (selectedCol > tempCol) {   // nach rechts
-            for (int i = 0; i < scheduleData.getColumnCount() * 4; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol - i, false));
-            }
-//            if (tempCol == 0) {
-//                for (int i = 0; i < scheduleData.getRowCount(); i++) {
-//                    timeTable.repaint(timeTable.getCellRect(i, 0, false));
-//                }
-//            }
-        } else {  // nach links
-            for (int i = 0; i < scheduleData.getColumnCount() * 4; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false));
-            }
-        }
-        // Randzonen
-//        if (tempCol == 0 && selectedCol == 0) { // links
-//            for (int i = 0; i < scheduleData.getRowCount(); i++) {
-//                timeTable.repaint(timeTable.getCellRect(i, 0, false));
-//            }
-//        }
         tempCol = selectedCol;
         tempRow = selectedRow;
+
     }
 
+    public void cleanDirtyRow(int col, boolean moveLeft) {
+
+        if (moveLeft) {
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 1, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 2, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 3, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 4, false));
+        } else {
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 1, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 2, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 3, false));
+            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 4, false));
+        }
+    }
+
+    public void cleanDirtyColumn(int row, boolean moveUp) {
+
+        if (moveUp) {
+            timeTable.repaint(timeTable.getCellRect(row + 1, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 2, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 3, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 4, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 5, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 6, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 7, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row + 8, selectedCol, false));
+        } else {
+            timeTable.repaint(timeTable.getCellRect(row - 1, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 2, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 3, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 4, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 5, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 6, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 7, selectedCol, false));
+            timeTable.repaint(timeTable.getCellRect(row - 8, selectedCol, false));
+        }
+    }
+
+    // damit MouseOver wieder aus TimeTable findet
+    @Override
+    public void mouseExited(MouseEvent m) {
+
+        // Border rechts
+        if (selectedCol > columnCount - 1) {
+            selectedCol = -1;
+            selectedRow = -1;
+            for (int i = 0; i < rowCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(i, columnCount - 2, false));
+            }
+            // Border links und oben
+        } else {
+            selectedCol = -1;
+            selectedRow = -1;
+            timeTable.repaint();
+        }
+    }
+
+    // unbenutzt
     @Override
     public void mouseDragged(MouseEvent me) {
     }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+    }
+
 }

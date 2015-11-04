@@ -79,7 +79,7 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
     public void mouseMoved(MouseEvent m) {
 
         if (m.getSource() instanceof StudentList) {
-            
+
             StudentList studentList = (StudentList) m.getSource();
             Point point = m.getPoint();
 
@@ -97,27 +97,29 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         if (m.getSource() instanceof StudentList) {
 
             StudentList studentList = (StudentList) m.getSource();
+            Point p = m.getPoint();
             // Zellen selektieren 
-            if (studentList.columnAtPoint(m.getPoint()) > 0) {   // NameField nicht ansprechbar
+            if (studentList.columnAtPoint(p) > 0) {   // NameField nicht ansprechbar
                 if (!rowSelected) {  // Falls noch keine Selektion gemacht
-                    selectedRow = studentList.rowAtPoint(m.getPoint());  //  = StudentID
-                    selectedCol = studentList.columnAtPoint(m.getPoint());
+                    selectedRow = studentList.rowAtPoint(p);  //  = StudentID
+                    selectedCol = studentList.columnAtPoint(p);
                     rowSelected = true;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
                     // 1. Selektion bzw. mehrere auf in gleicher Zelle
-                } else if (selectedRow == studentList.rowAtPoint(m.getPoint()) && selectedCol == studentList.columnAtPoint(m.getPoint())) {
+                } else if (selectedRow == studentList.rowAtPoint(p) && selectedCol == studentList.columnAtPoint(p)) {
                     rowSelected = !rowSelected;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
                     // nachfolgende Selektionen
-                } else if (selectedRow == studentList.rowAtPoint(m.getPoint()) && selectedCol != studentList.columnAtPoint(m.getPoint())) {
+                } else if (selectedRow == studentList.rowAtPoint(p) && selectedCol != studentList.columnAtPoint(p)) {
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // alte Zelle löschen
-                    selectedRow = studentList.rowAtPoint(m.getPoint());  //  neue Koordinaten setzen
-                    selectedCol = studentList.columnAtPoint(m.getPoint());
+                    selectedRow = studentList.rowAtPoint(p);  //  neue Koordinaten setzen
+                    selectedCol = studentList.columnAtPoint(p);
                     rowSelected = true;
                     studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // neue Zelle zeichnen
                 }
             } // StudentDataEntry aufrufen für Änderung Schülerdaten 
-            else if (studentList.columnAtPoint(m.getPoint()) == 0 && !rowSelected && m.getClickCount() == 2) {
+            else if (studentList.columnAtPoint(p) == 0 && !rowSelected && m.getClickCount() == 2) {
+
                 // falsch, nicht new, sondern  Maske, die auf alte Daten zugreift, Student darf nicht in Entry erzeugt werden
                 StudentDataEntry mask = new StudentDataEntry(studentData, null);
                 mask.setVisible(true);

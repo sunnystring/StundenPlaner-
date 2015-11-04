@@ -5,9 +5,11 @@
  */
 package schedule_new;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -15,59 +17,97 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
+import scheduleData_new.ScheduleData_new;
 import util.Colors;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class LectionField_new extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
-    
-    private JTable timeTable;
+public class LectionField_new extends TimeField_new {
 
+    private JTable timeTable;
+    private int selectedRow, selectedCol; // MouseEvent: Koordinaten TimeTable
+
+//
     public LectionField_new(JTable timeTable) {
-        
+
+        super(timeTable);
         this.timeTable = timeTable;
         
+        selectedRow = -1;
+        selectedCol = -1;
+//        
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD, 10));
         setBackground(Colors.BACKGROUND);
         setOpaque(true);
     }
-    
-    
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        
+         // Mouseover Schedule
+        if (row == selectedRow && col == selectedCol) {
+            setBackground(Colors.LIGHT_GREEN);
+            setForeground(Color.WHITE);
+        }
+        
         return this;
     }
+//
+//   
+//
 
     @Override
-    public void mouseDragged(MouseEvent me) {
+    public void mouseMoved(MouseEvent m) {
+        
+        
+    //    super.mouseMoved(m);
+        Point p = m.getPoint();
+        selectedCol = timeTable.columnAtPoint(p);
+        selectedRow = timeTable.rowAtPoint(p);
+      
+//        
+    //  timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
+//        
+//        timeTable.repaint(timeTable.getCellRect(selectedRow+1, selectedCol, false));
+//        timeTable.repaint(timeTable.getCellRect(selectedRow+2, selectedCol, false));
+//        timeTable.repaint(timeTable.getCellRect(selectedRow+3, selectedCol, false));
+//        timeTable.repaint(timeTable.getCellRect(selectedRow+4, selectedCol, false));
+//        timeTable.repaint(timeTable.getCellRect(selectedRow+5, selectedCol, false));
+        
+        
+        
+        
+       
+
     }
+//
 
     @Override
-    public void mouseMoved(MouseEvent me) {
+    public void mouseClicked(MouseEvent m) {
     }
-
-    @Override
-    public void mouseClicked(MouseEvent me) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent me) {
-    }
+//
+//    
+//    // unbenutzt 
+//    @Override
+//    public void mousePressed(MouseEvent me) {
+//    }
+//
+//    @Override
+//    public void mouseReleased(MouseEvent me) {
+//    }
+//
+//    @Override
+//    public void mouseEntered(MouseEvent me) {
+//    }
+//
+//    @Override
+//    public void mouseExited(MouseEvent me) {
+//    }
+//     @Override
+//    public void mouseDragged(MouseEvent me) {
+//    }
 
 }
