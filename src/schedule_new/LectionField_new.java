@@ -51,9 +51,9 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        //    System.out.println("lectionfield renderer:  selectedRow = " + selectedRow + "  selectedCol = " + selectedCol);
 
         setBackground(Colors.BACKGROUND);
-          System.out.println("lectionfield renderer:  selectedRow = " + selectedRow + "  selectedCol = " + selectedCol);
         // Mouseover Schedule
         if (row == selectedRow && col == selectedCol) {
             setBackground(Colors.LIGHT_GREEN);
@@ -61,29 +61,23 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         }
         return this;
     }
-//
-//   
-//
 
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
 
-           System.out.println("mouse lectionfield:  selectedRow = " + selectedRow + "  selectedCol = " + selectedCol);
         Point p = m.getPoint();
         selectedCol = timeTable.columnAtPoint(p);
         selectedRow = timeTable.rowAtPoint(p);
 
         timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
-  
-        // timeTable.repaint(timeTable.getCellRect(selectedRow, selectedColTimeField, false));
         if (selectedRow != tempRow) {
             cleanDirtyColumn(selectedRow, selectedRow < tempRow);
         }
         if (selectedCol != tempCol) {
             cleanDirtyRow(selectedCol, selectedCol < tempCol);
         }
-        // Border unten, wird nicht erfasst durch mouseExited 
+        // Border unten nicht erfasst durch mouseExited aber rowAtPoint = -1
         if (selectedRow < 0) {
             selectedCol = -1;
             selectedRow = -1;
@@ -95,41 +89,29 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         tempRow = selectedRow;
     }
 
-    public void cleanDirtyRow(int col, boolean moveLeft) {
+    protected void cleanDirtyRow(int col, boolean moveLeft) {
 
         if (moveLeft) {
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 1, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 2, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 3, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col + 4, false));
+            for (int i = 1; i < 5; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow, col + i, false));
+            }
         } else {
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 1, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 2, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 3, false));
-            timeTable.repaint(timeTable.getCellRect(selectedRow, col - 4, false));
+            for (int i = 1; i < 5; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow, col - i, false));
+            }
         }
     }
 
-    public void cleanDirtyColumn(int row, boolean moveUp) {
+    protected void cleanDirtyColumn(int row, boolean moveUp) {
 
         if (moveUp) {
-            timeTable.repaint(timeTable.getCellRect(row + 1, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 2, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 3, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 4, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 5, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 6, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 7, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row + 8, selectedCol, false));
+            for (int i = 1; i < 14; i++) {
+                timeTable.repaint(timeTable.getCellRect(row + i, selectedCol, false));
+            }
         } else {
-            timeTable.repaint(timeTable.getCellRect(row - 1, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 2, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 3, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 4, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 5, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 6, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 7, selectedCol, false));
-            timeTable.repaint(timeTable.getCellRect(row - 8, selectedCol, false));
+            for (int i = 1; i < 20; i++) {
+                timeTable.repaint(timeTable.getCellRect(row - i, selectedCol, false));
+            }
         }
     }
 
@@ -137,18 +119,28 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     @Override
     public void mouseExited(MouseEvent m) {
 
-        // Border rechts
-        if (selectedCol > columnCount - 1) {
+        // Border rechts: letzte Time- und Lectionspalte löschen
+        if (selectedCol == columnCount - 1) {
             selectedCol = -1;
             selectedRow = -1;
             for (int i = 0; i < rowCount; i++) {
                 timeTable.repaint(timeTable.getCellRect(i, columnCount - 1, false));
+                timeTable.repaint(timeTable.getCellRect(i, columnCount - 2, false));
             }
-            // Border links und oben
-        } else {
+            // Border links: 1. Spalte löschen
+        } else if (selectedCol == 0) {
             selectedCol = -1;
             selectedRow = -1;
-            timeTable.repaint();
+            for (int i = 0; i < rowCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(i, 0, false));
+            }
+            // Border oben 1. Zeile löschen
+        } else if (selectedRow == 0) {
+            selectedCol = -1;
+            selectedRow = -1;
+            for (int i = 0; i < columnCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(0, i, false));
+            }
         }
     }
 
