@@ -75,7 +75,7 @@ public class Schedule_new extends JPanel {
         }
         timeTable.addMouseListener(scheduleData); // Click in timeTable ändert TableModel (scheduleData)
         timeTable.addMouseMotionListener(timeField);  // Anzeige: bewirkt keine Änderung im TableModel
-        timeTable.addMouseListener(timeField);
+       // timeTable.addMouseListener(timeField);
         timeTable.addMouseMotionListener(lectionField);
         timeTable.addMouseListener(lectionField);
 

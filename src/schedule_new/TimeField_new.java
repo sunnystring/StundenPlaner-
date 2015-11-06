@@ -73,17 +73,32 @@ public class TimeField_new extends LectionField_new {
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
-
+        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
-        selectedCol = timeTable.columnAtPoint(p) - 1;  // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
+        if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn, diese zeichnen
+            selectedCol = timeTable.columnAtPoint(p);
+        } else {
+            selectedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, die zugehörige TimeColumn links zeichnen
+        }
         selectedRow = timeTable.rowAtPoint(p);
         timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
+
     }
 
     @Override
     public void mouseExited(MouseEvent m) {
-        // reset
-        selectedCol = -1;
-        selectedRow = -1;
+
+        Point p = m.getPoint();
+        if (timeTable.rowAtPoint(p) == 0) {  // falls LectionColumn, diese zeichnen
+            if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn, diese zeichnen
+                selectedCol = timeTable.columnAtPoint(p);
+            } else {
+                selectedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, die zugehörige TimeColumn links zeichnen
+            }
+            selectedRow = 0;
+            for (int i = 0; i < rowCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // alle Rows unter selectedCol
+            }
+        }
     }
 }
