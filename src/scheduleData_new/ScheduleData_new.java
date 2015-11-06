@@ -19,7 +19,7 @@ import studentlistGUI.StudentList;
  *
  * @author Mathias
  */
-public class ScheduleData_new extends AbstractTableModel implements MouseListener {
+public class ScheduleData_new extends AbstractTableModel implements MouseListener, MouseMotionListener {
 
     private ScheduleTimes_new scheduleTimes;
     private int numberOfDays;
@@ -109,19 +109,19 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
         // StudentList 
         if (m.getSource() instanceof StudentList) {
-            
+
             StudentList studentList = (StudentList) m.getSource();
-            
+
             int studentID = studentList.rowAtPoint(m.getPoint());
             int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
-            
+
             if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
                 DayColumnData_new dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
                 dayColumn.resetValidTimeMarks();
                 StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID); // ????
                 dayColumn.setValidTimeMarks(studentDay);  // setzt die Timemarks des angeklickten StudentList-Tages
-                fireTableDataChanged();  
-                
+                fireTableDataChanged();
+
             }
         }
     }
@@ -141,5 +141,24 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
     @Override
     public void mouseExited(MouseEvent m) {
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+        JTable timeTable = (JTable) e.getSource();
+        Point p = e.getPoint();
+        
+      //  for (int i = 0; i < 6; i++) {
+             fieldDataMatrix[timeTable.columnAtPoint(p)][timeTable.rowAtPoint(p)].setLectionPanel(true);
+                fieldDataMatrix[timeTable.columnAtPoint(p)-1][timeTable.rowAtPoint(p)-1].setLectionPanel(true);
+             fireTableCellUpdated(timeTable.rowAtPoint(p), timeTable.columnAtPoint(p));
+      //  }
+        
+          
     }
 }

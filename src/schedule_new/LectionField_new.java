@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
+import scheduleData_new.FieldData_new;
 import scheduleData_new.ScheduleData_new;
 import util.Colors;
 
@@ -28,10 +29,10 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
     private JTable timeTable;
     private ScheduleData_new scheduleData;
-    private int selectedRow, selectedCol; // MouseEvent: Koordinaten TimeTable
-    private int rowCount, columnCount;
+    private int selectedRow, selectedCol, selectedRowEnd; // MouseEvent: Koordinaten TimeTable
+    protected int rowCount, columnCount;
     private int tempRow, tempCol;
-//
+    protected static final int LECTION_ID = 8;
 
     public LectionField_new(JTable timeTable) {
 
@@ -51,97 +52,83 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        //    System.out.println("lectionfield renderer:  selectedRow = " + selectedRow + "  selectedCol = " + selectedCol);
+        //  FieldData_new fieldData = (FieldData_new) value;
 
         setBackground(Colors.BACKGROUND);
         // Mouseover Schedule
-        if (row == selectedRow && col == selectedCol) {
+        if (col == selectedCol && row >= selectedRow && row < selectedRowEnd) {
             setBackground(Colors.LIGHT_GREEN);
             setForeground(Color.WHITE);
         }
         return this;
     }
 
+    protected void paintHorizontalPanel(boolean moveLeft) {
+
+        if (moveLeft) {
+            for (int i = 0; i < columnCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false)); // alle Colums rechts von selectedCol
+                for (int j = 0; j < LECTION_ID; j++) {
+                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false)); // darunter Rows (= Länge lectionType)
+                }
+            }
+        } else {
+            for (int i = 0; i < columnCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol - i, false)); // alle Colums links von selectedCol
+                for (int j = 0; j < LECTION_ID; j++) {
+                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false)); // darunter Rows
+                }
+            }
+        }
+    }
+
+    protected void paintVerticalPanel(boolean moveUp) {
+
+        if (moveUp) {
+            for (int i = 0; i < rowCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // alle Rows unter selectedCol
+            }
+        } else {
+            for (int i = 0; i < rowCount; i++) {
+
+                if (i < LECTION_ID) {
+                    timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel 
+                }
+                timeTable.repaint(timeTable.getCellRect(selectedRow - i, selectedCol, false)); // alle Rows über selectedCol, darunter das LectionPanel
+            }
+        }
+    }
+
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
-
+        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
-        selectedCol = timeTable.columnAtPoint(p);
+        if (timeTable.columnAtPoint(p) % 2 != 0) {
+            selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
+        } else {
+            selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
+        }
         selectedRow = timeTable.rowAtPoint(p);
+        selectedRowEnd = selectedRow + LECTION_ID;
 
-        timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
         if (selectedRow != tempRow) {
-            cleanDirtyColumn(selectedRow, selectedRow < tempRow);
+            paintVerticalPanel(selectedRow < tempRow);
         }
         if (selectedCol != tempCol) {
-            cleanDirtyRow(selectedCol, selectedCol < tempCol);
-        }
-        // Border unten nicht erfasst durch mouseExited aber rowAtPoint = -1
-        if (selectedRow < 0) {
-            selectedCol = -1;
-            selectedRow = -1;
-            for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(rowCount - 1, i, false));
-            }
+            paintHorizontalPanel(selectedCol < tempCol);
         }
         tempCol = selectedCol;
         tempRow = selectedRow;
     }
 
-    protected void cleanDirtyRow(int col, boolean moveLeft) {
-
-        if (moveLeft) {
-            for (int i = 1; i < 5; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, col + i, false));
-            }
-        } else {
-            for (int i = 1; i < 5; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, col - i, false));
-            }
-        }
-    }
-
-    protected void cleanDirtyColumn(int row, boolean moveUp) {
-
-        if (moveUp) {
-            for (int i = 1; i < 14; i++) {
-                timeTable.repaint(timeTable.getCellRect(row + i, selectedCol, false));
-            }
-        } else {
-            for (int i = 1; i < 20; i++) {
-                timeTable.repaint(timeTable.getCellRect(row - i, selectedCol, false));
-            }
-        }
-    }
-
-    // damit MouseOver wieder aus TimeTable findet
+    /*  MouseListener Implementation */
     @Override
     public void mouseExited(MouseEvent m) {
 
-        // Border rechts: letzte Time- und Lectionspalte löschen
-        if (selectedCol == columnCount - 1) {
-            selectedCol = -1;
-            selectedRow = -1;
-            for (int i = 0; i < rowCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(i, columnCount - 1, false));
-                timeTable.repaint(timeTable.getCellRect(i, columnCount - 2, false));
-            }
-            // Border links: 1. Spalte löschen
-        } else if (selectedCol == 0) {
-            selectedCol = -1;
-            selectedRow = -1;
-            for (int i = 0; i < rowCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(i, 0, false));
-            }
-            // Border oben 1. Zeile löschen
-        } else if (selectedRow == 0) {
-            selectedCol = -1;
-            selectedRow = -1;
-            for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(0, i, false));
-            }
-        }
+        selectedRow = -1;
+        selectedCol = -1;
+        timeTable.repaint();
     }
 
     // unbenutzt
@@ -162,7 +149,6 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     }
 
     @Override
-    public void mouseEntered(MouseEvent me) {
+    public void mouseEntered(MouseEvent m) {
     }
-
 }
