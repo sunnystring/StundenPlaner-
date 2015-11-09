@@ -152,13 +152,12 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
         JTable timeTable = (JTable) e.getSource();
         Point p = e.getPoint();
-        
-      //  for (int i = 0; i < 6; i++) {
-             fieldDataMatrix[timeTable.columnAtPoint(p)][timeTable.rowAtPoint(p)].setLectionPanel(true);
-                fieldDataMatrix[timeTable.columnAtPoint(p)-1][timeTable.rowAtPoint(p)-1].setLectionPanel(true);
-             fireTableCellUpdated(timeTable.rowAtPoint(p), timeTable.columnAtPoint(p));
+
+        //  for (int i = 0; i < 6; i++) {
+        fieldDataMatrix[timeTable.columnAtPoint(p)][timeTable.rowAtPoint(p)].setLectionPanel(true);
+        fieldDataMatrix[timeTable.columnAtPoint(p) - 1][timeTable.rowAtPoint(p) - 1].setLectionPanel(true);
+        fireTableCellUpdated(timeTable.rowAtPoint(p), timeTable.columnAtPoint(p));
       //  }
-        
-          
+
     }
 }

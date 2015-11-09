@@ -35,6 +35,7 @@ public class TimeField_new extends LectionField_new {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
         FieldData_new fieldData = (FieldData_new) value;
+        
         // Text ausgeben
         if (fieldData.isMinute(row)) {
             setText(fieldData.getMinute(row));
@@ -73,6 +74,7 @@ public class TimeField_new extends LectionField_new {
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
+        
         // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
         if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn, diese zeichnen
@@ -88,7 +90,7 @@ public class TimeField_new extends LectionField_new {
     @Override
     public void mouseExited(MouseEvent m) {
 
-        selectedCol = -1;
         selectedRow = -1;
+        selectedCol = -1;
     }
 }

@@ -55,6 +55,7 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         FieldData_new fieldData = (FieldData_new) value;
 
         setBackground(Colors.BACKGROUND);
+        
         // Mouseover Schedule
         if (col == selectedCol && row >= selectedRow && row < selectedRowEnd) {
             setBackground(Colors.LIGHT_GREEN);
@@ -126,10 +127,10 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     @Override
     public void mouseExited(MouseEvent m) {
 
-        if(selectedCol == columnCount-1 && selectedRow != 0){
+     //   if(selectedCol == columnCount-1 && selectedRow != 0){
         selectedRow = -1;
         selectedCol = -1;
-        timeTable.repaint();}
+      //  timeTable.repaint();}
     }
 
     // unbenutzt
