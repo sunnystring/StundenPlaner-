@@ -32,6 +32,7 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     private int selectedRow, selectedCol, selectedRowEnd; // MouseEvent: Koordinaten TimeTable
     protected int rowCount, columnCount;
     private int tempRow, tempCol;
+    protected static final int LECTION_ID = 8;
 
     public LectionField_new(JTable timeTable) {
 
@@ -61,31 +62,6 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         }
         return this;
     }
-
-    /*  MouseMotionListener Implementation */
-    @Override
-    public void mouseMoved(MouseEvent m) {
-        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
-        Point p = m.getPoint();
-        if (timeTable.columnAtPoint(p) % 2 != 0) {
-            selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
-        } else {
-            selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
-        }
-        selectedRow = timeTable.rowAtPoint(p);
-        selectedRowEnd = selectedRow + LECTION_ID;
-
-        if (selectedRow != tempRow) {
-            paintVerticalPanel(selectedRow < tempRow);
-        }
-        if (selectedCol != tempCol) {
-            paintHorizontalPanel(selectedCol < tempCol);
-        }
-        tempCol = selectedCol;
-        tempRow = selectedRow;
-    }
-
-    protected static final int LECTION_ID = 8;
 
     protected void paintHorizontalPanel(boolean moveLeft) {
 
@@ -123,8 +99,37 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         }
     }
 
+    /*  MouseMotionListener Implementation */
     @Override
-    public void mouseEntered(MouseEvent m) {
+    public void mouseMoved(MouseEvent m) {
+        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
+        Point p = m.getPoint();
+        if (timeTable.columnAtPoint(p) % 2 != 0) {
+            selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
+        } else {
+            selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
+        }
+        selectedRow = timeTable.rowAtPoint(p);
+        selectedRowEnd = selectedRow + LECTION_ID;
+
+        if (selectedRow != tempRow) {
+            paintVerticalPanel(selectedRow < tempRow);
+        }
+        if (selectedCol != tempCol) {
+            paintHorizontalPanel(selectedCol < tempCol);
+        }
+        tempCol = selectedCol;
+        tempRow = selectedRow;
+    }
+
+    /*  MouseListener Implementation */
+    @Override
+    public void mouseExited(MouseEvent m) {
+
+        if(selectedCol == columnCount-1 && selectedRow != 0){
+        selectedRow = -1;
+        selectedCol = -1;
+        timeTable.repaint();}
     }
 
     // unbenutzt
@@ -145,24 +150,6 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     }
 
     @Override
-    public void mouseExited(MouseEvent m) {
-
-        Point p = m.getPoint();
-
-        if (timeTable.rowAtPoint(p) == 0) {  // oben
-            if (timeTable.columnAtPoint(p) % 2 != 0) {  // falls LectionColumn, diese zeichnen
-                selectedCol = timeTable.columnAtPoint(p); // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
-            } else {
-                selectedCol = timeTable.columnAtPoint(p) + 1;
-            }
-            selectedRow = 0;
-            selectedRowEnd = LECTION_ID;
-            for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false)); // alle Colums rechts von selectedCol
-                for (int j = 0; j < LECTION_ID; j++) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false)); // darunter Rows (= Länge lectionType)
-                }
-            }
-        }
+    public void mouseEntered(MouseEvent m) {
     }
 }

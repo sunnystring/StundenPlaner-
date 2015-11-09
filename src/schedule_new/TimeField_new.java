@@ -88,17 +88,7 @@ public class TimeField_new extends LectionField_new {
     @Override
     public void mouseExited(MouseEvent m) {
 
-        Point p = m.getPoint();
-        if (timeTable.rowAtPoint(p) == 0) {  // falls LectionColumn, diese zeichnen
-            if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn, diese zeichnen
-                selectedCol = timeTable.columnAtPoint(p);
-            } else {
-                selectedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, die zugehörige TimeColumn links zeichnen
-            }
-            selectedRow = 0;
-            for (int i = 0; i < rowCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // alle Rows unter selectedCol
-            }
-        }
+        selectedCol = -1;
+        selectedRow = -1;
     }
 }
