@@ -34,7 +34,7 @@ public class ScheduleTimeFrame_new {
     }
 
     /* hier wird der Zeitrahmen jeder DayColumn initialisiert und zu int konvertiert*/
-    public void initTimeFrame(ScheduleDay_new scheduleDay) {
+    public void createTimeFrame(ScheduleDay_new scheduleDay) {
 
         Time scheduleStart;
         Time scheduleEnd;

@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -29,10 +30,9 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
     private JTable timeTable;
     private ScheduleData_new scheduleData;
-    private int selectedRow, selectedCol, selectedRowEnd; // MouseEvent: Koordinaten TimeTable
-    protected int rowCount, columnCount;
-    private int tempRow, tempCol;
-    protected static final int LECTION_ID = 8;
+    private int selectedRow, selectedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
+    protected int rowCount, columnCount, lectionLenght = 8;
+    private int tempRow, tempCol, lectionDiff;
 
     public LectionField_new(JTable timeTable) {
 
@@ -42,23 +42,60 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
         selectedCol = -1;
         tempRow = -1;
         tempCol = -1;
+        lectionDiff = -1;
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
 
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setFont(this.getFont().deriveFont(Font.PLAIN, 10));
+        setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        FieldData_new fieldData = (FieldData_new) value;
 
+        FieldData_new fieldData = (FieldData_new) value;
         setBackground(Colors.BACKGROUND);
-        // Mouseover Schedule
-        if (col == selectedCol && row >= selectedRow && row < selectedRowEnd) {
+        setText("");
+
+        // LectionPanel-Mouseover
+        if (col == selectedCol && row >= selectedRow && row < lectionEnd) {
             setBackground(Colors.LIGHT_GREEN);
             setForeground(Color.WHITE);
+            System.out.println("lectionDiff = " + lectionDiff);
+
+            if (selectedRow == rowCount) {
+                //.......
+            }
+            if (row == selectedRow) {
+                setForeground(Color.GRAY);
+                setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.WHITE));
+                setFont(this.getFont().deriveFont(Font.PLAIN, 8));
+                setText("  " + fieldData.getTime().toString());
+
+            } else if (row == selectedRow + 1) {
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setText("  Vorname");
+            } else if (row == selectedRow + 2) {
+                setText("  Name");
+            }
+            if (row == lectionEnd - 1) {
+                setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.WHITE));
+            }
+        }
+
+        // ??? 
+        if (lectionDiff >= 0) {
+            if (col == selectedCol + 2 && row >= 0 && row < lectionDiff) {
+                setBackground(Colors.LIGHT_GREEN);
+                setForeground(Color.WHITE);
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+            }
+//            if (lectionDiff == lectionLenght - 2 && row == 0) {
+//                setText("  Name");
+//            }
+//            if (lectionDiff == lectionLenght - 1 ) {
+//                setText("  Vorname");
+//            }
         }
         return this;
     }
@@ -67,16 +104,16 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
         if (moveLeft) {
             for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false)); // alle Colums rechts von selectedCol
-                for (int j = 0; j < LECTION_ID; j++) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false)); // darunter Rows (= Länge lectionType)
+                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false)); // alle Colums rechts von LectionPanel löschen
+                for (int j = 0; j < lectionLenght; j++) {
+                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false));
                 }
             }
         } else {
             for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol - i, false)); // alle Colums links von selectedCol
-                for (int j = 0; j < LECTION_ID; j++) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false)); // darunter Rows
+                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol - i, false)); // alle Colums links von LectionPanel löschen
+                for (int j = 0; j < lectionLenght; j++) {
+                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false));
                 }
             }
         }
@@ -86,15 +123,14 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
         if (moveUp) {
             for (int i = 0; i < rowCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // alle Rows unter selectedCol
+                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel, darunter löschen
             }
         } else {
             for (int i = 0; i < rowCount; i++) {
-
-                if (i < LECTION_ID) {
+                if (i < lectionLenght) {
                     timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel 
                 }
-                timeTable.repaint(timeTable.getCellRect(selectedRow - i, selectedCol, false)); // alle Rows über selectedCol, darunter das LectionPanel
+                timeTable.repaint(timeTable.getCellRect(selectedRow - i, selectedCol, false)); // darüber löschen
             }
         }
     }
@@ -102,43 +138,61 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
+
         // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
+        if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
+            return;
+        }
+        selectedRow = timeTable.rowAtPoint(p);
+        lectionEnd = selectedRow + lectionLenght;
+        lectionDiff = lectionEnd - rowCount;
+        // Columns zuweisen
         if (timeTable.columnAtPoint(p) % 2 != 0) {
             selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
         } else {
             selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
         }
-        selectedRow = timeTable.rowAtPoint(p);
-        selectedRowEnd = selectedRow + LECTION_ID;
-
+        // LectionPanel zeichnen
         if (selectedRow != tempRow) {
             paintVerticalPanel(selectedRow < tempRow);
         }
         if (selectedCol != tempCol) {
             paintHorizontalPanel(selectedCol < tempCol);
         }
+        // Spaltenende 
+        if (lectionDiff >= 0) {
+            if (selectedCol % 4 == 1) {  // 1. LectionColumn
+                //  selectedCol = selectedCol + 2;  // Übertrag auf 2. LectionColumn
+                lectionDiff = lectionEnd - rowCount;
+                for (int i = 0; i < lectionDiff; i++) {
+                    timeTable.repaint(timeTable.getCellRect(i, selectedCol + 2, false)); // Übertrag zeichnen in 2. LectionColumn, bei row = 0 beginnen
+
+                    //   System.out.println("selectedRow=" + i);
+                }
+//                for (int i = 0; i < rowCount; i++) {
+//                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel, darunter löschen
+//            }
+
+                // paintVerticalPanel(false);
+            } else if (selectedCol % 4 == 3) { // 2. LectionColumn
+                selectedRow = rowCount - lectionLenght;  // LectionField freezen
+                // paintVerticalPanel(false);
+            }
+        }
+        // Zwischenspeicher updaten
         tempCol = selectedCol;
         tempRow = selectedRow;
     }
 
     /*  MouseListener Implementation */
     @Override
-    public void mouseExited(MouseEvent m) {
-
-        if(selectedCol == columnCount-1 && selectedRow != 0){
-        selectedRow = -1;
-        selectedCol = -1;
-        timeTable.repaint();}
+    public void mouseClicked(MouseEvent me) {
     }
 
     // unbenutzt
     @Override
     public void mouseDragged(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent me) {
     }
 
     @Override
@@ -151,5 +205,10 @@ public class LectionField_new extends JLabel implements TableCellRenderer, Mouse
 
     @Override
     public void mouseEntered(MouseEvent m) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent m) {
+
     }
 }

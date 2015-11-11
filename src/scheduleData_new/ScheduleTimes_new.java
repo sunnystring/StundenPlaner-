@@ -45,7 +45,7 @@ public class ScheduleTimes_new implements TableModel {
     }
 
     /* dynamische Liste mit gültigen ScheduleDays befüllen*/
-    public void createList() {
+    public void createScheduleDayList() {
 
         for (int i = 0; i < DAYS; i++) {
             if (isValidScheduleDay(i)) {

@@ -19,7 +19,7 @@ import studentlistGUI.StudentList;
  *
  * @author Mathias
  */
-public class ScheduleData_new extends AbstractTableModel implements MouseListener, MouseMotionListener {
+public class ScheduleData_new extends AbstractTableModel implements MouseListener {
 
     private ScheduleTimes_new scheduleTimes;
     private int numberOfDays;
@@ -39,20 +39,20 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
     public void initScheduleData(ScheduleTimes_new scheduleTimes) {
 
         this.scheduleTimes = scheduleTimes;
-        scheduleTimes.createList();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
+        scheduleTimes.createScheduleDayList();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
         numberOfDays = scheduleTimes.getNumberOfDays();
 
         // ColumnModels erzeugen
         // DayColumnData instantiieren und globaler Zeitrahmen aller ScheduleDays festlegen
         for (int i = 0; i < numberOfDays; i++) {
             dayColumnDataList.add(new DayColumnData_new());
-            timeFrame.initTimeFrame(scheduleTimes.getScheduleDay(i));
+            timeFrame.createTimeFrame(scheduleTimes.getScheduleDay(i));
         }
         // DayColumnData initialisieren, Zeitrahmen in alle Tage einsetzen, FieldDataList erzeugen und initialisieren
         for (int i = 0; i < numberOfDays; i++) {
             dayColumnDataList.get(i).initDayColumn(scheduleTimes.getScheduleDay(i), timeFrame);
         }
-        // FieldDataMatrix erzeugen
+        // FieldDataMatrix befüllen (Referenzen auf FieldData-Felder)
         fieldDataMatrix = new FieldData_new[getColumnCount()][getRowCount()];
         int dayIndex = 0;
         for (int i = 0; i < getColumnCount(); i++) { // i = ColumnIndex
@@ -111,17 +111,15 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
         if (m.getSource() instanceof StudentList) {
 
             StudentList studentList = (StudentList) m.getSource();
-
             int studentID = studentList.rowAtPoint(m.getPoint());
             int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
 
             if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
                 DayColumnData_new dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
                 dayColumn.resetValidTimeMarks();
-                StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID); // ????
+                StudentDay studentDay = studentList.getStudentData().getStudent(studentID).getStudentDay(studentDayID);
                 dayColumn.setValidTimeMarks(studentDay);  // setzt die Timemarks des angeklickten StudentList-Tages
                 fireTableDataChanged();
-
             }
         }
     }
@@ -141,24 +139,5 @@ public class ScheduleData_new extends AbstractTableModel implements MouseListene
 
     @Override
     public void mouseExited(MouseEvent m) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-        JTable timeTable = (JTable) e.getSource();
-        Point p = e.getPoint();
-        
-      //  for (int i = 0; i < 6; i++) {
-             fieldDataMatrix[timeTable.columnAtPoint(p)][timeTable.rowAtPoint(p)].setLectionPanel(true);
-                fieldDataMatrix[timeTable.columnAtPoint(p)-1][timeTable.rowAtPoint(p)-1].setLectionPanel(true);
-             fireTableCellUpdated(timeTable.rowAtPoint(p), timeTable.columnAtPoint(p));
-      //  }
-        
-          
     }
 }

@@ -46,14 +46,12 @@ public class DayColumnData_new {
                 FieldData_new fieldData = new FieldData_new();
                 fieldData.setTime(time.clone());
                 fieldData.setIsTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
-            //    fieldData.setIsRowMoved(false);
                 fieldDataList.add(fieldData);
                 time.inc();
             }
         } catch (CloneNotSupportedException ex) {
             ex.printStackTrace();
         }
-
     }
 
     public void setValidTimeMarks(StudentDay day) {
@@ -84,23 +82,7 @@ public class DayColumnData_new {
         return fieldDataList.get(i);
     }
 
-    public int getFieldCountStart() {
-        return fieldCountStart;
-    }
-
-    public int getFieldCountEnd() {
-        return fieldCountEnd;
-    }
-
-    public int getTotalNumberOfFields() {
-        return totalNumberOfFields;
-    }
-
     public String getDayName() {
         return scheduleDay.getDayName();
-    }
-
-    public ScheduleDay_new getScheduleDay() {
-        return scheduleDay;
     }
 }
