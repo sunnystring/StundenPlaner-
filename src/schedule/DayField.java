@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package schedule;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,9 +17,9 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class DayField_new extends JLabel {
+public class DayField extends JLabel {
 
-    public DayField_new(String text) {
+    public DayField(String text) {
 
         setText("  " + text);
         setBackground(Colors.DAY_FIELD);

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlistGUI;
+package studentlist;
 
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import scheduleData_new.ScheduleData_new;
+import scheduleData.ScheduleData;
 import util.Colors;
 
 /**
@@ -17,13 +17,10 @@ import util.Colors;
  */
 public class StudentList extends JTable {
 
-    private StudentListData studentData;
     private StudentField studentField;  // Renderer und MouseListener
     private HeaderField headerField;
 
-    public StudentList(StudentListData studentData, ScheduleData_new scheduleData) { // studentData = TableModel, schedule = Listener-Objekt
-
-        this.studentData = studentData;
+    public StudentList(StudentListData studentData, ScheduleData scheduleData) { // studentData = TableModel, schedule = Listener-Objekt
 
         setModel(studentData);
         setShowGrid(true);
@@ -48,9 +45,5 @@ public class StudentList extends JTable {
         addMouseMotionListener(studentField);
         addMouseListener(studentField);
         addMouseListener(scheduleData); // Click in StudentList ändert Schedule-TableModel (scheduleData)
-    }
-
-    public StudentListData getStudentData() {
-        return studentData;
     }
 }

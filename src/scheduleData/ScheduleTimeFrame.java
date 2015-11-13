@@ -12,7 +12,7 @@ import util.Time;
  * @author Mathias
  */
 public class ScheduleTimeFrame {
-    
+
     private Time absoluteStart;  // untere globale Zeitgrenze Stundenplan
     private Time absoluteEnd;   // obere globale Zeitgrenze Stundenplan
 
@@ -34,7 +34,7 @@ public class ScheduleTimeFrame {
     }
 
     /* hier wird der Zeitrahmen jeder DayColumn initialisiert und zu int konvertiert*/
-    public void initTimeFrame(ScheduleDay scheduleDay) {
+    public void createTimeFrame(ScheduleDay scheduleDay) {
 
         Time scheduleStart;
         Time scheduleEnd;
@@ -50,8 +50,6 @@ public class ScheduleTimeFrame {
             absoluteEnd = scheduleEnd;
         }
         totalNumberOfFields = absoluteEnd.diff(absoluteStart);
-
     }
 
-    
 }

@@ -3,36 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package schedule;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import scheduleData_new.DayColumnData_new;
-import scheduleData_new.ScheduleData_new;
-import studentListData.StudentDay;
-import studentlistGUI.StudentList;
+import scheduleData.ScheduleData;
 import util.Colors;
 
 /**
  *
  * @author Mathias
  */
-public class Schedule_new extends JPanel {
+public class Schedule extends JPanel {
 
-    private ScheduleData_new scheduleData;
+    private ScheduleData scheduleData;
     private JPanel header;
     private JTable timeTable;
-    private TimeField_new timeField;  // Renderer und Listener-Objekt
-    private LectionField_new lectionField; // Renderer und Listener-Objekt
+    private TimeField timeField;  // Renderer und Listener-Objekt
+    private LectionField lectionField; // Renderer und Listener-Objekt
 
-    public Schedule_new(ScheduleData_new scheduleData) {
+    public Schedule(ScheduleData scheduleData) {
 
         this.scheduleData = scheduleData;
 
@@ -43,7 +35,7 @@ public class Schedule_new extends JPanel {
         header.setBackground(Colors.BACKGROUND);
 
         for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
-            header.add(new DayField_new(scheduleData.getDayColumn(i).getDayName()));
+            header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
         }
         createTimeTable();
         setBackground(Colors.BACKGROUND);
@@ -61,8 +53,8 @@ public class Schedule_new extends JPanel {
         timeTable.setCellSelectionEnabled(true);
         timeTable.setRowHeight(14);
 
-        timeField = new TimeField_new(timeTable);
-        lectionField = new LectionField_new(timeTable);
+        timeField = new TimeField(timeTable);
+        lectionField = new LectionField(timeTable);
 
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
             if (i % 2 == 0) {
@@ -81,11 +73,11 @@ public class Schedule_new extends JPanel {
 
     }
 
-    public TimeField_new getTimeField() {
+    public TimeField getTimeField() {
         return timeField;
     }
 
-    public LectionField_new getLectionField() {
+    public LectionField getLectionField() {
         return lectionField;
     }
 

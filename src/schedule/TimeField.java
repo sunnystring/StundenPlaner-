@@ -3,30 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule_new;
+package schedule;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import scheduleData.FieldData;
-import scheduleData_new.FieldData_new;
 import util.Colors;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class TimeField_new extends LectionField_new {
+public class TimeField extends LectionField {
 
     private JTable timeTable;
     private int selectedRow, selectedCol; // MouseEvent: Koordinaten TimeTable
 
-    public TimeField_new(JTable timeTable) {
+    public TimeField(JTable timeTable) {
 
         super(timeTable);
         this.timeTable = timeTable;
@@ -39,8 +37,8 @@ public class TimeField_new extends LectionField_new {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-        FieldData_new fieldData = (FieldData_new) value;
-        
+        FieldData fieldData = (FieldData) value;
+
         // Text ausgeben
         if (fieldData.isMinute(row)) {
             setText(fieldData.getMinute(row));
@@ -80,7 +78,7 @@ public class TimeField_new extends LectionField_new {
     /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
-        
+
         // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
         if (timeTable.rowAtPoint(p) == -1) {  // damit TimeField stehen bleibt wenn unten nicht mehr weiter einteilbar
@@ -95,19 +93,12 @@ public class TimeField_new extends LectionField_new {
         }
         // TimeField zeichnen
         timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
-       // Spaltenende 
+        // Spaltenende 
         if (selectedRow + lectionLenght > rowCount) {
             if (selectedCol % 4 == 2) { // 2. TimeColumn
                 selectedRow = rowCount - lectionLenght; // TimeField freezen
             }
         }
 
-    }
-
-    @Override
-    public void mouseExited(MouseEvent m) {
-
-        selectedRow = -1;
-        selectedCol = -1;
     }
 }

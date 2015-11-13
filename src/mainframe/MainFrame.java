@@ -23,10 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import scheduleData_new.ScheduleData_new;
-import scheduleData_new.ScheduleTimes_new;
-import schedule_new.Schedule_new;
-import studentlistGUI.StudentList;
+import scheduleData.ScheduleData;
+import scheduleData.ScheduleTimes;
+import schedule.Schedule;
+import studentlist.StudentList;
 import util.Icons;
 
 /**
@@ -36,9 +36,9 @@ import util.Icons;
 public class MainFrame extends JFrame { // alte Version: implements DatabaseListener 
 
     //  private final DataBase database;
-    private ScheduleData_new scheduleData;
+    private ScheduleData scheduleData;
     private StudentListData studentListData;
-    private Schedule_new schedule;
+    private Schedule schedule;
     private StudentList studentList;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
@@ -54,7 +54,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
-        scheduleData = new ScheduleData_new();
+        scheduleData = new ScheduleData();
         studentListData = new StudentListData();
 
         createWidgets();
@@ -92,10 +92,10 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
     }
 
-    public void createSchedule(ScheduleTimes_new scheduleTimes) {  // in ScheduleDataEntry aufgerufen
+    public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
         scheduleData.initScheduleData(scheduleTimes);
-        schedule = new Schedule_new(scheduleData);
+        schedule = new Schedule(scheduleData);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...

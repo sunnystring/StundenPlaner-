@@ -5,7 +5,6 @@
  */
 package scheduleData;
 
-import scheduleData.ScheduleDay;
 import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -46,7 +45,7 @@ public class ScheduleTimes implements TableModel {
     }
 
     /* dynamische Liste mit gültigen ScheduleDays befüllen*/
-    public void createList() {
+    public void createScheduleDayList() {
 
         for (int i = 0; i < DAYS; i++) {
             if (isValidScheduleDay(i)) {

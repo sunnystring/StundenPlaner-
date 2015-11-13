@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlistGUI;
+package studentlist;
 
 import studentListData.StudentListData;
 import dialogs.StudentDataEntry;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -35,7 +36,6 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         this.studentData = studentData;
         rowSelected = false;
         setHorizontalAlignment(SwingConstants.LEADING);
-        setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
     }
@@ -44,6 +44,8 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
         String msg = (String) value;
+        setFont(this.getFont().deriveFont(Font.PLAIN, 10));
+        setForeground(Color.BLACK);
         setText(msg);
 
         // Grundfarben
@@ -55,7 +57,13 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         }
         // Mouseover
         if (row == selectedRow) {
-            setBackground(Colors.LIGHT_GREEN);
+            if (col == 0) {  // Name-Column
+                setBackground(Colors.NAME_FIELD_SELECTED);
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setForeground(Color.WHITE);
+            } else {  // StudentDay-Column
+                setBackground(Colors.LIGHT_GREEN);
+            }
         } else {
             if (col == 0) {
                 setBackground(Colors.NAME_FIELD);

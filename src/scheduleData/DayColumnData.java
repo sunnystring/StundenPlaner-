@@ -6,7 +6,6 @@
 package scheduleData;
 
 import java.util.ArrayList;
-import javax.swing.table.AbstractTableModel;
 import studentListData.StudentDay;
 
 import util.Time;
@@ -15,7 +14,7 @@ import util.Time;
  *
  * @author mathiaskielholz
  */
-public class DayColumnData extends AbstractTableModel {
+public class DayColumnData {
 
     private ArrayList<FieldData> fieldDataList;
 
@@ -31,7 +30,7 @@ public class DayColumnData extends AbstractTableModel {
         fieldDataList = new ArrayList<>();
     }
 
-    public void setTimeFrame(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
+    public void initDayColumn(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
 
         this.scheduleDay = scheduleDay;
         totalNumberOfFields = timeFrame.getTotalNumberOfFields();
@@ -41,12 +40,12 @@ public class DayColumnData extends AbstractTableModel {
         fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart); // Anzahl 5-Min.-Felder
         fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart);
 
-        // FieldDataList initialisieren
         try {
             Time time = absoluteStart.clone();
             for (int i = 0; i < totalNumberOfFields; i++) {
                 FieldData fieldData = new FieldData();
                 fieldData.setTime(time.clone());
+                fieldData.setIsTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
                 fieldDataList.add(fieldData);
                 time.inc();
             }
@@ -79,65 +78,11 @@ public class DayColumnData extends AbstractTableModel {
     }
 
     /* Getter, Setter */
-    public int getFieldCountStart() {
-        return fieldCountStart;
-    }
-
-    public int getFieldCountEnd() {
-        return fieldCountEnd;
-    }
-
-    public int getTotalNumberOfFields() {
-        return totalNumberOfFields;
+    public FieldData getFieldData(int i) {
+        return fieldDataList.get(i);
     }
 
     public String getDayName() {
         return scheduleDay.getDayName();
     }
-
-    public ScheduleDay getScheduleDay() {
-        return scheduleDay;
-    }
-
-    /* Schalter   */
-    public Boolean isValidTime(int index) {     // vom Lehrer vorgegebene Unterrichtszeit
-        return index >= fieldCountStart && index <= fieldCountEnd;
-    }
-
-    /*  TableModel Implementierung*/
-    @Override
-    public int getRowCount() { 
-        return totalNumberOfFields / 2;
-    }
-
-    @Override
-    public int getColumnCount() {
-        return 4;
-    }
-
-    @Override
-    public Class<?> getColumnClass(int i) {
-        return String.class;
-    }
-
-    
-    
-    @Override
-    public Object getValueAt(int row, int col) {  // damit Renderer "Values" in Zellen schreiben kann
-
-        if (col == 0 || col == 2) {
-            if (col == 2) {
-                row = row + totalNumberOfFields / 2;
-            }
-            return fieldDataList.get(row);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean isCellEditable(int i, int i1) {
-        return false;
-    }
-
 }

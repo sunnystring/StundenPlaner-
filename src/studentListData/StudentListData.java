@@ -5,17 +5,15 @@
  */
 package studentListData;
 
-import scheduleData.ScheduleData;
-import scheduleData.ScheduleTimes;
-
+import core.Student;
 import java.util.ArrayList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
-import scheduleData_new.ScheduleData_new;
-import scheduleData_new.ScheduleTimes_new;
-import studentlistGUI.StudentList;
+import scheduleData.ScheduleData;
+import scheduleData.ScheduleTimes;
+import studentlist.StudentList;
 
 /**
  *
@@ -27,8 +25,8 @@ public class StudentListData implements TableModel {
     private ArrayList<TableModelListener> tableModelListener;
     private int numberOfDays;
     private int numberOfStudents;
-    private ScheduleData_new scheduleData;
-    private ScheduleTimes_new scheduleTimes;
+    private ScheduleData scheduleData;
+    private ScheduleTimes scheduleTimes;
 
     public StudentListData() {
         
@@ -54,14 +52,14 @@ public class StudentListData implements TableModel {
     }
 
     /*  Getter, Setter */
-    public void setScheduleData(ScheduleData_new scheduleData) {  // in MainFrame aufgerufen
+    public void setScheduleData(ScheduleData scheduleData) {  // in MainFrame aufgerufen
         
         this.scheduleData = scheduleData;
         numberOfDays = scheduleData.getNumberOfDays();
         scheduleTimes = scheduleData.getScheduleTimes();
     }
 
-    public ScheduleTimes_new getScheduleTimes() {
+    public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
     }
 

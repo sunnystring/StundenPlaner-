@@ -5,7 +5,7 @@
  */
 package dialogs;
 
-import studentListData.Student;
+import core.Student;
 import studentListData.StudentTimes;
 import studentListData.StudentListData;
 
