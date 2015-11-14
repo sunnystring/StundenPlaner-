@@ -16,7 +16,7 @@ import util.Time;
  */
 public class DayColumnData {
 
-    private ArrayList<FieldData> fieldDataList;
+    private ArrayList<ScheduleFieldData> fieldDataList;
 
     /* von Time zu int konvertierte Grössen */
     private int totalNumberOfFields; // globale Anzahl Time- bzw. Lectionfields (= Column-Höhe)
@@ -43,7 +43,7 @@ public class DayColumnData {
         try {
             Time time = absoluteStart.clone();
             for (int i = 0; i < totalNumberOfFields; i++) {
-                FieldData fieldData = new FieldData();
+                ScheduleFieldData fieldData = new ScheduleFieldData();
                 fieldData.setTime(time.clone());
                 fieldData.setIsTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
                 fieldDataList.add(fieldData);
@@ -56,17 +56,17 @@ public class DayColumnData {
 
     public void setValidTimeMarks(StudentDay day) {
 
-        FieldData fieldData;
+        ScheduleFieldData fieldData;
         for (int i = 0; i < totalNumberOfFields; i++) {
             fieldData = fieldDataList.get(i);
             if (fieldData.getTime().greaterEqualsThan(day.getStartTime1()) && fieldData.getTime().smallerEqualsThan(day.getEndTime1())) {
-                fieldData.setValidTime(FieldData.TIME_INTERVAL_1);
+                fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_1);
             }
             if (fieldData.getTime().greaterEqualsThan(day.getStartTime2()) && fieldData.getTime().smallerEqualsThan(day.getEndTime2())) {
-                fieldData.setValidTime(FieldData.TIME_INTERVAL_2);
+                fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_2);
             }
             if (fieldData.getTime().equals(day.getFavorite())) {
-                fieldData.setValidTime(FieldData.FAVORITE);
+                fieldData.setValidTime(ScheduleFieldData.FAVORITE);
             }
         }
     }
@@ -78,7 +78,7 @@ public class DayColumnData {
     }
 
     /* Getter, Setter */
-    public FieldData getFieldData(int i) {
+    public ScheduleFieldData getFieldData(int i) {
         return fieldDataList.get(i);
     }
 

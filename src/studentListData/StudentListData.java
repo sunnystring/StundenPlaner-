@@ -5,7 +5,6 @@
  */
 package studentListData;
 
-import core.Student;
 import java.util.ArrayList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -22,7 +21,7 @@ import studentlist.StudentList;
 public class StudentListData implements TableModel {
 
     private ArrayList<Student> studentList;
-    private ArrayList<TableModelListener> tableModelListener;
+    private ArrayList<TableModelListener> tableModelListener; 
     private int numberOfDays;
     private int numberOfStudents;
     private ScheduleData scheduleData;
@@ -41,7 +40,8 @@ public class StudentListData implements TableModel {
         student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
         student.getStudentTimes().createList(); // StudentDayList mit gültigen Zeiteinträgen erstellen
         studentList.add(student);
-        for (TableModelListener l : tableModelListener) {
+        // Zugriff auf 1. HeaderField (nicht möglich in AbstractTableModel??)
+        for (TableModelListener l : tableModelListener) { 
             l.tableChanged(new TableModelEvent(this));
             numberOfStudents = studentList.size(); // numberOfStudents++
             StudentList studentList = (StudentList) l; // 1. HeaderField updaten

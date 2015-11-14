@@ -7,7 +7,7 @@ package studentlist;
 
 import studentListData.StudentListData;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import schedule.Schedule;
 import scheduleData.ScheduleData;
 import util.Colors;
 
@@ -20,30 +20,37 @@ public class StudentList extends JTable {
     private StudentField studentField;  // Renderer und MouseListener
     private HeaderField headerField;
 
-    public StudentList(StudentListData studentData, ScheduleData scheduleData) { // studentData = TableModel, schedule = Listener-Objekt
+    public StudentList(StudentListData studentListData, Schedule schedule) {
 
-        setModel(studentData);
+        setModel(studentListData);
+        ScheduleData scheduleData = (ScheduleData) schedule.getTimeTable().getModel();
         setShowGrid(true);
         setGridColor(Colors.BACKGROUND);
-        // getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
         setFillsViewportHeight(true);
-
         setBackground(Colors.BACKGROUND);
-        setColumnSelectionAllowed(true);
-        setRowSelectionAllowed(true);
-        setCellSelectionEnabled(true);
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
 
-        studentField = new StudentField(studentData);
+        studentField = new StudentField(this, scheduleData);
         setDefaultRenderer(String.class, studentField);
         setRowHeight(25);  // ev. dynam.
 
-        /* Renderer sind auch Listener-Objekte */
+        // StudentList: Renderer als Listener registrieren 
         addMouseMotionListener(studentField);
         addMouseListener(studentField);
-        addMouseListener(scheduleData); // Click in StudentList ändert Schedule-TableModel (scheduleData)
+        // Schedule
+        addMouseListener(scheduleData); // Klick in StudentList ändert Schedule-TableModel (scheduleData)
+        addMouseListener(schedule.getLectionField());
+        addMouseListener(schedule.getTimeField());
     }
+
+    public StudentField getStudentField() {
+        return studentField;
+    }
+
+    public boolean isStudentSelected() {
+        return studentField.isRowSelected();
+    }
+
 }

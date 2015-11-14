@@ -11,7 +11,7 @@ import util.Time;
  *
  * @author Mathias
  */
-public class FieldData {
+public class ScheduleFieldData {
 
     private Time time;
     private int validTime = 0;
