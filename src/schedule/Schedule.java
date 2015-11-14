@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import scheduleData.ScheduleData;
+import studentlist.StudentList;
 import util.Colors;
 
 /**
@@ -27,7 +28,6 @@ public class Schedule extends JPanel {
     public Schedule(ScheduleData scheduleData) {
 
         this.scheduleData = scheduleData;
-
         setLayout(new BorderLayout());
 
         header = new JPanel();
@@ -49,12 +49,10 @@ public class Schedule extends JPanel {
         timeTable = new JTable(scheduleData); // scheduleData = TableModel
         timeTable.setFillsViewportHeight(true);
         timeTable.setBackground(Colors.BACKGROUND);
-        timeTable.setRowSelectionAllowed(true);
-        timeTable.setCellSelectionEnabled(true);
         timeTable.setRowHeight(14);
 
-        timeField = new TimeField(timeTable);
-        lectionField = new LectionField(timeTable);
+        timeField = new TimeField(this);
+        lectionField = new LectionField(this);
 
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
             if (i % 2 == 0) {
@@ -67,18 +65,24 @@ public class Schedule extends JPanel {
         }
         timeTable.addMouseListener(scheduleData); // Click in timeTable ändert TableModel (scheduleData)
         timeTable.addMouseMotionListener(timeField);  // Anzeige: bewirkt keine Änderung im TableModel
-        timeTable.addMouseListener(timeField);
         timeTable.addMouseMotionListener(lectionField);
+        timeTable.addMouseListener(timeField);
         timeTable.addMouseListener(lectionField);
-
     }
 
-    public TimeField getTimeField() {
-        return timeField;
+    public void addStudentFieldListener(StudentList studentList) {
+        timeTable.addMouseListener(studentList.getStudentField()); // Klick in timeTable ändert StudentList-Ansicht (nicht das TableModel)
+    }
+
+    public JTable getTimeTable() {
+        return timeTable;
     }
 
     public LectionField getLectionField() {
         return lectionField;
     }
 
+    public TimeField getTimeField() {
+        return timeField;
+    }
 }

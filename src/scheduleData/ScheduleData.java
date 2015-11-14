@@ -21,10 +21,12 @@ import studentlist.StudentList;
 public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     private ScheduleTimes scheduleTimes;
-    private int numberOfDays;
+
     private ArrayList<DayColumnData> dayColumnDataList;
     private ScheduleTimeFrame timeFrame;
     private FieldData[][] fieldDataMatrix;  // für direkten Zugriff in TableModel
+    private int numberOfDays;
+    private boolean lectionAllocated; // Einteilungsmodus bzw. Lection-Änderungsmodus
 
     public ScheduleData() {
 
@@ -32,6 +34,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         numberOfDays = 0;
+        lectionAllocated = false;
     }
 
     // Initialisierung, in MainFrame aufgerufen
@@ -81,6 +84,10 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         return dayColumnDataList.get(i);
     }
 
+    public boolean isLectionAllocated() {
+        return lectionAllocated;
+    }
+
     /*  TableModel */
     @Override
     public int getRowCount() {
@@ -104,24 +111,35 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent m) {
-
         // StudentList 
         if (m.getSource() instanceof StudentList) {
-
             StudentList studentList = (StudentList) m.getSource();
-            int studentID = studentList.rowAtPoint(m.getPoint());
-            int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
-            StudentListData studenListData = (StudentListData) studentList.getModel();
-            Student student = studenListData.getStudent(studentID);
-            StudentDay studentDay = student.getStudentDay(studentDayID);
-            DayColumnData dayColumn;
-
-            if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
-                dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
-                dayColumn.resetValidTimeMarks();
-                dayColumn.setValidTimeMarks(studentDay);  // setzt die Timemarks des angeklickten StudentList-Tages
-                fireTableDataChanged();  
+            if (studentList.isStudentSelected()) {
+                int studentID = studentList.rowAtPoint(m.getPoint());
+                int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
+                StudentListData studenListData = (StudentListData) studentList.getModel();
+                Student student = studenListData.getStudent(studentID);
+                DayColumnData dayColumn;
+                if (studentDayID >= 0) {  // 1. Column ist NameField -> ArrayOutOfBounds
+                    dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
+                    dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID)); // setzt die Timemarks des angeklickten StudentList-Tages
+                    fireTableDataChanged();
+                }
+            } else {
+                for (DayColumnData d : dayColumnDataList) {
+                    d.resetValidTimeMarks();
+                }
+                fireTableDataChanged();
             }
+        } // Schedule
+        else {
+           
+            // ToDo: falls !studentAllocated (= moveEnabled)und fieldData nicht selected und einteilbar -> neue lection-> Model anpassen 
+            // falls lectionAllocated (!= moveEnabled) und fieldData selected, bestehende Lection-> Model anpassen 
+            //fireTableDataChanged
+            // falls student nicht selected (!= moveEnabled) und kein lectionpanel -> keine reaktion
+             lectionAllocated = true; // ToDo....
+            System.out.println("timetable in scheduleData");
         }
     }
 

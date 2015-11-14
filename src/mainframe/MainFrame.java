@@ -89,7 +89,6 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
-
     }
 
     public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
@@ -105,7 +104,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         if (scheduleData.getNumberOfDays() > 0) {
             studentListData.setScheduleData(scheduleData);  // StudentListData braucht ScheduleData: numberOfDays, validDays
-            studentList = new StudentList(studentListData, scheduleData);  // schedule für Listener Registrierung
+            studentList = new StudentList(studentListData, schedule);  // schedule für Listener Registrierung
+            schedule.addStudentFieldListener(studentList); // MouseListener = StudentField kann erst hier registriert werden
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);

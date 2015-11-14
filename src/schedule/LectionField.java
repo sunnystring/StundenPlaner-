@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import scheduleData.FieldData;
 import scheduleData.ScheduleData;
+import studentlist.StudentList;
 import util.Colors;
 
 /**
@@ -27,23 +28,24 @@ import util.Colors;
  */
 public class LectionField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
 
-    private JTable timeTable;
-    private ScheduleData scheduleData;
+    protected JTable timeTable;
+    protected boolean moveEnabled;
     private int selectedRow, selectedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
     protected int rowCount, columnCount, lectionLenght = 8;
     private int tempRow, tempCol, lectionDiff;
 
-    public LectionField(JTable timeTable) {
+    public LectionField(Schedule schedule) {
 
-        this.timeTable = timeTable;
-        scheduleData = (ScheduleData) timeTable.getModel();
+        timeTable = schedule.getTimeTable();
+        ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
+        rowCount = scheduleData.getRowCount();
+        columnCount = scheduleData.getColumnCount();
+        moveEnabled = false;
         selectedRow = -1;
         selectedCol = -1;
         tempRow = -1;
         tempCol = -1;
         lectionDiff = -1;
-        rowCount = scheduleData.getRowCount();
-        columnCount = scheduleData.getColumnCount();
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
@@ -55,7 +57,6 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
         FieldData fieldData = (FieldData) value;
         setBackground(Colors.BACKGROUND);
         setText("");
-
         // LectionPanel-Mouseover
         if (col == selectedCol && row >= selectedRow && row < lectionEnd) {
             setBackground(Colors.LIGHT_GREEN);
@@ -151,45 +152,61 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
     @Override
     public void mouseMoved(MouseEvent m) {
 
-        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
-        Point p = m.getPoint();
-        if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
-            return;
-        }
-        selectedRow = timeTable.rowAtPoint(p);
-        lectionEnd = selectedRow + lectionLenght;
-        lectionDiff = lectionEnd - rowCount;
-        // Columns zuweisen
-        if (timeTable.columnAtPoint(p) % 2 != 0) {
-            selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
-        } else {
-            selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
-        }
-        // LectionPanel zeichnen
-        if (selectedRow != tempRow) {
-            paintVerticalPanel(selectedRow < tempRow);
-        }
-        if (selectedCol != tempCol) {
-            paintHorizontalPanel(selectedCol < tempCol);
-        }
-        // Spaltenende 
-        if (lectionDiff >= 0) {
-            if (selectedCol % 4 == 1) {  // 1. LectionColumn
-                for (int i = 0; i < lectionDiff; i++) {
-                    timeTable.repaint(timeTable.getCellRect(i, selectedCol + 2, false)); // Übertrag zeichnen 2. LectionColumn
-                }
-            } else if (selectedCol % 4 == 3) { // 2. LectionColumn
-                selectedRow = rowCount - lectionLenght;  // LectionField freezen
+        if (moveEnabled) {
+            // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
+            Point p = m.getPoint();
+            if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
+                return;
             }
+            selectedRow = timeTable.rowAtPoint(p);
+            lectionEnd = selectedRow + lectionLenght;
+            lectionDiff = lectionEnd - rowCount;
+            // Columns zuweisen
+            if (timeTable.columnAtPoint(p) % 2 != 0) {
+                selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
+            } else {
+                selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
+            }
+            // LectionPanel zeichnen
+            if (selectedRow != tempRow) {
+                paintVerticalPanel(selectedRow < tempRow);
+            }
+            if (selectedCol != tempCol) {
+                paintHorizontalPanel(selectedCol < tempCol);
+            }
+            // Spaltenende 
+            if (lectionDiff >= 0) {
+                if (selectedCol % 4 == 1) {  // 1. LectionColumn
+                    for (int i = 0; i < lectionDiff; i++) {
+                        timeTable.repaint(timeTable.getCellRect(i, selectedCol + 2, false)); // Übertrag zeichnen 2. LectionColumn
+                    }
+                } else if (selectedCol % 4 == 3) { // 2. LectionColumn
+                    selectedRow = rowCount - lectionLenght;  // LectionField freezen
+                }
+            }
+            // Zwischenspeicher updaten
+            tempCol = selectedCol;
+            tempRow = selectedRow;
         }
-        // Zwischenspeicher updaten
-        tempCol = selectedCol;
-        tempRow = selectedRow;
     }
 
-    /*  MouseListener Implementation */
     @Override
-    public void mouseClicked(MouseEvent me) {
+    public void mousePressed(MouseEvent m) {
+        // StudentList 
+        if (m.getSource() instanceof StudentList) {
+            StudentList studentList = (StudentList) m.getSource();
+            moveEnabled = studentList.isStudentSelected();
+            // reset lectionColumn
+            selectedRow = -1;
+            selectedCol = -1;
+            tempRow = -1;
+            tempCol = -1;
+            lectionDiff = -1;
+        } // Schedule
+        else {
+            System.out.println("timetable in lectionField");
+
+        }
     }
 
     // unbenutzt
@@ -198,7 +215,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
     }
 
     @Override
-    public void mousePressed(MouseEvent me) {
+    public void mouseClicked(MouseEvent me) {
     }
 
     @Override
@@ -206,11 +223,11 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
     }
 
     @Override
-    public void mouseEntered(MouseEvent m) {
+    public void mouseEntered(MouseEvent me) {
     }
 
     @Override
-    public void mouseExited(MouseEvent m) {
-
+    public void mouseExited(MouseEvent me) {
     }
+
 }
