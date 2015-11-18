@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in thed editor.
  */
-package studentListData;
+package core;
 
 import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import scheduleData.ScheduleTimes;
 
 /**
  *
@@ -42,7 +41,7 @@ public class StudentTimes implements TableModel {
     }
 
     // studentDayList mit leeren StudentDays bekommt gerade die richtige Size 
-    public void createList() {
+    public void setStudentDays() {
         for (int i = 0; i < DAYS; i++) {
             STUDENTDAY_LIST[i].setSingleLections(); // falls nur validStart eingegeben, validEnd = validStart
             if (scheduleTimes.isValidScheduleDay(i)) {

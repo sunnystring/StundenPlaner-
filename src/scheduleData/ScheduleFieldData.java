@@ -83,7 +83,6 @@ public class ScheduleFieldData {
         return String.valueOf(time.getHour());
     }
    
-
     @Override
     public String toString() {
         return time.toString();

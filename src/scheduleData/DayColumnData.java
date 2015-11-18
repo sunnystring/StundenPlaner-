@@ -5,8 +5,9 @@
  */
 package scheduleData;
 
+import core.ScheduleDay;
 import java.util.ArrayList;
-import studentListData.StudentDay;
+import core.StudentDay;
 
 import util.Time;
 

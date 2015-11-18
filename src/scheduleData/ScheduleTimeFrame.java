@@ -5,6 +5,7 @@
  */
 package scheduleData;
 
+import core.ScheduleDay;
 import util.Time;
 
 /**

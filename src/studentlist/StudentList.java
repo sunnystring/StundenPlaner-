@@ -49,7 +49,7 @@ public class StudentList extends JTable {
         return studentField;
     }
 
-    public boolean isStudentSelected() {
+    public boolean isStudentSelected() {  // Selection-State 
         return studentField.isRowSelected();
     }
 

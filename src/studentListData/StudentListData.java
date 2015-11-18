@@ -5,70 +5,64 @@
  */
 package studentListData;
 
+import core.Database;
+import core.DatabaseListener;
+import core.Student;
 import java.util.ArrayList;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
 import scheduleData.ScheduleData;
-import scheduleData.ScheduleTimes;
+import core.ScheduleTimes;
 import studentlist.StudentList;
 
 /**
  *
  * @author Mathias
  */
-public class StudentListData implements TableModel {
+public class StudentListData extends AbstractTableModel implements DatabaseListener {
 
-    private ArrayList<Student> studentList;
-    private ArrayList<TableModelListener> tableModelListener; 
+    private Database database;
+    private StudentList studentList;
     private int numberOfDays;
     private int numberOfStudents;
     private ScheduleData scheduleData;
-    private ScheduleTimes scheduleTimes;
 
-    public StudentListData() {
-        
-        studentList = new ArrayList<>();
-        tableModelListener = new ArrayList<>();
+    public StudentListData(Database database) {
+
+        this.database = database;
         numberOfDays = 0;
         numberOfStudents = 0;
     }
 
-    public void addStudent(Student student) {
-        
-        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
-        student.getStudentTimes().createList(); // StudentDayList mit gültigen Zeiteinträgen erstellen
-        studentList.add(student);
-        // Zugriff auf 1. HeaderField (nicht möglich in AbstractTableModel??)
-        for (TableModelListener l : tableModelListener) { 
-            l.tableChanged(new TableModelEvent(this));
-            numberOfStudents = studentList.size(); // numberOfStudents++
-            StudentList studentList = (StudentList) l; // 1. HeaderField updaten
-            JTableHeader header = studentList.getTableHeader();
-            header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
-            header.repaint();
-        }
+    /* wir ausgeführt bei jedem geaddeten Student in Database*/
+    @Override
+    public void studentAdded(int numberOfStudents) {
+
+        this.numberOfStudents = numberOfStudents;
+        fireTableDataChanged();
+        showNumberOfStudents();
     }
 
     /*  Getter, Setter */
     public void setScheduleData(ScheduleData scheduleData) {  // in MainFrame aufgerufen
-        
-        this.scheduleData = scheduleData;
+        this.scheduleData = scheduleData;  // ToDo alles von Database holen
         numberOfDays = scheduleData.getNumberOfDays();
-        scheduleTimes = scheduleData.getScheduleTimes();
-    }
-
-    public ScheduleTimes getScheduleTimes() {
-        return scheduleTimes;
-    }
-
-    public int getNumberOfStudents() {
-        return numberOfStudents;
-    }
+        }
 
     public Student getStudent(int i) {
-        return studentList.get(i);
+        return database.getStudentList().get(i);
+    }
+
+    public void setStudentList(StudentList studentList) {
+        this.studentList = studentList;
+    }
+
+    /* Anzeige numberOfStudents in 1. HeaderField*/
+    public void showNumberOfStudents() {
+
+        JTableHeader header = studentList.getTableHeader();
+        header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
+        header.repaint();
     }
 
     /* TableModel */
@@ -84,6 +78,7 @@ public class StudentListData implements TableModel {
 
     @Override
     public String getColumnName(int col) {
+
         if (col == 0) {
             return "  Vorname Name  (" + String.valueOf(numberOfStudents) + ")"; //numberOfStudentString
         }
@@ -100,13 +95,9 @@ public class StudentListData implements TableModel {
     }
 
     @Override
-    public boolean isCellEditable(int i, int i1) {
-        return false;
-    }
-
-    @Override
     public Object getValueAt(int row, int col) {
-        Student student = studentList.get(row);
+
+        Student student = database.getStudentList().get(row);
         if (col == 0) {
             return student.getFirstName() + " " + student.getName();
         } else {
@@ -114,17 +105,4 @@ public class StudentListData implements TableModel {
         }
     }
 
-    @Override
-    public void setValueAt(Object o, int row, int col) {
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener l) {
-        tableModelListener.add(l);
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-        tableModelListener.remove(l);
-    }
 }

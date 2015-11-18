@@ -27,10 +27,14 @@ public class TimeField extends LectionField {
     public TimeField(Schedule schedule) {
 
         super(schedule);
-        selectedRow = -1;
-        selectedCol = -1;
+        resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
+    }
+
+    private void resetTimeColumn() {
+        selectedRow = -1;
+        selectedCol = -1;
     }
 
     @Override
@@ -73,10 +77,9 @@ public class TimeField extends LectionField {
         return this;
     }
 
-    /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
-
+        
         if (moveEnabled) {
             // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
             Point p = m.getPoint();
@@ -106,14 +109,12 @@ public class TimeField extends LectionField {
         // StudentList 
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            moveEnabled = studentList.isStudentSelected();
-            // reset TimeColumn
-            selectedRow = -1;
-            selectedCol = -1;
+            moveEnabled = studentList.isStudentSelected(); // Selection-State StudentList
+            resetTimeColumn();
         } // Schedule
         else {
-            
-          //  System.out.println("timetable in timeField");
-        }
+            moveEnabled = !scheduleData.isLectionAllocated();
+            resetTimeColumn();
+                 }
     }
 }

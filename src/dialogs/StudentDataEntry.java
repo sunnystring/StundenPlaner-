@@ -5,8 +5,9 @@
  */
 package dialogs;
 
-import studentListData.Student;
-import studentListData.StudentTimes;
+import core.Database;
+import core.Student;
+import core.StudentTimes;
 import studentListData.StudentListData;
 
 import java.awt.BorderLayout;
@@ -36,28 +37,27 @@ import util.Colors;
  * @author Mathias
  */
 public class StudentDataEntry extends JDialog {
-    
-    private String firstName, name, lectionType = "30";
-    
-    private StudentListData studentData;
+
+    private Database dataBase;
     private Student student;
     private StudentTimes studentTimes;
-    
+    private String firstName, name, lectionType = "30";
+
     private JPanel top, bottom;
     private JScrollPane center;
     private JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;
     private JTextField firstnameField, nameField, lectiontypeField;
     private JTable selectionTable;
     private JButton cancelButton, saveButton, deleteButton;
-    
-    public StudentDataEntry(StudentListData studentData, MainFrame owner) {
-        
+
+    public StudentDataEntry(Database dataBase, MainFrame owner) {
+
         super(owner);
-        this.studentData = studentData;  // Referenz gebraucht für addStudent()
+        this.dataBase = dataBase;
 
         student = new Student();
         studentTimes = student.getStudentTimes();  // StudentTimes ist TableModel für SelectionTable
-        studentTimes.setScheduleTimes(studentData.getScheduleTimes());  // studentTimes braucht scheduleTimes
+        studentTimes.setScheduleTimes(dataBase.getScheduleTimes());  // studentTimes braucht scheduleTimes
 
         setLocationRelativeTo(owner);
         setModal(true);
@@ -68,11 +68,11 @@ public class StudentDataEntry extends JDialog {
         addWidgets();
         addListener();
         pack();
-        
+
     }
-    
+
     private void createWidgets() {
-        
+
         selectionTable = new JTable(studentTimes);
         selectionTable.setShowGrid(true);
         selectionTable.getColumnModel().setColumnSelectionAllowed(true); //  in alle Zellen kann geschrieben werden
@@ -81,8 +81,8 @@ public class StudentDataEntry extends JDialog {
         selectionTable.setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean bln, boolean bln1, int row, int col) {
-                
-                if (studentData.getScheduleTimes().isValidScheduleDay(row)) {
+
+                if (dataBase.getScheduleTimes().isValidScheduleDay(row)) {
                     setBackground(Colors.BACKGROUND);
                 } else {
                     setBackground(Colors.LIGHT_GRAY);
@@ -91,38 +91,38 @@ public class StudentDataEntry extends JDialog {
                 return this;
             }
         });
-        
+
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
         top.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
+
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        
+
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
+
         firstnameLabel = new JLabel("Vorname:");
         nameLabel = new JLabel("  Name:");
         lectiontypeLabel = new JLabel("  Lektionsdauer:");
         footnote = new JLabel("* Beginn der Lektion");
-        
+
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
-        
+
         firstnameField = new JTextField(" ");
         nameField = new JTextField(" ");
         lectiontypeField = new JTextField(lectionType);
         lectiontypeField.setMaximumSize(lectiontypeField.getPreferredSize());
-        
+
         cancelButton = new JButton("Abbrechen");
         saveButton = new JButton("Speichern");
         deleteButton = new JButton("Profil löschen");
-        
+
     }
-    
+
     private void addWidgets() {
-        
+
         top.add(firstnameLabel);
         top.add(firstnameField);
         top.add(Box.createHorizontalGlue());
@@ -131,20 +131,20 @@ public class StudentDataEntry extends JDialog {
         top.add(Box.createHorizontalGlue());
         top.add(lectiontypeLabel);
         top.add(lectiontypeField);
-        
+
         bottom.add(footnote);
         bottom.add(Box.createHorizontalGlue());
         bottom.add(cancelButton);
         bottom.add(deleteButton);
         bottom.add(saveButton);
-        
+
         add(BorderLayout.PAGE_START, top);
         add(BorderLayout.CENTER, center);
         add(BorderLayout.PAGE_END, bottom);
     }
-    
+
     private void addListener() {
-        
+
         firstnameField.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent ce) {
@@ -162,7 +162,7 @@ public class StudentDataEntry extends JDialog {
         lectiontypeField.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent ce) {
-                
+
                 JTextField f = (JTextField) ce.getSource();  // ToDo IllegalArg. Except.
                 lectionType = (f.getText().trim().isEmpty()) ? lectiontypeField.getText() : f.getText();
             }
@@ -170,36 +170,36 @@ public class StudentDataEntry extends JDialog {
         cancelButton.addActionListener(new CancelButtonListener());
         saveButton.addActionListener(new SaveButtonListener());
         deleteButton.addActionListener(new DeleteButtonListener());
-        
+
     }
-    
+
     private class CancelButtonListener implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             StudentDataEntry.this.dispose();
         }
     }
-    
+
     private class SaveButtonListener implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {  // Student mit Daten befüllen
 
             student.setFirstName(firstName);
             student.setName(name);
             student.setLectionType(Integer.parseInt(lectionType));
-            studentData.addStudent(student);
+            dataBase.addStudent(student);
             StudentDataEntry.this.dispose();
         }
     }
-    
+
     private class DeleteButtonListener implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     }
 }

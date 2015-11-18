@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package scheduleData;
+package core;
 
 import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
@@ -45,7 +45,7 @@ public class ScheduleTimes implements TableModel {
     }
 
     /* dynamische Liste mit gültigen ScheduleDays befüllen*/
-    public void createScheduleDayList() {
+    public void setScheduleDays() {
 
         for (int i = 0; i < DAYS; i++) {
             if (isValidScheduleDay(i)) {

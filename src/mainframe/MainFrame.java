@@ -5,6 +5,7 @@
  */
 package mainframe;
 
+import core.Database;
 import studentListData.StudentListData;
 import dialogs.ScheduleDataEntry;
 import dialogs.StudentDataEntry;
@@ -24,7 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
 import scheduleData.ScheduleData;
-import scheduleData.ScheduleTimes;
+import core.ScheduleTimes;
 import schedule.Schedule;
 import studentlist.StudentList;
 import util.Icons;
@@ -35,7 +36,7 @@ import util.Icons;
  */
 public class MainFrame extends JFrame { // alte Version: implements DatabaseListener 
 
-    //  private final DataBase database;
+    private Database database;
     private ScheduleData scheduleData;
     private StudentListData studentListData;
     private Schedule schedule;
@@ -54,8 +55,9 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
 
-        scheduleData = new ScheduleData();
-        studentListData = new StudentListData();
+        database = new Database();
+        scheduleData = new ScheduleData(database);
+        studentListData = new StudentListData(database);
 
         createWidgets();
         addWidgets();
@@ -93,7 +95,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
     public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
-        scheduleData.initScheduleData(scheduleTimes);
+        scheduleData.initScheduleData();
         schedule = new Schedule(scheduleData);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -102,10 +104,11 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
     public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
-        if (scheduleData.getNumberOfDays() > 0) {
-            studentListData.setScheduleData(scheduleData);  // StudentListData braucht ScheduleData: numberOfDays, validDays
-            studentList = new StudentList(studentListData, schedule);  // schedule für Listener Registrierung
+        if (database.getNumberOfDays() > 0) {
+            studentListData.setScheduleData(scheduleData);  
+            studentList = new StudentList(studentListData, schedule);  // schedule für Listener-Registrierung
             schedule.addStudentFieldListener(studentList); // MouseListener = StudentField kann erst hier registriert werden
+            studentListData.setStudentList(studentList); // studentListData braucht studentList-Referenz für Anzeige von numberOfStudents in HeaderField
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);
@@ -132,22 +135,22 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     }
 
     private void addListeners() {
+        
+        database.addDatabaseListener(studentListData);
 
-        //   database.addDatabaseListener(this);
         createScheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
-                ScheduleDataEntry mask = new ScheduleDataEntry(scheduleData, MainFrame.this);
-                mask.setVisible(true);
+                ScheduleDataEntry scheduleDataEntry = new ScheduleDataEntry(database, MainFrame.this); // ToDo...
+                scheduleDataEntry.setVisible(true);
             }
         });
 
         addStudentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                StudentDataEntry mask = new StudentDataEntry(studentListData, MainFrame.this);
-                mask.setVisible(true);
+                StudentDataEntry studentDataEntry = new StudentDataEntry(database, MainFrame.this); // ToDo...
+                studentDataEntry.setVisible(true);
             }
         });
     }

@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.MouseInputListener;
 import javax.swing.table.TableCellRenderer;
 import scheduleData.ScheduleFieldData;
 import scheduleData.ScheduleData;
@@ -26,9 +27,10 @@ import util.Colors;
  *
  * @author mathiaskielholz
  */
-public class LectionField extends JLabel implements TableCellRenderer, MouseMotionListener, MouseListener {
+public class LectionField extends JLabel implements TableCellRenderer, MouseInputListener {
 
     protected JTable timeTable;
+    protected ScheduleData scheduleData;
     protected boolean moveEnabled; // Einteilungsmodus (= moveEnabled) bzw. Lection gesetzt
     private int selectedRow, selectedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
     protected int rowCount, columnCount, lectionLenght = 8;
@@ -37,23 +39,28 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
     public LectionField(Schedule schedule) {
 
         timeTable = schedule.getTimeTable();
-        ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
+        scheduleData = (ScheduleData) timeTable.getModel();
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
         moveEnabled = false;
-        selectedRow = -1;
-        selectedCol = -1;
-        tempRow = -1;
-        tempCol = -1;
-        lectionDiff = -1;
+        resetLectionColumn();
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
     }
 
+    private void resetLectionColumn() {
+
+        selectedRow = -1;
+        selectedCol = -1;
+        tempRow = -1;
+        tempCol = -1;
+        lectionDiff = -1;
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        
+
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         setBackground(Colors.BACKGROUND);
         setText("");
@@ -102,6 +109,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
         return this;
     }
 
+    /* dirty region painten */
     protected void paintHorizontalPanel(boolean moveLeft) {
 
         if (moveLeft) {
@@ -148,7 +156,6 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
         }
     }
 
-    /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
 
@@ -195,17 +202,11 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseMoti
         // StudentList 
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            moveEnabled = studentList.isStudentSelected();
-            // reset lectionColumn
-            selectedRow = -1;
-            selectedCol = -1;
-            tempRow = -1;
-            tempCol = -1;
-            lectionDiff = -1;
+            moveEnabled = studentList.isStudentSelected(); // Selection-State StudentList
+            resetLectionColumn();
         } // Schedule
         else {
-          //  System.out.println("timetable in lectionField");
-
+            moveEnabled = !scheduleData.isLectionAllocated();
         }
     }
 

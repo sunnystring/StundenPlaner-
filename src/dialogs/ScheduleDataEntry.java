@@ -5,6 +5,7 @@
  */
 package dialogs;
 
+import core.Database;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -19,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import mainframe.MainFrame;
 import scheduleData.ScheduleData;
-import scheduleData.ScheduleTimes;
+import core.ScheduleTimes;
 
 /**
  *
@@ -29,19 +30,17 @@ public class ScheduleDataEntry extends JDialog {
 
     private ScheduleTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
     private MainFrame mainFrame;
-    private ScheduleData scheduleData;
 
     private JScrollPane center;
     private JPanel bottom;
     private JTable selectionTable;
     private JButton cancel, save;
 
-    public ScheduleDataEntry(ScheduleData scheduleData, MainFrame mainFrame) {
+    public ScheduleDataEntry(Database dataBase, MainFrame mainFrame) {
 
         super(mainFrame); // mainFrame = owner
-        this.scheduleData = scheduleData;
         this.mainFrame = mainFrame;
-        scheduleTimes  = scheduleData.getScheduleTimes();
+        scheduleTimes = dataBase.getScheduleTimes();
 
         setLocationRelativeTo(mainFrame);
         setModal(true);
@@ -104,7 +103,7 @@ public class ScheduleDataEntry extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             mainFrame.createSchedule(scheduleTimes);
             mainFrame.prepareStudentList();
             ScheduleDataEntry.this.dispose();

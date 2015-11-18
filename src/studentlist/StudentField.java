@@ -10,12 +10,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.MouseInputListener;
 import javax.swing.table.TableCellRenderer;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
@@ -25,14 +24,13 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class StudentField extends JLabel implements MouseMotionListener, MouseListener, TableCellRenderer {
+public class StudentField extends JLabel implements MouseInputListener, TableCellRenderer {
 
     private StudentList studentList;
     //   StudentListData studentListData;
     private ScheduleData scheduleData;
     private int selectedRow, selectedCol;
-    private Boolean rowSelected, lectionAllocated;
-    private int allocatedRow;  // ToDo : nicht lösbar so, über getTableCellRendererComponent value ansprechen
+    private Boolean rowSelected;
     private int columnCount, tempRow;
 
     public StudentField(StudentList studentList, ScheduleData scheduleData) {
@@ -42,15 +40,17 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         StudentListData studentListData = (StudentListData) studentList.getModel();
         columnCount = studentListData.getColumnCount();
         rowSelected = false;
-        lectionAllocated = false;
-        selectedCol = -1;
-        selectedRow = -1;
-        allocatedRow = -1;
-        tempRow = -1;
+        resetStudentRows();
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
+    }
+
+    private void resetStudentRows() {
+        selectedCol = -1;
+        selectedRow = -1;
+        tempRow = -1;
     }
 
     public boolean isRowSelected() {
@@ -87,23 +87,23 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
             }
         } else {
             if (col == 0) {
-                setBackground(Colors.NAME_FIELD);
+                setBackground(Colors.NAME_FIELD); // ToDo:konditionalop.
             } else {
                 setBackground(Colors.STUDENT_FIELD_BLUE);
             }
         }
         // MousePressed (Rows sperren/entsperren)
         if (col > 0 && row == selectedRow && col == selectedCol) {
-            if (rowSelected) {
+            if (rowSelected) {   // ToDo:konditionalop.
                 setBackground(Colors.DARK_GREEN);
             } else {
                 setBackground(Colors.LIGHT_GREEN);
             }
         }
-        if (lectionAllocated && row == allocatedRow) {  // nicht lösbar so
-            setBackground(Colors.LIGHT_GRAY);
-            setForeground(Color.GRAY);
-        }
+//        if (lectionAllocated && row == allocatedRow) {  // nicht lösbar so
+//            setBackground(Colors.LIGHT_GRAY);
+//            setForeground(Color.GRAY);
+//        }
         return this;
     }
 
@@ -136,7 +136,7 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         }
     }
 
-    /*  MouseListener Implementation */
+    /* StudentDay-Selection-Handling */
     @Override
     public void mousePressed(MouseEvent m
     ) {
@@ -172,13 +172,9 @@ public class StudentField extends JLabel implements MouseMotionListener, MouseLi
         } // Schedule
         else {
             rowSelected = !scheduleData.isLectionAllocated(); // Rows entsperren
-            selectedCol = -1;
-            selectedRow = -1;
-            allocatedRow = 1;
+            resetStudentRows();
             studentList.repaint(); // ToDo mit repaint(rectangle)
-            lectionAllocated = scheduleData.isLectionAllocated();  // nicht lösbar so
 
-            //  System.out.println("timeTable in studentfield");
         }
     }
 
