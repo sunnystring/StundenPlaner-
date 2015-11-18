@@ -42,7 +42,6 @@ public class StudentDataEntry extends JDialog {
     private Student student;
     private StudentTimes studentTimes;
     private String firstName, name, lectionType = "30";
-
     private JPanel top, bottom;
     private JScrollPane center;
     private JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;

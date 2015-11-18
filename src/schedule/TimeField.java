@@ -42,17 +42,9 @@ public class TimeField extends LectionField {
 
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         // Text ausgeben
-        if (fieldData.isMinute(row)) {
-            setText(fieldData.getMinute(row));
-        } else {
-            setText(fieldData.getHour(row));
-        }
+        setText(fieldData.isMinute(row) ? fieldData.getMinute(row) : fieldData.getHour(row));
         // Foreground zeichen
-        if (fieldData.isTeacherTime()) {
-            setForeground(Color.BLACK);
-        } else {
-            setForeground(Color.LIGHT_GRAY);
-        }
+        setForeground(fieldData.isTeacherTime() ? Color.BLACK : Color.LIGHT_GRAY);
         // Background zeichnen
         if (fieldData.getValidTime() == ScheduleFieldData.FAVORITE) {
             setBackground(Colors.FAVORITE);
@@ -79,7 +71,7 @@ public class TimeField extends LectionField {
 
     @Override
     public void mouseMoved(MouseEvent m) {
-        
+
         if (moveEnabled) {
             // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
             Point p = m.getPoint();
@@ -115,6 +107,6 @@ public class TimeField extends LectionField {
         else {
             moveEnabled = !scheduleData.isLectionAllocated();
             resetTimeColumn();
-                 }
+        }
     }
 }

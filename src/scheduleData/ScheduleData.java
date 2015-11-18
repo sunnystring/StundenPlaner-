@@ -24,6 +24,7 @@ import studentlist.StudentList;
 public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     private Database database;
+    private ScheduleTimes scheduleTimes;
     private ArrayList<DayColumnData> dayColumnDataList;
     private ScheduleTimeFrame timeFrame;
     private ScheduleFieldData[][] fieldDataMatrix;  // für direkten Zugriff in TableModel
@@ -34,7 +35,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     public ScheduleData(Database database) {
 
         this.database = database;
-        // scheduleTimes = new ScheduleTimes();
+        scheduleTimes = database.getScheduleTimes();
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         numberOfDays = 0;
@@ -44,8 +45,6 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     // Initialisierung, in MainFrame aufgerufen
     public void initScheduleData() {
 
-        //  this.scheduleTimes = scheduleTimes; 
-        ScheduleTimes scheduleTimes = database.getScheduleTimes();
         scheduleTimes.setScheduleDays();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
         numberOfDays = scheduleTimes.getNumberOfDays();
         database.setNumberOfDays(numberOfDays);

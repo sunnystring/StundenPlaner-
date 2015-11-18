@@ -70,7 +70,7 @@ public class Schedule extends JPanel {
         timeTable.addMouseListener(lectionField);
     }
 
-    public void addStudentFieldListener(StudentList studentList) {
+    public void addStudentField(StudentList studentList) {
         timeTable.addMouseListener(studentList.getStudentField()); // Klick in timeTable ändert StudentList-Ansicht (nicht das TableModel)
     }
 

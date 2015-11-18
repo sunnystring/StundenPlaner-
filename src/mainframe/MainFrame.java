@@ -97,6 +97,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         scheduleData.initScheduleData();
         schedule = new Schedule(scheduleData);
+
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...
@@ -105,15 +106,16 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
         if (database.getNumberOfDays() > 0) {
-            studentListData.setScheduleData(scheduleData);  
+            studentListData.setScheduleData(scheduleData);
             studentList = new StudentList(studentListData, schedule);  // schedule für Listener-Registrierung
-            schedule.addStudentFieldListener(studentList); // MouseListener = StudentField kann erst hier registriert werden
             studentListData.setStudentList(studentList); // studentListData braucht studentList-Referenz für Anzeige von numberOfStudents in HeaderField
+            schedule.addStudentField(studentList); // StudentField kann erst nach Erzeugung der StudentList bei Schedule als MouseListener registriert werden
+            addStudentButton.setEnabled(true);
+            addKGUButton.setEnabled(true);
+           
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);
-            addStudentButton.setEnabled(true);
-            addKGUButton.setEnabled(true);
         }
     }
 
@@ -135,7 +137,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     }
 
     private void addListeners() {
-        
+
         database.addDatabaseListener(studentListData);
 
         createScheduleButton.addActionListener(new ActionListener() {

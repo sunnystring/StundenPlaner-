@@ -27,7 +27,6 @@ import util.Colors;
 public class StudentField extends JLabel implements MouseInputListener, TableCellRenderer {
 
     private StudentList studentList;
-    //   StudentListData studentListData;
     private ScheduleData scheduleData;
     private int selectedRow, selectedCol;
     private Boolean rowSelected;
@@ -70,12 +69,7 @@ public class StudentField extends JLabel implements MouseInputListener, TableCel
         setText(msg);
 
         // Grundfarben
-        if (col == 0) {
-            setBackground(Colors.NAME_FIELD);
-
-        } else {
-            setBackground(Colors.STUDENT_FIELD_BLUE);
-        }
+        setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         // Mouseover
         if (row == selectedRow) {
             if (col == 0) {  // Name-Column
@@ -86,19 +80,11 @@ public class StudentField extends JLabel implements MouseInputListener, TableCel
                 setBackground(Colors.LIGHT_GREEN);
             }
         } else {
-            if (col == 0) {
-                setBackground(Colors.NAME_FIELD); // ToDo:konditionalop.
-            } else {
-                setBackground(Colors.STUDENT_FIELD_BLUE);
-            }
+            setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         }
         // MousePressed (Rows sperren/entsperren)
         if (col > 0 && row == selectedRow && col == selectedCol) {
-            if (rowSelected) {   // ToDo:konditionalop.
-                setBackground(Colors.DARK_GREEN);
-            } else {
-                setBackground(Colors.LIGHT_GREEN);
-            }
+            setBackground(rowSelected ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
         }
 //        if (lectionAllocated && row == allocatedRow) {  // nicht lösbar so
 //            setBackground(Colors.LIGHT_GRAY);

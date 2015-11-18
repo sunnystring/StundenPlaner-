@@ -10,8 +10,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -34,7 +32,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     protected boolean moveEnabled; // Einteilungsmodus (= moveEnabled) bzw. Lection gesetzt
     private int selectedRow, selectedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
     protected int rowCount, columnCount, lectionLenght = 8;
-    private int tempRow, tempCol, lectionDiff;
+    private int tempRow, tempCol, lectionDiff;  // Hilfsgrössen für Panel-Move
 
     public LectionField(Schedule schedule) {
 

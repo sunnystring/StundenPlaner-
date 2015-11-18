@@ -8,11 +8,8 @@ package studentListData;
 import core.Database;
 import core.DatabaseListener;
 import core.Student;
-import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
 import scheduleData.ScheduleData;
-import core.ScheduleTimes;
 import studentlist.StudentList;
 
 /**
@@ -37,10 +34,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     /* wir ausgeführt bei jedem geaddeten Student in Database*/
     @Override
     public void studentAdded(int numberOfStudents) {
-
         this.numberOfStudents = numberOfStudents;
         fireTableDataChanged();
-        showNumberOfStudents();
+        studentList.showNumberOfStudents();
     }
 
     /*  Getter, Setter */
@@ -55,14 +51,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void setStudentList(StudentList studentList) {
         this.studentList = studentList;
-    }
-
-    /* Anzeige numberOfStudents in 1. HeaderField*/
-    public void showNumberOfStudents() {
-
-        JTableHeader header = studentList.getTableHeader();
-        header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
-        header.repaint();
     }
 
     /* TableModel */

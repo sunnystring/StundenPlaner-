@@ -5,7 +5,6 @@
  */
 package studentlist;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,17 +31,12 @@ public class HeaderField extends JLabel implements TableCellRenderer {
         setOpaque(true);
     }
 
-    @Override
+    @Override  //prepareRenderer ?
     public Component getTableCellRendererComponent(JTable table, Object o, boolean bln, boolean bln1, int row, int col) {
 
         String msg = (String) o;
         setText(msg);
-
-        if (col == 0) {
-            setBackground(Colors.NAME_FIELD_SELECTED);
-        } else {
-            setBackground(Colors.DAY_FIELD);
-        }
+        setBackground(col == 0 ? Colors.NAME_FIELD_SELECTED : Colors.DAY_FIELD);
         return this;
     }
 }

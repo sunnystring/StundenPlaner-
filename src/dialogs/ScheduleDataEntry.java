@@ -30,7 +30,6 @@ public class ScheduleDataEntry extends JDialog {
 
     private ScheduleTimes scheduleTimes; // alle Unterrichtstage mit den entspr. Zeiten
     private MainFrame mainFrame;
-
     private JScrollPane center;
     private JPanel bottom;
     private JTable selectionTable;

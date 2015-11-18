@@ -7,6 +7,7 @@ package studentlist;
 
 import studentListData.StudentListData;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import schedule.Schedule;
 import scheduleData.ScheduleData;
 import util.Colors;
@@ -18,7 +19,7 @@ import util.Colors;
 public class StudentList extends JTable {
 
     private StudentField studentField;  // Renderer und MouseListener
-    private HeaderField headerField;
+    private HeaderField headerField;  // Renderer
 
     public StudentList(StudentListData studentListData, Schedule schedule) {
 
@@ -43,6 +44,13 @@ public class StudentList extends JTable {
         addMouseListener(scheduleData); // Klick in StudentList ändert Schedule-TableModel (scheduleData)
         addMouseListener(schedule.getLectionField());
         addMouseListener(schedule.getTimeField());
+    }
+
+    /* Anzeige numberOfStudents in 1. HeaderField*/
+    public void showNumberOfStudents() {
+        JTableHeader header = getTableHeader();
+        header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
+        header.repaint();
     }
 
     public StudentField getStudentField() {
