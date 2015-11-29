@@ -57,7 +57,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
 
         database = new Database();
         scheduleData = new ScheduleData(database);
-        studentListData = new StudentListData(database);
+        studentListData = new StudentListData(database, this);
 
         createWidgets();
         addWidgets();
@@ -80,9 +80,8 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         createScheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
         addStudentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
-        addStudentButton.setEnabled(false);
         addKGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
-        addKGUButton.setEnabled(false);
+        setStudentButtonsEnabled(false);
         automaticButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
@@ -96,8 +95,7 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void createSchedule(ScheduleTimes scheduleTimes) {  // in ScheduleDataEntry aufgerufen
 
         scheduleData.initScheduleData();
-        schedule = new Schedule(scheduleData);
-
+        schedule = new Schedule(scheduleData, studentListData);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         splitPane.setLeftComponent(leftScroll); // muss hier in SplitPane geaddet werden, damit sofort sichtbar...
@@ -106,13 +104,11 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
     public void prepareStudentList() {  // in ScheduleDataEntry aufgerufen
 
         if (database.getNumberOfDays() > 0) {
-            studentListData.setScheduleData(scheduleData);
-            studentList = new StudentList(studentListData, schedule);  // schedule für Listener-Registrierung
-            studentListData.setStudentList(studentList); // studentListData braucht studentList-Referenz für Anzeige von numberOfStudents in HeaderField
-            schedule.addStudentField(studentList); // StudentField kann erst nach Erzeugung der StudentList bei Schedule als MouseListener registriert werden
-            addStudentButton.setEnabled(true);
-            addKGUButton.setEnabled(true);
-           
+            studentListData.initStudentList(scheduleData);
+            studentList = new StudentList(studentListData, schedule.getTimeTable());  // TimeTable für Listener-Registrierung
+            studentListData.setStudentList(studentList); // studentList-Referenz für Anzeige von numberOfStudents in HeaderField
+        //    scheduleData.setStudentListData(studentListData);  // StudentList reagiert auf ScheduleData-Änderungen
+            setStudentButtonsEnabled(true);
             rightScroll = new JScrollPane(studentList);
             rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
             splitPane.setRightComponent(rightScroll);
@@ -155,6 +151,11 @@ public class MainFrame extends JFrame { // alte Version: implements DatabaseList
                 studentDataEntry.setVisible(true);
             }
         });
+    }
+
+    public void setStudentButtonsEnabled(boolean state) {
+        addStudentButton.setEnabled(state);
+        addKGUButton.setEnabled(state);
     }
 
     /* innere Klassen */

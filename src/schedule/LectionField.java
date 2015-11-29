@@ -18,6 +18,8 @@ import javax.swing.event.MouseInputListener;
 import javax.swing.table.TableCellRenderer;
 import scheduleData.ScheduleFieldData;
 import scheduleData.ScheduleData;
+import studentListData.StudentFieldData;
+import studentListData.StudentListData;
 import studentlist.StudentList;
 import util.Colors;
 
@@ -29,28 +31,26 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
 
     protected JTable timeTable;
     protected ScheduleData scheduleData;
-    protected boolean moveEnabled; // Einteilungsmodus (= moveEnabled) bzw. Lection gesetzt
-    private int selectedRow, selectedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
-    protected int rowCount, columnCount, lectionLenght = 8;
+    private int movedRow, movedCol, lectionEnd; // MouseEvent: Koordinaten TimeTable
+    protected int rowCount, columnCount;
+    protected int lectionLenght;
     private int tempRow, tempCol, lectionDiff;  // Hilfsgrössen für Panel-Move
 
-    public LectionField(Schedule schedule) {
+    public LectionField(TimeTable timeTable) {
 
-        timeTable = schedule.getTimeTable();
+        this.timeTable = timeTable;
         scheduleData = (ScheduleData) timeTable.getModel();
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
-        moveEnabled = false;
         resetLectionColumn();
 
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
     }
 
-    private void resetLectionColumn() {
-
-        selectedRow = -1;
-        selectedCol = -1;
+    public void resetLectionColumn() {
+        movedRow = -1;
+        movedCol = -1;
         tempRow = -1;
         tempCol = -1;
         lectionDiff = -1;
@@ -62,44 +62,71 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         setBackground(Colors.BACKGROUND);
         setText("");
-        // LectionPanel-Mouseover
-        if (col == selectedCol && row >= selectedRow && row < lectionEnd) {
-            setBackground(Colors.LIGHT_GREEN);
-            setForeground(Color.WHITE);
-
-            if (row == selectedRow) {
+        // LectionPanel gesetzt
+        if (fieldData.isLectionAllocated()) {
+            // Background ist abhängig von allocatedTime
+            setBackground(fieldData.getAllocatedTime() != ScheduleFieldData.NULL_VALUE ? Colors.DARK_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+            // Foreground ist abhängig von Favorite
+            setForeground(fieldData.getAllocatedTime() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
+            setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
+            setFont(this.getFont().deriveFont(Font.BOLD, 10));
+            // Head = eingeteilte Zeit anzeigen
+            if (fieldData.isHead()) {
                 setForeground(Color.GRAY);
-                setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.WHITE));
                 setFont(this.getFont().deriveFont(Font.PLAIN, 8));
                 setText("  " + fieldData.getTime().toString());
-
-            } else if (row == selectedRow + 1) {
-                setFont(this.getFont().deriveFont(Font.BOLD, 10));
-                setText("  Vorname");
-            } else if (row == selectedRow + 2) {
-                setText("  Name");
+            } // Vorname
+            else if (fieldData.getLectionContent() == ScheduleFieldData.FIRST_NAME) {
+                setText(" " + fieldData.getStudent().getFirstName());
+            } // Name
+            else if (fieldData.getLectionContent() == ScheduleFieldData.NAME) {
+                setText(" " + fieldData.getStudent().getName());
             }
-            if (row == lectionEnd - 1) {
-                setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.WHITE));
+            // letztes Feld (Border setzen)
+            if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.LAST_ROW) {
+                setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
             }
-        }
-        // Mouseover Übertrag auf 2. LectionColumn
-        if (lectionDiff >= 0) {
-            if (col == selectedCol + 2 && row >= 0 && row < lectionDiff) {
-                setBackground(Colors.LIGHT_GREEN);
+        } // Mouseover
+        else if (fieldData.isScheduleEnabled() && movedRow >= 0) { // movedRow = -1 abfangen
+            // damit Zustand des ScheduleDataFields bei movedRow/movedCol abgefragt werden kann
+            ScheduleFieldData fieldFromList = (ScheduleFieldData) scheduleData.getValueAt(movedRow, movedCol);
+            if (col == movedCol && row >= movedRow && row < lectionEnd) {
+                // Background ist abhängig von ValidTimes
+                setBackground(fieldFromList.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
                 setForeground(Color.WHITE);
+                setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
-                if (lectionDiff == lectionLenght - 2) {
-                    if (row == 0) {
-                        setText("  Name");
-                    }
+                // Head (Zeit anzeigen)
+                if (row == movedRow) {
+                    setForeground(Color.GRAY);
+                    setFont(this.getFont().deriveFont(Font.PLAIN, 8));
+                    setText("  " + fieldData.getTime().toString());
+                } // Vorname
+                else if (row == movedRow + 1) {
+                    setText(" " + fieldData.getStudent().getFirstName());
+                } // Name
+                else if (row == movedRow + 2) {
+                    setText(" " + fieldData.getStudent().getName());
                 }
-                if (lectionDiff == lectionLenght - 1) {
-                    if (row == 0) {
-                        setText("  Name");
-                    }
-                    if (row == 1) {
-                        setText("  Vorname");
+            }
+            // Übertrag auf 2. LectionColumn (Head bleibt in 1. Column stehen)
+            if (lectionDiff >= 0) {
+                if (col == movedCol + 2 && row >= 0 && row < lectionDiff) {
+                    setBackground(fieldFromList.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+                    setForeground(Color.WHITE);
+                    setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
+                    setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                    // falls noch 2 Fields in 1. Column
+                    if (lectionDiff == lectionLenght - 2 && row == 0) {
+                        setText(" " + fieldData.getStudent().getName());
+                    } // falls nur noch Head in 1. Column
+                    else if (lectionDiff == lectionLenght - 1) {
+                        if (row == 0) {
+                            setText(" " + fieldData.getStudent().getName());
+                        }
+                        if (row == 1) {
+                            setText(" " + fieldData.getStudent().getFirstName());
+                        }
                     }
                 }
             }
@@ -107,104 +134,126 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         return this;
     }
 
-    /* dirty region painten */
-    protected void paintHorizontalPanel(boolean moveLeft) {
+    @Override
+    public void mouseMoved(MouseEvent m) {
+        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
+        Point p = m.getPoint();
+        if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
+            return;
+        }
+        movedRow = timeTable.rowAtPoint(p);
+        lectionEnd = movedRow + lectionLenght;
+        lectionDiff = lectionEnd - rowCount;
+        // Columns zuweisen
+        if (timeTable.columnAtPoint(p) % 2 != 0) {
+            movedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
+        } else {
+            movedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
+        }
+        // LectionPanel zeichnen
+        if (movedRow != tempRow) {
+            paintVerticalPanel(movedRow < tempRow);
+        }
+        if (movedCol != tempCol) {
+            paintHorizontalPanel(movedCol < tempCol);
+        }
+        // Spaltenende 
+        if (lectionDiff >= 0) {
+            if (movedCol % 4 == 1) {  // 1. LectionColumn
+                for (int i = 0; i < lectionDiff; i++) {
+                    timeTable.repaint(timeTable.getCellRect(i, movedCol + 2, false)); // Übertrag zeichnen 2. LectionColumn
+                }
+            } else if (movedCol % 4 == 3) { // 2. LectionColumn
+                movedRow = rowCount - lectionLenght;  // LectionField freezen
+            }
+        }
+        // Zwischenspeicher updaten
+        tempCol = movedCol;
+        tempRow = movedRow;
+    }
 
-        if (moveLeft) {
-            for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol + i, false)); // alle Colums rechts von LectionPanel löschen
-                for (int j = 0; j < lectionLenght; j++) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false));
+    /* MouseEvents triggern Änderungen in der View des MoveMode, die nicht über das TableModel gemacht werden*/
+    @Override
+    public void mousePressed(MouseEvent m) {
+        Point p = m.getPoint();
+        // StudentList 
+        if (m.getSource() instanceof StudentList) {
+            StudentList studentList = (StudentList) m.getSource();
+            StudentListData studentListData = (StudentListData) studentList.getModel();
+            int selectedRow = studentList.rowAtPoint(p);
+            int selectedCol = studentList.columnAtPoint(p);
+            // Events nur von selectedRow, ausserhalb JTable row =-1
+            if (selectedRow >= 0 && selectedCol > 0) {
+                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                // lectionlength übergeben
+                if (studentFieldData.isFieldSelected()) {
+                    resetLectionColumn();
+                    lectionLenght = studentListData.getStudent(selectedRow).getLectionType();
+                }// falls Student-Selection rückgängig gemacht
+                else if (studentFieldData.isStudentListEnabled()) {
+                    resetLectionColumn();
                 }
             }
-            if (selectedCol % 4 == 3) { // falls Übertrag, Panelfläche oben in 2. LectionColum löschen
+        }
+        // Schedule (TimeTable)
+        if (m.getSource() instanceof TimeTable) {
+            int selectedRow = timeTable.rowAtPoint(p);
+            int selectedCol = timeTable.columnAtPoint(p);
+            if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1
+                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+                // Events nur von LectionColumn, Lection muss entsperrt sein
+                if (selectedCol % 2 == 1 && scheduleFieldData.isScheduleEnabled()) {
+                    lectionLenght = scheduleFieldData.getStudent().getLectionType();
+                    // falls in Move-State gewechselt, Mouseover-Block updaten 
+                    lectionEnd = selectedRow + lectionLenght;
+                    lectionDiff = lectionEnd - rowCount;
+                }
+            }
+        }
+    }
+
+    /* lectionPanel zeichnen, dirty region löschen */
+    protected void paintHorizontalPanel(boolean moveLeft) {
+        if (moveLeft) {
+            for (int i = 0; i < columnCount; i++) {
+                timeTable.repaint(timeTable.getCellRect(movedRow, movedCol + i, false)); // alle Colums rechts von LectionPanel löschen
+                for (int j = 0; j < lectionLenght; j++) {
+                    timeTable.repaint(timeTable.getCellRect(movedRow + j, movedCol + i, false));
+                }
+            }
+            if (movedCol % 4 == 3) { // falls Übertrag, Panelfläche oben in 2. LectionColum löschen
                 lectionDiff = -1;
                 for (int i = 0; i < lectionLenght; i++) {
-                    timeTable.repaint(timeTable.getCellRect(i, selectedCol + 4, false));  // falls Übertrag, oben löschen
+                    timeTable.repaint(timeTable.getCellRect(i, movedCol + 4, false));  // falls Übertrag, oben löschen
                 }
             }
         } else {
             for (int i = 0; i < columnCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol - i, false)); // alle Colums links von LectionPanel löschen
+                timeTable.repaint(timeTable.getCellRect(movedRow, movedCol - i, false)); // alle Colums links von LectionPanel löschen
                 for (int j = 0; j < lectionLenght; j++) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + j, selectedCol + i, false));
+                    timeTable.repaint(timeTable.getCellRect(movedRow + j, movedCol + i, false));
                 }
             }
         }
     }
 
     protected void paintVerticalPanel(boolean moveUp) {
-
         if (moveUp) {
             for (int i = 0; i < rowCount; i++) {
-                timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel, darunter löschen
+                timeTable.repaint(timeTable.getCellRect(movedRow + i, movedCol, false)); // LectionPanel, darunter löschen
             }
-            if (selectedCol % 4 == 1) {  // falls Übertrag in 1. LectionColumn, 2. LectionColumn oben löschen
+            if (movedCol % 4 == 1) {  // falls Übertrag in 1. LectionColumn, 2. LectionColumn oben löschen
                 for (int i = 0; i < lectionLenght; i++) {
-                    timeTable.repaint(timeTable.getCellRect(i, selectedCol + 2, false));
+                    timeTable.repaint(timeTable.getCellRect(i, movedCol + 2, false));
                 }
             }
         } else {
             for (int i = 0; i < rowCount; i++) {
                 if (i < lectionLenght) {
-                    timeTable.repaint(timeTable.getCellRect(selectedRow + i, selectedCol, false)); // LectionPanel 
+                    timeTable.repaint(timeTable.getCellRect(movedRow + i, movedCol, false)); // LectionPanel 
                 }
-                timeTable.repaint(timeTable.getCellRect(selectedRow - i, selectedCol, false)); // darüber löschen
+                timeTable.repaint(timeTable.getCellRect(movedRow - i, movedCol, false)); // darüber löschen
             }
-        }
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent m) {
-
-        if (moveEnabled) {
-            // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
-            Point p = m.getPoint();
-            if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
-                return;
-            }
-            selectedRow = timeTable.rowAtPoint(p);
-            lectionEnd = selectedRow + lectionLenght;
-            lectionDiff = lectionEnd - rowCount;
-            // Columns zuweisen
-            if (timeTable.columnAtPoint(p) % 2 != 0) {
-                selectedCol = timeTable.columnAtPoint(p); // falls LectionColumn, diese zeichnen
-            } else {
-                selectedCol = timeTable.columnAtPoint(p) + 1;  // falls TimeColumn, die zugehörige LectionColumn rechts zeichnen
-            }
-            // LectionPanel zeichnen
-            if (selectedRow != tempRow) {
-                paintVerticalPanel(selectedRow < tempRow);
-            }
-            if (selectedCol != tempCol) {
-                paintHorizontalPanel(selectedCol < tempCol);
-            }
-            // Spaltenende 
-            if (lectionDiff >= 0) {
-                if (selectedCol % 4 == 1) {  // 1. LectionColumn
-                    for (int i = 0; i < lectionDiff; i++) {
-                        timeTable.repaint(timeTable.getCellRect(i, selectedCol + 2, false)); // Übertrag zeichnen 2. LectionColumn
-                    }
-                } else if (selectedCol % 4 == 3) { // 2. LectionColumn
-                    selectedRow = rowCount - lectionLenght;  // LectionField freezen
-                }
-            }
-            // Zwischenspeicher updaten
-            tempCol = selectedCol;
-            tempRow = selectedRow;
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent m) {
-        // StudentList 
-        if (m.getSource() instanceof StudentList) {
-            StudentList studentList = (StudentList) m.getSource();
-            moveEnabled = studentList.isStudentSelected(); // Selection-State StudentList
-            resetLectionColumn();
-        } // Schedule
-        else {
-            moveEnabled = !scheduleData.isLectionAllocated();
         }
     }
 
