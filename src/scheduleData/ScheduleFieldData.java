@@ -5,6 +5,7 @@
  */
 package scheduleData;
 
+import core.Student;
 import util.Time;
 
 /**
@@ -13,66 +14,48 @@ import util.Time;
  */
 public class ScheduleFieldData {
 
-    private Time time;
-    private int validTime = 0;
+    private Student student;
+    private Time time; // TimeColumn
+    // GUI-Management
+    private int validTimeMark;
+    private boolean teacherTime;  // Unterrichtszeit
+    private boolean lectionAllocated; // Lection gesetzt
+    private boolean scheduleEnabled; // einteilbarer Bereich
+    private boolean lastRow;
+    private int lectionPanelArea;
+    private int lectionContent;
+    // Werte von validTimeMark
     public static final int TIME_INTERVAL_1 = 1, TIME_INTERVAL_2 = 2, FAVORITE = 3;
-    private int columnID;
-    private boolean isTeacherTime;
-    private boolean lectionPanel = false;
-  //  private boolean isRowMoved;
+    // Werte von lectionPanelArea
+    public static final int HEAD = 4, CENTER = 5, BOTTOM = 6;
+    // Werte von lectionContent
+    public static final int FIRST_NAME = 7, NAME = 8;
+    public static final int NO_VALUE = -2;
 
-    /*  Getter, Setter */
-    public void setValidTime(int validTime) {
-        this.validTime = validTime;
+    public ScheduleFieldData() {
+
+        validTimeMark = NO_VALUE;
+        lectionAllocated = false;
+        scheduleEnabled = false;
+        lastRow = false;
+        lectionPanelArea = NO_VALUE;
+        lectionContent = NO_VALUE;
     }
 
-    public int getValidTime() {
-        return validTime;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public void setColumnID(int columnID) {
-        this.columnID = columnID;
+    public Student getStudent() {
+        return student;
     }
 
-    public int getColumnID() {
-        return columnID;
-    }
-
-    public boolean isLectionPanel() {
-        return lectionPanel;
-    }
-
-    public void setLectionPanel(boolean lectionPanel) {
-        this.lectionPanel = lectionPanel;
-    }
-    
-
-//    public boolean isRowMoved() {
-//        return isRowMoved;
-//    }
-//
-//    public void setIsRowMoved(boolean isRowMoved) {
-//        this.isRowMoved = isRowMoved;
-//    }
-    
     public void setTime(Time time) {
         this.time = time;
     }
 
     public Time getTime() {
         return time;
-    }
-
-    public Boolean isMinute(int index) {
-        return time.getMinute() != 0;
-    }
-
-    public boolean isTeacherTime() {
-        return isTeacherTime;
-    }
-
-    public void setIsTeacherTime(boolean teacherTime) {
-        this.isTeacherTime = teacherTime;
     }
 
     public String getMinute(int index) {
@@ -82,10 +65,65 @@ public class ScheduleFieldData {
     public String getHour(int index) {
         return String.valueOf(time.getHour());
     }
-   
-    @Override
-    public String toString() {
-        return time.toString();
+
+    // GUI-Management 
+    public void setValidTimeMark(int validTimeMark) {
+        this.validTimeMark = validTimeMark;
     }
 
+    public int getValidTimeMark() {
+        return validTimeMark;
+    }
+
+    public boolean isMinute(int index) {
+        return time.getMinute() != 0;
+    }
+
+    public boolean isTeacherTime() {
+        return teacherTime;
+    }
+
+    public void setTeacherTime(boolean teacherTime) {
+        this.teacherTime = teacherTime;
+    }
+
+    public boolean isScheduleEnabled() {
+        return scheduleEnabled;
+    }
+
+    public void setScheduleEnabled(boolean scheduleEnabled) {
+        this.scheduleEnabled = scheduleEnabled;
+    }
+
+    public boolean isLectionAllocated() {
+        return lectionAllocated;
+    }
+
+    public void setLectionAllocated(boolean lectionAllocated) {
+        this.lectionAllocated = lectionAllocated;
+    }
+
+    public void setLectionPanelArea(int lectionPanelArea) {
+        this.lectionPanelArea = lectionPanelArea;
+    }
+
+    public int getLectionPanelArea() {
+        return lectionPanelArea;
+    }
+
+    public void setLastRow(boolean lastRow) {
+        this.lastRow = lastRow;
+    }
+
+    public boolean isLastRow() {
+        return lastRow;
+    }
+
+    public void setLectionContent(int lectionContent) {
+        this.lectionContent = lectionContent;
+    }
+
+    public int getLectionContent() {
+        return lectionContent;
+    }
 }

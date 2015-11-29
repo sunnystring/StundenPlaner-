@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import scheduleData.ScheduleFieldData;
+import studentListData.StudentFieldData;
+import studentListData.StudentListData;
 import studentlist.StudentList;
 import util.Colors;
 
@@ -22,91 +24,105 @@ import util.Colors;
  */
 public class TimeField extends LectionField {
 
-    private int selectedRow, selectedCol; // MouseEvent: Koordinaten TimeTable
+    private int movedRow, movedCol; // MouseEvent: Koordinaten TimeTable
 
-    public TimeField(Schedule schedule) {
+    public TimeField(TimeTable timeTable) {
 
-        super(schedule);
+        super(timeTable);
         resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
     }
 
     private void resetTimeColumn() {
-        selectedRow = -1;
-        selectedCol = -1;
+        movedRow = -1;
+        movedCol = -1;
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
-        // Text ausgeben
+
+        // ValidTimes zeichnen
+        boolean isValidTime = fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_2;
+        // Text 
         setText(fieldData.isMinute(row) ? fieldData.getMinute(row) : fieldData.getHour(row));
-        // Foreground zeichen
         setForeground(fieldData.isTeacherTime() ? Color.BLACK : Color.LIGHT_GRAY);
-        // Background zeichnen
-        if (fieldData.getValidTime() == ScheduleFieldData.FAVORITE) {
+        // Background Optionen
+        if (fieldData.getValidTimeMark() == ScheduleFieldData.FAVORITE) {
             setBackground(Colors.FAVORITE);
-        } else if (fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_2) {
+        } else if (isValidTime) {
             setBackground(Colors.LIGHT_GREEN);
         } else {
             setBackground(Colors.BACKGROUND);
         }
-        if (!fieldData.isMinute(row) && fieldData.getValidTime() != ScheduleFieldData.FAVORITE) {
-            if (fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_2) { // falls Einzellektion auf volle Stunde fällt 
+        // ausser bei Favorit und Einzellektion, Hour immer markieren
+        if (!fieldData.isMinute(col) && fieldData.getValidTimeMark() != ScheduleFieldData.FAVORITE) {
+            if (!fieldData.isMinute(row) && isValidTime) {
                 setBackground(Colors.LIGHT_GREEN);
+            } else {
+                setBackground(Colors.TIMEFIELD_HOUR);
             }
         }
-        if (!fieldData.isMinute(col) && fieldData.getValidTime() != ScheduleFieldData.FAVORITE) {
-            setBackground(Colors.TIMEFIELD_HOUR);
-        }
-        // Mouseover Schedule
-        if (row == selectedRow && col == selectedCol) {
-            setBackground(Color.GRAY);
-            setForeground(Color.WHITE);
-        }
+        // Mouseover 
+        if (fieldData.isScheduleEnabled() && !fieldData.isLectionAllocated()) {
+            if (row == movedRow && col == movedCol) {
+                setBackground(Color.GRAY);
+                setForeground(Color.WHITE);
+            }
+        } 
         return this;
     }
 
+    /* MouseEvents triggern Änderungen in der View des MoveMode, die nicht über das TableModel gemacht werden*/
     @Override
     public void mouseMoved(MouseEvent m) {
 
-        if (moveEnabled) {
-            // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
-            Point p = m.getPoint();
-            if (timeTable.rowAtPoint(p) == -1) {  // damit TimeField stehen bleibt wenn unten nicht mehr weiter einteilbar
-                return;
-            }
-            selectedRow = timeTable.rowAtPoint(p);
-            // Columns zuweisen
-            if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn, diese zeichnen
-                selectedCol = timeTable.columnAtPoint(p);
-            } else {
-                selectedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, die zugehörige TimeColumn links zeichnen
-            }
-            // TimeField zeichnen
-            timeTable.repaint(timeTable.getCellRect(selectedRow, selectedCol, false));
-            // Spaltenende 
-            if (selectedRow + lectionLenght > rowCount) {
-                if (selectedCol % 4 == 2) { // 2. TimeColumn
-                    selectedRow = rowCount - lectionLenght; // TimeField freezen
-                }
+        // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
+        Point p = m.getPoint();
+        if (timeTable.rowAtPoint(p) == -1) {  // damit TimeField stehen bleibt wenn ausserhalb Table
+            return;
+        }
+        movedRow = timeTable.rowAtPoint(p);
+        // Columns zuweisen
+        if (timeTable.columnAtPoint(p) % 2 == 0) { // falls 1. TimeColumn
+            movedCol = timeTable.columnAtPoint(p);
+        } else {
+            movedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, die zugehörige TimeColumn links zeichnen
+        }
+        // TimeField zeichnen
+        timeTable.repaint(timeTable.getCellRect(movedRow, movedCol, false));
+        // Spaltenende 2. TimeColumn
+        if (movedRow + lectionLenght > rowCount) {
+            if (movedCol % 4 == 2) {
+                movedRow = rowCount - lectionLenght; // TimeField freezen
             }
         }
     }
 
     @Override
     public void mousePressed(MouseEvent m) {
+
+        Point p = m.getPoint();
         // StudentList 
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            moveEnabled = studentList.isStudentSelected(); // Selection-State StudentList
-            resetTimeColumn();
-        } // Schedule
-        else {
-            moveEnabled = !scheduleData.isLectionAllocated();
-            resetTimeColumn();
+            StudentListData studentListData = (StudentListData) studentList.getModel();
+            int selectedRow = studentList.rowAtPoint(p);
+            int selectedCol = studentList.columnAtPoint(p);
+            // Events nur von selectedRow, ausserhalb JTable row =-1
+            if (selectedRow >= 0 && selectedCol > 0) {
+                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                // lectionlength übergeben
+                if (studentFieldData.isFieldSelected()) {
+                    resetTimeColumn();
+                    lectionLenght = studentListData.getStudent(selectedRow).getLectionType();
+                } // falls Student-Selection rückgängig gemacht
+                else if (studentFieldData.isStudentListEnabled()) {
+                    resetTimeColumn();
+                }
+            }
         }
     }
 }

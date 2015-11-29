@@ -10,13 +10,14 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.event.MouseInputListener;
 import javax.swing.table.TableCellRenderer;
-import scheduleData.ScheduleData;
+import schedule.TimeTable;
+import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import util.Colors;
 
@@ -24,21 +25,17 @@ import util.Colors;
  *
  * @author Mathias
  */
-public class StudentField extends JLabel implements MouseInputListener, TableCellRenderer {
+public class StudentField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
     private StudentList studentList;
-    private ScheduleData scheduleData;
-    private int selectedRow, selectedCol;
-    private Boolean rowSelected;
-    private int columnCount, tempRow;
+    private int selectedRow, tempRow;
+    private int columnCount;
 
-    public StudentField(StudentList studentList, ScheduleData scheduleData) {
+    public StudentField(StudentList studentList) {
 
         this.studentList = studentList;
-        this.scheduleData = scheduleData;
         StudentListData studentListData = (StudentListData) studentList.getModel();
         columnCount = studentListData.getColumnCount();
-        rowSelected = false;
         resetStudentRows();
 
         setHorizontalAlignment(SwingConstants.LEADING);
@@ -47,31 +44,22 @@ public class StudentField extends JLabel implements MouseInputListener, TableCel
     }
 
     private void resetStudentRows() {
-        selectedCol = -1;
         selectedRow = -1;
         tempRow = -1;
-    }
-
-    public boolean isRowSelected() {
-        return rowSelected;
-    }
-
-    public void setRowSelected(Boolean studentSelected) {
-        this.rowSelected = studentSelected;
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-        String msg = (String) value;
+        StudentFieldData studentFieldData = (StudentFieldData) value;
+        // Text
+        setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setForeground(Color.BLACK);
-        setText(msg);
-
-        // Grundfarben
+        // Background
         setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         // Mouseover
-        if (row == selectedRow) {
+        if (studentFieldData.isStudentListEnabled() && row == selectedRow) {
             if (col == 0) {  // Name-Column
                 setBackground(Colors.NAME_FIELD_SELECTED);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
@@ -82,29 +70,38 @@ public class StudentField extends JLabel implements MouseInputListener, TableCel
         } else {
             setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         }
-        // MousePressed (Rows sperren/entsperren)
-        if (col > 0 && row == selectedRow && col == selectedCol) {
-            setBackground(rowSelected ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
+        // Row selected
+        if (row == studentFieldData.getSelectedRowIndex()) {
+            if (col == 0) {
+                if (col == 0) {  // Name-Column
+                    setBackground(Colors.NAME_FIELD_SELECTED);
+                    setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                    setForeground(Color.WHITE);
+                }
+            } else {
+                setBackground(studentFieldData.isFieldSelected() ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
+            }
         }
-//        if (lectionAllocated && row == allocatedRow) {  // nicht lösbar so
-//            setBackground(Colors.LIGHT_GRAY);
-//            setForeground(Color.GRAY);
-//        }
+        // Row allocated
+        if (studentFieldData.isStudentAllocated()) {
+            setBackground(Colors.LIGHT_GRAY);
+            setForeground(Color.GRAY);
+        }
         return this;
     }
 
-    /*  MouseMotionListener Implementation */
     @Override
     public void mouseMoved(MouseEvent m) {
 
         Point point = m.getPoint();
         selectedRow = studentList.rowAtPoint(point);
-        if (!rowSelected && selectedRow != tempRow) {
+        if (selectedRow != tempRow) {
             paintRow(selectedRow < tempRow);
             tempRow = selectedRow;
         }
     }
 
+    /* dirty region painten */
     private void paintRow(boolean moveUp) {
 
         if (moveUp) {
@@ -120,69 +117,6 @@ public class StudentField extends JLabel implements MouseInputListener, TableCel
                 }
             }
         }
-    }
-
-    /* StudentDay-Selection-Handling */
-    @Override
-    public void mousePressed(MouseEvent m
-    ) {
-        // StudentList 
-        if (m.getSource() instanceof StudentList) {
-            Point p = m.getPoint();
-            // Zellen selektieren 
-            if (studentList.columnAtPoint(p) > 0) {   // NameField nicht ansprechbar
-                if (!rowSelected) {  // Falls noch keine Selektion gemacht
-                    selectedRow = studentList.rowAtPoint(p);  //  = StudentID
-                    selectedCol = studentList.columnAtPoint(p);
-                    rowSelected = true;
-                    studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
-                    // 1. Selektion bzw. mehrere in gleicher Zelle
-                } else if (selectedRow == studentList.rowAtPoint(p) && selectedCol == studentList.columnAtPoint(p)) {
-                    rowSelected = !rowSelected;
-                    studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false));
-                    // nachfolgende Selektionen
-                } else if (selectedRow == studentList.rowAtPoint(p) && selectedCol != studentList.columnAtPoint(p)) {
-                    studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // alte Zelle löschen
-                    selectedRow = studentList.rowAtPoint(p);  //  neue Koordinaten setzen
-                    selectedCol = studentList.columnAtPoint(p);
-                    rowSelected = true;
-                    studentList.repaint(studentList.getCellRect(selectedRow, selectedCol, false)); // neue Zelle zeichnen
-                }
-            } // 1. Spalte: Doppelklick auf NameField 
-            else if (studentList.columnAtPoint(p) == 0 && !rowSelected && m.getClickCount() == 2) {
-                // ToDo.....
-                // falsch, nicht new, sondern  Maske, die auf alte Daten zugreift, Student darf nicht in Entry erzeugt werden
-                //    StudentDataEntry mask = new StudentDataEntry(studentListData, null);
-                //   mask.setVisible(true);
-            }
-        } // Schedule
-        else {
-            rowSelected = !scheduleData.isLectionAllocated(); // Rows entsperren
-            resetStudentRows();
-            studentList.repaint(); // ToDo mit repaint(rectangle)
-
-        }
-    }
-
-    // ----unbenutzt-------------
-    @Override
-    public void mouseClicked(MouseEvent m
-    ) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent me
-    ) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent me
-    ) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent me
-    ) {
     }
 
     @Override

@@ -11,6 +11,6 @@ package core;
  */
 public interface DatabaseListener {
     
-    public void studentAdded( int numberOfStudents);
+    public void studentAdded( int numberOfStudents, Student student);
     
 }

@@ -14,15 +14,15 @@ import java.util.ArrayList;
 public class Database {
 
     private ScheduleTimes scheduleTimes;
-    private ArrayList<Student> studentList;
+    private ArrayList<Student> studentDataList;
     private ArrayList<DatabaseListener> databaseListeners;
     private int numberOfDays;
-    private int numberOfStudents;
+    private int numberOfStudents; 
 
     public Database() {
 
         scheduleTimes = new ScheduleTimes();
-        studentList = new ArrayList<>();
+        studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
         numberOfDays = 0;
         numberOfStudents = 0;
@@ -34,17 +34,17 @@ public class Database {
 
     public void addStudent(Student student) {
 
-        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0
+        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0 usw.
         student.getStudentTimes().setStudentDays(); // StudentDayList mit gültigen Zeiteinträgen erstellen
-        studentList.add(student);
-        numberOfStudents = studentList.size(); // numberOfStudents++ für nächste StudentID
+        studentDataList.add(student);
+        numberOfStudents = studentDataList.size(); // Update und zugleich nächste StudentID
         for (DatabaseListener l : databaseListeners) {
-            l.studentAdded(numberOfStudents);
+            l.studentAdded(numberOfStudents, student);
         }
     }
 
     public ArrayList<Student> getStudentList() {
-        return studentList;
+        return studentDataList;
     }
 
     public int getNumberOfDays() {
@@ -55,10 +55,9 @@ public class Database {
         this.numberOfDays = numberOfDays;
     }
 
-    public int getNumberOfStudents() {
-        numberOfStudents = studentList.size();
-        return numberOfStudents;
-    }
+//    public int getNumberOfStudents() {
+//        return numberOfStudents;
+//    }
     
      public void addDatabaseListener(DatabaseListener l) {
         databaseListeners.add(l);

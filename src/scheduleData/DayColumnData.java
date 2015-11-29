@@ -23,7 +23,6 @@ public class DayColumnData {
     private int totalNumberOfFields; // globale Anzahl Time- bzw. Lectionfields (= Column-Höhe)
     private int fieldCountStart;  // Index lokaler Unterrichtsbeginn 
     private int fieldCountEnd;  // Index lokales Unterrichtsende 
-
     private ScheduleDay scheduleDay;
 
     public DayColumnData() {
@@ -46,7 +45,7 @@ public class DayColumnData {
             for (int i = 0; i < totalNumberOfFields; i++) {
                 ScheduleFieldData fieldData = new ScheduleFieldData();
                 fieldData.setTime(time.clone());
-                fieldData.setIsTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
+                fieldData.setTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
                 fieldDataList.add(fieldData);
                 time.inc();
             }
@@ -58,23 +57,29 @@ public class DayColumnData {
     public void setValidTimeMarks(StudentDay day) {
 
         ScheduleFieldData fieldData;
+        Time listTime;
+
         for (int i = 0; i < totalNumberOfFields; i++) {
             fieldData = fieldDataList.get(i);
-            if (fieldData.getTime().greaterEqualsThan(day.getStartTime1()) && fieldData.getTime().smallerEqualsThan(day.getEndTime1())) {
-                fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_1);
+            listTime = fieldData.getTime();
+            // ValidTime 1 
+            if (listTime.greaterEqualsThan(day.getStartTime1()) && listTime.smallerEqualsThan(day.getEndTime1())) {
+                fieldData.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_1);
             }
-            if (fieldData.getTime().greaterEqualsThan(day.getStartTime2()) && fieldData.getTime().smallerEqualsThan(day.getEndTime2())) {
-                fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_2);
+            // ValidTime 2
+            if (listTime.greaterEqualsThan(day.getStartTime2()) && listTime.smallerEqualsThan(day.getEndTime2())) {
+                fieldData.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_2);
             }
-            if (fieldData.getTime().equals(day.getFavorite())) {
-                fieldData.setValidTime(ScheduleFieldData.FAVORITE);
+            // Favorite
+            if (listTime.equals(day.getFavorite())) {
+                fieldData.setValidTimeMark(ScheduleFieldData.FAVORITE);
             }
         }
     }
 
     public void resetValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldDataList.get(i).setValidTime(0);
+            fieldDataList.get(i).setValidTimeMark(0);
         }
     }
 

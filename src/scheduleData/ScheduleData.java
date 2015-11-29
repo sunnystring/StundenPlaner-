@@ -5,8 +5,6 @@ package scheduleData;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import core.Database;
 import core.ScheduleTimes;
 import java.awt.event.MouseEvent;
@@ -14,6 +12,9 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import core.Student;
+import java.awt.Point;
+import schedule.TimeTable;
+import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlist.StudentList;
 
@@ -27,10 +28,12 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     private ScheduleTimes scheduleTimes;
     private ArrayList<DayColumnData> dayColumnDataList;
     private ScheduleTimeFrame timeFrame;
-    private ScheduleFieldData[][] fieldDataMatrix;  // für direkten Zugriff in TableModel
+    private ScheduleFieldData[][] scheduleFieldDataMatrix;  // für direkten Zugriff in TableModel
     private int numberOfDays;
-    private boolean lectionAllocated;
-    private int studentID; // ToDo...tempStudent
+    private int selectedRow, selectedCol; // gemeinsam benutzte temporäre JTable-Koordinaten
+    //  private int lectionLength, lectionEnd; // temporäre LectionPanel-Höhe
+    //   public static final int NO_SELECTED_ROW = -1, NO_ALLOCATED_ROW = -2; // ToDo
+    public static final boolean SET_ALL_VALID_TIMES = true, TIME_TABLE_COORDINATES = true, STUDENTLIST_COORDINATES = false;
 
     public ScheduleData(Database database) {
 
@@ -39,7 +42,10 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         numberOfDays = 0;
-        lectionAllocated = false;
+        selectedRow = selectedCol = -1;
+        setScheduleDisabled();
+//        lectionEnd = -1;
+//        lectionLength = 0;
     }
 
     // Initialisierung, in MainFrame aufgerufen
@@ -47,8 +53,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
         scheduleTimes.setScheduleDays();  // erstellt dynamische Day-List 0 = 1. Tag, 1 = 2. Tag usw.
         numberOfDays = scheduleTimes.getNumberOfDays();
-        database.setNumberOfDays(numberOfDays);
-
+        database.setNumberOfDays(numberOfDays); // numberOfDays müssen global bekannt sein
         // globaler Zeitrahmen aller ScheduleDays festlegen und DayColumnData damit instantiieren
         for (int i = 0; i < numberOfDays; i++) {
             dayColumnDataList.add(new DayColumnData());
@@ -58,35 +63,32 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         for (int i = 0; i < numberOfDays; i++) {
             dayColumnDataList.get(i).initDayColumn(scheduleTimes.getScheduleDay(i), timeFrame);
         }
-        // FieldDataMatrix erhält die Referenzen auf alle ScheduleFieldData-Felder der DayColumns
-        fieldDataMatrix = new ScheduleFieldData[getColumnCount()][getRowCount()];
+        // FieldDataMatrix erzeugen
+        scheduleFieldDataMatrix = new ScheduleFieldData[getRowCount()][getColumnCount()];
+        // FieldDataMatrix die ScheduleFieldData-Referenzen aus allen DayColumns zuweisen
         int dayCount = 0; // zählt ScheduleDays: 1.Tag = 0 usw.
-        for (int i = 0; i < getColumnCount(); i++) { // i = ColumnIndex
-            for (int j = 0; j < getRowCount(); j++) { // j = RowIndex
-                if (i % 4 == 0 || i % 4 == 1) {  // 1. TimeColumn und 1. LectionColumn: FieldDataList von 0 bis totalNumberOfFields/2
-                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(j);
+        for (int j = 0; j < getColumnCount(); j++) { // i = ColumnIndex
+            for (int i = 0; i < getRowCount(); i++) { // j = RowIndex
+                if (j % 4 == 0 || j % 4 == 1) {  // 1. TimeColumn und 1. LectionColumn: FieldDataList von 0 bis totalNumberOfFields/2
+                    scheduleFieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i);
                 }
-                if (i % 4 == 2 || i % 4 == 3) { // 2. TimeColumn und 2. LectionColumn: FieldDataList von totalNumberOfFields/2 bis totalNumberOfFields
-                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(j + getRowCount());
+                if (j % 4 == 2 || j % 4 == 3) { // 2. TimeColumn und 2. LectionColumn: FieldDataList von totalNumberOfFields/2 bis totalNumberOfFields
+                    scheduleFieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i + getRowCount());
                 }
             }
-            if (i % 4 == 3) { // nach 4. Column neuer Tag
+            if (j % 4 == 3) { // nach 4. Column neuer Tag
                 dayCount++;
             }
         }
     }
 
     /* Getter, Setter */
-    public int getNumberOfDays() { // für direkten Zugriff in Schedule und StudentListData
+    public int getNumberOfDays() { // für direkten Zugriff in Schedule 
         return numberOfDays;
     }
 
     public DayColumnData getDayColumn(int i) {
         return dayColumnDataList.get(i);
-    }
-
-    public boolean isLectionAllocated() {
-        return lectionAllocated;
     }
 
     /*  TableModel */
@@ -102,50 +104,178 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     @Override
     public Object getValueAt(int row, int col) {
-        return fieldDataMatrix[col][row];
+        return scheduleFieldDataMatrix[row][col];
     }
 
-    /*  MouseListener */
+    /* MouseListener */
     @Override
     public void mousePressed(MouseEvent m) {
+
+        Point p = m.getPoint();
         // StudentList 
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            if (studentList.isStudentSelected()) { // Selection-State StudentList
-                studentID = studentList.rowAtPoint(m.getPoint());
-                int studentDayID = studentList.columnAtPoint(m.getPoint()) - 1;
-                StudentListData studenListData = (StudentListData) studentList.getModel();
-                Student student = studenListData.getStudent(studentID);
-                DayColumnData dayColumn;
-                if (studentDayID >= 0) {  // 1. Column = NameField -> ArrayOutOfBounds
-                    dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
-                    dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID)); // Timemarks des angeklickten StudentDays
+            StudentListData studentListData = (StudentListData) studentList.getModel();
+            selectedRow = studentList.rowAtPoint(p);
+            selectedCol = studentList.columnAtPoint(p);
+            if (selectedRow >= 0 && selectedCol > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
+                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                int studentDayID = selectedCol - 1; // ohne NameField
+                DayColumnData dayColumn = getDayColumn(studentDayID);  // richtige DayColumn wählen
+                // StudentDay selected 
+                if (studentFieldData.isFieldSelected()) {
+                    int studentID = selectedRow;
+                    Student student = studentListData.getStudent(studentID);
+                    dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
+                    setMoveMode(student, STUDENTLIST_COORDINATES, !SET_ALL_VALID_TIMES);
+                } // Selektion in StudentList rückgängig gemacht
+                else if (studentFieldData.isStudentListEnabled()) {
+                    setScheduleDisabled();
+                }
+                fireTableDataChanged();
+            }
+        }
+        // Schedule (TimeTable)
+        if (m.getSource() instanceof TimeTable) {
+            TimeTable timeTable = (TimeTable) m.getSource();
+            ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
+            selectedRow = timeTable.rowAtPoint(p);
+            selectedCol = timeTable.columnAtPoint(p);
+            ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+            Student student = scheduleFieldData.getStudent();
+            // keine Events aus TimeColumn 
+            if (selectedCol % 2 == 1) {
+                // Schedule darf nicht gesperrt sein
+                if (scheduleFieldData.isScheduleEnabled()) {
+                    // von Allocated-State in Move-State wechseln
+                    if (scheduleFieldData.isLectionAllocated() && scheduleFieldData.getLectionPanelArea() == ScheduleFieldData.HEAD) {
+                        setMoveMode(student, TIME_TABLE_COORDINATES, SET_ALL_VALID_TIMES);
+                    } // von Move-State in Allocated-State wechseln
+                    else {
+                        createLectionPanel(student.getLectionType());
+                        setAllocatedMode();
+                    }
                     fireTableDataChanged();
                 }
-            } else { // falls Selection in StudentList rückgängig gemacht
-                resetValidTimeMarks();
             }
-        } // Schedule (timeTable)
-        else {
-            lectionAllocated = true;
-            resetValidTimeMarks();
-            // ToDo: falls !studentAllocated (= moveEnabled)und fieldData nicht selected und einteilbar -> neue lection-> Model anpassen 
-            // falls lectionAllocated (!= moveEnabled) und fieldData selected, bestehende Lection-> Model anpassen 
-            //fireTableDataChanged
-            // falls student nicht selected (!= moveEnabled) und kein lectionpanel -> keine reaktion
-            // ToDo....
-            //    System.out.println("timetable in scheduleData");
         }
     }
 
-    private void resetValidTimeMarks() {
-        for (DayColumnData d : dayColumnDataList) {
-            d.resetValidTimeMarks();
+    /* gesetzte Lections sperren, Sperrzonen setzen, der restliche Schedule einteilbar machen und current Student-Daten global setzen*/
+    private void setMoveMode(Student student, boolean timeTableCoordinates, boolean allValidTimes) {
+
+        int lectionLength = student.getLectionType();
+        int headRow = -1;
+        int selectedDayColumnRow = -1;
+        // Falls TimeTable-Koordinaten, in DayColumn-Koordinaten konvertieren
+        if (timeTableCoordinates) {
+            selectedDayColumnRow = selectedRow;
+            if (selectedCol % 4 == 3) // 2. LectionColumn
+            {
+                selectedDayColumnRow = selectedRow + getRowCount();
+            }
         }
-        fireTableDataChanged();
+        int rowCount = timeFrame.getTotalNumberOfFields();
+        // über alle DayColumns iterieren
+        for (int studentDayID = 0; studentDayID < dayColumnDataList.size(); studentDayID++) {
+            DayColumnData dayColumn = getDayColumn(studentDayID);
+            // über FieldDataList rückwärts iterieren
+            for (int i = rowCount - 1; i >= 0; i--) {
+                // nicht einteilbarer Bereich am Schluss des Tages immer sperren
+                if (i < rowCount && i >= rowCount - lectionLength) {
+                    dayColumn.getFieldData(i).setScheduleEnabled(false);
+                } // gesetzte Lektionen sperren
+                else if (dayColumn.getFieldData(i).isLectionAllocated()) {
+                    dayColumn.getFieldData(i).setScheduleEnabled(false);
+                    // Falls TimeTable-Koordinaten, HEAD-Row identifizieren, ausser die der angeklickten Lection
+                    if (timeTableCoordinates && i != selectedDayColumnRow && dayColumn.getFieldData(i).getLectionPanelArea() == ScheduleFieldData.HEAD) {
+                        headRow = i;
+                    }
+                } // vor allen eingeteilten Lections Sperrzone setzen 
+                else if (i < headRow && i >= headRow - lectionLength) {
+                    dayColumn.getFieldData(i).setScheduleEnabled(false);
+                } // einteilbarer Bereich
+                else {
+                    dayColumn.getFieldData(i).setScheduleEnabled(true);
+                    dayColumn.getFieldData(i).setStudent(student);// current Student muss in allen einteilbaren Feldern bekannt sein
+                }
+                // Falls TimeTable-Koordinaten, die angeklickte Lection freigeben und zurücksetzen
+                if (timeTableCoordinates && i == selectedDayColumnRow) {
+                    for (int k = selectedDayColumnRow; k < selectedDayColumnRow + dayColumn.getFieldData(selectedDayColumnRow).getStudent().getLectionType(); k++) {
+                        dayColumn.getFieldData(k).setScheduleEnabled(true);
+                        dayColumn.getFieldData(k).setLectionPanelArea(ScheduleFieldData.NO_VALUE);
+                    }
+                }
+                // falls Lection im Schedule angeklickt, alle ValidTimes setzen
+                if (allValidTimes) {
+                    dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
+                }
+            }
+        }
     }
 
-    // ----unbenutzt-------------
+    /* Position, Höhe und Panel-Bereiche festlegen*/
+    private void createLectionPanel(int lectionLength) {
+        // TimeTable-Koordinaten in DayColumn-Koordinaten konvertieren
+        int dayColRow = selectedRow;
+        if (selectedCol % 4 == 3) // falls 2. LectionColumn
+        {
+            dayColRow = selectedRow + getRowCount();
+        }
+        int lectionEnd = dayColRow + lectionLength;
+        // DayColumn wählen
+        DayColumnData dayColumn = getDayColumn(selectedCol / 4);
+        for (int i = dayColRow; i < lectionEnd; i++) {
+            // HEAD
+            if (i == dayColRow) {
+                dayColumn.getFieldData(i).setLectionPanelArea(ScheduleFieldData.HEAD);
+            }
+            // CENTER
+            if (i > dayColRow && i < lectionEnd - 2) {
+                dayColumn.getFieldData(i).setLectionPanelArea(ScheduleFieldData.CENTER);
+                // Vorname
+                if (i == dayColRow + 1) {
+                    dayColumn.getFieldData(i).setLectionContent(ScheduleFieldData.FIRST_NAME);
+                } // Name
+                else if (i == dayColRow + 2) {
+                    dayColumn.getFieldData(i).setLectionContent(ScheduleFieldData.NAME);
+                }
+            }
+            // BOTTOM
+            if (i == lectionEnd - 2 || i == lectionEnd - 1) { // BOTTOM
+                dayColumn.getFieldData(i).setLectionPanelArea(ScheduleFieldData.BOTTOM);
+                if (i == lectionEnd - 1) {
+                    dayColumn.getFieldData(i).setLastRow(true);
+                }
+            }
+            // ganze Lection in allocated-State setzen, Student ist bereits gesetzt
+            dayColumn.getFieldData(i).setLectionAllocated(true);
+        }
+    }
+
+    /* Schedule sperren, ausser den gesetzten Lections, validTimeMarks löschen, einteilbare Bereiche cleanen */
+    private void setAllocatedMode() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                // gesetzte Lections entsperren, restliche StudentList sperren
+                scheduleFieldDataMatrix[i][j].setScheduleEnabled(scheduleFieldDataMatrix[i][j].isLectionAllocated());
+                // validTimes zurücksetzen
+                scheduleFieldDataMatrix[i][j].setValidTimeMark(ScheduleFieldData.NO_VALUE);
+            }
+        }
+    }
+
+    /* ganzer Schedule sperren, validTimeMarks löschen */
+    public void setScheduleDisabled() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                scheduleFieldDataMatrix[i][j].setScheduleEnabled(false);
+                scheduleFieldDataMatrix[i][j].setValidTimeMark(ScheduleFieldData.NO_VALUE); // ValidTimeMarks löschen
+            }
+        }
+    }
+
+    // -----------------
     @Override
     public void mouseClicked(MouseEvent me) {
     }

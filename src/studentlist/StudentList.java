@@ -8,7 +8,7 @@ package studentlist;
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
-import schedule.Schedule;
+import schedule.TimeTable;
 import scheduleData.ScheduleData;
 import util.Colors;
 
@@ -21,10 +21,10 @@ public class StudentList extends JTable {
     private StudentField studentField;  // Renderer und MouseListener
     private HeaderField headerField;  // Renderer
 
-    public StudentList(StudentListData studentListData, Schedule schedule) {
+    public StudentList(StudentListData studentListData, TimeTable timeTable) {
 
         setModel(studentListData);
-        ScheduleData scheduleData = (ScheduleData) schedule.getTimeTable().getModel();
+        ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
         setShowGrid(true);
         setGridColor(Colors.BACKGROUND);
         setFillsViewportHeight(true);
@@ -33,17 +33,18 @@ public class StudentList extends JTable {
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
 
-        studentField = new StudentField(this, scheduleData);
+        studentField = new StudentField(this);
         setDefaultRenderer(String.class, studentField);
         setRowHeight(25);  // ev. dynam.
 
         // StudentList: Renderer als Listener registrieren 
+        addMouseListener(studentListData); // muss vor scheduleData geaddet werden, damit dort richtiger Event übergeben wird!
         addMouseMotionListener(studentField);
-        addMouseListener(studentField);
         // Schedule
-        addMouseListener(scheduleData); // Klick in StudentList ändert Schedule-TableModel (scheduleData)
-        addMouseListener(schedule.getLectionField());
-        addMouseListener(schedule.getTimeField());
+        addMouseListener(scheduleData); // Klick in StudentList ändert Schedule-TableModel
+        addMouseListener(timeTable.getLectionField()); 
+        addMouseListener(timeTable.getTimeField());  
+
     }
 
     /* Anzeige numberOfStudents in 1. HeaderField*/
@@ -56,9 +57,4 @@ public class StudentList extends JTable {
     public StudentField getStudentField() {
         return studentField;
     }
-
-    public boolean isStudentSelected() {  // Selection-State 
-        return studentField.isRowSelected();
-    }
-
-}
+  }
