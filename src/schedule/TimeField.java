@@ -45,12 +45,12 @@ public class TimeField extends LectionField {
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
 
         // ValidTimes zeichnen
-        boolean isValidTime = fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTime() == ScheduleFieldData.TIME_INTERVAL_2;
+        boolean isValidTime = fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_2;
         // Text 
         setText(fieldData.isMinute(row) ? fieldData.getMinute(row) : fieldData.getHour(row));
         setForeground(fieldData.isTeacherTime() ? Color.BLACK : Color.LIGHT_GRAY);
         // Background Optionen
-        if (fieldData.getValidTime() == ScheduleFieldData.FAVORITE) {
+        if (fieldData.getValidTimeMark() == ScheduleFieldData.FAVORITE) {
             setBackground(Colors.FAVORITE);
         } else if (isValidTime) {
             setBackground(Colors.LIGHT_GREEN);
@@ -58,7 +58,7 @@ public class TimeField extends LectionField {
             setBackground(Colors.BACKGROUND);
         }
         // ausser bei Favorit und Einzellektion, Hour immer markieren
-        if (!fieldData.isMinute(col) && fieldData.getValidTime() != ScheduleFieldData.FAVORITE) {
+        if (!fieldData.isMinute(col) && fieldData.getValidTimeMark() != ScheduleFieldData.FAVORITE) {
             if (!fieldData.isMinute(row) && isValidTime) {
                 setBackground(Colors.LIGHT_GREEN);
             } else {
@@ -66,7 +66,7 @@ public class TimeField extends LectionField {
             }
         }
         // Mouseover 
-        if (fieldData.isScheduleEnabled() && !fieldData.isLectionAllocated()) {
+        if (fieldData.isMoveEnabled() && !fieldData.isLectionAllocated()) {
             if (row == movedRow && col == movedCol) {
                 setBackground(Color.GRAY);
                 setForeground(Color.WHITE);
@@ -131,7 +131,7 @@ public class TimeField extends LectionField {
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 // Events nur von LectionColumn, Lection muss entsperrt sein
-                if (selectedCol % 2 == 1 && scheduleFieldData.isScheduleEnabled()) {
+                if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     // falls in Move-State gewechselt, TimeColumn updaten 
                     lectionLenght = scheduleFieldData.getStudent().getLectionType();
                 }

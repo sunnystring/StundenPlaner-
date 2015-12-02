@@ -17,32 +17,40 @@ public class ScheduleFieldData {
     private Student student;
     private Time time; // TimeColumn
     // GUI-Management
-    private int validTime, allocatedTime;
+    private int validTimeMark;
+    private int allocatedTimeMark;
     private boolean teacherTime;  // Unterrichtszeit
     private boolean lectionAllocated; // Lection gesetzt
-    private boolean scheduleEnabled; // einteilbarer Bereich
+    private boolean moveEnabled; // einteilbarer Bereich
     private int lectionPanelAreaMark;
-    private int lectionContent;
+    private int nameMark;
 
-    // Werte von validTimeMark und allocatedTime
+    // Werte von validTimeMark und allocatedTimeMark
     public static final int TIME_INTERVAL_1 = 1, TIME_INTERVAL_2 = 2, FAVORITE = 3;
     // Werte von lectionPanelAreaMark
     public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
-    // Werte von lectionContent
+    // Werte von nameMark
     public static final int FIRST_NAME = 7, NAME = 8;
-    public static final int NULL_VALUE = -1;
+    // kein gültiger Wert
+    public static final int NO_VALUE = -1;
 
     public ScheduleFieldData() {
 
-        validTime = NULL_VALUE;
         lectionAllocated = false;
-        scheduleEnabled = false;
+        moveEnabled = false;
+        resetTimeMarks();
         resetPanelAreaMarks();
     }
 
     public void resetPanelAreaMarks() {
-        lectionContent = NULL_VALUE;
-        lectionPanelAreaMark = NULL_VALUE;
+        nameMark = NO_VALUE;
+        lectionPanelAreaMark = NO_VALUE;
+
+    }
+
+    public void resetTimeMarks() {
+        validTimeMark = NO_VALUE;
+        allocatedTimeMark = NO_VALUE;
     }
 
     public void setStudent(Student student) {
@@ -70,24 +78,24 @@ public class ScheduleFieldData {
     }
 
     // GUI-Management 
-    public void setValidTime(int validTime) {
-        this.validTime = validTime;
+    public void setValidTimeMark(int validTimeMark) {
+        this.validTimeMark = validTimeMark;
     }
 
-    public int getValidTime() {
-        return validTime;
+    public int getValidTimeMark() {
+        return validTimeMark;
     }
 
     public boolean isValidTime() {
-        return getValidTime() != NULL_VALUE;
+        return getValidTimeMark() != NO_VALUE;
     }
 
-    public void setAllocatedTime(int allocatedTime) {
-        this.allocatedTime = allocatedTime;
+    public void setAllocatedTimeMark(int allocatedTimeMark) {
+        this.allocatedTimeMark = allocatedTimeMark;
     }
 
-    public int getAllocatedTime() {
-        return allocatedTime;
+    public int getAllocatedTimeMark() {
+        return allocatedTimeMark;
     }
 
     public boolean isMinute(int index) {
@@ -102,12 +110,12 @@ public class ScheduleFieldData {
         this.teacherTime = teacherTime;
     }
 
-    public boolean isScheduleEnabled() {
-        return scheduleEnabled;
+    public boolean isMoveEnabled() {
+        return moveEnabled;
     }
 
-    public void setScheduleEnabled(boolean scheduleEnabled) {
-        this.scheduleEnabled = scheduleEnabled;
+    public void setMoveEnabled(boolean moveEnabled) {
+        this.moveEnabled = moveEnabled;
     }
 
     public boolean isLectionAllocated() {
@@ -130,11 +138,11 @@ public class ScheduleFieldData {
         return lectionPanelAreaMark == HEAD;
     }
 
-    public void setLectionContent(int lectionContent) {
-        this.lectionContent = lectionContent;
+    public void setNameMark(int nameMark) {
+        this.nameMark = nameMark;
     }
 
-    public int getLectionContent() {
-        return lectionContent;
+    public int getNameMark() {
+        return nameMark;
     }
 }

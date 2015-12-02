@@ -62,12 +62,12 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         setBackground(Colors.BACKGROUND);
         setText("");
-        // LectionPanel gesetzt
+        // LectionPanel setzen
         if (fieldData.isLectionAllocated()) {
             // Background ist abhängig von allocatedTime
-            setBackground(fieldData.getAllocatedTime() != ScheduleFieldData.NULL_VALUE ? Colors.DARK_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+            setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
             // Foreground ist abhängig von Favorite
-            setForeground(fieldData.getAllocatedTime() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
+            setForeground(fieldData.getAllocatedTimeMark() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
             setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
             setFont(this.getFont().deriveFont(Font.BOLD, 10));
             // Head = eingeteilte Zeit anzeigen
@@ -76,10 +76,10 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setFont(this.getFont().deriveFont(Font.PLAIN, 8));
                 setText("  " + fieldData.getTime().toString());
             } // Vorname
-            else if (fieldData.getLectionContent() == ScheduleFieldData.FIRST_NAME) {
+            else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
                 setText(" " + fieldData.getStudent().getFirstName());
             } // Name
-            else if (fieldData.getLectionContent() == ScheduleFieldData.NAME) {
+            else if (fieldData.getNameMark() == ScheduleFieldData.NAME) {
                 setText(" " + fieldData.getStudent().getName());
             }
             // letztes Feld (Border setzen)
@@ -87,7 +87,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
             }
         } // Mouseover
-        else if (fieldData.isScheduleEnabled() && movedRow >= 0) { // movedRow = -1 abfangen
+        else if (fieldData.isMoveEnabled() && movedRow >= 0) { // movedRow = -1 abfangen
             // damit Zustand des ScheduleDataFields bei movedRow/movedCol abgefragt werden kann
             ScheduleFieldData fieldFromList = (ScheduleFieldData) scheduleData.getValueAt(movedRow, movedCol);
             if (col == movedCol && row >= movedRow && row < lectionEnd) {
@@ -138,7 +138,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     public void mouseMoved(MouseEvent m) {
         // MouseEvent liefert in Lection- und TimeField die gleichen Koordinaten
         Point p = m.getPoint();
-        if (timeTable.rowAtPoint(p) == -1) {  // damit Panel stehen bleibt wenn unten nicht mehr weiter einteilbar
+        if (timeTable.rowAtPoint(p) == -1) {  // ausserhalb JTable
             return;
         }
         movedRow = timeTable.rowAtPoint(p);
@@ -202,7 +202,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 // Events nur von LectionColumn, Lection muss entsperrt sein
-                if (selectedCol % 2 == 1 && scheduleFieldData.isScheduleEnabled()) {
+                if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     lectionLenght = scheduleFieldData.getStudent().getLectionType();
                     // falls in Move-State gewechselt, Mouseover-Block updaten 
                     lectionEnd = selectedRow + lectionLenght;

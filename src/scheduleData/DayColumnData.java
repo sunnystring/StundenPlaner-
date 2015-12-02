@@ -54,21 +54,21 @@ public class DayColumnData {
         }
     }
 
-    public void setValidTimeMark(StudentDay day, int i) {
+    public void setValidTimeMark(StudentDay day, int listIndex) {
 
-        ScheduleFieldData fieldData = fieldDataList.get(i);
+        ScheduleFieldData fieldData = fieldDataList.get(listIndex);
         Time listTime = fieldData.getTime();
         // ValidTime 1 
         if (listTime.greaterEqualsThan(day.getStartTime1()) && listTime.smallerEqualsThan(day.getEndTime1())) {
-            fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_1);
+            fieldData.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_1);
         }
         // ValidTime 2
         if (listTime.greaterEqualsThan(day.getStartTime2()) && listTime.smallerEqualsThan(day.getEndTime2())) {
-            fieldData.setValidTime(ScheduleFieldData.TIME_INTERVAL_2);
+            fieldData.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_2);
         }
         // Favorite
         if (listTime.equals(day.getFavorite())) {
-            fieldData.setValidTime(ScheduleFieldData.FAVORITE);
+            fieldData.setValidTimeMark(ScheduleFieldData.FAVORITE);
         }
     }
 
@@ -80,7 +80,7 @@ public class DayColumnData {
 
     public void resetValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldDataList.get(i).setValidTime(ScheduleFieldData.NULL_VALUE);
+            fieldDataList.get(i).setValidTimeMark(ScheduleFieldData.NO_VALUE);
         }
     }
 

@@ -34,8 +34,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private int numberOfDays;
     private int numberOfStudents;
     private int selectedRow, selectedCol; // die temporär selektierten JTable-Koordinaten
+    private int allocatedRow;
     public static final int NULL_ROW = -1;
-    public static final boolean STUDENTLIST_ENABLED = true;
+    public static final boolean STUDENTLIST_RELEASED = true, STUDENTLIST_BLOCKED = false;
 
     public StudentListData(Database database, MainFrame mainFrame) {
 
@@ -43,6 +44,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.mainFrame = mainFrame;
         numberOfDays = 0;
         numberOfStudents = 0;
+        resetRows();
         studentFieldDataMatrix = new ArrayList<>();
     }
 
@@ -72,10 +74,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         studentFieldDataMatrix.add(getRowCount() - 1, studentFieldDataRow);
     }
 
-    /*  Getter, Setter */
     public void initStudentList(ScheduleData scheduleData) {  // in MainFrame aufgerufen
         numberOfDays = database.getNumberOfDays();
         this.scheduleData = scheduleData;
+    }
+
+    /*  Getter, Setter */
+    private void resetRows() {
+        selectedCol = selectedRow = allocatedRow = NULL_ROW;
     }
 
     public Student getStudent(int i) {
@@ -130,20 +136,23 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                 // 1. Selektion 
                 if (studentFieldData.isStudentListEnabled()) {
                     studentFieldData.switchSelectionState();
-                    updateStudentList(selectedRow, NULL_ROW, !STUDENTLIST_ENABLED); // selectedRow setzen, StudentList sperren 
+                    setSelectedRow();
+                    blockStudentList();
+
                 } // weitere Selektionen: es kann nur die selektierte Row angesprochen werden
                 else if (selectedRow == studentFieldData.getSelectedRowIndex()) {
                     studentFieldData.switchSelectionState();
                     // falls alle Selektionen wieder gelöscht, 
                     if (isRowReleased(selectedRow)) {
-                        updateStudentList(NULL_ROW, NULL_ROW, STUDENTLIST_ENABLED); // StudentList entsperren (ausser bereits gesetzte allocatedRows)
+                        releaseStudentList();
                     }
                 }
                 // falls keine AllocatedRow und nicht imSelektions-Modus
                 if (!studentFieldData.isStudentAllocated()) {
                     mainFrame.setStudentButtonsEnabled(studentFieldData.isStudentListEnabled());
                 }
-                fireTableRowsUpdated(selectedRow, selectedRow);
+                fireTableDataChanged();
+                resetRows();
             }
         }
         // Schedule (TimeTable)
@@ -152,22 +161,31 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
-            if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1
+            if (selectedRow >= 0 && selectedCol % 2 == 1) { //  ausserhalb JTable: selectedRow = -1, keine Events aus TimeColumn 
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
-                int allocatedRow = scheduleFieldData.getStudent().getStudentID();  // StudentID = RowIndex studentFieldDataMatrix
-                if (selectedCol % 2 == 1) { // keine Events aus TimeColumn 
-                    if (scheduleFieldData.isScheduleEnabled()) { // Schedule darf nicht gesperrt sein
-                        // in Allocated-State
-                        if (scheduleFieldData.isLectionAllocated() && scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
-                            updateStudentList(NULL_ROW, allocatedRow, STUDENTLIST_ENABLED); // allocatedRow setzen, StudentList entsperren (ausser bereits gesetzte allocatedRows)
-                            mainFrame.setStudentButtonsEnabled(true);
-                        } // in Move-State 
-                        else {
-                            updateStudentList(NULL_ROW, NULL_ROW, !STUDENTLIST_ENABLED); // ganze StudentList sperren
-                            mainFrame.setStudentButtonsEnabled(false);
+                allocatedRow = scheduleFieldData.getStudent().getStudentID();  // StudentID = RowIndex studentFieldDataMatrix
+                // aus gesperrten Bereichen keine Clicks
+                if (scheduleFieldData.isMoveEnabled()) {
+                    // in Allocated-State:
+                    if (scheduleFieldData.isLectionAllocated()) {
+                        // Einteilung gemacht
+                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
+                            setAndDisableAllocatedRow(true);
+                            releaseStudentList();
                         }
-                        fireTableRowsUpdated(allocatedRow, allocatedRow);
+                        // Einteilung rückgängig gemacht
+                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) {
+                            setAndDisableAllocatedRow(false);
+                            releaseStudentList();
+                        }
+                        mainFrame.setStudentButtonsEnabled(true);
+                    } // in Move-State: 
+                    else {
+                        blockStudentList();
+                        mainFrame.setStudentButtonsEnabled(false);
                     }
+                    fireTableDataChanged();
+                    resetRows();
                 }
             }
         }
@@ -183,29 +201,33 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         return true;
     }
 
-    /* setzt TableModel für die verschiedenen Zustände der StudentList */
-    private void updateStudentList(int selectedRow, int allocatedRow, boolean setStudentListEnabled) {
+    private void setSelectedRow() {
+        for (int j = 0; j < getColumnCount(); j++) {
+            studentFieldDataMatrix.get(selectedRow)[j].setSelectedRowIndex(selectedRow);
+        }
+    }
 
+    private void setAndDisableAllocatedRow(boolean allocated) {
+        for (int j = 0; j < getColumnCount(); j++) {
+            studentFieldDataMatrix.get(allocatedRow)[j].setStudentAllocated(allocated);
+            studentFieldDataMatrix.get(allocatedRow)[j].setStudentListEnabled(!allocated);
+        }
+    }
+
+    private void releaseStudentList() {
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
-                // StudentList entsperren, ausser gesetzte allocatedRows
-                if (setStudentListEnabled) {
-                    studentFieldDataMatrix.get(i)[j].setStudentListEnabled(!studentFieldDataMatrix.get(i)[j].isStudentAllocated());
-                    studentFieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_ROW);
-                    studentFieldDataMatrix.get(i)[j].setFieldSelected(false);
-                    // allocatedRow setzen
-                    if (i == allocatedRow) {
-                        studentFieldDataMatrix.get(i)[j].setStudentAllocated(true);
-                        studentFieldDataMatrix.get(i)[j].setStudentListEnabled(false);
-                    }
-                } // StudentList sperren 
-                else {
-                    studentFieldDataMatrix.get(i)[j].setStudentListEnabled(false);
-                    // selectedRow setzen
-                    if (i == selectedRow) {
-                        studentFieldDataMatrix.get(i)[j].setSelectedRowIndex(selectedRow);
-                    }
-                }
+                studentFieldDataMatrix.get(i)[j].setStudentListEnabled(!studentFieldDataMatrix.get(i)[j].isStudentAllocated());
+                studentFieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_ROW);
+                studentFieldDataMatrix.get(i)[j].setFieldSelected(false);
+            }
+        }
+    }
+
+    private void blockStudentList() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                studentFieldDataMatrix.get(i)[j].setStudentListEnabled(false);
             }
         }
     }
