@@ -131,6 +131,9 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 }
             }
         }
+        // Zwischenspeicher updaten
+        tempCol = movedCol;
+        tempRow = movedRow;
         return this;
     }
 
