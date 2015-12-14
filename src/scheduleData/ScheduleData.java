@@ -139,12 +139,12 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
             ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
-            if (selectedRow >= 0 &&selectedCol % 2 == 1 ) { //  ausserhalb JTable: selectedRow = -1,  keine Events aus TimeColumn
+            if (selectedRow >= 0 && selectedCol % 2 == 1) { //  ausserhalb JTable: selectedRow = -1,  keine Events aus TimeColumn
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 Student student = scheduleFieldData.getStudent(); // = current Student
-               // aus gesperrten Bereichen keine Clicks
-                if ( scheduleFieldData.isMoveEnabled()) {
-                    
+                // aus gesperrten Bereichen keine Clicks
+                if (scheduleFieldData.isMoveEnabled()) {
+
                     // ab hier wird über DayColumnData/fieldDataList auf ScheduleFieldData zugegriffen
                     convertTableToListCoordinates(); // toDo.....
                     if (scheduleFieldData.isLectionAllocated()) {
@@ -158,7 +158,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) {
                             eraseLectionPanel(student.getLectionType());
                         }
-                    } // von Move-State in Allocated-State wechseln
+                    } // Lection setzen, von Move-State in Allocated-State wechseln
                     else {
                         createLectionPanel(student.getLectionType());
                         setAllocatedMode();

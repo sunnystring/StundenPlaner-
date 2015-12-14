@@ -25,7 +25,7 @@ public class TimeTable extends JTable {
         setModel(scheduleData);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-        setRowHeight(15);
+        setRowHeight(12);
 
         timeField = new TimeField(this);
         lectionField = new LectionField(this);
@@ -43,8 +43,8 @@ public class TimeTable extends JTable {
         // Schedule: Renderer als Listener registrieren 
         addMouseListener(lectionField);  // triggert reset und übergibt lectionLength in LectionField
         addMouseListener(timeField); // triggert reset und übergibt lectionLength in TimeField
-        addMouseMotionListener(lectionField); // Anzeige: bewirkt keine Änderung im TableModel
-        addMouseMotionListener(timeField);  // Anzeige: bewirkt keine Änderung im TableModel
+        addMouseMotionListener(lectionField); // moveMode
+        addMouseMotionListener(timeField);  // moveMode
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
 

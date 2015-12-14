@@ -138,7 +138,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     studentFieldData.switchSelectionState();
                     setSelectedRow();
                     blockStudentList();
-
                 } // weitere Selektionen: es kann nur die selektierte Row angesprochen werden
                 else if (selectedRow == studentFieldData.getSelectedRowIndex()) {
                     studentFieldData.switchSelectionState();
@@ -166,23 +165,23 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                 allocatedRow = scheduleFieldData.getStudent().getStudentID();  // StudentID = RowIndex studentFieldDataMatrix
                 // aus gesperrten Bereichen keine Clicks
                 if (scheduleFieldData.isMoveEnabled()) {
-                    // in Allocated-State:
                     if (scheduleFieldData.isLectionAllocated()) {
-                        // Einteilung gemacht
+                        // von Allocated-State in Move-State gewechselt
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
-                            setAndDisableAllocatedRow(true);
-                            releaseStudentList();
+                            blockStudentList();
+                            mainFrame.setStudentButtonsEnabled(false);
                         }
                         // Einteilung rückgängig gemacht
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) {
                             setAndDisableAllocatedRow(false);
                             releaseStudentList();
+                            mainFrame.setStudentButtonsEnabled(true);
                         }
-                        mainFrame.setStudentButtonsEnabled(true);
-                    } // in Move-State: 
+                    } // Lection gesetzt, von Move-State in Allocated-State gewechselt
                     else {
-                        blockStudentList();
-                        mainFrame.setStudentButtonsEnabled(false);
+                        setAndDisableAllocatedRow(true);
+                        releaseStudentList();
+                        mainFrame.setStudentButtonsEnabled(true);
                     }
                     fireTableDataChanged();
                     resetRows();
