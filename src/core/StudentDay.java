@@ -9,7 +9,7 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Einheit eines Unterrichtages mit den verfügbaren Schülerzeiten
  */
 public class StudentDay {
 
@@ -32,6 +32,15 @@ public class StudentDay {
         timeSlots[slot].setTime(timeString);
     }
 
+    public void setSingleLections() {
+        if (!timeSlots[0].toString().trim().isEmpty() & timeSlots[1].toString().trim().isEmpty()) {
+            timeSlots[1] = timeSlots[0];
+        }
+        if (!timeSlots[2].toString().trim().isEmpty() & timeSlots[3].toString().trim().isEmpty()) {
+            timeSlots[3] = timeSlots[2];
+        }
+    }
+
     public Time getStartTime1() {
         return timeSlots[0];
     }
@@ -50,15 +59,6 @@ public class StudentDay {
 
     public Time getFavorite() {
         return timeSlots[4];
-    }
-
-    public void setSingleLections() {
-        if (!getStartTime1().toString().trim().isEmpty() & getEndTime1().toString().trim().isEmpty()) {
-            timeSlots[1] = getStartTime1();
-        }
-        if (!getStartTime2().toString().trim().isEmpty() & getEndTime2().toString().trim().isEmpty()) {
-            timeSlots[3] = getStartTime2();
-        }
     }
 
     @Override

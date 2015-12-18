@@ -22,7 +22,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Renderer-Component für {@link StudentList}
  */
 public class StudentField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
@@ -41,11 +41,6 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setOpaque(true);
     }
 
-    private void resetStudentRows() {
-        selectedRow = NULL_ROW;
-        tempRow = NULL_ROW;
-    }
-
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         StudentFieldData studentFieldData = (StudentFieldData) value;
@@ -54,7 +49,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setForeground(Color.BLACK);
         setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         // Mouseover
-        if (studentFieldData.isStudentListEnabled() && row == selectedRow) {
+        if (studentFieldData.isStudentListReleased() && row == selectedRow) {
             if (col == 0) {
                 setBackground(Colors.NAME_FIELD_SELECTED);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
@@ -109,6 +104,11 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 }
             }
         }
+    }
+
+    private void resetStudentRows() {
+        selectedRow = NULL_ROW;
+        tempRow = NULL_ROW;
     }
 
     @Override

@@ -13,7 +13,8 @@ import util.Time;
 
 /**
  *
- * @author mathiaskielholz
+ * Einheit eines Unterrichtstages in {@link ScheduleData}, bestehend aus einer {@link ScheduleFieldData}-Liste
+ * 
  */
 public class DayColumnData {
 
@@ -33,17 +34,13 @@ public class DayColumnData {
         Time absoluteStart = timeFrame.getAbsoluteStart();
         fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart);
         fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart);
-        try {
-            Time time = absoluteStart.clone();
-            for (int i = 0; i < totalNumberOfFields; i++) {
-                ScheduleFieldData fieldData = new ScheduleFieldData();
-                fieldData.setTime(time.clone());
-                fieldData.setTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
-                fieldDataList.add(fieldData);
-                time.inc();
-            }
-        } catch (CloneNotSupportedException ex) {
-            ex.printStackTrace();
+        Time time = absoluteStart.clone();
+        for (int i = 0; i < totalNumberOfFields; i++) {
+            ScheduleFieldData fieldData = new ScheduleFieldData();
+            fieldData.setTime(time.clone());
+            fieldData.setTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
+            fieldDataList.add(fieldData);
+            time.inc();
         }
     }
 

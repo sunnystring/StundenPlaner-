@@ -10,26 +10,19 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Hilfsklasse zur Bestimmung und Bearbeitung der Anfangs- und Schlusszeiten
+ * aller Unterrichtstage
  */
 public class ScheduleTimeFrame {
 
     private Time absoluteStart;
     private Time absoluteEnd;
-    private int totalNumberOfFields; 
+    private int totalNumberOfFields;
 
     public ScheduleTimeFrame() {
         absoluteStart = new Time("23.00");
         absoluteEnd = new Time();
         totalNumberOfFields = 0;
-    }
-
-    public int getTotalNumberOfFields() {
-        return totalNumberOfFields;
-    }
-
-    public Time getAbsoluteStart() {
-        return absoluteStart;
     }
 
     public void createTimeFrame(ScheduleDay scheduleDay) {
@@ -42,6 +35,14 @@ public class ScheduleTimeFrame {
             absoluteEnd = scheduleEnd;
         }
         totalNumberOfFields = absoluteEnd.diff(absoluteStart); // Differenz = Anzahl 5-Minuten-Blöcke
+    }
+
+    public int getTotalNumberOfFields() {
+        return totalNumberOfFields;
+    }
+
+    public Time getAbsoluteStart() {
+        return absoluteStart;
     }
 
 }

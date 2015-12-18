@@ -17,7 +17,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Renderer-Component für {@link StudentList}
  */
 public class HeaderField extends JLabel implements TableCellRenderer {
 

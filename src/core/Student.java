@@ -7,26 +7,26 @@ package core;
 
 /**
  *
- * @author Mathias
+ * Schülerprofil
  */
 public class Student {
 
     private String firstName;
     private String name;
     private StudentTimes studentTimes;
-    private int lectionLength;  // Anzahl Lection-/TimeFields
+    private int lectionLengthInMinutes;
     private int studentID;
 
     public Student() {
         studentTimes = new StudentTimes();
     }
 
-    public StudentTimes getStudentTimes() {
-        return studentTimes;
-    }
-
     public void setStudentTimes(StudentTimes studentTimes) {
         this.studentTimes = studentTimes;
+    }
+
+    public StudentTimes getStudentTimes() {
+        return studentTimes;
     }
 
     public void setStudentID(int index) {
@@ -54,15 +54,19 @@ public class Student {
     }
 
     public int getLectionLength() {
-        return lectionLength;
+        return lectionLengthInMinutes / 5;
     }
 
-    public void setLectionLength(int lectionLengthInMinutes) {
-        lectionLength = lectionLengthInMinutes / 5;
+    public int getLectionLengthInMinutes() {
+        return lectionLengthInMinutes;
+    }
+
+    public void setLectionLengthInMinutes(int lectionLengthInMinutes) {
+        this.lectionLengthInMinutes = lectionLengthInMinutes;
     }
 
     public StudentDay getStudentDay(int index) {
-        return studentTimes.getStudentDay(index);
+        return studentTimes.getValidStudentDay(index);
     }
 
 }

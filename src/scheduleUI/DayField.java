@@ -15,7 +15,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Header in {@link Schedule}
  */
 public class DayField extends JLabel {
 

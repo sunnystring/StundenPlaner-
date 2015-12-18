@@ -14,7 +14,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * View des ganzen Stundenplans, bestehend aus {@link TimeTable} und {@link DayField}
  */
 public class Schedule extends JPanel {
 

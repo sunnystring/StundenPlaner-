@@ -14,7 +14,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * View der ganzen Schülerliste
  */
 public class StudentList extends JTable {
 

@@ -5,13 +5,17 @@
  */
 package util;
 
+import core.ScheduleDay;
+import core.StudentDay;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import scheduleData.DayColumnData;
+import scheduleData.ScheduleFieldData;
+import scheduleData.ScheduleTimeFrame;
 
-/*
- * Wrapperklasse für Time-Objekte 
- * 
+/**
+ *
+ * Hilfsklasse für die Bearbeitung von Zeiten, benutzt in {@link ScheduleDay}, {@link StudentDay}, 
+ * {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
  */
 public class Time implements Cloneable {
 
@@ -35,7 +39,7 @@ public class Time implements Cloneable {
     private void extractTimeComponents(String inputTime) {
         double time = Double.parseDouble(inputTime);
         hour = (int) time;
-        time = time - hour;  
+        time = time - hour;
         time = Math.floor(time * 100 + 0.5) / 100; // Rundungsfehler eliminieren, 2 Kommastellen
         time = time * 100;
         minute = (int) time;
@@ -43,7 +47,7 @@ public class Time implements Cloneable {
 
     private void checkEntry() throws IllegalArgumentException {
         if (!timeString.trim().matches(INPUT_FORMAT)) {
-            throw new IllegalArgumentException("Ungültige Eingabe!"); 
+            throw new IllegalArgumentException("Ungültiges Eingabeformat!");
         }
     }
 
@@ -68,15 +72,13 @@ public class Time implements Cloneable {
     public int getMinute() {
         return this.minute;
     }
-   
-     /* Addition Time + Min.*/
-    public Time plus(int minute) {
 
+    public Time plus(int minute) {
         if (minute < 0 || minute >= 60) {
             throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
         }
         Time time = new Time();
-        time.setHour(0);  // Ergebnis-Variable initialisieren
+        time.setHour(0); 
         time.setMinute(0);
 
         time.minute = this.minute + minute;
@@ -88,8 +90,7 @@ public class Time implements Cloneable {
         }
         return time;
     }
-    
-    /* Addition Time + Time.*/
+
     public Time plus(Time t) {
         Time time = new Time();
         time.hour = this.hour + t.hour;
@@ -104,7 +105,6 @@ public class Time implements Cloneable {
         return time;
     }
 
-    /* Addition Time + String */
     public Time plus(String inputString) {
         Time time = new Time();
         time.extractTimeComponents(inputString);
@@ -120,13 +120,12 @@ public class Time implements Cloneable {
         return time;
     }
 
-    /* Subtraktion Time - Min.*/
     public Time minus(int minute) {
         if (minute < 0 || minute >= 60) {
             throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
         }
         Time time = new Time();
-        time.setHour(0);  // Ergebnis-Variable initialisieren
+        time.setHour(0);  
         time.setMinute(0);
         time.minute = this.minute - minute;
         if (time.minute < 0) {
@@ -137,8 +136,7 @@ public class Time implements Cloneable {
         }
         return time;
     }
-    
-    /* Subtraktion Time - Time.*/
+
     public Time minus(Time t) {
         Time time = new Time();
         time.hour = this.hour - t.hour;
@@ -156,7 +154,6 @@ public class Time implements Cloneable {
         return time;
     }
 
-    /* Subtraktion Time - String */
     public Time minus(String inputString) {
         Time time = new Time();
         time.extractTimeComponents(inputString);
@@ -175,39 +172,30 @@ public class Time implements Cloneable {
         return time;
     }
 
-    /* Differenz als Anzahl 5-Min.-Blöcke */
+    /* Differenz in 5-Min-Auflösung */
     public int diff(Time t) {
         Time temp;
         int i = 0;
         if (this.equals(t)) {
             return 0;
         } else if (this.smallerThan(t)) {
-            try {
-                temp = this.clone();
-                while (temp.smallerThan(t)) {
-                    temp.inc();
-                    i++;
-                }
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(Time.class.getName()).log(Level.SEVERE, null, ex);
+            temp = this.clone();
+            while (temp.smallerThan(t)) {
+                temp.inc();
+                i++;
             }
-
         } else if (this.greaterThan(t)) {
-            try {
-                temp = t.clone();
-                while (temp.smallerThan(this)) {
-                    temp.inc();
-                    i++;
-                }
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(Time.class.getName()).log(Level.SEVERE, null, ex);
+            temp = t.clone();
+            while (temp.smallerThan(this)) {
+                temp.inc();
+                i++;
             }
         }
         return i;
 
     }
 
-    /* Pseudo-Inkrementierung: 5-Min-Blöcken */
+    /* Inkrementierung in 5-Min-Auflösung */
     public void inc() {
         this.minute = this.minute + 5;
         if (this.minute > 55) {
@@ -219,26 +207,26 @@ public class Time implements Cloneable {
         }
     }
 
-    /*Pseudo-Ganzzahldivision: in 5-Min-Auflösung */
+    /* Ganzzahldivision in 5-Min-Auflösung */
     public Time divBy(int t) {
         Time time = new Time();
-        time.setHour(0);  // Ergebnis-Variable initialisieren
+        time.setHour(0);  
         time.setMinute(0);
         int minutes, fields, inc;
-        minutes = this.hour * 60 + this.minute; // gesamte Minuten
-        fields = minutes / 5;  // 5-Min. Blöcke
-        inc = fields / t;  // soviel mal muss dekremtiert werden
+        minutes = this.hour * 60 + this.minute; 
+        fields = minutes / 5;  
+        inc = fields / t;  
         for (int i = 0; i < inc; i++) {
             time.inc();
         }
         return time;
     }
 
-    /*Pseudo-Modulodivision: Rest in Anzahl 5-Min-Blöcke */
+    /* Modulodivision in 5-Min-Auflösung */
     public int modBy(int t) {
         int minutes, fields;
-        minutes = this.hour * 60 + this.minute; // gesamte Minuten
-        fields = minutes / 5;  // 5-Min. Blöcke
+        minutes = this.hour * 60 + this.minute; 
+        fields = minutes / 5; 
         return fields % t;
     }
 
@@ -301,9 +289,14 @@ public class Time implements Cloneable {
     }
 
     @Override
-    public Time clone() throws CloneNotSupportedException {
-        Time temp = (Time) super.clone();
-        return temp;
+    public Time clone() {
+        Time time = null;
+        try {
+            time = (Time) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+        }
+        return time;
     }
 
     @Override

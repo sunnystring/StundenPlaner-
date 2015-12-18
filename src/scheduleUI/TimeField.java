@@ -20,7 +20,7 @@ import util.Colors;
 
 /**
  *
- * @author mathiaskielholz
+ * Renderer-Component für Zeit-Spalten in {@link TimeTable}
  */
 public class TimeField extends LectionField {
 
@@ -32,11 +32,6 @@ public class TimeField extends LectionField {
         resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-    }
-
-    private void resetTimeColumn() {
-        movedRow = NULL_ROW;
-        movedCol = -1;
     }
 
     @Override
@@ -107,7 +102,7 @@ public class TimeField extends LectionField {
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
-                } else if (studentFieldData.isStudentListEnabled()) {
+                } else if (studentFieldData.isStudentListReleased()) {
                     resetTimeColumn();
                 }
             }
@@ -122,5 +117,10 @@ public class TimeField extends LectionField {
                 }
             }
         }
+    }
+
+    private void resetTimeColumn() {
+        movedRow = NULL_ROW;
+        movedCol = -1;
     }
 }

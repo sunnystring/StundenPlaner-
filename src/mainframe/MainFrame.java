@@ -6,8 +6,9 @@
 package mainframe;
 
 import core.Database;
+import core.ScheduleTimes;
 import studentListData.StudentListData;
-import dataEntryUI.StudentDataEntryMask;
+import dataEntryUI.StudentEntryMask;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -24,11 +25,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
 import scheduleData.ScheduleData;
-import core.ScheduleTimes;
 import core.Student;
-import dataEntryUI.ScheduleDataEntry;
-import dataEntryUI.ScheduleDataEntryMask;
-import dataEntryUI.StudentDataEntry;
+import dataEntryUI.ScheduleEntryDialog;
+import dataEntryUI.ScheduleEntryMask;
+import dataEntryUI.StudentEntryDialog;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
@@ -36,7 +36,7 @@ import util.Icons;
 
 /**
  *
- * @author Mathias
+ * Erzeugung und Initialisierung der StundenPlaner-GUI
  */
 public class MainFrame extends JFrame {
 
@@ -46,10 +46,10 @@ public class MainFrame extends JFrame {
     private StudentListData studentListData;
     private Schedule schedule;
     private StudentList studentList;
-    private ScheduleDataEntryMask scheduleDataEntryMask;
-    private StudentDataEntryMask studentDataEntryMask;
+    private ScheduleEntryMask scheduleEntryMask;
+    private StudentEntryMask studentEntryMask;
     private JPanel toolBar;
-    private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticButton;
+    private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticAllocationButton;
     private JToggleButton timeFilterButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
@@ -58,38 +58,16 @@ public class MainFrame extends JFrame {
         setTitle("StundenPlaner");
         setIconImage(Icons.getImage("table.png"));
         setExtendedState(Frame.MAXIMIZED_BOTH);
+        setMinimumSize(new Dimension(1000, 400));
         database = new Database();
-        scheduleTimes = database.getScheduleTimes();
-        scheduleData = new ScheduleData(scheduleTimes);
+        scheduleData = new ScheduleData(database.getScheduleTimes());
         studentListData = new StudentListData(database, this);
         createWidgets();
         addWidgets();
         addListeners();
         setStudentButtonsEnabled(false);
-        setMinimumSize(new Dimension(1000, 400));
         pack();
-        setLocation(0, 0);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    public void createSchedule() {
-        scheduleData.setTableData();
-        schedule = new Schedule(scheduleData, studentListData);
-        leftScroll = new JScrollPane(schedule);
-        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        splitPane.setLeftComponent(leftScroll);
-    }
-
-    public void prepareStudentList() {
-        if (database.getNumberOfDays() > 0) {
-            studentListData.initStudentListData(scheduleData);
-            studentList = new StudentList(studentListData, schedule.getTimeTable());  // timeTable für Listener-Registrierung
-            studentListData.setStudentList(studentList); // für Anzeige von numberOfStudents in studentList (HeaderField)
-            setStudentButtonsEnabled(true);
-            rightScroll = new JScrollPane(studentList);
-            rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-            splitPane.setRightComponent(rightScroll);
-        }
     }
 
     private void createWidgets() {
@@ -103,15 +81,15 @@ public class MainFrame extends JFrame {
         createScheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
         addStudentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
         addKGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
-        automaticButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
+        automaticAllocationButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
-        scheduleDataEntryMask = new ScheduleDataEntryMask(scheduleTimes);
-        studentDataEntryMask = new StudentDataEntryMask(scheduleTimes);
+        scheduleEntryMask = new ScheduleEntryMask(database);
+        studentEntryMask = new StudentEntryMask(database);
     }
 
     private void addWidgets() {
@@ -125,7 +103,7 @@ public class MainFrame extends JFrame {
         toolBar.add(addStudentButton);
         toolBar.add(addKGUButton);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(automaticButton);
+        toolBar.add(automaticAllocationButton);
         toolBar.add(timeFilterButton);
     }
 
@@ -134,24 +112,45 @@ public class MainFrame extends JFrame {
         createScheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                ScheduleDataEntry scheduleDataEntry = new ScheduleDataEntry(MainFrame.this, database);
-                scheduleDataEntryMask.addListeners(scheduleDataEntry);
-                scheduleDataEntry.add(scheduleDataEntryMask);
-                scheduleDataEntry.pack();
-                scheduleDataEntry.setVisible(true);
+                JDialog scheduleEntryDialog = new ScheduleEntryDialog(MainFrame.this);
+                scheduleEntryDialog.setVisible(true);
             }
         });
         addStudentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Student student = new Student();
-                StudentDataEntry studentDataEntry = new StudentDataEntry(MainFrame.this, database);
-                studentDataEntryMask.addListeners(studentDataEntry);
-                studentDataEntry.add(studentDataEntryMask);
-                studentDataEntry.pack();
-                studentDataEntry.setVisible(true);
+                JDialog studentEntryDialog = new StudentEntryDialog(MainFrame.this, new Student());
+                studentEntryMask.clearTextFields();
+                studentEntryDialog.setVisible(true);
             }
         });
+    }
+
+    public void setScheduleData() {
+        scheduleData.setTableData();
+    }
+
+    public void createSchedule() {
+        schedule = new Schedule(scheduleData, studentListData);
+        leftScroll = new JScrollPane(schedule);
+        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        splitPane.setLeftComponent(leftScroll);
+    }
+
+    public void setStudentListData() {
+        studentListData.setScheduleData(scheduleData);
+        studentListData.setNumberOfDays();
+    }
+
+    public void createStudentList() {
+        studentList = new StudentList(studentListData, schedule.getTimeTable());  // timeTable für Listener-Registrierung
+        rightScroll = new JScrollPane(studentList);
+        rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        splitPane.setRightComponent(rightScroll);
+    }
+
+    public void setStudentListToStudentListData() {
+        studentListData.setStudentList(studentList);
     }
 
     public void setStudentButtonsEnabled(boolean state) {
@@ -166,6 +165,14 @@ public class MainFrame extends JFrame {
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(60, 0));
         }
+    }
+
+    public ScheduleEntryMask getScheduleEntryMask() {
+        return scheduleEntryMask;
+    }
+
+    public StudentEntryMask getStudentEntryMask() {
+        return studentEntryMask;
     }
 
 }

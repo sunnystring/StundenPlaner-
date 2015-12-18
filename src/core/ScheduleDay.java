@@ -9,7 +9,8 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Einheit eines Unterrichtstages mit den Unterrichtszeiten (vom Lehrer
+ * vorgegeben)
  */
 public class ScheduleDay {
 
@@ -31,6 +32,15 @@ public class ScheduleDay {
         timeSlots[slot].setTime(time);
     }
 
+    private boolean isInvalidTimeSlot(String time, int i) {
+        switch (i) {
+            case 1: // beide oder keine Zeiten eingeben
+                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
+            default:
+                return false;
+        }
+    }
+
     public Time getValidStart() {
         return timeSlots[0];
     }
@@ -45,14 +55,5 @@ public class ScheduleDay {
 
     public String getDayName() {
         return day;
-    }
-
-    private boolean isInvalidTimeSlot(String time, int i) {
-        switch (i) {
-            case 1: // beide oder keine Zeit eingeben
-                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
-            default:
-                return false;
-        }
     }
 }

@@ -25,7 +25,7 @@ import util.Colors;
 
 /**
  *
- * @author mathiaskielholz
+ * Renderer-Component für Lection-Spalten in {@link TimeTable}
  */
 public class LectionField extends JLabel implements TableCellRenderer, MouseInputListener {
 
@@ -44,19 +44,8 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
         resetLectionColumn();
-
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
-    }
-
-    private void resetLectionColumn() {
-        movedRow = 0;
-        movedCol = 0;
-        tempRow = NULL_ROW;
-        tempCol = 0;
-        lectionLenght = 0;
-        lectionEnd = 0;
-        lectionDiff = 0;
     }
 
     @Override
@@ -74,7 +63,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.isHead()) {
                 setForeground(Color.GRAY);
                 setFont(this.getFont().deriveFont(Font.PLAIN, 8));
-                setText("  " + fieldData.getTime().toString());
+                setText(" " + fieldData.getTime().toString());
             } else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
                 setText(" " + fieldData.getStudent().getFirstName());
             } else if (fieldData.getNameMark() == ScheduleFieldData.NAME) {
@@ -93,7 +82,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 if (row == movedRow) {
                     setForeground(Color.GRAY);
                     setFont(this.getFont().deriveFont(Font.PLAIN, 8));
-                    setText("  " + fieldData.getTime().toString());
+                    setText(" " + fieldData.getTime().toString());
                 } else if (row == movedRow + 1) {
                     setText(" " + fieldData.getStudent().getFirstName());
                 } else if (row == movedRow + 2) {
@@ -177,7 +166,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
-                } else if (studentFieldData.isStudentListEnabled()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
+                } else if (studentFieldData.isStudentListReleased()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
                     resetLectionColumn();
                 }
             }
@@ -238,6 +227,16 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 timeTable.repaint(timeTable.getCellRect(movedRow - i, movedCol, false)); // dirty region oberhalb von Lection
             }
         }
+    }
+
+    private void resetLectionColumn() {
+        movedRow = 0;
+        movedCol = 0;
+        tempRow = NULL_ROW;
+        tempCol = 0;
+        lectionLenght = 0;
+        lectionEnd = 0;
+        lectionDiff = 0;
     }
 
     @Override

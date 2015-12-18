@@ -12,7 +12,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Stundenplan-User-Interface in {@link Schedule}
  */
 public class TimeTable extends JTable {
 
