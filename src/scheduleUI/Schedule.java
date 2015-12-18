@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package schedule;
+package scheduleUI;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -21,21 +21,17 @@ public class Schedule extends JPanel {
     private ScheduleData scheduleData;
     private JPanel header;
     private TimeTable timeTable;
- 
+
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
-
         this.scheduleData = scheduleData;
-        setLayout(new BorderLayout());
-
         header = new JPanel();
         header.setLayout(new GridLayout(1, 4));
         header.setBackground(Colors.BACKGROUND);
         for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
             header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
         }
-        
         timeTable = new TimeTable(scheduleData, studentListData);
-        
+        setLayout(new BorderLayout());
         setBackground(Colors.BACKGROUND);
         add(BorderLayout.NORTH, header);
         add(BorderLayout.CENTER, timeTable);

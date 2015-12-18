@@ -11,24 +11,20 @@ package studentListData;
  */
 public class StudentFieldData {
 
-    // angezeigte Daten
     private String nameString;
     private String validTimeString;
-    // GUI-Management
-    private boolean fieldSelected; // Zustand eines StudentDay-Fields
-    private boolean studentListEnabled; // entspricht globalem StudentList-Schalter
-    private boolean studentAllocated; // markiert, wenn Schüler eingeteilt ist
-    private int selectedRowIndex;  // speichert die temporär selektierte Row
+    private boolean fieldSelected;
+    private boolean studentListEnabled;
+    private boolean studentAllocated;
+    private int selectedRowIndex;
 
     public StudentFieldData() {
-
         fieldSelected = false;
         studentListEnabled = true;
         selectedRowIndex = -1;
         studentAllocated = false;
     }
 
-    // angezeigte Daten
     public String getNameString() {
         return nameString;
     }
@@ -45,7 +41,6 @@ public class StudentFieldData {
         return validTimeString;
     }
 
-    // GUI-Management
     public boolean isFieldSelected() {
         return fieldSelected;
     }

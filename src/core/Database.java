@@ -20,7 +20,6 @@ public class Database {
     private int numberOfStudents; 
 
     public Database() {
-
         scheduleTimes = new ScheduleTimes();
         studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
@@ -33,11 +32,10 @@ public class Database {
     }
 
     public void addStudent(Student student) {
-
-        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0 usw.
-        student.getStudentTimes().setStudentDays(); // StudentDayList mit gültigen Zeiteinträgen erstellen
+        student.setStudentID(numberOfStudents);  
+        student.getStudentTimes().setValidStudentDays(); 
         studentDataList.add(student);
-        numberOfStudents = studentDataList.size(); // Update und zugleich nächste StudentID
+        numberOfStudents = studentDataList.size(); 
         for (DatabaseListener l : databaseListeners) {
             l.studentAdded(numberOfStudents, student);
         }
@@ -55,10 +53,6 @@ public class Database {
         this.numberOfDays = numberOfDays;
     }
 
-//    public int getNumberOfStudents() {
-//        return numberOfStudents;
-//    }
-    
      public void addDatabaseListener(DatabaseListener l) {
         databaseListeners.add(l);
     }

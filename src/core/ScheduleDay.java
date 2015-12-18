@@ -11,28 +11,24 @@ import util.Time;
  *
  * @author Mathias
  */
-
-/*  Daten für DayColumn-Instanzen*/
 public class ScheduleDay {
 
     private String day;
     private Time[] timeSlots;
-    private int dayID;
 
     public ScheduleDay() {
-
         timeSlots = new Time[2];
-
-        for (int i = 0; i < 2; i++) {  // timeSlots initialisieren
+        for (int i = 0; i < 2; i++) {
             timeSlots[i] = new Time();
         }
     }
 
-    public void setScheduleTime(String time, int i) throws IllegalArgumentException { // i = 1,2
-        if (invalidSlot(time, i - 1)) {
+    public void setTimeSlot(String time, int slot) throws IllegalArgumentException {
+        slot = slot - 1; // ohne 1. Spalte
+        if (isInvalidTimeSlot(time, slot)) {
             throw new IllegalArgumentException(" Unkorrekte Eingabe!");
         }
-        timeSlots[i - 1].setTime(time);
+        timeSlots[slot].setTime(time);
     }
 
     public Time getValidStart() {
@@ -51,19 +47,9 @@ public class ScheduleDay {
         return day;
     }
 
-    public void setDayID(int dayID) {
-        this.dayID = dayID;
-    }
-
-    public int getDayID() {
-        return dayID;
-    }
-
-    /* beide oder keine Zeit eingeben */
-    private boolean invalidSlot(String time, int i) {
-
+    private boolean isInvalidTimeSlot(String time, int i) {
         switch (i) {
-            case 1:
+            case 1: // beide oder keine Zeit eingeben
                 return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
             default:
                 return false;

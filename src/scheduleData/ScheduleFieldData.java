@@ -15,27 +15,20 @@ import util.Time;
 public class ScheduleFieldData {
 
     private Student student;
-    private Time time; // TimeColumn
-    // GUI-Management
+    private Time time;
     private int validTimeMark;
     private int allocatedTimeMark;
-    private boolean teacherTime;  // Unterrichtszeit
-    private boolean lectionAllocated; // Lection gesetzt
-    private boolean moveEnabled; // einteilbarer Bereich
+    private boolean teacherTime;
+    private boolean lectionAllocated;
+    private boolean moveEnabled;
     private int lectionPanelAreaMark;
     private int nameMark;
-
-    // Werte von validTimeMark und allocatedTimeMark
     public static final int TIME_INTERVAL_1 = 1, TIME_INTERVAL_2 = 2, FAVORITE = 3;
-    // Werte von lectionPanelAreaMark
     public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
-    // Werte von nameMark
     public static final int FIRST_NAME = 7, NAME = 8;
-    // kein gültiger Wert
     public static final int NO_VALUE = -1;
 
     public ScheduleFieldData() {
-
         lectionAllocated = false;
         moveEnabled = false;
         resetTimeMarks();
@@ -45,7 +38,6 @@ public class ScheduleFieldData {
     public void resetPanelAreaMarks() {
         nameMark = NO_VALUE;
         lectionPanelAreaMark = NO_VALUE;
-
     }
 
     public void resetTimeMarks() {
@@ -77,7 +69,6 @@ public class ScheduleFieldData {
         return String.valueOf(time.getHour());
     }
 
-    // GUI-Management 
     public void setValidTimeMark(int validTimeMark) {
         this.validTimeMark = validTimeMark;
     }

@@ -11,22 +11,20 @@ import util.Time;
  *
  * @author Mathias
  */
-/* Einteilungszeiten eines Tages eines Schülers */
 public class StudentDay {
 
     private Time[] timeSlots;
 
-    public StudentDay(int slots) {  // slots = COLUMNS - 1 = 5
-
+    public StudentDay(int slots) {
         timeSlots = new Time[slots];
         for (int i = 0; i < slots; i++) {
             timeSlots[i] = new Time();
         }
     }
 
-    /* Getter, Setter */
-    public void setStudentTime(String timeString, int slot) throws IllegalArgumentException {
-        if (slot == 1 || slot == 3) {   // endTime1 und endTime2 checken
+    public void setTimeSlot(String timeString, int slot) throws IllegalArgumentException {
+        slot = slot - 1; // ohne 1. Spalte
+        if (slot == 1 || slot == 3) {
             if (!timeString.trim().isEmpty() & timeSlots[slot - 1].toString().trim().isEmpty()) {
                 throw new IllegalArgumentException(" Kein Anfangswert eingegeben!");
             }
@@ -54,23 +52,6 @@ public class StudentDay {
         return timeSlots[4];
     }
 
-    /* Favorit muss separater String sein für Formatierung in StudentField */
-    public String getFavoriteAsString() {
-        return getFavorite().toString();
-    }
-
-    /* gibt StudentDay-Objekt im richtigen Format (für StudentField) zurück */
-    @Override
-    public String toString() {
-
-        String endString1, endString2;
-        /* setzt nach Bedarf Bindestrich */
-        endString1 = getEndTime1().toString().trim().isEmpty() ? getEndTime1().toString() : "-" + getEndTime1().toString();
-        endString2 = getEndTime2().toString().trim().isEmpty() ? getEndTime2().toString() : "-" + getEndTime2().toString();
-
-        return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
-    }
-
     public void setSingleLections() {
         if (!getStartTime1().toString().trim().isEmpty() & getEndTime1().toString().trim().isEmpty()) {
             timeSlots[1] = getStartTime1();
@@ -80,13 +61,11 @@ public class StudentDay {
         }
     }
 
-    public boolean isValidDay() { // -> unnötig in neuer Version
-
-        for (Time t : timeSlots) {
-            if (!t.toString().trim().isEmpty()) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public String toString() {
+        String endString1, endString2;
+        endString1 = getEndTime1().toString().trim().isEmpty() ? getEndTime1().toString() : "-" + getEndTime1().toString();
+        endString2 = getEndTime2().toString().trim().isEmpty() ? getEndTime2().toString() : "-" + getEndTime2().toString();
+        return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
     }
 }

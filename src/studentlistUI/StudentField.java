@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist;
+package studentlistUI;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
-import schedule.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import util.Colors;
@@ -30,41 +29,37 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     private StudentList studentList;
     private int selectedRow, tempRow;
     private int columnCount;
+    public static final int NULL_ROW = -1;
 
     public StudentField(StudentList studentList) {
-
         this.studentList = studentList;
         StudentListData studentListData = (StudentListData) studentList.getModel();
         columnCount = studentListData.getColumnCount();
         resetStudentRows();
-
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
     }
 
     private void resetStudentRows() {
-        selectedRow = -1;
-        tempRow = -1;
+        selectedRow = NULL_ROW;
+        tempRow = NULL_ROW;
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-
         StudentFieldData studentFieldData = (StudentFieldData) value;
-        // Text
         setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setForeground(Color.BLACK);
-        // Background
         setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         // Mouseover
         if (studentFieldData.isStudentListEnabled() && row == selectedRow) {
-            if (col == 0) {  // Name-Column
+            if (col == 0) {
                 setBackground(Colors.NAME_FIELD_SELECTED);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
                 setForeground(Color.WHITE);
-            } else {  // StudentDay-Columns
+            } else {
                 setBackground(Colors.LIGHT_GREEN);
             }
         } else {
@@ -73,7 +68,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         // Row selected
         if (row == studentFieldData.getSelectedRowIndex()) {
             if (col == 0) {
-                if (col == 0) {  // Name-Column
+                if (col == 0) {
                     setBackground(Colors.NAME_FIELD_SELECTED);
                     setFont(this.getFont().deriveFont(Font.BOLD, 10));
                     setForeground(Color.WHITE);
@@ -92,18 +87,15 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
 
     @Override
     public void mouseMoved(MouseEvent m) {
-
         Point point = m.getPoint();
         selectedRow = studentList.rowAtPoint(point);
         if (selectedRow != tempRow) {
-            paintRow(selectedRow < tempRow);
+            paintStudentRow(selectedRow < tempRow);
             tempRow = selectedRow;
         }
     }
 
-    /* dirty region painten */
-    private void paintRow(boolean moveUp) {
-
+    private void paintStudentRow(boolean moveUp) {
         if (moveUp) {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < columnCount; j++) {
@@ -120,7 +112,6 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     }
 
     @Override
-    public void mouseDragged(MouseEvent me
-    ) {
+    public void mouseDragged(MouseEvent me) {
     }
 }

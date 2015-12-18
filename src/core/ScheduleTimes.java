@@ -15,55 +15,44 @@ import javax.swing.table.TableModel;
  */
 public class ScheduleTimes implements TableModel {
 
-    private static final int DAYS = 6, COLUMNS = 3; // 6 = Mo-Sa 
-
-    private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];  // fixe interne Liste aller Unterrichtstage für TableModel
+    private static final int DAYS = 6, COLUMNS = 3;
+    private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
-    private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"}; // fixes Mapping: Mo = 0, Di = 1 usw.
-
-    private ArrayList<ScheduleDay> scheduleDayList; // dynamische Liste und neues Mapping mit den ausgewählten Unterrichtstagen zur Weiterverwendung nach aussen
+    private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+    private ArrayList<ScheduleDay> scheduleDayList;
 
     public ScheduleTimes() {
-
-        for (int i = 0; i < DAYS; i++) {
-            SCHEDULEDAY_LIST[i] = new ScheduleDay();  // ScheduleDays werden setValueAt() definiert
+        for (int day = 0; day < DAYS; day++) {
+            SCHEDULEDAY_LIST[day] = new ScheduleDay();
         }
         scheduleDayList = new ArrayList<>();
     }
 
-    /* Getter, Setter */
     public ScheduleDay getScheduleDay(int i) {
-        return scheduleDayList.get(i); // = ScheduleDay gemäss dynamischem Mapping 
+        return scheduleDayList.get(i);
     }
 
     public String getDayName(int i) {
-        return scheduleDayList.get(i).getDayName(); // DayName gemäss dynamischem Mapping 
+        return scheduleDayList.get(i).getDayName();
     }
 
     public int getNumberOfDays() {
         return scheduleDayList.size();
     }
 
-    /* dynamische Liste mit gültigen ScheduleDays befüllen*/
-    public void setScheduleDays() {
-
-        for (int i = 0; i < DAYS; i++) {
-            if (isValidScheduleDay(i)) {
-                SCHEDULEDAY_LIST[i].setDayName(WEEKDAY_NAMES[i]);
-                scheduleDayList.add(SCHEDULEDAY_LIST[i]); // hier entsteht neues Mapping: 1. Unterrichtstag = 0 usw.
+    public void setValidScheduleDays() {
+        for (int day = 0; day < DAYS; day++) {
+            if (isValidScheduleDay(day)) {
+                SCHEDULEDAY_LIST[day].setDayName(WEEKDAY_NAMES[day]);
+                scheduleDayList.add(SCHEDULEDAY_LIST[day]); // Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
-        for (int i = 0; i < scheduleDayList.size(); i++) {
-            scheduleDayList.get(i).setDayID(i);     // DayID setzen
-        }
     }
 
-    // falls kein leerer Slot
-    public boolean isValidScheduleDay(int i) {
-        return !SCHEDULEDAY_LIST[i].getValidStart().toString().trim().isEmpty();
+    public boolean isValidScheduleDay(int day) {
+        return !SCHEDULEDAY_LIST[day].getValidStart().toString().trim().isEmpty();
     }
 
-    /* Implementierung TableModel für ScheduleDataEntry */
     @Override
     public int getRowCount() {
         return DAYS;
@@ -91,10 +80,9 @@ public class ScheduleTimes implements TableModel {
 
     @Override
     public Object getValueAt(int row, int col) {
-
         switch (col) {
             case 0:
-                return WEEKDAY_NAMES[row]; // 1. Spalte
+                return WEEKDAY_NAMES[row];
             case 1:
                 return SCHEDULEDAY_LIST[row].getValidStart();
             case 2:
@@ -105,10 +93,9 @@ public class ScheduleTimes implements TableModel {
     }
 
     @Override
-    public void setValueAt(Object o, int row, int col) {  // col = 1,2
-
+    public void setValueAt(Object o, int row, int col) {
         String timeString = (String) o;
-        SCHEDULEDAY_LIST[row].setScheduleTime(timeString, col);  // SCHEDULEDAY_LIST befüllen mit Eingaben aus der JTable
+        SCHEDULEDAY_LIST[row].setTimeSlot(timeString, col);
     }
 
     @Override

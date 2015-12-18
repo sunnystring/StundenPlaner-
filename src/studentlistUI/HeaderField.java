@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist;
+package studentlistUI;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,7 +22,6 @@ import util.Colors;
 public class HeaderField extends JLabel implements TableCellRenderer {
 
     public HeaderField() {
-
         setForeground(Colors.BACKGROUND);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
@@ -31,9 +30,8 @@ public class HeaderField extends JLabel implements TableCellRenderer {
         setOpaque(true);
     }
 
-    @Override  //prepareRenderer ?
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object o, boolean bln, boolean bln1, int row, int col) {
-
         String msg = (String) o;
         setText(msg);
         setBackground(col == 0 ? Colors.NAME_FIELD_SELECTED : Colors.DAY_FIELD);
