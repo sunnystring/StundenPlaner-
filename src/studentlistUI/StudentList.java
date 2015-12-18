@@ -3,51 +3,44 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package studentlist;
+package studentlistUI;
 
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
-import schedule.TimeTable;
+import scheduleUI.TimeTable;
 import scheduleData.ScheduleData;
 import util.Colors;
 
 /**
  *
- * @author Mathias
+ * View der ganzen Schülerliste
  */
 public class StudentList extends JTable {
 
-    private StudentField studentField;  // Renderer und MouseListener
-    private HeaderField headerField;  // Renderer
+    private StudentField studentField;
+    private HeaderField headerField;
 
     public StudentList(StudentListData studentListData, TimeTable timeTable) {
-
         setModel(studentListData);
         ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
         setShowGrid(true);
         setGridColor(Colors.BACKGROUND);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
-
         studentField = new StudentField(this);
         setDefaultRenderer(String.class, studentField);
-        setRowHeight(25);  // ev. dynam.
-
-        // StudentList: Renderer als Listener registrieren 
-        addMouseListener(studentListData); // muss vor scheduleData geaddet werden, damit dort richtiger Event übergeben wird!
+        setRowHeight(25);
+        
+        addMouseListener(studentListData);
         addMouseMotionListener(studentField);
-        // Schedule
         addMouseListener(timeTable.getLectionField());
         addMouseListener(timeTable.getTimeField());
-        addMouseListener(scheduleData); // Klick in StudentList ändert Schedule-TableModel
-
+        addMouseListener(scheduleData);
     }
 
-    /* Anzeige numberOfStudents in 1. HeaderField*/
     public void showNumberOfStudents() {
         JTableHeader header = getTableHeader();
         header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));

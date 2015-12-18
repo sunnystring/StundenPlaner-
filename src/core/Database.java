@@ -8,8 +8,8 @@ package core;
 import java.util.ArrayList;
 
 /**
- *
- * @author Mathias
+ * Daten für die permanente Speicherung: Schülerdatenbestand, Unterrichtstage und -zeiten, 
+ * 
  */
 public class Database {
 
@@ -17,10 +17,9 @@ public class Database {
     private ArrayList<Student> studentDataList;
     private ArrayList<DatabaseListener> databaseListeners;
     private int numberOfDays;
-    private int numberOfStudents; 
+    private int numberOfStudents;
 
     public Database() {
-
         scheduleTimes = new ScheduleTimes();
         studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
@@ -28,19 +27,38 @@ public class Database {
         numberOfStudents = 0;
     }
 
-    public ScheduleTimes getScheduleTimes() {
-        return scheduleTimes;
-    }
-
     public void addStudent(Student student) {
-
-        student.setStudentID(numberOfStudents);  // 1. Student: ID = 0 usw.
-        student.getStudentTimes().setStudentDays(); // StudentDayList mit gültigen Zeiteinträgen erstellen
+        student.setStudentID(numberOfStudents);
         studentDataList.add(student);
-        numberOfStudents = studentDataList.size(); // Update und zugleich nächste StudentID
+        numberOfStudents = studentDataList.size();
         for (DatabaseListener l : databaseListeners) {
             l.studentAdded(numberOfStudents, student);
         }
+    }
+
+    public void editStudent(Student student) {
+        for (DatabaseListener l : databaseListeners) {
+            l.studentEdited(student);
+        }
+    }
+
+    public void deleteStudent(Student student) {
+        studentDataList.remove(student);
+        numberOfStudents = studentDataList.size();
+        for (DatabaseListener l : databaseListeners) {
+            l.studentDeleted(numberOfStudents, student.getStudentID());
+        }
+        updateStudentIDs();
+    }
+
+    private void updateStudentIDs() {
+        for (int i = 0; i < studentDataList.size(); i++) {
+            studentDataList.get(i).setStudentID(i);
+        }
+    }
+
+    public ScheduleTimes getScheduleTimes() {
+        return scheduleTimes;
     }
 
     public ArrayList<Student> getStudentList() {
@@ -55,11 +73,7 @@ public class Database {
         this.numberOfDays = numberOfDays;
     }
 
-//    public int getNumberOfStudents() {
-//        return numberOfStudents;
-//    }
-    
-     public void addDatabaseListener(DatabaseListener l) {
+    public void addDatabaseListener(DatabaseListener l) {
         databaseListeners.add(l);
     }
 }

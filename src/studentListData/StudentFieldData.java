@@ -5,30 +5,38 @@
  */
 package studentListData;
 
+import core.Student;
+import studentlistUI.StudentList;
+
 /**
  *
- * @author Mathias
+ * Model einer Zelle von {@link StudentList}
  */
 public class StudentFieldData {
 
-    // angezeigte Daten
+    private Student student;
     private String nameString;
     private String validTimeString;
-    // GUI-Management
-    private boolean fieldSelected; // Zustand eines StudentDay-Fields
-    private boolean studentListEnabled; // entspricht globalem StudentList-Schalter
-    private boolean studentAllocated; // markiert, wenn Schüler eingeteilt ist
-    private int selectedRowIndex;  // speichert die temporär selektierte Row
+    private boolean fieldSelected;
+    private boolean studentListReleased;
+    private boolean studentAllocated;
+    private int selectedRowIndex;
 
     public StudentFieldData() {
-
         fieldSelected = false;
-        studentListEnabled = true;
+        studentListReleased = true;
         selectedRowIndex = -1;
         studentAllocated = false;
     }
 
-    // angezeigte Daten
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
     public String getNameString() {
         return nameString;
     }
@@ -45,7 +53,6 @@ public class StudentFieldData {
         return validTimeString;
     }
 
-    // GUI-Management
     public boolean isFieldSelected() {
         return fieldSelected;
     }
@@ -62,12 +69,12 @@ public class StudentFieldData {
         return studentAllocated;
     }
 
-    public boolean isStudentListEnabled() {
-        return studentListEnabled;
+    public boolean isStudentListReleased() {
+        return studentListReleased;
     }
 
-    public void setStudentListEnabled(boolean studentListEnabled) {
-        this.studentListEnabled = studentListEnabled;
+    public void setStudentListReleased(boolean studentListReleased) {
+        this.studentListReleased = studentListReleased;
     }
 
     public void setStudentAllocated(boolean studentAllocated) {

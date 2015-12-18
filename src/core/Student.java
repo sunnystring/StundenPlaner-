@@ -7,29 +7,26 @@ package core;
 
 /**
  *
- * @author Mathias
+ * Schülerprofil
  */
-/* Schülerdaten */
 public class Student {
 
     private String firstName;
     private String name;
-    private StudentTimes studentTimes; // implements TableModel
-    private int lectionType;  // Achtung: konvertierte Grösse = Anzahl Lection- bzw. TimeFields (= 5 Min.)
-    private int studentID; 
+    private StudentTimes studentTimes;
+    private int lectionLengthInMinutes;
+    private int studentID;
 
     public Student() {
-        
-        studentTimes  = new StudentTimes();
-    }
-
-    /* Getter, Setter */
-    public StudentTimes getStudentTimes() {
-        return studentTimes;
+        studentTimes = new StudentTimes();
     }
 
     public void setStudentTimes(StudentTimes studentTimes) {
         this.studentTimes = studentTimes;
+    }
+
+    public StudentTimes getStudentTimes() {
+        return studentTimes;
     }
 
     public void setStudentID(int index) {
@@ -56,16 +53,20 @@ public class Student {
         this.name = name;
     }
 
-    public int getLectionType() {
-        return lectionType;
+    public int getLectionLength() {
+        return lectionLengthInMinutes / 5;
     }
 
-    public void setLectionType(int lectionLength) {  
-        lectionType = lectionLength / 5;  // nicht Minuten, sondern Anzahl Fields à 5 Min.
+    public int getLectionLengthInMinutes() {
+        return lectionLengthInMinutes;
+    }
+
+    public void setLectionLengthInMinutes(int lectionLengthInMinutes) {
+        this.lectionLengthInMinutes = lectionLengthInMinutes;
     }
 
     public StudentDay getStudentDay(int index) {
-        return studentTimes.getStudentDay(index);
+        return studentTimes.getValidStudentDay(index);
     }
 
 }

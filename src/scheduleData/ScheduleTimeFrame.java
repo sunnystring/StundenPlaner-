@@ -10,20 +10,31 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Hilfsklasse zur Bestimmung und Bearbeitung der Anfangs- und Schlusszeiten
+ * aller Unterrichtstage
  */
 public class ScheduleTimeFrame {
 
-    private Time absoluteStart;  // untere globale Zeitgrenze Stundenplan
-    private Time absoluteEnd;   // obere globale Zeitgrenze Stundenplan
-
-    /* von Time zu int konvertierte Grössen */
-    private int totalNumberOfFields; // globale maximale Anzahl Time- bzw. Lectionfields (= Column-Höhe)
+    private Time absoluteStart;
+    private Time absoluteEnd;
+    private int totalNumberOfFields;
 
     public ScheduleTimeFrame() {
-        absoluteStart = new Time("23.00"); // obere Grenze initialisieren
-        absoluteEnd = new Time(); // untere Grenze initialisieren
+        absoluteStart = new Time("23.00");
+        absoluteEnd = new Time();
         totalNumberOfFields = 0;
+    }
+
+    public void createTimeFrame(ScheduleDay scheduleDay) {
+        Time scheduleStart = scheduleDay.getValidStart();
+        Time scheduleEnd = scheduleDay.getValidEnd();
+        if (scheduleStart.smallerThan(absoluteStart)) {
+            absoluteStart = scheduleStart;
+        }
+        if (scheduleEnd.greaterThan(absoluteEnd)) {
+            absoluteEnd = scheduleEnd;
+        }
+        totalNumberOfFields = absoluteEnd.diff(absoluteStart); // Differenz = Anzahl 5-Minuten-Blöcke
     }
 
     public int getTotalNumberOfFields() {
@@ -32,25 +43,6 @@ public class ScheduleTimeFrame {
 
     public Time getAbsoluteStart() {
         return absoluteStart;
-    }
-
-    /* hier wird der Zeitrahmen jeder DayColumn initialisiert und zu int konvertiert*/
-    public void createTimeFrame(ScheduleDay scheduleDay) {
-
-        Time scheduleStart;
-        Time scheduleEnd;
-
-        scheduleStart = scheduleDay.getValidStart();
-        scheduleEnd = scheduleDay.getValidEnd();
-
-        /* hier wird der abolute Zeitrahmen aller Tage bestimmt */
-        if (scheduleStart.smallerThan(absoluteStart)) {
-            absoluteStart = scheduleStart;
-        }
-        if (scheduleEnd.greaterThan(absoluteEnd)) {
-            absoluteEnd = scheduleEnd;
-        }
-        totalNumberOfFields = absoluteEnd.diff(absoluteStart);
     }
 
 }

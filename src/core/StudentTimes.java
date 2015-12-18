@@ -5,52 +5,32 @@
  */
 package core;
 
+import dataEntryUI.StudentEntryMask;
 import java.util.ArrayList;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
- * @author mathiaskielholz
+ * Gesamtheit aller Unterrichtstage mit den verfügbaren Schülerzeiten,
+ * TableModel für {@link StudentEntryMask}
  */
-public class StudentTimes implements TableModel {
+public class StudentTimes extends AbstractTableModel {
 
-    private static final int DAYS = 6, COLUMNS = 6; // DAYS = 6 = Mo-Sa,
+    private static final int DAYS = 6, COLUMNS = 6;
     private ScheduleTimes scheduleTimes;
-
-    private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS]; // fixe interne Liste aller Unterrichtstage für TableModel
+    private StudentDay[] daySelectionList;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-
-    private ArrayList<StudentDay> studentDayList; // dynamische Liste umit neuem Mapping mit den ausgewählten Unterrichtstagen zur Weiterverwendung nach aussen
+    private ArrayList<StudentDay> validStudentDayList;
 
     public StudentTimes() {
-
+        daySelectionList = new StudentDay[DAYS];
         for (int i = 0; i < DAYS; i++) {
-            STUDENTDAY_LIST[i] = new StudentDay(COLUMNS - 1); // COLUMNS - 1 = TimeSlots in StudentDay
+            daySelectionList[i] = new StudentDay(COLUMNS - 1); // ohne 1. Spalte
         }
-        studentDayList = new ArrayList<>();
+        validStudentDayList = new ArrayList<>(); 
     }
 
-    public StudentDay getStudentDay(int i) {
-        return studentDayList.get(i);  // = StudentDay gemäss dynamischem Mapping in ScheduleTimes
-    }
-
-    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
-        this.scheduleTimes = scheduleTimes;
-    }
-
-    // studentDayList mit leeren StudentDays bekommt gerade die richtige Size 
-    public void setStudentDays() {
-        for (int i = 0; i < DAYS; i++) {
-            STUDENTDAY_LIST[i].setSingleLections(); // falls nur validStart eingegeben, validEnd = validStart
-            if (scheduleTimes.isValidScheduleDay(i)) {
-                studentDayList.add(STUDENTDAY_LIST[i]); // neues Mapping: 1. Tag = 0 usw.
-            }
-        }
-    }
-
-    /* Implementierung TableModel für StudentDataEntry */
     @Override
     public int getRowCount() {
         return DAYS;
@@ -73,7 +53,6 @@ public class StudentTimes implements TableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        // empty Slots in SCHEDULEDAY_LIST dürfen in der entspr. STUDENTDAY_LIST nicht editierbar sein
         return col > 0 && scheduleTimes.isValidScheduleDay(row);
     }
 
@@ -81,17 +60,17 @@ public class StudentTimes implements TableModel {
     public Object getValueAt(int row, int col) {
         switch (col) {
             case 0:
-                return WEEKDAY_NAMES[row]; // 1. Spalte
+                return WEEKDAY_NAMES[row];
             case 1:
-                return STUDENTDAY_LIST[row].getStartTime1(); // Noch unbenutzt
+                return daySelectionList[row].getStartTime1();
             case 2:
-                return STUDENTDAY_LIST[row].getEndTime1();
+                return daySelectionList[row].getEndTime1();
             case 3:
-                return STUDENTDAY_LIST[row].getStartTime2();
+                return daySelectionList[row].getStartTime2();
             case 4:
-                return STUDENTDAY_LIST[row].getEndTime2();
+                return daySelectionList[row].getEndTime2();
             case 5:
-                return STUDENTDAY_LIST[row].getFavorite();
+                return daySelectionList[row].getFavorite();
             default:
                 return null;
         }
@@ -100,15 +79,35 @@ public class StudentTimes implements TableModel {
     @Override
     public void setValueAt(Object o, int row, int col) {
         String timeString = (String) o;
-        STUDENTDAY_LIST[row].setStudentTime(timeString, col - 1); // col = 0 = WEEKDAY_NAMES
+        daySelectionList[row].setTimeSlot(timeString, col);
     }
 
-    @Override
-    public void addTableModelListener(TableModelListener tl) {
+    public void setValidStudentDays() {
+        try {
+            for (int day = 0; day < DAYS; day++) {
+                daySelectionList[day].setSingleLections(); // falls solche gesetzt: endTime = startTime
+                if (scheduleTimes.isValidScheduleDay(day)) {
+                    validStudentDayList.add(daySelectionList[day]); // Mapping: 1. StudentDay = 0 usw.
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            // ToDo: Fehler korrigieren, 
+           // fireTableDataChanged();
+            
+        }
     }
 
-    @Override
-    public void removeTableModelListener(TableModelListener tl) {
+    public void updateValidStudentDays() {
+        validStudentDayList.clear();
+        setValidStudentDays(); 
+    }
+
+    public StudentDay getValidStudentDay(int i) {
+        return validStudentDayList.get(i);
+    }
+
+    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+        this.scheduleTimes = scheduleTimes;
     }
 
 }
