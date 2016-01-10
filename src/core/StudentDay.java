@@ -14,6 +14,7 @@ import util.Time;
 public class StudentDay {
 
     private Time[] timeSlots;
+    boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2;
 
     public StudentDay(int slots) {
         timeSlots = new Time[slots];
@@ -22,21 +23,35 @@ public class StudentDay {
         }
     }
 
-    public void setTimeSlot(String timeString, int slot) throws IllegalArgumentException {
+    public void setTimeSlot(String timeString, int slot) {
         slot = slot - 1; // ohne 1. Spalte
-        if (slot == 1 || slot == 3) {
-            if (!timeString.trim().isEmpty() & timeSlots[slot - 1].toString().trim().isEmpty()) {
-                throw new IllegalArgumentException(" Kein Anfangswert eingegeben!");
-            }
-        }
         timeSlots[slot].setTime(timeString);
     }
 
+    public boolean hasInvalidTimeSlots() {
+        noStart1 = getStartTime1().isEmpty() && !getEndTime1().isEmpty();
+        noStart2 = getStartTime2().isEmpty() && !getEndTime2().isEmpty();
+        endSmallerStart1 = getEndTime1().smallerThan(getStartTime1());
+        endSmallerStart2 = getEndTime2().smallerThan(getStartTime2());
+        return (noStart1 || noStart2 || endSmallerStart1 || endSmallerStart2);
+    }
+
+    public void correctInvalidTimeSlots() {
+        if (noStart1 || endSmallerStart1) {
+            timeSlots[0] = new Time();
+            timeSlots[1] = new Time();
+        }
+        if (noStart2 || endSmallerStart2) {
+            timeSlots[2] = new Time();
+            timeSlots[3] = new Time();
+        }
+    }
+
     public void setSingleLections() {
-        if (!timeSlots[0].toString().trim().isEmpty() & timeSlots[1].toString().trim().isEmpty()) {
+        if (!getStartTime1().isEmpty() & getEndTime1().isEmpty()) {
             timeSlots[1] = timeSlots[0];
         }
-        if (!timeSlots[2].toString().trim().isEmpty() & timeSlots[3].toString().trim().isEmpty()) {
+        if (!getStartTime2().isEmpty() & getEndTime2().isEmpty()) {
             timeSlots[3] = timeSlots[2];
         }
     }

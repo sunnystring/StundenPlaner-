@@ -19,26 +19,28 @@ public class ScheduleDay {
 
     public ScheduleDay() {
         timeSlots = new Time[2];
+        createEmptyTimeSlots();
+    }
+
+    private void createEmptyTimeSlots() {
         for (int i = 0; i < 2; i++) {
             timeSlots[i] = new Time();
         }
     }
 
-    public void setTimeSlot(String time, int slot) throws IllegalArgumentException {
+    public void setTimeSlot(String time, int slot) {
         slot = slot - 1; // ohne 1. Spalte
-        if (isInvalidTimeSlot(time, slot)) {
-            throw new IllegalArgumentException(" Unkorrekte Eingabe!");
-        }
         timeSlots[slot].setTime(time);
     }
 
-    private boolean isInvalidTimeSlot(String time, int i) {
-        switch (i) {
-            case 1: // beide oder keine Zeiten eingeben
-                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
-            default:
-                return false;
-        }
+    public boolean hasInvalidTimeSlots() {
+        boolean emptyAndNotEqual = getValidStart().isEmpty() != getValidEnd().isEmpty();
+        boolean startGreaterEndOrEqual = !getValidStart().isEmpty() && getValidStart().greaterEqualsThan(getValidEnd());
+        return (emptyAndNotEqual || startGreaterEndOrEqual);
+    }
+
+    public void cleanInvalidTimeSlots() {
+        createEmptyTimeSlots();
     }
 
     public Time getValidStart() {

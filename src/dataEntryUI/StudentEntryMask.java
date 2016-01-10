@@ -11,27 +11,29 @@ import core.Student;
 import core.StudentTimes;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import util.Colors;
 
 /**
  *
- * Eingabemaske, die von {@link StudentEntryDialog} und {@link StudentEditDialog} benutzt wird
+ * UI, das von {@link StudentEntryDialog} und {@link StudentEditDialog} benutzt
+ * wird
  */
 public class StudentEntryMask extends JPanel {
 
@@ -45,7 +47,7 @@ public class StudentEntryMask extends JPanel {
     private JScrollPane center;
     private JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;
     private JTextField firstnameField, nameField, lectiontypeField;
-    private JTable selectionTable;
+    private SelectionTable selectionTable;
     private JButton cancelButton, saveButton, deleteButton;
     private ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener, changeButtonListener;
 
@@ -59,7 +61,7 @@ public class StudentEntryMask extends JPanel {
     }
 
     private void createWidgets() {
-        selectionTable = new JTable();
+        selectionTable = new SelectionTable(scheduleTimes);
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
         top.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -120,6 +122,12 @@ public class StudentEntryMask extends JPanel {
                 firstName = f.getText();
             }
         });
+        firstnameField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                firstnameField.selectAll();
+            }
+        });
         nameField.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent ce) {
@@ -127,11 +135,41 @@ public class StudentEntryMask extends JPanel {
                 name = f.getText();
             }
         });
+        nameField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                nameField.selectAll();
+            }
+        });
         lectiontypeField.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent ce) {
                 JTextField f = (JTextField) ce.getSource();
                 lectionType = (f.getText().trim().isEmpty()) ? lectiontypeField.getText() : f.getText();
+            }
+        });
+        lectiontypeField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                lectiontypeField.selectAll();
+            }
+        });
+        lectiontypeField.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField field = (JTextField) input;
+                return field.getText().trim().matches("[34][0]");
+            }
+
+            @Override
+            public boolean shouldYieldFocus(JComponent input) {
+                boolean valid = verify(input);
+                if (!valid) {
+                    JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
+                            + "Nur 30 oder 40 Minuten möglich!\n"
+                            );
+                }
+                return valid;
             }
         });
     }
@@ -147,7 +185,7 @@ public class StudentEntryMask extends JPanel {
         };
         cancelButton.addActionListener(cancelButtonListener);
     }
-    
+
     public void addCancelButtonListener(StudentEditDialog studentEditDialog) {
         cancelButtonListener = new ActionListener() {
             @Override
@@ -164,6 +202,9 @@ public class StudentEntryMask extends JPanel {
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!studentTimes.areTimeEntriesValid()) {
+                    return;
+                }
                 studentTimes.setValidStudentDays();
                 transferEntryDataToStudent();
                 database.addStudent(student);
@@ -179,6 +220,9 @@ public class StudentEntryMask extends JPanel {
         changeButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!studentTimes.areTimeEntriesValid()) {
+                    return;
+                }
                 studentTimes.updateValidStudentDays();
                 transferEntryDataToStudent();
                 database.editStudent(student);
@@ -219,36 +263,10 @@ public class StudentEntryMask extends JPanel {
         this.student = student;
     }
 
-    public void setAndInitStudentTimes() {
+    public void setUpSelectionTable() {
         studentTimes = student.getStudentTimes();
         studentTimes.setScheduleTimes(scheduleTimes);
-    }
-
-    public void setSelectionTableParameters() {
-        selectionTable.setModel(studentTimes);
-        selectionTable.setRowHeight(25);
-        selectionTable.setPreferredScrollableViewportSize(selectionTable.getPreferredSize());
-        selectionTable.setShowGrid(true);
-        selectionTable.getColumnModel().setColumnSelectionAllowed(true);
-        selectionTable.getColumnModel().getColumn(0).setPreferredWidth(85);
-        selectionTable.getColumnModel().getColumn(selectionTable.getModel().getColumnCount() - 1).setPreferredWidth(85);
-        selectionTable.setSelectionBackground(Colors.DARK_GREEN);
-   //     System.out.println(selectionTable.getCellEditor().getCellEditorValue());
-        selectionTable.setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
-                setText(studentTimes.getValueAt(row, col).toString());
-                if (scheduleTimes.isValidScheduleDay(row)) {
-                    setBackground(Colors.BACKGROUND);
-                } else {
-                    setBackground(Colors.LIGHT_GRAY);
-                }
-                if (isSelected && col > 0 && scheduleTimes.isValidScheduleDay(row)) {
-                    setBackground(Colors.DARK_GREEN);
-                }
-                return this;
-            }
-        });
+        selectionTable.setParameters(studentTimes);
     }
 
     private void transferEntryDataToStudent() {

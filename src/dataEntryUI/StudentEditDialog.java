@@ -11,7 +11,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * Bearbeiten oder Löschen eines Schülerprofils über {@link StudentEntryMask}
+ * Bearbeiten oder Löschen eines Schülerprofils
  */
 public class StudentEditDialog extends JDialog {
 
@@ -27,8 +27,7 @@ public class StudentEditDialog extends JDialog {
         studentEntryMask.addChangeButtonListener(this);
         studentEntryMask.addDeleteButtonListener(this);
         studentEntryMask.setStudent(student);
-        studentEntryMask.setAndInitStudentTimes();
-        studentEntryMask.setSelectionTableParameters();
+        studentEntryMask.setUpSelectionTable();
         studentEntryMask.updateTextFields();
         add(studentEntryMask);
         pack();

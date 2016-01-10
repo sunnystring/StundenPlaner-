@@ -8,8 +8,9 @@ package core;
 import java.util.ArrayList;
 
 /**
- * Daten für die permanente Speicherung: Schülerdatenbestand, Unterrichtstage und -zeiten, 
  * 
+ * Verwaltung aller relevanten Daten für die permanente Speicherung: 
+ * Schülerdatenbestand, Unterrichtstage und -zeiten, 
  */
 public class Database {
 

@@ -12,7 +12,7 @@ import studentlistUI.StudentList;
 
 /**
  *
- * Eingabe eines Schülerprofils über {@link StudentEntryMask}
+ * Eingabe eines neuen Schülerprofils
  */
 public class StudentEntryDialog extends JDialog {
 
@@ -27,8 +27,7 @@ public class StudentEntryDialog extends JDialog {
         studentEntryMask.addCancelButtonListener(this);
         studentEntryMask.addSaveButtonListener(this);
         studentEntryMask.setStudent(student);
-        studentEntryMask.setAndInitStudentTimes();
-        studentEntryMask.setSelectionTableParameters();
+        studentEntryMask.setUpSelectionTable();
         add(studentEntryMask);
         pack();
     }

@@ -7,6 +7,7 @@ package core;
 
 import dataEntryUI.ScheduleEntryMask;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -24,8 +25,8 @@ public class ScheduleTimes extends AbstractTableModel {
 
     public ScheduleTimes() {
         daySelectionList = new ScheduleDay[DAYS];
-        for (int day = 0; day < DAYS; day++) {
-            daySelectionList[day] = new ScheduleDay();
+        for (int i = 0; i < DAYS; i++) {
+            daySelectionList[i] = new ScheduleDay();
         }
         validScheduleDayList = new ArrayList<>();
     }
@@ -76,16 +77,33 @@ public class ScheduleTimes extends AbstractTableModel {
     }
 
     public void setValidScheduleDays() {
-        for (int day = 0; day < DAYS; day++) {
-            if (isValidScheduleDay(day)) {
-                daySelectionList[day].setDayName(WEEKDAY_NAMES[day]);
-                validScheduleDayList.add(daySelectionList[day]); // Mapping: 1. Unterrichtstag = 0 usw.
+        for (int i = 0; i < DAYS; i++) {
+            if (isValidScheduleDay(i)) {
+                daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
+                validScheduleDayList.add(daySelectionList[i]); // Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
     }
 
-    public boolean isValidScheduleDay(int day) {
-        return !daySelectionList[day].getValidStart().toString().trim().isEmpty();
+    public boolean areTimeEntriesValid() {
+        boolean allSlotsValid = true;
+        for (int i = 0; i < daySelectionList.length; i++) {
+            if (daySelectionList[i].hasInvalidTimeSlots()) {
+                allSlotsValid = false;
+                daySelectionList[i].cleanInvalidTimeSlots();
+            }
+        }
+        if (!allSlotsValid) {
+            JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
+                    + "Unterrichtsschluss muss später\n"
+                    + "sein als Unterrichtsbeginn!");
+        }
+        fireTableDataChanged();
+        return allSlotsValid;
+    }
+
+    public boolean isValidScheduleDay(int i) {
+        return !daySelectionList[i].getValidStart().toString().trim().isEmpty();
     }
 
     public ScheduleDay getValidScheduleDay(int i) {

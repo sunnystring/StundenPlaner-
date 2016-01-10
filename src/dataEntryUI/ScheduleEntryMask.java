@@ -13,17 +13,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import core.ScheduleTimes;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mainframe.MainFrame;
-import util.Colors;
 
 /**
  *
- * Eingabemaske, die von {@link ScheduleEntryDialog} benutzt wird
+ * UI, das von {@link ScheduleEntryDialog} benutzt wird
  */
 public class ScheduleEntryMask extends JPanel {
 
@@ -33,7 +30,7 @@ public class ScheduleEntryMask extends JPanel {
     private ScheduleEntryDialog scheduleEntryDialog;
     private JScrollPane center;
     private JPanel bottom;
-    private JTable selectionTable;
+    private SelectionTable selectionTable;
     private JButton cancel, save;
 
     public ScheduleEntryMask(Database database) {
@@ -46,13 +43,8 @@ public class ScheduleEntryMask extends JPanel {
     }
 
     private void createWidgets() {
-        selectionTable = new JTable(scheduleTimes);
-        selectionTable.setRowHeight(25);
-        selectionTable.setPreferredScrollableViewportSize(selectionTable.getPreferredSize());
-        selectionTable.setShowGrid(true);
-        selectionTable.getColumnModel().setColumnSelectionAllowed(true);
-        selectionTable.getColumnModel().getColumn(0).setPreferredWidth(85);
-        selectionTable.setSelectionBackground(Colors.DARK_GREEN);
+        selectionTable = new SelectionTable(scheduleTimes);
+        selectionTable.setParameters();
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bottom = new JPanel();
@@ -87,6 +79,9 @@ public class ScheduleEntryMask extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (!scheduleTimes.areTimeEntriesValid()) {
+                return;
+            }
             scheduleTimes.setValidScheduleDays();
             database.setNumberOfDays(scheduleTimes.getNumberOfDays());
             mainFrame.setScheduleData();
@@ -106,5 +101,4 @@ public class ScheduleEntryMask extends JPanel {
     public void setScheduleEntryDialog(ScheduleEntryDialog scheduleEntryDialog) {
         this.scheduleEntryDialog = scheduleEntryDialog;
     }
-
 }

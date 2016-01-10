@@ -7,16 +7,15 @@ package dataEntryUI;
 
 import javax.swing.JDialog;
 import mainframe.MainFrame;
-import scheduleData.ScheduleData;
 import scheduleUI.Schedule;
 
 /**
  *
- * Eingabe der Unterrichtstage und -zeiten über {@link ScheduleEntryMask} für die Erstellung des {@link Schedule}
+ * Eingabe der Unterrichtstage/-zeiten für die Erstellung des {@link Schedule}
  */
 public class ScheduleEntryDialog extends JDialog {
 
-    public ScheduleEntryDialog(MainFrame mainFrame ) {
+    public ScheduleEntryDialog(MainFrame mainFrame) {
         super(mainFrame);
         setTitle("Stundenplan erstellen");
         setModal(true);
