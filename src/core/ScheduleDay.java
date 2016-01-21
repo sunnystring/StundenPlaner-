@@ -5,85 +5,54 @@
  */
 package core;
 
-import schedule.DayColumn;
 import util.Time;
 
 /**
  *
  * @author Mathias
  */
-
-/*  Daten für DayColumn-Instanzen*/
 public class ScheduleDay {
 
     private String day;
-
-    private Time validStart;  // Unterrichtszeit pro Tag
-    private Time validEnd;
-
-    private int dayListIndex; // Index des Tages (zb. 0 = Montag)
+    private Time[] timeSlots;
 
     public ScheduleDay() {
-
-        validStart = new Time();
-        validEnd = new Time();
-
-    }
-
-//    private static Time absoluteStart = new Time("20.00"); // frühester Beginn aller Tage
-//    private static Time absoluteEnd = new Time();   // spätestes Ende aller Tage
-    public ScheduleDay(String day, Time validStart, Time validEnd) {
-
-        this.day = day;
-        this.validStart = validStart;
-        this.validEnd = validEnd;
-
-//        if (validStart.smallerThan(absoluteStart)) {
-//            absoluteStart = validStart;
-//        }
-//        if (validEnd.greaterThan(absoluteEnd)) {
-//            absoluteEnd = validEnd;
-//        }
-    }
-
-    /* Getter */
-//      public static Time getAbsoluteStart() {
-//        return absoluteStart;
-//    }
-//    public static Time getAbsoluteEnd() {
-//        return absoluteEnd;
-//    }
-     /* Getter, Setter */
-    public void setTime(String time, int i) {
-        switch (i) {
-            case 1:
-                validStart = new Time(time);
-            case 2:
-                validEnd = new Time(time);
+        timeSlots = new Time[2];
+        for (int i = 0; i < 2; i++) {
+            timeSlots[i] = new Time();
         }
     }
 
+    public void setTimeSlot(String time, int slot) throws IllegalArgumentException {
+        slot = slot - 1; // ohne 1. Spalte
+        if (isInvalidTimeSlot(time, slot)) {
+            throw new IllegalArgumentException(" Unkorrekte Eingabe!");
+        }
+        timeSlots[slot].setTime(time);
+    }
+
     public Time getValidStart() {
-        return validStart;
+        return timeSlots[0];
     }
 
     public Time getValidEnd() {
-        return validEnd;
+        return timeSlots[1];
+    }
+
+    public void setDayName(String day) {
+        this.day = day;
     }
 
     public String getDayName() {
         return day;
     }
 
-    public void setDayIndex(int index) {
-        dayListIndex = index;
+    private boolean isInvalidTimeSlot(String time, int i) {
+        switch (i) {
+            case 1: // beide oder keine Zeit eingeben
+                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
+            default:
+                return false;
+        }
     }
-
-    public int getDayIndex() {
-        return dayListIndex;
-    }
-
-//    public Time getTotalHours() {
-//        return absoluteEnd.minus(absoluteStart);
-//    }
 }

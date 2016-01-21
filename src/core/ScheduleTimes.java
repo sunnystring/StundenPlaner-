@@ -5,9 +5,9 @@
  */
 package core;
 
+import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import util.Time;
 
 /**
  *
@@ -15,87 +15,87 @@ import util.Time;
  */
 public class ScheduleTimes implements TableModel {
 
-    private ScheduleDay[] scheduleDayList;
-
+    private static final int DAYS = 6, COLUMNS = 3;
+    private static final ScheduleDay[] SCHEDULEDAY_LIST = new ScheduleDay[DAYS];
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+    private ArrayList<ScheduleDay> scheduleDayList;
 
     public ScheduleTimes() {
+        for (int day = 0; day < DAYS; day++) {
+            SCHEDULEDAY_LIST[day] = new ScheduleDay();
+        }
+        scheduleDayList = new ArrayList<>();
+    }
 
-        scheduleDayList = new ScheduleDay[6];
+    public ScheduleDay getScheduleDay(int i) {
+        return scheduleDayList.get(i);
+    }
 
-        for (int i = 0; i < 6; i++) {
-            scheduleDayList[i] = new ScheduleDay();
+    public String getDayName(int i) {
+        return scheduleDayList.get(i).getDayName();
+    }
+
+    public int getNumberOfDays() {
+        return scheduleDayList.size();
+    }
+
+    public void setValidScheduleDays() {
+        for (int day = 0; day < DAYS; day++) {
+            if (isValidScheduleDay(day)) {
+                SCHEDULEDAY_LIST[day].setDayName(WEEKDAY_NAMES[day]);
+                scheduleDayList.add(SCHEDULEDAY_LIST[day]); // Mapping: 1. Unterrichtstag = 0 usw.
+            }
         }
     }
 
-    public Time getTeacherTime(int row, int col) {
-        switch (col) {
-            case 1:
-                return scheduleDayList[row].getValidStart();
-            case 2:
-                return scheduleDayList[row].getValidEnd();
-            default:
-                return null;
-        }
-
+    public boolean isValidScheduleDay(int day) {
+        return !SCHEDULEDAY_LIST[day].getValidStart().toString().trim().isEmpty();
     }
 
-    public void printScheduleDayList() {
-
-        for (ScheduleDay d : scheduleDayList) {
-            System.out.println("start: " + d.getValidStart() + "  end: " + d.getValidEnd().toString());
-        }
-    }
-
-    /* Implementierung TableModel für ScheduleDataEntry */
     @Override
     public int getRowCount() {
-
-        return 6;
+        return DAYS;
     }
 
     @Override
     public int getColumnCount() {
-
-        return 3;
+        return COLUMNS;
     }
 
     @Override
     public String getColumnName(int col) {
-
         return COLUMN_LABELS[col];
     }
 
     @Override
     public Class<?> getColumnClass(int col) {
-
         return String.class;
     }
 
     @Override
     public boolean isCellEditable(int row, int col) {
-
         return col > 0;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-
-        if (col == 0) {
-            return WEEKDAY_NAMES[row];
-        } else {
-            return null;
+        switch (col) {
+            case 0:
+                return WEEKDAY_NAMES[row];
+            case 1:
+                return SCHEDULEDAY_LIST[row].getValidStart();
+            case 2:
+                return SCHEDULEDAY_LIST[row].getValidEnd();
+            default:
+                return null;
         }
     }
 
     @Override
     public void setValueAt(Object o, int row, int col) {
-
-        String time = (String) o;
-        scheduleDayList[row].setTime(time, col);
-        System.out.println(time);
-
+        String timeString = (String) o;
+        SCHEDULEDAY_LIST[row].setTimeSlot(timeString, col);
     }
 
     @Override

@@ -11,19 +11,6 @@ package core;
  */
 public interface DatabaseListener {
     
-    
-    public void studentAdded(Student s);
-    
-    public void studentRemoved(Student s);
-    
-    public void studentEdited(Student s);
-    
-    public void dayAdded(ScheduleDay d);
-    
-    public void dayRemoved(ScheduleDay d);
-    
-    public void dayEdited(ScheduleDay d);
-    
-    
+    public void studentAdded( int numberOfStudents, Student student);
     
 }

@@ -1,0 +1,230 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package studentListData;
+
+import core.Database;
+import core.DatabaseListener;
+import core.Student;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import javax.swing.table.AbstractTableModel;
+import mainframe.MainFrame;
+import scheduleUI.TimeTable;
+import scheduleData.ScheduleData;
+import scheduleData.ScheduleFieldData;
+import studentlistUI.StudentList;
+
+/**
+ *
+ * @author Mathias
+ */
+public class StudentListData extends AbstractTableModel implements DatabaseListener, MouseListener {
+
+    private Database database;
+    private MainFrame mainFrame;
+    private StudentList studentList;
+    private ScheduleData scheduleData;
+    private StudentFieldData[] studentFieldDataRow;
+    private ArrayList<StudentFieldData[]> studentFieldDataMatrix;
+    private int numberOfDays;
+    private int numberOfStudents;
+    private int selectedRow, selectedCol;
+    private int allocatedRow;
+    public static final int NULL_ROW = -1;
+
+    public StudentListData(Database database, MainFrame mainFrame) {
+        this.database = database;
+        this.mainFrame = mainFrame;
+        numberOfDays = 0;
+        numberOfStudents = 0;
+        resetRows();
+        studentFieldDataMatrix = new ArrayList<>();
+    }
+
+    @Override
+    public void studentAdded(int numberOfStudents, Student student) {
+        this.numberOfStudents = numberOfStudents;
+        updateFieldDataMatrix(student);
+        fireTableDataChanged();
+        studentList.showNumberOfStudents();
+    }
+
+    private void updateFieldDataMatrix(Student student) {
+        studentFieldDataRow = new StudentFieldData[getColumnCount()];
+        for (int i = 0; i < getColumnCount(); i++) {
+            StudentFieldData studentFieldData = new StudentFieldData();
+            if (i == 0) {
+                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
+            } else {
+                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
+            }
+            studentFieldDataRow[i] = studentFieldData;
+        }
+        studentFieldDataMatrix.add(getRowCount() - 1, studentFieldDataRow);
+    }
+
+    public void initStudentListData(ScheduleData scheduleData) {
+        numberOfDays = database.getNumberOfDays();
+        this.scheduleData = scheduleData;
+    }
+
+    private void resetRows() {
+        selectedCol = -1;
+        selectedRow = allocatedRow = NULL_ROW;
+    }
+
+    public Student getStudent(int i) {
+        return database.getStudentList().get(i);
+    }
+
+    public void setStudentList(StudentList studentList) {
+        this.studentList = studentList;
+    }
+
+    @Override
+    public int getRowCount() {
+        return numberOfStudents;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return numberOfDays + 1;
+    }
+
+    @Override
+    public String getColumnName(int col) {
+        if (col == 0) {
+            return "  Vorname Name  (" + String.valueOf(numberOfStudents) + ")"; 
+        } else {
+            return "  " + scheduleData.getDayColumn(col - 1).getDayName();
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int i) {
+        return String.class;
+    }
+
+    @Override
+    public Object getValueAt(int row, int col) {
+        return studentFieldDataMatrix.get(row)[col];
+    }
+
+    @Override
+    public void mousePressed(MouseEvent m) {
+        Point p = m.getPoint();
+        if (m.getSource() instanceof StudentList) {
+            selectedRow = studentList.rowAtPoint(p);
+            selectedCol = studentList.columnAtPoint(p);
+            if (selectedRow >= 0 && selectedCol > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
+                StudentFieldData studentFieldData = studentFieldDataMatrix.get(selectedRow)[selectedCol];
+                if (studentFieldData.isStudentListEnabled()) { // StudentDay selektiert 
+                    studentFieldData.switchSelectionState();
+                    setSelectedRow();
+                    blockStudentList();
+                } else if (selectedRow == studentFieldData.getSelectedRowIndex()) { // Selection rückgängig gemacht, aber noch in SelectionState
+                    studentFieldData.switchSelectionState();
+                    if (isRowReleased(selectedRow)) { // alle Selections gelöscht
+                        releaseStudentList();
+                    }
+                }
+                if (!studentFieldData.isStudentAllocated()) {
+                    mainFrame.setStudentButtonsEnabled(studentFieldData.isStudentListEnabled());
+                }
+                fireTableDataChanged();
+                resetRows();
+            }
+        }
+        if (m.getSource() instanceof TimeTable) {
+            TimeTable timeTable = (TimeTable) m.getSource();
+            ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
+            selectedRow = timeTable.rowAtPoint(p);
+            selectedCol = timeTable.columnAtPoint(p);
+            if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
+                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+                allocatedRow = scheduleFieldData.getStudent().getStudentID();
+                if (scheduleFieldData.isMoveEnabled()) {
+                    if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
+                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
+                            blockStudentList();
+                            mainFrame.setStudentButtonsEnabled(false);
+                        }
+                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                            setAndDisableAllocatedRow(false);
+                            releaseStudentList();
+                            mainFrame.setStudentButtonsEnabled(true);
+                        }
+                    } else {  // in AllocatedMode wechseln
+                        setAndDisableAllocatedRow(true);
+                        releaseStudentList();
+                        mainFrame.setStudentButtonsEnabled(true);
+                    }
+                    fireTableDataChanged();
+                    resetRows();
+                }
+            }
+        }
+    }
+
+    private boolean isRowReleased(int selectedRow) {
+        for (int i = 0; i < getColumnCount(); i++) {
+            if (studentFieldDataMatrix.get(selectedRow)[i].isFieldSelected()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void setSelectedRow() {
+        for (int j = 0; j < getColumnCount(); j++) {
+            studentFieldDataMatrix.get(selectedRow)[j].setSelectedRowIndex(selectedRow);
+        }
+    }
+
+    private void setAndDisableAllocatedRow(boolean allocated) {
+        for (int j = 0; j < getColumnCount(); j++) {
+            studentFieldDataMatrix.get(allocatedRow)[j].setStudentAllocated(allocated);
+            studentFieldDataMatrix.get(allocatedRow)[j].setStudentListEnabled(!allocated);
+        }
+    }
+
+    private void releaseStudentList() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                studentFieldDataMatrix.get(i)[j].setStudentListEnabled(!studentFieldDataMatrix.get(i)[j].isStudentAllocated());
+                studentFieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_ROW);
+                studentFieldDataMatrix.get(i)[j].setFieldSelected(false);
+            }
+        }
+    }
+
+    private void blockStudentList() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                studentFieldDataMatrix.get(i)[j].setStudentListEnabled(false);
+            }
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent me) {
+    }
+
+}

@@ -11,124 +11,61 @@ import util.Time;
  *
  * @author Mathias
  */
-/* Einteilungszeiten eines Tages eines Schülers */
 public class StudentDay {
-
-    private Time startTime1;
-    private Time endTime1;
-    private Time startTime2;
-    private Time endTime2;
-    private Time favorite;
 
     private Time[] timeSlots;
 
-    private Time lectionLength; //Lektionsdauer in Minuten -> weshalb hier??
-
-    private String endString1, endString2;
-
-    public StudentDay() {
-
-        timeSlots = new Time[5];
-      
-        for (int i = 0; i < 5; i++) {
-            timeSlots[i] = new Time("12.00");
-                   
+    public StudentDay(int slots) {
+        timeSlots = new Time[slots];
+        for (int i = 0; i < slots; i++) {
+            timeSlots[i] = new Time();
         }
     }
 
-    /* statische Demoversion */
-    public StudentDay(String startTime1, String endTime1, String startTime2, String endTime2, String favorite) {
-
-        try {
-
-            this.startTime1 = createStartTime(startTime1);
-            this.startTime2 = createStartTime(startTime2);
-            this.endTime1 = createEndTime(startTime1, endTime1);
-            this.endTime2 = createEndTime(startTime2, endTime2);
-            this.favorite = createStartTime(favorite);
-
-            if (endTime1.isEmpty()) {
-                endString1 = this.endTime1.toString();
-            } else {
-                endString1 = "-" + this.endTime1.toString();
+    public void setTimeSlot(String timeString, int slot) throws IllegalArgumentException {
+        slot = slot - 1; // ohne 1. Spalte
+        if (slot == 1 || slot == 3) {
+            if (!timeString.trim().isEmpty() & timeSlots[slot - 1].toString().trim().isEmpty()) {
+                throw new IllegalArgumentException(" Kein Anfangswert eingegeben!");
             }
-            if (endTime2.isEmpty()) {
-                endString2 = this.endTime2.toString();
-            } else {
-                endString2 = "-" + this.endTime2.toString();
-            }
-
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
+        timeSlots[slot].setTime(timeString);
     }
 
-    /* falls keine Zeiteingabe gemacht, muss Platz in StudentField leer bleiben ( = new Time()) */
-    private Time createStartTime(String startTime) {
-        return startTime.trim().isEmpty() ? new Time() : new Time(startTime);
-    }
-
-    /* zusätzlich checken, dass keine endTime ohne startTime eingegeben wurde */
-    private Time createEndTime(String startTime, String endTime) throws IllegalArgumentException {
-        if (!endTime.trim().isEmpty()) {
-            if (startTime.trim().isEmpty()) {
-                throw new IllegalArgumentException(" Es muss zuerst eine Anfangszeit eingegeben werden!");
-            } else {
-                return new Time(endTime);
-            }
-        } else {
-            return new Time();
-        }
-    }
-
-    /* Getter, Setter */
-    public void setTime(String time, int i) {
-        timeSlots[i] = new Time(time);
-    }
-
-    public Time getTime(int i) {
-        return timeSlots[i];
-    }
-
-    // --------------------------------
     public Time getStartTime1() {
-        return startTime1;
+        return timeSlots[0];
     }
 
     public Time getEndTime1() {
-        return endTime1;
+        return timeSlots[1];
     }
 
     public Time getStartTime2() {
-        return startTime2;
+        return timeSlots[2];
     }
 
     public Time getEndTime2() {
-        return endTime2;
+        return timeSlots[3];
     }
 
     public Time getFavorite() {
-        return favorite;
+        return timeSlots[4];
     }
 
-    public void setLectionLength(int minutes) {
-        lectionLength = new Time();
-        lectionLength.setMinute(minutes);
+    public void setSingleLections() {
+        if (!getStartTime1().toString().trim().isEmpty() & getEndTime1().toString().trim().isEmpty()) {
+            timeSlots[1] = getStartTime1();
+        }
+        if (!getStartTime2().toString().trim().isEmpty() & getEndTime2().toString().trim().isEmpty()) {
+            timeSlots[3] = getStartTime2();
+        }
     }
 
-    public Time getLectionLength() {
-        return lectionLength;
-    }
-
-    /* Favorit muss separater String sein für Formatierung in StudentField */
-    public String getFavoriteAsString() {
-        return favorite.toString();
-    }
-
-    /* gibt StudentDay-Objekt im richtigen Format (für StudentField) zurück */
     @Override
     public String toString() {
-        return " " + startTime1 + endString1 + " " + startTime2 + endString2 + " ";
+        String endString1, endString2;
+        endString1 = getEndTime1().toString().trim().isEmpty() ? getEndTime1().toString() : "-" + getEndTime1().toString();
+        endString2 = getEndTime2().toString().trim().isEmpty() ? getEndTime2().toString() : "-" + getEndTime2().toString();
+        return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
     }
-
 }
