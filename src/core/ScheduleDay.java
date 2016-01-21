@@ -9,26 +9,52 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Einheit eines Unterrichtstages mit den Unterrichtszeiten (vom Lehrer
+ * vorgegeben)
  */
-public class ScheduleDay {
+public class ScheduleDay implements Cloneable {
 
-    private String day;
+    private String day = "";
     private Time[] timeSlots;
 
     public ScheduleDay() {
+        createTimeSlots();
+    }
+
+    public void createTimeSlots() {
         timeSlots = new Time[2];
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < timeSlots.length; i++) {
             timeSlots[i] = new Time();
         }
     }
 
-    public void setTimeSlot(String time, int slot) throws IllegalArgumentException {
-        slot = slot - 1; // ohne 1. Spalte
-        if (isInvalidTimeSlot(time, slot)) {
-            throw new IllegalArgumentException(" Unkorrekte Eingabe!");
+    public boolean hasInvalidTimeSlots() {
+        boolean emptyAndNotEqual = getValidStart().isEmpty() != getValidEnd().isEmpty();
+        boolean startGreaterEndOrEqual = !getValidStart().isEmpty() && getValidStart().greaterEqualsThan(getValidEnd());
+        return (emptyAndNotEqual || startGreaterEndOrEqual);
+    }
+
+    public void cleanTimeSlots() {
+        for (int i = 0; i < timeSlots.length; i++) {
+            timeSlots[i].setTime("");
         }
-        timeSlots[slot].setTime(time);
+    }
+
+    public boolean isEmpty() {
+        return getValidStart().isEmpty() && getValidEnd().isEmpty();
+    }
+
+    public void setTimeSlot(String s, int slot) {
+        slot = slot - 1; // ohne 1. Spalte
+        timeSlots[slot].setTime(s);
+    }
+
+    public void setTimeSlot(Time t, int slot) {
+        timeSlots[slot].setTime(t);
+    }
+
+    public Time getTimeSlot(int slot) {
+        return timeSlots[slot];
     }
 
     public Time getValidStart() {
@@ -47,12 +73,44 @@ public class ScheduleDay {
         return day;
     }
 
-    private boolean isInvalidTimeSlot(String time, int i) {
-        switch (i) {
-            case 1: // beide oder keine Zeit eingeben
-                return (timeSlots[0].toString().trim().isEmpty() && !time.trim().isEmpty()) || (timeSlots[0].greaterEqualsThan(new Time(time)));
-            default:
-                return false;
+    @Override
+    public ScheduleDay clone() {
+        ScheduleDay scheduleDay = null;
+        try {
+            scheduleDay = (ScheduleDay) super.clone();
+            scheduleDay.createTimeSlots();
+            for (int i = 0; i < timeSlots.length; i++) {
+                scheduleDay.setTimeSlot(getTimeSlot(i).clone(), i);
+            }
+        } catch (CloneNotSupportedException ex) {
         }
+        return scheduleDay;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        ScheduleDay scheduleDay;
+        if (!(obj instanceof ScheduleDay)) {
+            return false;
+        }
+        scheduleDay = (ScheduleDay) obj;
+        if (!day.equals(scheduleDay.getDayName())) {
+            return false;
+        }
+        for (int i = 0; i < timeSlots.length; i++) {
+            if (!scheduleDay.getTimeSlot(i).equals(getTimeSlot(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int n = 0;
+        for (int i = 0; i < timeSlots.length; i++) {
+            n += getTimeSlot(i).getHour() + getTimeSlot(i).getMinute();
+        }
+        return n + day.hashCode();
     }
 }

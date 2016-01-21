@@ -5,45 +5,31 @@
  */
 package core;
 
+import dataEntryUI.StudentInputMask;
 import java.util.ArrayList;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
- * @author mathiaskielholz
+ * Gesamtheit aller Unterrichtstage mit den verfügbaren Schülerzeiten,
+ * TableModel für {@link StudentInputMask}
  */
-public class StudentTimes implements TableModel {
+public class StudentTimes extends AbstractTableModel {
 
     private static final int DAYS = 6, COLUMNS = 6;
     private ScheduleTimes scheduleTimes;
-    private static final StudentDay[] STUDENTDAY_LIST = new StudentDay[DAYS];
+    private StudentDay[] daySelectionList;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-    private ArrayList<StudentDay> studentDayList;
+    private ArrayList<StudentDay> validStudentDayList;
 
     public StudentTimes() {
+        daySelectionList = new StudentDay[DAYS];
         for (int i = 0; i < DAYS; i++) {
-            STUDENTDAY_LIST[i] = new StudentDay(COLUMNS - 1); // ohne 1. Spalte
+            daySelectionList[i] = new StudentDay(COLUMNS - 1); // ohne 1. Spalte
         }
-        studentDayList = new ArrayList<>();
-    }
-
-    public StudentDay getStudentDay(int i) {
-        return studentDayList.get(i);
-    }
-
-    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
-        this.scheduleTimes = scheduleTimes;
-    }
-
-    public void setValidStudentDays() {
-        for (int day = 0; day < DAYS; day++) {
-            STUDENTDAY_LIST[day].setSingleLections();
-            if (scheduleTimes.isValidScheduleDay(day)) {
-                studentDayList.add(STUDENTDAY_LIST[day]); // Mapping: 1. StudentDay = 0 usw.
-            }
-        }
+        validStudentDayList = new ArrayList<>();
     }
 
     @Override
@@ -77,15 +63,15 @@ public class StudentTimes implements TableModel {
             case 0:
                 return WEEKDAY_NAMES[row];
             case 1:
-                return STUDENTDAY_LIST[row].getStartTime1();
+                return daySelectionList[row].getStartTime1();
             case 2:
-                return STUDENTDAY_LIST[row].getEndTime1();
+                return daySelectionList[row].getEndTime1();
             case 3:
-                return STUDENTDAY_LIST[row].getStartTime2();
+                return daySelectionList[row].getStartTime2();
             case 4:
-                return STUDENTDAY_LIST[row].getEndTime2();
+                return daySelectionList[row].getEndTime2();
             case 5:
-                return STUDENTDAY_LIST[row].getFavorite();
+                return daySelectionList[row].getFavorite();
             default:
                 return null;
         }
@@ -94,15 +80,48 @@ public class StudentTimes implements TableModel {
     @Override
     public void setValueAt(Object o, int row, int col) {
         String timeString = (String) o;
-        STUDENTDAY_LIST[row].setTimeSlot(timeString, col);
+        daySelectionList[row].setTimeSlot(timeString, col);
     }
 
-    @Override
-    public void addTableModelListener(TableModelListener tl) {
+    public boolean checkAndCorrectTimeEntries() {
+        boolean allSlotsValid = true;
+        for (int i = 0; i < daySelectionList.length; i++) {
+            if (daySelectionList[i].hasInvalidTimeSlots()) {
+                allSlotsValid = false;
+                daySelectionList[i].correctInvalidTimeSlots();
+            }
+        }
+        fireTableDataChanged();
+        if (!allSlotsValid) {
+            throw new IllegalStateException();
+        }
+        return allSlotsValid;
     }
 
-    @Override
-    public void removeTableModelListener(TableModelListener tl) {
+    public void setValidStudentDays() {
+        for (int i = 0; i < DAYS; i++) {
+            daySelectionList[i].setSingleLections(); // falls solche gesetzt: endTime = startTime
+            if (scheduleTimes.isValidScheduleDay(i)) {
+                validStudentDayList.add(daySelectionList[i]); // Mapping: 1. StudentDay = 0 usw.
+            }
+        }
+    }
+
+    public void updateValidStudentDays() {
+        resetStudentDays();
+        setValidStudentDays();
+    }
+
+    private void resetStudentDays() {
+        validStudentDayList.clear();
+    }
+
+    public StudentDay getValidStudentDay(int i) {
+        return validStudentDayList.get(i);
+    }
+
+    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+        this.scheduleTimes = scheduleTimes;
     }
 
 }

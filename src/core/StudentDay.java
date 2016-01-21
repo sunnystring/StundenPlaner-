@@ -9,11 +9,12 @@ import util.Time;
 
 /**
  *
- * @author Mathias
+ * Einheit eines Unterrichtages mit den verfügbaren Schülerzeiten
  */
 public class StudentDay {
 
     private Time[] timeSlots;
+    boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
 
     public StudentDay(int slots) {
         timeSlots = new Time[slots];
@@ -22,14 +23,44 @@ public class StudentDay {
         }
     }
 
-    public void setTimeSlot(String timeString, int slot) throws IllegalArgumentException {
+    public void setTimeSlot(String timeString, int slot) {
         slot = slot - 1; // ohne 1. Spalte
-        if (slot == 1 || slot == 3) {
-            if (!timeString.trim().isEmpty() & timeSlots[slot - 1].toString().trim().isEmpty()) {
-                throw new IllegalArgumentException(" Kein Anfangswert eingegeben!");
-            }
-        }
         timeSlots[slot].setTime(timeString);
+    }
+
+    public boolean hasInvalidTimeSlots() {
+        noStart1 = getStartTime1().isEmpty() && !getEndTime1().isEmpty();
+        noStart2 = getStartTime2().isEmpty() && !getEndTime2().isEmpty();
+        endSmallerStart1 = getEndTime1().smallerThan(getStartTime1());
+        endSmallerStart2 = getEndTime2().smallerThan(getStartTime2());
+        onlyStart1 = !getStartTime1().isEmpty() & getEndTime1().isEmpty();
+        onlyStart2 = !getStartTime2().isEmpty() & getEndTime2().isEmpty();
+        return (noStart1 || noStart2 || endSmallerStart1 && !onlyStart1 || endSmallerStart2 && !onlyStart2);
+    }
+
+    public void correctInvalidTimeSlots() {
+        if (noStart1 || endSmallerStart1) {
+            timeSlots[0] = new Time();
+            timeSlots[1] = new Time();
+        }
+        if (noStart2 || endSmallerStart2) {
+            timeSlots[2] = new Time();
+            timeSlots[3] = new Time();
+        }
+    }
+
+    public void setSingleLections() {
+        if (onlyStart1) {
+            timeSlots[1] = timeSlots[0];
+        }
+        if (onlyStart2) {
+            timeSlots[3] = timeSlots[2];
+        }
+    }
+
+    // ToDo....
+    public boolean isEmpty() {
+        return false;
     }
 
     public Time getStartTime1() {
@@ -50,15 +81,6 @@ public class StudentDay {
 
     public Time getFavorite() {
         return timeSlots[4];
-    }
-
-    public void setSingleLections() {
-        if (!getStartTime1().toString().trim().isEmpty() & getEndTime1().toString().trim().isEmpty()) {
-            timeSlots[1] = getStartTime1();
-        }
-        if (!getStartTime2().toString().trim().isEmpty() & getEndTime2().toString().trim().isEmpty()) {
-            timeSlots[3] = getStartTime2();
-        }
     }
 
     @Override

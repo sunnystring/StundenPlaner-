@@ -21,14 +21,6 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-
-                // laf version 1:
-//                try {
-//                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); //  "javax.swing.plaf.nimbus.NimbusLookAndFeel"
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-                // laf version 2:
                 try {
                     for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                         if ("Nimbus".equals(info.getName())) {
@@ -39,13 +31,9 @@ public class Main {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-               JFrame mainFrame = new MainFrame();
+                JFrame mainFrame = new MainFrame();
                 mainFrame.setVisible(true);
             }
-
         });
     }
-
-    
 }

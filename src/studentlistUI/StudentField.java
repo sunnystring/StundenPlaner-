@@ -22,7 +22,7 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Renderer-Component für {@link StudentList}
  */
 public class StudentField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
@@ -31,19 +31,14 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     private int columnCount;
     public static final int NULL_ROW = -1;
 
-    public StudentField(StudentList studentList) {
+    public StudentField(StudentList studentList, StudentListData studentListData) {
         this.studentList = studentList;
-        StudentListData studentListData = (StudentListData) studentList.getModel();
+        //    studentListData = (StudentListData) studentList.getModel();
         columnCount = studentListData.getColumnCount();
         resetStudentRows();
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
-    }
-
-    private void resetStudentRows() {
-        selectedRow = NULL_ROW;
-        tempRow = NULL_ROW;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setForeground(Color.BLACK);
         setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
         // Mouseover
-        if (studentFieldData.isStudentListEnabled() && row == selectedRow) {
+        if (studentFieldData.isStudentListReleased() && row == selectedRow) {
             if (col == 0) {
                 setBackground(Colors.NAME_FIELD_SELECTED);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
@@ -109,6 +104,11 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 }
             }
         }
+    }
+
+    private void resetStudentRows() {
+        selectedRow = NULL_ROW;
+        tempRow = NULL_ROW;
     }
 
     @Override
