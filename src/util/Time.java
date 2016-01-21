@@ -54,6 +54,12 @@ public class Time implements Cloneable {
         checkAndExtractTimeComponents(timeString);
     }
 
+    public void setTime(Time time) {
+        this.hour = time.getHour();
+        this.minute = time.getMinute();
+        this.timeString = time.getTimeString();
+    }
+
     public void setHour(int hour) {
         this.hour = hour;
     }
@@ -70,99 +76,9 @@ public class Time implements Cloneable {
         return this.minute;
     }
 
-//    public Time plus(int minute) {
-//        if (minute < 0 || minute >= 60) {
-//            throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
-//        }
-//        Time time = new Time();
-//        time.setHour(0);
-//        time.setMinute(0);
-//
-//        time.minute = this.minute + minute;
-//        if (time.minute > 55) {
-//            time.hour = this.hour + 1;
-//            time.minute = time.minute - 60;
-//        } else {
-//            time.hour = this.hour;
-//        }
-//        return time;
-//    }
-//    public Time plus(Time t) {
-//        Time time = new Time();
-//        time.hour = this.hour + t.hour;
-//        time.minute = this.minute + t.minute;
-//        if (time.minute > 55) {
-//            time.hour = time.hour + 1;
-//            time.minute = time.minute - 60;
-//        }
-//        if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
-//            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
-//        }
-//        return time;
-//    }
-//    public Time plus(String inputString) {
-//        Time time = new Time();
-//        time.checkAndExtractTimeComponents(inputString);
-//        time.hour = this.hour + time.hour;
-//        time.minute = this.minute + time.minute;
-//        if (time.minute > 55) {
-//            time.hour = time.hour + 1;
-//            time.minute = time.minute - 60;
-//        }
-//        if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
-//            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
-//        }
-//        return time;
-//    }
-//    public Time minus(int minute) {
-//        if (minute < 0 || minute >= 60) {
-//            throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
-//        }
-//        Time time = new Time();
-//        time.setHour(0);
-//        time.setMinute(0);
-//        time.minute = this.minute - minute;
-//        if (time.minute < 0) {
-//            time.hour = this.hour - 1;
-//            time.minute = 60 + time.minute;
-//        } else {
-//            time.hour = this.hour;
-//        }
-//        return time;
-//    }
-//    public Time minus(Time t) {
-//        Time time = new Time();
-//        time.hour = this.hour - t.hour;
-//        if (time.hour < 0) {
-//            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-//        }
-//        time.minute = this.minute - t.minute;
-//        if (time.minute < 0) {
-//            time.hour -= 1;
-//            if (time.hour < 0) {
-//                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-//            }
-//            time.minute = 60 + time.minute;
-//        }
-//        return time;
-//    }
-//    public Time minus(String inputString) {
-//        Time time = new Time();
-//        time.checkAndExtractTimeComponents(inputString);
-//        time.hour = this.hour - time.hour;
-//        if (time.hour < 0) {
-//            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-//        }
-//        time.minute = this.minute - time.minute;
-//        if (time.minute < 0) {
-//            time.hour -= 1;
-//            if (time.hour < 0) {
-//                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-//            }
-//            time.minute = 60 + time.minute;
-//        }
-//        return time;
-//    }
+    public String getTimeString() {
+        return timeString;
+    }
 
     /* Differenz in 5-Min-Auflösung */
     public int diff(Time t) {
@@ -191,36 +107,13 @@ public class Time implements Cloneable {
         this.minute = this.minute + 5;
         if (this.minute > 55) {
             this.hour = this.hour + 1;
-//            if (this.hour > 24 || this.hour == 24 && this.minute > 0) {
-//                throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
-//            }
+            if (this.hour > 24 || this.hour == 24 && this.minute > 0) {
+                throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+            }
             this.minute = 0;
         }
     }
 
-    /* Ganzzahldivision in 5-Min-Auflösung */
-//    public Time divBy(int t) {
-//        Time time = new Time();
-//        time.setHour(0);
-//        time.setMinute(0);
-//        int minutes, fields, inc;
-//        minutes = this.hour * 60 + this.minute;
-//        fields = minutes / 5;
-//        inc = fields / t;
-//        for (int i = 0; i < inc; i++) {
-//            time.inc();
-//        }
-//        return time;
-//    }
-
-    /* Modulodivision in 5-Min-Auflösung */
-//    public int modBy(int t) {
-//        int minutes, fields;
-//        minutes = this.hour * 60 + this.minute;
-//        fields = minutes / 5;
-//        return fields % t;
-//    }
-    
     public boolean isEmpty() {
         return timeString.isEmpty() || (hour == 0 && minute == 0);
     }
@@ -280,6 +173,7 @@ public class Time implements Cloneable {
         if (this.hour != time.hour) {
             return false;
         }
+        // ToDo TimeString prüfen
         return true;
     }
 
@@ -305,5 +199,128 @@ public class Time implements Cloneable {
         } else {
             return OUTPUT_FORMAT.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
         }
+    }
+
+    //------------unbenutzte Operationen---------
+    public Time plus(int minute) {
+        if (minute < 0 || minute >= 60) {
+            throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
+        }
+        Time time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+
+        time.minute = this.minute + minute;
+        if (time.minute > 55) {
+            time.hour = this.hour + 1;
+            time.minute = time.minute - 60;
+        } else {
+            time.hour = this.hour;
+        }
+        return time;
+    }
+
+    public Time plus(Time t) {
+        Time time = new Time();
+        time.hour = this.hour + t.hour;
+        time.minute = this.minute + t.minute;
+        if (time.minute > 55) {
+            time.hour = time.hour + 1;
+            time.minute = time.minute - 60;
+        }
+        if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
+            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+        }
+        return time;
+    }
+
+    public Time plus(String inputString) {
+        Time time = new Time();
+        time.checkAndExtractTimeComponents(inputString);
+        time.hour = this.hour + time.hour;
+        time.minute = this.minute + time.minute;
+        if (time.minute > 55) {
+            time.hour = time.hour + 1;
+            time.minute = time.minute - 60;
+        }
+        if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
+            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+        }
+        return time;
+    }
+
+    public Time minus(int minute) {
+        if (minute < 0 || minute >= 60) {
+            throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
+        }
+        Time time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+        time.minute = this.minute - minute;
+        if (time.minute < 0) {
+            time.hour = this.hour - 1;
+            time.minute = 60 + time.minute;
+        } else {
+            time.hour = this.hour;
+        }
+        return time;
+    }
+
+    public Time minus(Time t) {
+        Time time = new Time();
+        time.hour = this.hour - t.hour;
+        if (time.hour < 0) {
+            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
+        }
+        time.minute = this.minute - t.minute;
+        if (time.minute < 0) {
+            time.hour -= 1;
+            if (time.hour < 0) {
+                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
+            }
+            time.minute = 60 + time.minute;
+        }
+        return time;
+    }
+
+    public Time minus(String inputString) {
+        Time time = new Time();
+        time.checkAndExtractTimeComponents(inputString);
+        time.hour = this.hour - time.hour;
+        if (time.hour < 0) {
+            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
+        }
+        time.minute = this.minute - time.minute;
+        if (time.minute < 0) {
+            time.hour -= 1;
+            if (time.hour < 0) {
+                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
+            }
+            time.minute = 60 + time.minute;
+        }
+        return time;
+    }
+
+    /* Ganzzahldivision in 5-Min-Auflösung */
+    public Time divBy(int t) {
+        Time time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+        int minutes, fields, inc;
+        minutes = this.hour * 60 + this.minute;
+        fields = minutes / 5;
+        inc = fields / t;
+        for (int i = 0; i < inc; i++) {
+            time.inc();
+        }
+        return time;
+    }
+
+    /* Modulodivision in 5-Min-Auflösung */
+    public int modBy(int t) {
+        int minutes, fields;
+        minutes = this.hour * 60 + this.minute;
+        fields = minutes / 5;
+        return fields % t;
     }
 }

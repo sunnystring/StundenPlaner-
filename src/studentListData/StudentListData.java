@@ -6,9 +6,9 @@
 package studentListData;
 
 import core.Database;
-import core.DatabaseListener;
+import controllers.DatabaseListener;
 import core.Student;
-import dataEntryUI.StudentEditDialog;
+import dataEntryUI.StudentEdit;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -23,8 +23,8 @@ import studentlistUI.StudentList;
 
 /**
  *
- * TableModel für {@link StudentList}, jede Zelle ist in
- * der fieldDataMatrix als {@link StudentFieldData} abgebildet
+ * TableModel für {@link StudentList}, jede Zelle ist in der fieldDataMatrix als
+ * {@link StudentFieldData} abgebildet
  */
 public class StudentListData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
@@ -38,7 +38,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private int numberOfStudents;
     private int selectedRow, selectedCol;
     private int allocatedRow;
-    public static final int NULL_ROW = -1;
+    public static final int NULL_VALUE = -1;
 
     public StudentListData(Database database, MainFrame mainFrame) {
         this.database = database;
@@ -153,11 +153,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     }
                     if (!studentFieldData.isStudentAllocated()) {
                         mainFrame.setStudentButtonsEnabled(studentFieldData.isStudentListReleased());
+                        mainFrame.setScheduleButtonEnabled(studentFieldData.isStudentListReleased());
                     }
                     fireTableRowsUpdated(selectedRow, selectedRow);
                     resetRows();
                 } else if (m.getClickCount() == 2 && studentFieldData.isStudentListReleased()) { // Schülerprofil ändern/löschen
-                    JDialog studentEditDialog = new StudentEditDialog(mainFrame, studentFieldData.getStudent());
+                    JDialog studentEditDialog = new StudentEdit(mainFrame, studentFieldData.getStudent());
                     studentEditDialog.setVisible(true);
                 }
             }
@@ -175,16 +176,19 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
                             blockStudentList();
                             mainFrame.setStudentButtonsEnabled(false);
+                            mainFrame.setScheduleButtonEnabled(false);
                         }
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setAndDisableAllocatedRow(false);
                             releaseStudentList();
                             mainFrame.setStudentButtonsEnabled(true);
+                            mainFrame.setScheduleButtonEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
                         setAndDisableAllocatedRow(true);
                         releaseStudentList();
                         mainFrame.setStudentButtonsEnabled(true);
+                        mainFrame.setScheduleButtonEnabled(true);
                     }
                     fireTableDataChanged();
                     resetRows();
@@ -219,7 +223,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix.get(i)[j].setStudentListReleased(!fieldDataMatrix.get(i)[j].isStudentAllocated());
-                fieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_ROW);
+                fieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_VALUE);
                 fieldDataMatrix.get(i)[j].setFieldSelected(false);
             }
         }
@@ -242,7 +246,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     public Student getStudent(int i) {
-        return database.getStudentList().get(i);
+        return database.getStudentDataList().get(i);
     }
 
     public void setStudentList(StudentList studentList) {
@@ -250,8 +254,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     private void resetRows() {
-        selectedCol = -1;
-        selectedRow = allocatedRow = NULL_ROW;
+        selectedCol = NULL_VALUE;
+        selectedRow = allocatedRow = NULL_VALUE;
     }
 
     @Override

@@ -14,7 +14,7 @@ import util.Time;
 public class StudentDay {
 
     private Time[] timeSlots;
-    boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2;
+    boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
 
     public StudentDay(int slots) {
         timeSlots = new Time[slots];
@@ -33,7 +33,9 @@ public class StudentDay {
         noStart2 = getStartTime2().isEmpty() && !getEndTime2().isEmpty();
         endSmallerStart1 = getEndTime1().smallerThan(getStartTime1());
         endSmallerStart2 = getEndTime2().smallerThan(getStartTime2());
-        return (noStart1 || noStart2 || endSmallerStart1 || endSmallerStart2);
+        onlyStart1 = !getStartTime1().isEmpty() & getEndTime1().isEmpty();
+        onlyStart2 = !getStartTime2().isEmpty() & getEndTime2().isEmpty();
+        return (noStart1 || noStart2 || endSmallerStart1 && !onlyStart1 || endSmallerStart2 && !onlyStart2);
     }
 
     public void correctInvalidTimeSlots() {
@@ -48,12 +50,17 @@ public class StudentDay {
     }
 
     public void setSingleLections() {
-        if (!getStartTime1().isEmpty() & getEndTime1().isEmpty()) {
+        if (onlyStart1) {
             timeSlots[1] = timeSlots[0];
         }
-        if (!getStartTime2().isEmpty() & getEndTime2().isEmpty()) {
+        if (onlyStart2) {
             timeSlots[3] = timeSlots[2];
         }
+    }
+
+    // ToDo....
+    public boolean isEmpty() {
+        return false;
     }
 
     public Time getStartTime1() {

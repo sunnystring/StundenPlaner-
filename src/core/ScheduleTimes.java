@@ -5,15 +5,17 @@
  */
 package core;
 
-import dataEntryUI.ScheduleEntryMask;
+import dataEntryUI.ScheduleInputMask;
+import exceptions.IllegalDayEntryException;
+import exceptions.IllegalTimeSlotException;
+import exceptions.NoEntryException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 /**
  *
  * Gesamtheit aller Unterrichtstage (vom Lehrer vorgegeben), TableModel für
- * {@link ScheduleEntryMask}
+ * {@link ScheduleInputMask}
  */
 public class ScheduleTimes extends AbstractTableModel {
 
@@ -22,6 +24,7 @@ public class ScheduleTimes extends AbstractTableModel {
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
     private ArrayList<ScheduleDay> validScheduleDayList;
+    private String illegalDayEntries;
 
     public ScheduleTimes() {
         daySelectionList = new ScheduleDay[DAYS];
@@ -76,46 +79,96 @@ public class ScheduleTimes extends AbstractTableModel {
         daySelectionList[row].setTimeSlot(timeString, col);
     }
 
+    public boolean verifyInput() {
+        boolean allSlotsEmpty = true;
+        boolean allSlotsValid = true;
+        for (int i = 0; i < daySelectionList.length; i++) {
+            if (!daySelectionList[i].isEmpty()) {
+                allSlotsEmpty = false;
+            }
+            if (daySelectionList[i].hasInvalidTimeSlots()) {
+                allSlotsValid = false;
+            }
+        }
+        if (allSlotsEmpty) {
+            throw new NoEntryException();
+        }
+        if (!allSlotsValid) {
+            throw new IllegalTimeSlotException();
+        }
+        return allSlotsValid;
+    }
+
+    // ein bestehender Unterrichtstag darf nicht ohne Bestätigung gelöscht werden
+    public void verifyDayEntries() {
+        boolean allDaysLegal = true;
+        illegalDayEntries = " ";
+        for (int i = 0; i < validScheduleDayList.size(); i++) {
+            for (int j = 0; j < daySelectionList.length; j++) {
+                if (validScheduleDayList.get(i).getDayName() == daySelectionList[j].getDayName()) {
+                    if (!validScheduleDayList.get(i).isEmpty() && daySelectionList[j].isEmpty()) {
+                        allDaysLegal = false;
+                        illegalDayEntries += validScheduleDayList.get(i).getDayName() + " ";
+                    }
+                }
+            }
+        }
+        if (!allDaysLegal) {
+            throw new IllegalDayEntryException();
+        }
+    }
+
     public void setValidScheduleDays() {
         for (int i = 0; i < DAYS; i++) {
             if (isValidScheduleDay(i)) {
                 daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
-                validScheduleDayList.add(daySelectionList[i]); // Mapping: 1. Unterrichtstag = 0 usw.
+                validScheduleDayList.add(daySelectionList[i].clone()); // Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
     }
 
-    public boolean areTimeEntriesValid() {
-        boolean allSlotsValid = true;
-        for (int i = 0; i < daySelectionList.length; i++) {
-            if (daySelectionList[i].hasInvalidTimeSlots()) {
-                allSlotsValid = false;
-                daySelectionList[i].cleanInvalidTimeSlots();
+    public void updateValidScheduleDays() {
+        validScheduleDayList.clear();
+        setValidScheduleDays();
+    }
+
+    public void restoreSelectionTable() {
+        for (int i = 0; i < validScheduleDayList.size(); i++) {
+            for (int j = 0; j < daySelectionList.length; j++) {
+                if (validScheduleDayList.get(i).getDayName() == daySelectionList[j].getDayName()) {
+                    daySelectionList[j] = validScheduleDayList.get(i).clone();
+                }
             }
         }
-        if (!allSlotsValid) {
-            JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
-                    + "Unterrichtsschluss muss später\n"
-                    + "sein als Unterrichtsbeginn!");
-        }
         fireTableDataChanged();
-        return allSlotsValid;
+    }
+
+    // noch unbenutzt
+    public void cleanScheduleDays() {
+        for (ScheduleDay d : daySelectionList) {
+            d.cleanTimeSlots();
+        }
+        validScheduleDayList.clear();
+    }
+
+    public boolean isEmpty() {
+        return validScheduleDayList.isEmpty();
     }
 
     public boolean isValidScheduleDay(int i) {
-        return !daySelectionList[i].getValidStart().toString().trim().isEmpty();
+        return !daySelectionList[i].isEmpty();
     }
 
     public ScheduleDay getValidScheduleDay(int i) {
         return validScheduleDayList.get(i);
     }
 
-    public String getDayName(int i) {
-        return validScheduleDayList.get(i).getDayName();
-    }
-
     public int getNumberOfDays() {
         return validScheduleDayList.size();
+    }
+
+    public String getIllegalDayEntries() {
+        return illegalDayEntries;
     }
 
 }

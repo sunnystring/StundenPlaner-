@@ -8,7 +8,7 @@ package mainframe;
 import core.Database;
 import core.ScheduleTimes;
 import studentListData.StudentListData;
-import dataEntryUI.StudentEntryMask;
+import dataEntryUI.StudentInputMask;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -26,9 +26,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
 import scheduleData.ScheduleData;
 import core.Student;
-import dataEntryUI.ScheduleEntryDialog;
-import dataEntryUI.ScheduleEntryMask;
-import dataEntryUI.StudentEntryDialog;
+import dataEntryUI.ScheduleEdit;
+import dataEntryUI.ScheduleEntry;
+import dataEntryUI.ScheduleInputMask;
+import dataEntryUI.StudentEntry;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
@@ -46,10 +47,10 @@ public class MainFrame extends JFrame {
     private StudentListData studentListData;
     private Schedule schedule;
     private StudentList studentList;
-    private ScheduleEntryMask scheduleEntryMask;
-    private StudentEntryMask studentEntryMask;
+    private ScheduleInputMask scheduleInputMask;
+    private StudentInputMask studentInputMask;
     private JPanel toolBar;
-    private ScheduleButton openButton, saveButton, printButton, createScheduleButton, addStudentButton, addKGUButton, automaticAllocationButton;
+    private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton;
     private JToggleButton timeFilterButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
@@ -60,7 +61,8 @@ public class MainFrame extends JFrame {
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
-        scheduleData = new ScheduleData(database.getScheduleTimes());
+        scheduleTimes = database.getScheduleTimes();
+        scheduleData = new ScheduleData(scheduleTimes);
         studentListData = new StudentListData(database, this);
         createWidgets();
         addWidgets();
@@ -78,30 +80,38 @@ public class MainFrame extends JFrame {
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
-        createScheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
-        addStudentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
-        addKGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
+        scheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
+        studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
+        KGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
         automaticAllocationButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
-        splitPane.setResizeWeight(0.5);
-        scheduleEntryMask = new ScheduleEntryMask(database);
-        studentEntryMask = new StudentEntryMask(database);
+        splitPane.setResizeWeight(0.75);
+        schedule = new Schedule(scheduleData, studentListData);
+        leftScroll = new JScrollPane(schedule);
+        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        studentList = new StudentList(studentListData);  // timeTable für Listener-Registrierung
+        rightScroll = new JScrollPane(studentList);
+        rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        scheduleInputMask = new ScheduleInputMask(database, this);
+        studentInputMask = new StudentInputMask(database);
     }
 
     private void addWidgets() {
+        splitPane.setLeftComponent(leftScroll);
+        splitPane.setRightComponent(rightScroll);
         add(BorderLayout.CENTER, splitPane);
         add(BorderLayout.PAGE_START, toolBar);
         toolBar.add(openButton);
         toolBar.add(saveButton);
         toolBar.add(printButton);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(createScheduleButton);
-        toolBar.add(addStudentButton);
-        toolBar.add(addKGUButton);
+        toolBar.add(scheduleButton);
+        toolBar.add(studentButton);
+        toolBar.add(KGUButton);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(automaticAllocationButton);
         toolBar.add(timeFilterButton);
@@ -109,19 +119,24 @@ public class MainFrame extends JFrame {
 
     private void addListeners() {
         database.addDatabaseListener(studentListData);
-        createScheduleButton.addActionListener(new ActionListener() {
+        scheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JDialog scheduleEntryDialog = new ScheduleEntryDialog(MainFrame.this);
-                scheduleEntryDialog.setVisible(true);
+                if (scheduleTimes.isEmpty()) {
+                    JDialog scheduleEntry = new ScheduleEntry(MainFrame.this);
+                    scheduleEntry.setVisible(true);
+                } else {
+                    JDialog scheduleEdit = new ScheduleEdit(MainFrame.this);
+                    scheduleEdit.setVisible(true);
+                }
             }
         });
-        addStudentButton.addActionListener(new ActionListener() {
+        studentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JDialog studentEntryDialog = new StudentEntryDialog(MainFrame.this, new Student());
-                studentEntryMask.clearTextFields();
-                studentEntryDialog.setVisible(true);
+                JDialog studentEntry = new StudentEntry(MainFrame.this, new Student());
+                studentInputMask.clearTextFields();
+                studentEntry.setVisible(true);
             }
         });
     }
@@ -130,32 +145,41 @@ public class MainFrame extends JFrame {
         scheduleData.setTableData();
     }
 
-    public void createSchedule() {
-        schedule = new Schedule(scheduleData, studentListData);
-        leftScroll = new JScrollPane(schedule);
-        leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        splitPane.setLeftComponent(leftScroll);
+    public void updateScheduleData() {
+        scheduleData.reset();
+        scheduleData.setTableData();
+    }
+
+    public void completeSchedule() {
+        schedule.createHeader();
+        schedule.getTimeTable().setParameters();
+        scheduleData.fireTableDataChanged();
+    }
+
+    public void updateSchedule() {
+        schedule.removeHeader();
+        completeSchedule();
     }
 
     public void setStudentListData() {
+        database.setNumberOfDays(scheduleTimes.getNumberOfDays()); // ToDo: direkt in StudentListData ohne Umweg über Database
         studentListData.setScheduleData(scheduleData);
         studentListData.setNumberOfDays();
-    }
-
-    public void createStudentList() {
-        studentList = new StudentList(studentListData, schedule.getTimeTable());  // timeTable für Listener-Registrierung
-        rightScroll = new JScrollPane(studentList);
-        rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        splitPane.setRightComponent(rightScroll);
-    }
-
-    public void setStudentListToStudentListData() {
         studentListData.setStudentList(studentList);
     }
 
+    public void completeStudentList() {
+        studentList.setParameters(schedule.getTimeTable());
+        studentListData.fireTableDataChanged();
+    }
+
+    public void setScheduleButtonEnabled(boolean state) {
+        scheduleButton.setEnabled(state);
+    }
+
     public void setStudentButtonsEnabled(boolean state) {
-        addStudentButton.setEnabled(state);
-        addKGUButton.setEnabled(state);
+        studentButton.setEnabled(state);
+        KGUButton.setEnabled(state);
     }
 
     private class ScheduleButton extends JButton {
@@ -167,12 +191,12 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public ScheduleEntryMask getScheduleEntryMask() {
-        return scheduleEntryMask;
+    public ScheduleInputMask getScheduleInputMask() {
+        return scheduleInputMask;
     }
 
-    public StudentEntryMask getStudentEntryMask() {
-        return studentEntryMask;
+    public StudentInputMask getStudentInputMask() {
+        return studentInputMask;
     }
 
 }

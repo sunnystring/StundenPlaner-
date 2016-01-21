@@ -13,8 +13,9 @@ import util.Time;
 
 /**
  *
- * Einheit eines Unterrichtstages in {@link ScheduleData}, bestehend aus einer {@link ScheduleFieldData}-Liste
- * 
+ * Einheit eines Unterrichtstages in {@link ScheduleData} mit der zugehörigen
+ * {@link ScheduleFieldData}-Liste
+ *
  */
 public class DayColumnData {
 

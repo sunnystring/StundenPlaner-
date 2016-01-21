@@ -5,23 +5,25 @@
  */
 package dataEntryUI;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import util.Colors;
+import util.Dialogs;
 
 /**
  *
- * Überprüft User-Zeiteinträge in der {@link SelectionTable}
+ * Editor-Component von {@link SelectionTable} mit User-Input-Validation
  */
 public class TimeStringEditor extends DefaultCellEditor {
 
     private JTextField textField;
     private InputVerifier iV = new InputVerifier() {
-        private static final String INPUT_FORMAT = "([1][0-9]|[2][0-3])?([.][0-5][05])?";
+        private static final String INPUT_FORMAT = "([1][0-9]|[2][0-3])?([.][0-5][05]?)?";
 
         @Override
         public boolean verify(JComponent input) {
@@ -33,9 +35,7 @@ public class TimeStringEditor extends DefaultCellEditor {
         public boolean shouldYieldFocus(JComponent input) {
             boolean valid = verify(input);
             if (!valid) {
-                JOptionPane.showMessageDialog(null, "Ungültiges Zeitformat:\n"
-                        + "Zeit zwischen 10.00 und 23.55 eingeben\n"
-                        + "oder Feld löschen!");
+               Dialogs.showTimeInputFormatError();
             }
             return valid;
         }

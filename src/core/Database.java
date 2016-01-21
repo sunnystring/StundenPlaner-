@@ -5,6 +5,7 @@
  */
 package core;
 
+import controllers.DatabaseListener;
 import java.util.ArrayList;
 
 /**
@@ -62,7 +63,7 @@ public class Database {
         return scheduleTimes;
     }
 
-    public ArrayList<Student> getStudentList() {
+    public ArrayList<Student> getStudentDataList() {
         return studentDataList;
     }
 

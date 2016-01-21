@@ -20,9 +20,7 @@ public class ScheduleTimeFrame {
     private int totalNumberOfFields;
 
     public ScheduleTimeFrame() {
-        absoluteStart = new Time("23.00");
-        absoluteEnd = new Time();
-        totalNumberOfFields = 0;
+        reset();
     }
 
     public void createTimeFrame(ScheduleDay scheduleDay) {
@@ -35,6 +33,12 @@ public class ScheduleTimeFrame {
             absoluteEnd = scheduleEnd;
         }
         totalNumberOfFields = absoluteEnd.diff(absoluteStart); // Differenz = Anzahl 5-Minuten-Blöcke
+    }
+
+    public void reset() {
+        absoluteStart = new Time("23.00");
+        absoluteEnd = new Time();
+        totalNumberOfFields = 0;
     }
 
     public int getTotalNumberOfFields() {

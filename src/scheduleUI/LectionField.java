@@ -36,11 +36,11 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     private int movedRow, movedCol;
     private int tempRow, tempCol;
     private int lectionEnd, lectionDiff;
-    public static final int NULL_ROW = -1;
+    protected static final int NULL_VALUE = -1;
 
-    public LectionField(TimeTable timeTable) {
+    public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
         this.timeTable = timeTable;
-        scheduleData = (ScheduleData) timeTable.getModel();
+        this.scheduleData = scheduleData;
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
         resetLectionColumn();
@@ -121,7 +121,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     @Override
     public void mouseMoved(MouseEvent m) {
         Point p = m.getPoint();
-        if (timeTable.rowAtPoint(p) == NULL_ROW) {
+        if (timeTable.rowAtPoint(p) == NULL_VALUE) {
             return;
         }
         movedRow = timeTable.rowAtPoint(p);
@@ -194,7 +194,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 }
             }
             if (movedCol % 4 == 3) { // Übertrag: 2. LectionColum oben 
-                lectionDiff = -1;
+                lectionDiff = NULL_VALUE;
                 for (int i = 0; i < lectionLenght; i++) {
                     timeTable.repaint(timeTable.getCellRect(i, movedCol + 4, false));
                 }
@@ -232,7 +232,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     private void resetLectionColumn() {
         movedRow = 0;
         movedCol = 0;
-        tempRow = NULL_ROW;
+        tempRow = NULL_VALUE;
         tempCol = 0;
         lectionLenght = 0;
         lectionEnd = 0;

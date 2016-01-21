@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import core.Student;
 import java.awt.Point;
-import scheduleUI.Schedule;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
@@ -20,9 +19,9 @@ import studentlistUI.StudentList;
 
 /**
  *
- * TableModel für {@link TimeTable}, jede Zelle ist in
- * der fieldDataMatrix als {@link ScheduleFieldData} abgebildet
- * 
+ * TableModel für {@link TimeTable}, jede Zelle ist in der fieldDataMatrix als
+ * {@link ScheduleFieldData} abgebildet
+ *
  */
 public class ScheduleData extends AbstractTableModel implements MouseListener {
 
@@ -43,6 +42,45 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         setScheduleDisabled();
     }
 
+    public void setTableData() {
+        numberOfDays = scheduleTimes.getNumberOfDays();
+        createDayColumnData();
+        createFieldDataMatrix();
+    }
+
+    public void reset() {
+        dayColumnDataList.clear();
+        timeFrame.reset();
+    }
+
+    private void createDayColumnData() {
+        for (int i = 0; i < numberOfDays; i++) {
+            dayColumnDataList.add(new DayColumnData());
+            timeFrame.createTimeFrame(scheduleTimes.getValidScheduleDay(i));
+        }
+        for (int i = 0; i < numberOfDays; i++) {
+            dayColumnDataList.get(i).initDayColumn(scheduleTimes.getValidScheduleDay(i), timeFrame);
+        }
+    }
+
+    private void createFieldDataMatrix() {
+        fieldDataMatrix = new ScheduleFieldData[getRowCount()][getColumnCount()];
+        int dayCount = 0;
+        for (int j = 0; j < getColumnCount(); j++) {
+            for (int i = 0; i < getRowCount(); i++) {
+                if (j % 4 == 0 || j % 4 == 1) {
+                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i);
+                }
+                if (j % 4 == 2 || j % 4 == 3) {
+                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i + getRowCount());
+                }
+            }
+            if (j % 4 == 3) {
+                dayCount++;
+            }
+        }
+    }
+
     @Override
     public int getRowCount() {
         return timeFrame.getTotalNumberOfFields() / 2;
@@ -55,6 +93,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     @Override
     public Object getValueAt(int row, int col) {
+        //     System.out.println("col = "+ col);
         return fieldDataMatrix[row][col];
     }
 
@@ -211,40 +250,6 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         for (int studentDayID = 0; studentDayID < dayColumnDataList.size(); studentDayID++) {
             DayColumnData dayColumn = dayColumnDataList.get(studentDayID);
             dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
-        }
-    }
-
-    public void setTableData() {
-        numberOfDays = scheduleTimes.getNumberOfDays();
-        createDayColumnData();
-        createFieldDataMatrix();
-    }
-
-    private void createDayColumnData() {
-        for (int i = 0; i < numberOfDays; i++) {
-            dayColumnDataList.add(new DayColumnData());
-            timeFrame.createTimeFrame(scheduleTimes.getValidScheduleDay(i));
-        }
-        for (int i = 0; i < numberOfDays; i++) {
-            dayColumnDataList.get(i).initDayColumn(scheduleTimes.getValidScheduleDay(i), timeFrame);
-        }
-    }
-
-    private void createFieldDataMatrix() {
-        fieldDataMatrix = new ScheduleFieldData[getRowCount()][getColumnCount()];
-        int dayCount = 0;
-        for (int j = 0; j < getColumnCount(); j++) {
-            for (int i = 0; i < getRowCount(); i++) {
-                if (j % 4 == 0 || j % 4 == 1) {
-                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i);
-                }
-                if (j % 4 == 2 || j % 4 == 3) {
-                    fieldDataMatrix[i][j] = dayColumnDataList.get(dayCount).getFieldData(i + getRowCount());
-                }
-            }
-            if (j % 4 == 3) {
-                dayCount++;
-            }
         }
     }
 

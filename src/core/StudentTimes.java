@@ -5,7 +5,7 @@
  */
 package core;
 
-import dataEntryUI.StudentEntryMask;
+import dataEntryUI.StudentInputMask;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -13,7 +13,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  *
  * Gesamtheit aller Unterrichtstage mit den verfügbaren Schülerzeiten,
- * TableModel für {@link StudentEntryMask}
+ * TableModel für {@link StudentInputMask}
  */
 public class StudentTimes extends AbstractTableModel {
 
@@ -83,6 +83,21 @@ public class StudentTimes extends AbstractTableModel {
         daySelectionList[row].setTimeSlot(timeString, col);
     }
 
+    public boolean checkAndCorrectTimeEntries() {
+        boolean allSlotsValid = true;
+        for (int i = 0; i < daySelectionList.length; i++) {
+            if (daySelectionList[i].hasInvalidTimeSlots()) {
+                allSlotsValid = false;
+                daySelectionList[i].correctInvalidTimeSlots();
+            }
+        }
+        fireTableDataChanged();
+        if (!allSlotsValid) {
+            throw new IllegalStateException();
+        }
+        return allSlotsValid;
+    }
+
     public void setValidStudentDays() {
         for (int i = 0; i < DAYS; i++) {
             daySelectionList[i].setSingleLections(); // falls solche gesetzt: endTime = startTime
@@ -92,27 +107,13 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    public boolean areTimeEntriesValid() {
-        boolean allSlotsValid = true;
-        for (int i = 0; i < daySelectionList.length; i++) {
-            if (daySelectionList[i].hasInvalidTimeSlots()) {
-                allSlotsValid = false;
-                daySelectionList[i].correctInvalidTimeSlots();
-            }
-        }
-        if (!allSlotsValid) {
-            JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
-                    + "Schlusszeit muss grösser\n"
-                    + "sein als Anfangszeit,\n"
-                    + "Anfangszeit darf nicht fehlen!");
-        }
-        fireTableDataChanged();
-        return allSlotsValid;
+    public void updateValidStudentDays() {
+        resetStudentDays();
+        setValidStudentDays();
     }
 
-    public void updateValidStudentDays() {
+    private void resetStudentDays() {
         validStudentDayList.clear();
-        setValidStudentDays();
     }
 
     public StudentDay getValidStudentDay(int i) {

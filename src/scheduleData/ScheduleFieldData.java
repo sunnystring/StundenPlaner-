@@ -11,7 +11,7 @@ import util.Time;
 
 /**
  *
- * Model einer Zelle von {@link TimeTable} 
+ * Model einer Zelle von {@link TimeTable} mit allen relevanten Student- und Time-Daten
  */
 public class ScheduleFieldData {
 
