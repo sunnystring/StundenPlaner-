@@ -12,6 +12,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
@@ -20,23 +21,17 @@ import util.Colors;
 
 /**
  *
- * @author mathiaskielholz
+ * Renderer-Component für Zeit-Spalten in {@link TimeTable}
  */
 public class TimeField extends LectionField {
 
     private int movedRow, movedCol;
-    public static final int NULL_ROW = -1;
 
-    public TimeField(TimeTable timeTable) {
-        super(timeTable);
+    public TimeField(TimeTable timeTable, ScheduleData scheduleData ) {
+        super(timeTable, scheduleData);
         resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-    }
-
-    private void resetTimeColumn() {
-        movedRow = NULL_ROW;
-        movedCol = -1;
     }
 
     @Override
@@ -75,7 +70,7 @@ public class TimeField extends LectionField {
     public void mouseMoved(MouseEvent m) {
 
         Point p = m.getPoint();
-        if (timeTable.rowAtPoint(p) == NULL_ROW) {  // ausserhalb JTable movedRow = -1
+        if (timeTable.rowAtPoint(p) == NULL_VALUE) {  // ausserhalb JTable movedRow = -1
             return;
         }
         movedRow = timeTable.rowAtPoint(p);
@@ -107,7 +102,7 @@ public class TimeField extends LectionField {
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
-                } else if (studentFieldData.isStudentListEnabled()) {
+                } else if (studentFieldData.isStudentListReleased()) {
                     resetTimeColumn();
                 }
             }
@@ -122,5 +117,10 @@ public class TimeField extends LectionField {
                 }
             }
         }
+    }
+
+    private void resetTimeColumn() {
+        movedRow = NULL_VALUE;
+        movedCol = NULL_VALUE;
     }
 }

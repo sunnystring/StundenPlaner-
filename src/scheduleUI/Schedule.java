@@ -14,7 +14,8 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * View des ganzen Stundenplans, bestehend aus {@link TimeTable} und
+ * {@link DayField}
  */
 public class Schedule extends JPanel {
 
@@ -27,14 +28,21 @@ public class Schedule extends JPanel {
         header = new JPanel();
         header.setLayout(new GridLayout(1, 4));
         header.setBackground(Colors.BACKGROUND);
-        for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
-            header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
-        }
-        timeTable = new TimeTable(scheduleData, studentListData);
+        timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         setLayout(new BorderLayout());
         setBackground(Colors.BACKGROUND);
         add(BorderLayout.NORTH, header);
         add(BorderLayout.CENTER, timeTable);
+    }
+
+    public void createHeader() {
+        for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
+            header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
+        }
+    }
+
+    public void removeHeader() {
+        header.removeAll();
     }
 
     public TimeTable getTimeTable() {

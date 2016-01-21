@@ -5,24 +5,36 @@
  */
 package studentListData;
 
+import core.Student;
+import studentlistUI.StudentList;
+
 /**
  *
- * @author Mathias
+ * Model einer Zelle von {@link StudentList}
  */
 public class StudentFieldData {
 
+    private Student student;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
-    private boolean studentListEnabled;
+    private boolean studentListReleased;
     private boolean studentAllocated;
     private int selectedRowIndex;
 
     public StudentFieldData() {
         fieldSelected = false;
-        studentListEnabled = true;
+        studentListReleased = true;
         selectedRowIndex = -1;
         studentAllocated = false;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public String getNameString() {
@@ -57,12 +69,12 @@ public class StudentFieldData {
         return studentAllocated;
     }
 
-    public boolean isStudentListEnabled() {
-        return studentListEnabled;
+    public boolean isStudentListReleased() {
+        return studentListReleased;
     }
 
-    public void setStudentListEnabled(boolean studentListEnabled) {
-        this.studentListEnabled = studentListEnabled;
+    public void setStudentListReleased(boolean studentListReleased) {
+        this.studentListReleased = studentListReleased;
     }
 
     public void setStudentAllocated(boolean studentAllocated) {

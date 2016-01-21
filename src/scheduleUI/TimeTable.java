@@ -12,20 +12,28 @@ import util.Colors;
 
 /**
  *
- * @author Mathias
+ * Stundenplan-UI in {@link Schedule}
  */
 public class TimeTable extends JTable {
 
-    private TimeField timeField;  
-    private LectionField lectionField; 
+    private TimeField timeField;
+    private LectionField lectionField;
+    private ScheduleData scheduleData;
+    StudentListData studentListData;
 
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
-        setModel(scheduleData);
+        this.scheduleData = scheduleData;
+        this.studentListData = studentListData;
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowHeight(14);
-        timeField = new TimeField(this);
-        lectionField = new LectionField(this);
+    }
+
+    public void setParameters() {
+        setModel(scheduleData);
+        createDefaultColumnsFromModel();
+        lectionField = new LectionField(this, scheduleData);
+        timeField = new TimeField(this, scheduleData);
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
             if (i % 2 == 0) {
                 getColumnModel().getColumn(i).setMaxWidth(10);
@@ -35,10 +43,10 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
-        addMouseListener(lectionField);  
-        addMouseListener(timeField); 
-        addMouseMotionListener(lectionField); 
-        addMouseMotionListener(timeField); 
+        addMouseListener(lectionField);
+        addMouseListener(timeField);
+        addMouseMotionListener(lectionField);
+        addMouseMotionListener(timeField);
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
     }

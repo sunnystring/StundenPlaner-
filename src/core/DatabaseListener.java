@@ -5,12 +5,19 @@
  */
 package core;
 
+import core.Student;
+import studentListData.StudentListData;
+import studentlistUI.StudentList;
+
 /**
  *
- * @author Mathias
+ * Passt {@link  StudentList} an bei Änderungen am Schülerdatenbestand
  */
 public interface DatabaseListener {
-    
-    public void studentAdded( int numberOfStudents, Student student);
-    
+
+    public void studentAdded(int numberOfStudents, Student student);
+
+    public void studentEdited(Student student);
+
+    public void studentDeleted(int numberOfStudents, int studentID);
 }
