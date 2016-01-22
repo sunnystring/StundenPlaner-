@@ -27,8 +27,8 @@ public class TimeField extends LectionField {
 
     private int movedRow, movedCol;
 
-    public TimeField(TimeTable timeTable, ScheduleData scheduleData ) {
-        super(timeTable, scheduleData);
+    public TimeField(TimeTable timeTable,ScheduleData scheduleData ) {
+        super(timeTable,scheduleData);
         resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));

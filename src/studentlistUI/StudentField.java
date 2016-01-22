@@ -33,12 +33,16 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
 
     public StudentField(StudentList studentList, StudentListData studentListData) {
         this.studentList = studentList;
-        //    studentListData = (StudentListData) studentList.getModel();
-        columnCount = studentListData.getColumnCount();
+        //    columnCount = studentListData.getColumnCount();
+        setColumnCount(studentListData.getColumnCount());
         resetStudentRows();
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
+    }
+
+    public void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
     }
 
     @Override
@@ -106,7 +110,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         }
     }
 
-    private void resetStudentRows() {
+    public void resetStudentRows() {
         selectedRow = NULL_ROW;
         tempRow = NULL_ROW;
     }

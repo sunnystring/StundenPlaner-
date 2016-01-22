@@ -20,7 +20,7 @@ public class ScheduleFieldData {
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
     private Student student;
-    private Time time;
+    private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
     private boolean teacherTime;
@@ -54,20 +54,20 @@ public class ScheduleFieldData {
         return student;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setFieldTime(Time fieldTime) {
+        this.fieldTime = fieldTime;
     }
 
-    public Time getTime() {
-        return time;
+    public Time getFieldTime() {
+        return fieldTime;
     }
 
     public String getMinute(int index) {
-        return String.valueOf(time.getMinute());
+        return String.valueOf(fieldTime.getMinute());
     }
 
     public String getHour(int index) {
-        return String.valueOf(time.getHour());
+        return String.valueOf(fieldTime.getHour());
     }
 
     public void setValidTimeMark(int validTimeMark) {
@@ -91,7 +91,7 @@ public class ScheduleFieldData {
     }
 
     public boolean isMinute(int index) {
-        return time.getMinute() != 0;
+        return fieldTime.getMinute() != 0;
     }
 
     public boolean isTeacherTime() {

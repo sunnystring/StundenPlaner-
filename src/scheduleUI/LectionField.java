@@ -41,11 +41,15 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
         this.timeTable = timeTable;
         this.scheduleData = scheduleData;
-        rowCount = scheduleData.getRowCount();
-        columnCount = scheduleData.getColumnCount();
+        initTableDimension();
         resetLectionColumn();
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
+    }
+
+    public void initTableDimension() {
+        rowCount = scheduleData.getRowCount();
+        columnCount = scheduleData.getColumnCount();
     }
 
     @Override
@@ -63,7 +67,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.isHead()) {
                 setForeground(Color.GRAY);
                 setFont(this.getFont().deriveFont(Font.PLAIN, 8));
-                setText(" " + fieldData.getTime().toString());
+                setText(" " + fieldData.getFieldTime().toString());
             } else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
                 setText(" " + fieldData.getStudent().getFirstName());
             } else if (fieldData.getNameMark() == ScheduleFieldData.NAME) {
@@ -82,7 +86,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 if (row == movedRow) {
                     setForeground(Color.GRAY);
                     setFont(this.getFont().deriveFont(Font.PLAIN, 8));
-                    setText(" " + fieldData.getTime().toString());
+                    setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
                     setText(" " + fieldData.getStudent().getFirstName());
                 } else if (row == movedRow + 2) {
@@ -229,7 +233,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         }
     }
 
-    private void resetLectionColumn() {
+    public void resetLectionColumn() {
         movedRow = 0;
         movedCol = 0;
         tempRow = NULL_VALUE;

@@ -45,7 +45,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.mainFrame = mainFrame;
         numberOfDays = 0;
         numberOfStudents = 0;
-        resetRows();
         fieldDataMatrix = new ArrayList<>();
     }
 
@@ -85,7 +84,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             }
             studentRow[i] = studentFieldData;
         }
-        fieldDataMatrix.add(getRowCount() - 1, studentRow);
+        fieldDataMatrix.add(studentRow);//getRowCount() - 1, 
     }
 
     private void updateStudentRow(Student student) {
@@ -101,6 +100,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void removeStudentRow(int studentID) {
         fieldDataMatrix.remove(studentID);
+    }
+
+    public void adjustColumnsToDayChange() {
+        fieldDataMatrix.clear();
+        for (Student student : database.getStudentDataList()) {
+            student.getStudentTimes().updateValidStudentDays();
+            createStudentRow(student);
+        }
     }
 
     @Override
@@ -156,7 +163,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         mainFrame.setScheduleButtonEnabled(studentFieldData.isStudentListReleased());
                     }
                     fireTableRowsUpdated(selectedRow, selectedRow);
-                    resetRows();
                 } else if (m.getClickCount() == 2 && studentFieldData.isStudentListReleased()) { // Schülerprofil ändern/löschen
                     JDialog studentEditDialog = new StudentEdit(mainFrame, studentFieldData.getStudent());
                     studentEditDialog.setVisible(true);
@@ -191,7 +197,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         mainFrame.setScheduleButtonEnabled(true);
                     }
                     fireTableDataChanged();
-                    resetRows();
                 }
             }
         }
@@ -241,8 +246,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.scheduleData = scheduleData;
     }
 
-    public void setNumberOfDays() {
-        numberOfDays = database.getNumberOfDays();
+    public void setNumberOfDays(int numberOfDays) {
+        this.numberOfDays = numberOfDays;
     }
 
     public Student getStudent(int i) {
@@ -251,11 +256,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void setStudentList(StudentList studentList) {
         this.studentList = studentList;
-    }
-
-    private void resetRows() {
-        selectedCol = NULL_VALUE;
-        selectedRow = allocatedRow = NULL_VALUE;
     }
 
     @Override

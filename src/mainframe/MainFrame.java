@@ -66,6 +66,7 @@ public class MainFrame extends JFrame {
         studentListData = new StudentListData(database, this);
         createWidgets();
         addWidgets();
+        setStudentListDataParameters();
         addListeners();
         setStudentButtonsEnabled(false);
         pack();
@@ -93,7 +94,7 @@ public class MainFrame extends JFrame {
         schedule = new Schedule(scheduleData, studentListData);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        studentList = new StudentList(studentListData);  // timeTable für Listener-Registrierung
+        studentList = new StudentList(studentListData, schedule.getTimeTable());  // timeTable für Listener-Registrierung
         rightScroll = new JScrollPane(studentList);
         rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         scheduleInputMask = new ScheduleInputMask(database, this);
@@ -115,6 +116,11 @@ public class MainFrame extends JFrame {
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(automaticAllocationButton);
         toolBar.add(timeFilterButton);
+    }
+
+    private void setStudentListDataParameters() {
+        studentListData.setScheduleData(scheduleData);
+        studentListData.setStudentList(studentList);
     }
 
     private void addListeners() {
@@ -141,38 +147,78 @@ public class MainFrame extends JFrame {
         });
     }
 
-    public void setScheduleData() {
+//-------------ScheduleEntry-----------
+    public void setupAndShowUI() {
+        scheduleTimes.setValidScheduleDays();
+        setScheduleData();
+        setupAndShowSchedule();
+        setupStudentListData();
+        setupAndShowStudentList();
+        fireUIDataChanged();
+        setStudentButtonsEnabled(true);
+    }
+
+    private void setScheduleData() {
         scheduleData.setTableData();
     }
 
-    public void updateScheduleData() {
-        scheduleData.reset();
-        scheduleData.setTableData();
-    }
-
-    public void completeSchedule() {
+    private void setupAndShowSchedule() {
         schedule.createHeader();
-        schedule.getTimeTable().setParameters();
+        schedule.getTimeTable().updateParameters();
+    }
+
+    private void setupStudentListData() {
+        studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
+    }
+
+    private void setupAndShowStudentList() {
+        studentList.getTableHeader().setVisible(true);
+        studentList.updateParameters();
+    }
+
+    private void fireUIDataChanged() {
         scheduleData.fireTableDataChanged();
-    }
-
-    public void updateSchedule() {
-        schedule.removeHeader();
-        completeSchedule();
-    }
-
-    public void setStudentListData() {
-        database.setNumberOfDays(scheduleTimes.getNumberOfDays()); // ToDo: direkt in StudentListData ohne Umweg über Database
-        studentListData.setScheduleData(scheduleData);
-        studentListData.setNumberOfDays();
-        studentListData.setStudentList(studentList);
-    }
-
-    public void completeStudentList() {
-        studentList.setParameters(schedule.getTimeTable());
         studentListData.fireTableDataChanged();
     }
 
+    //-------------ScheduleEdit-------------
+    public void validateScheduleTimes() {
+        scheduleData.verifyAllocationState();
+        scheduleData.validateTimeFrame();
+    }
+
+    public void validateDayEntry() {
+        scheduleTimes.findExistingDaysToBeErased();
+    }
+
+    public void updateAndShowUI() {
+        updateScheduleData();
+        updateAndShowSchedule();
+        updateStudentListData();
+        updateAndShowStudentList();
+        fireUIDataChanged();
+    }
+
+    private void updateScheduleData() {
+        scheduleData.updateTableData();
+    }
+
+    private void updateAndShowSchedule() {
+        schedule.removeHeader();
+        schedule.createHeader();
+        schedule.getTimeTable().updateParameters();
+    }
+
+    private void updateStudentListData() {
+        studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
+        studentListData.adjustColumnsToDayChange();
+    }
+
+    private void updateAndShowStudentList() {
+        studentList.updateParameters();
+    }
+
+    //--------------Other-------------
     public void setScheduleButtonEnabled(boolean state) {
         scheduleButton.setEnabled(state);
     }

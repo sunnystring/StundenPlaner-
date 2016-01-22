@@ -123,5 +123,4 @@ public class StudentTimes extends AbstractTableModel {
     public void setScheduleTimes(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
     }
-
 }

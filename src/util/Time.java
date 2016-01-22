@@ -17,7 +17,7 @@ import scheduleData.ScheduleTimeFrame;
  * Hilfsklasse für die Bearbeitung von Zeiten, benutzt in {@link ScheduleDay}, {@link StudentDay},
  * {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
  */
-public class Time implements Cloneable {
+public class Time implements Cloneable, Comparable {
 
     private int hour, minute;
     private String timeString;
@@ -86,15 +86,15 @@ public class Time implements Cloneable {
         int i = 0;
         if (this.equals(t)) {
             return 0;
-        } else if (this.smallerThan(t)) {
+        } else if (this.lessThan(t)) {
             temp = this.clone();
-            while (temp.smallerThan(t)) {
+            while (temp.lessThan(t)) {
                 temp.inc();
                 i++;
             }
         } else if (this.greaterThan(t)) {
             temp = t.clone();
-            while (temp.smallerThan(this)) {
+            while (temp.lessThan(this)) {
                 temp.inc();
                 i++;
             }
@@ -130,7 +130,7 @@ public class Time implements Cloneable {
         return true;
     }
 
-    public boolean smallerThan(Time t) {
+    public boolean lessThan(Time t) {
         if (this.equals(t)) {
             return false;
         }
@@ -142,7 +142,7 @@ public class Time implements Cloneable {
         return true;
     }
 
-    public boolean smallerEqualsThan(Time t) {
+    public boolean lessEqualsThan(Time t) {
         if (this.hour > t.hour) {
             return false;
         } else if (this.hour == t.hour && this.minute > t.minute) {
@@ -173,7 +173,6 @@ public class Time implements Cloneable {
         if (this.hour != time.hour) {
             return false;
         }
-        // ToDo TimeString prüfen
         return true;
     }
 
@@ -199,6 +198,18 @@ public class Time implements Cloneable {
         } else {
             return OUTPUT_FORMAT.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
         }
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Time time = (Time) o;
+        if (this.greaterThan(time)) {
+            return 1;
+        }
+        if (this.lessThan(time)) {
+            return -1;
+        }
+        return 0; 
     }
 
     //------------unbenutzte Operationen---------
@@ -323,4 +334,5 @@ public class Time implements Cloneable {
         fields = minutes / 5;
         return fields % t;
     }
+
 }

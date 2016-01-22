@@ -31,8 +31,8 @@ public class StudentDay {
     public boolean hasInvalidTimeSlots() {
         noStart1 = getStartTime1().isEmpty() && !getEndTime1().isEmpty();
         noStart2 = getStartTime2().isEmpty() && !getEndTime2().isEmpty();
-        endSmallerStart1 = getEndTime1().smallerThan(getStartTime1());
-        endSmallerStart2 = getEndTime2().smallerThan(getStartTime2());
+        endSmallerStart1 = getEndTime1().lessThan(getStartTime1());
+        endSmallerStart2 = getEndTime2().lessThan(getStartTime2());
         onlyStart1 = !getStartTime1().isEmpty() & getEndTime1().isEmpty();
         onlyStart2 = !getStartTime2().isEmpty() & getEndTime2().isEmpty();
         return (noStart1 || noStart2 || endSmallerStart1 && !onlyStart1 || endSmallerStart2 && !onlyStart2);

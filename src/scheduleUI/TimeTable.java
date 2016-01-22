@@ -24,16 +24,26 @@ public class TimeTable extends JTable {
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
         this.studentListData = studentListData;
+        lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
+        timeField = new TimeField(this, scheduleData);
+        addMouseListener(lectionField);
+        addMouseListener(timeField);
+        addMouseMotionListener(lectionField);
+        addMouseMotionListener(timeField);
+        addMouseListener(studentListData);
+        addMouseListener(scheduleData);
+        setModel(scheduleData);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowHeight(14);
     }
 
-    public void setParameters() {
-        setModel(scheduleData);
+    public void updateParameters() {
         createDefaultColumnsFromModel();
-        lectionField = new LectionField(this, scheduleData);
-        timeField = new TimeField(this, scheduleData);
+    //    lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
+        //    timeField = new TimeField(this, scheduleData);
+        lectionField.initTableDimension();
+        lectionField.resetLectionColumn();
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
             if (i % 2 == 0) {
                 getColumnModel().getColumn(i).setMaxWidth(10);
@@ -43,12 +53,26 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
-        addMouseListener(lectionField);
-        addMouseListener(timeField);
-        addMouseMotionListener(lectionField);
-        addMouseMotionListener(timeField);
-        addMouseListener(studentListData);
-        addMouseListener(scheduleData);
+//        addMouseListener(lectionField);
+//        addMouseListener(timeField);
+//        addMouseMotionListener(lectionField);
+//        addMouseMotionListener(timeField);
+//        addMouseListener(studentListData);
+//        addMouseListener(scheduleData);
+    }
+
+//    public void updateParameters() {
+// 
+//     //   removeMouseListeners();
+//        updateParameters();
+//    }
+    private void removeMouseListeners() {
+        removeMouseListener(lectionField);
+        removeMouseListener(timeField);
+        removeMouseMotionListener(lectionField);
+        removeMouseMotionListener(timeField);
+        removeMouseListener(studentListData);
+        removeMouseListener(scheduleData);
     }
 
     public LectionField getLectionField() {

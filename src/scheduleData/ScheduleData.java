@@ -11,11 +11,13 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import core.Student;
+import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
+import util.Time;
 
 /**
  *
@@ -43,24 +45,62 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     }
 
     public void setTableData() {
-        numberOfDays = scheduleTimes.getNumberOfDays();
-        createDayColumnData();
+        numberOfDays = scheduleTimes.getNumberOfValidDays();
+        defineTimeFrame();
+        createDayColumns();
         createFieldDataMatrix();
     }
 
-    public void reset() {
+    public void updateTableData() {
+        numberOfDays = scheduleTimes.getNumberOfValidDays();
         dayColumnDataList.clear();
-        timeFrame.reset();
+        restoreDayColumns();
+        createFieldDataMatrix();
     }
 
-    private void createDayColumnData() {
+//    private void resetTableData() {
+//        dayColumnDataList.clear();
+//        timeFrame.reset();
+//    }
+    public void defineTimeFrame() {
         for (int i = 0; i < numberOfDays; i++) {
-            dayColumnDataList.add(new DayColumnData());
             timeFrame.createTimeFrame(scheduleTimes.getValidScheduleDay(i));
         }
-        for (int i = 0; i < numberOfDays; i++) {
-            dayColumnDataList.get(i).initDayColumn(scheduleTimes.getValidScheduleDay(i), timeFrame);
+    }
+
+    public void verifyAllocationState() {
+
+        // ToDo.....
+    }
+
+    public void validateTimeFrame() {
+        ScheduleTimeFrame tempFrame = new ScheduleTimeFrame();
+        scheduleTimes.setSelectedScheduleDays();
+        for (int i = 0; i < scheduleTimes.getNumberOfSelectedDays(); i++) {
+            tempFrame.createTimeFrame(scheduleTimes.getSelectedScheduleDay(i)); // neuer, noch nicht definitiver TimeFrame bestimmen
         }
+        boolean illegalEntry = false;
+        String illegalDayString = " ";
+        for (int i = 0; i < numberOfDays; i++) {  // checkt neuer TimeFrame in den bestehenden DayColumns
+            illegalEntry = dayColumnDataList.get(i).checkAllocatedLectionBounds(tempFrame.getAbsoluteStart(), tempFrame.getAbsoluteEnd());
+            illegalDayString += dayColumnDataList.get(i).getDayName() + " ";
+        }
+        if (illegalEntry) {
+            throw new IllegalLectionEraseException(illegalDayString);
+        }
+        scheduleTimes.clearTemporaryScheduleDays();
+    }
+
+    private void createDayColumns() {
+        for (int i = 0; i < numberOfDays; i++) {
+            DayColumnData day = new DayColumnData();
+            day.createDayColumn(scheduleTimes.getValidScheduleDay(i), timeFrame);
+            dayColumnDataList.add(day);
+        }
+    }
+
+    private void restoreDayColumns() {
+        // ToDo.......
     }
 
     private void createFieldDataMatrix() {
@@ -93,7 +133,6 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     @Override
     public Object getValueAt(int row, int col) {
-        //     System.out.println("col = "+ col);
         return fieldDataMatrix[row][col];
     }
 
@@ -132,7 +171,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 Student student = scheduleFieldData.getStudent();
                 if (scheduleFieldData.isMoveEnabled()) {
-                    convertTableCoordinatesToDayColumnCoordinates(selectedRow, selectedCol);
+                    convertTableToDayColumnCoordinates(selectedRow, selectedCol);
                     if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
                             eraseLection(student.getLectionLength());
@@ -195,50 +234,62 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     private void createLection(int lectionLength) {
         int lectionEnd = dayColumnFieldIndex + lectionLength;
         DayColumnData dayColumn = getDayColumn(dayColumnIndex);
-        ScheduleFieldData fieldData;
-        int allocatedTime = ScheduleFieldData.NO_VALUE;
+        ScheduleFieldData field;
+        LectionData lection = new LectionData();
+        Time time = null;
+        int allocatedTimeMark = ScheduleFieldData.NO_VALUE;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
-            fieldData = dayColumn.getFieldData(i);
+            field = dayColumn.getFieldData(i);
             if (i == dayColumnFieldIndex) {
-                fieldData.setLectionPanelAreaMark(ScheduleFieldData.HEAD);
-                allocatedTime = fieldData.getValidTimeMark();
+                field.setLectionPanelAreaMark(ScheduleFieldData.HEAD);
+                allocatedTimeMark = field.getValidTimeMark();
+                time = field.getFieldTime();
             }
             if (i > dayColumnFieldIndex && i < lectionEnd - 2) {
-                fieldData.setLectionPanelAreaMark(ScheduleFieldData.CENTER);
+                field.setLectionPanelAreaMark(ScheduleFieldData.CENTER);
                 if (i == dayColumnFieldIndex + 1) {
-                    fieldData.setNameMark(ScheduleFieldData.FIRST_NAME);
+                    field.setNameMark(ScheduleFieldData.FIRST_NAME);
                 } else if (i == dayColumnFieldIndex + 2) {
-                    fieldData.setNameMark(ScheduleFieldData.NAME);
+                    field.setNameMark(ScheduleFieldData.NAME);
                 }
             }
             if (i == lectionEnd - 2) {
-                fieldData.setLectionPanelAreaMark(ScheduleFieldData.SECOND_LAST_ROW);
+                field.setLectionPanelAreaMark(ScheduleFieldData.SECOND_LAST_ROW);
             }
             if (i == lectionEnd - 1) {
-                fieldData.setLectionPanelAreaMark(ScheduleFieldData.LAST_ROW);
+                field.setLectionPanelAreaMark(ScheduleFieldData.LAST_ROW);
             }
-            fieldData.setLectionAllocated(true);
-            fieldData.setAllocatedTimeMark(allocatedTime);
+            field.setLectionAllocated(true);
+            field.setAllocatedTimeMark(allocatedTimeMark);
+            lection.add(field);
         }
+        System.out.println("time addLection: " + time);
+        dayColumn.addLection(time, lection);
     }
 
     private void eraseLection(int lectionLength) {
         DayColumnData dayColumn = getDayColumn(dayColumnIndex);
-        ScheduleFieldData fieldData;
+        ScheduleFieldData field;
+        Time time = null;
         while (dayColumn.getFieldData(dayColumnFieldIndex).getLectionPanelAreaMark() != ScheduleFieldData.HEAD) { // Start-Row bestimmen
             dayColumnFieldIndex--;
         }
         int lectionEnd = dayColumnFieldIndex + lectionLength;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
-            fieldData = dayColumn.getFieldData(i);
-            fieldData.setLectionAllocated(false);
-            fieldData.setMoveEnabled(false);
-            fieldData.resetPanelAreaMarks();
-            fieldData.resetTimeMarks();
+            field = dayColumn.getFieldData(i);
+            field.setLectionAllocated(false);
+            field.setMoveEnabled(false);
+            field.resetPanelAreaMarks();
+            field.resetTimeMarks();
+            if (i == dayColumnFieldIndex) {
+                time = field.getFieldTime();
+            }
         }
+        System.out.println("time removeLection: " + time);
+        dayColumn.removeLection(time);
     }
 
-    private void convertTableCoordinatesToDayColumnCoordinates(int selectedRow, int selectedCol) {
+    private void convertTableToDayColumnCoordinates(int selectedRow, int selectedCol) {
         dayColumnFieldIndex = selectedRow;
         if (selectedCol % 4 == 3) {
             dayColumnFieldIndex = selectedRow + getRowCount();
