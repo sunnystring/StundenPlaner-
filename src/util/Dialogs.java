@@ -39,11 +39,11 @@ public class Dialogs {
                 + "oder Feld löschen!", "Zeiteingabe", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static int showScheduleDayEntryError(ScheduleTimes scheduleTimes) {
-        String msg = "Der" + scheduleTimes.getIllegalDayEntries() + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
-                + "Soll der" + scheduleTimes.getIllegalDayEntries() +"gelöscht werden?";
-        Object[] options = {"Löschen", "Abbrechen"};       
+    public static int showDayEraseOptionMessage(ScheduleTimes scheduleTimes) {
+        String msg = "Der" + scheduleTimes.getErasedDay() + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
+                + "Soll der" + scheduleTimes.getErasedDay() + "gelöscht werden?";
+        Object[] options = {"Löschen", "Abbrechen"};
         return JOptionPane.showOptionDialog(null, msg, "Stundenplan", // Abbrechen = 1 = NO_OPTION, Löschen = 0 = YES_OPTION;
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[1]);
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     }
 }

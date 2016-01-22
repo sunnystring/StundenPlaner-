@@ -37,6 +37,7 @@ public class StudentList extends JTable {
 
     public void setParameters(TimeTable timeTable) {
         setModel(studentListData);
+        createDefaultColumnsFromModel();
         getTableHeader().setDefaultRenderer(headerField);
         getTableHeader().setVisible(true);
         scheduleData = (ScheduleData) timeTable.getModel();
@@ -48,6 +49,11 @@ public class StudentList extends JTable {
         addMouseListener(timeTable.getTimeField());
         addMouseListener(scheduleData);
     }
+    
+    public void updateParameters(){  // ToDo
+    
+        
+    } 
 
     public void showNumberOfStudents() {
         JTableHeader header = getTableHeader();

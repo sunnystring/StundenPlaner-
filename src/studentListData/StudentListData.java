@@ -241,8 +241,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.scheduleData = scheduleData;
     }
 
-    public void setNumberOfDays() {
-        numberOfDays = database.getNumberOfDays();
+    public void resetTableData() {
+        fieldDataMatrix.clear();
+    }
+
+    public void setNumberOfDays(int numberOfDays) {
+        this.numberOfDays = numberOfDays;
     }
 
     public Student getStudent(int i) {

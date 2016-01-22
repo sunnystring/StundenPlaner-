@@ -48,7 +48,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         createFieldDataMatrix();
     }
 
-    public void reset() {
+    public void resetTableData() {
         dayColumnDataList.clear();
         timeFrame.reset();
     }

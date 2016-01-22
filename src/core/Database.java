@@ -8,23 +8,21 @@ package core;
 import java.util.ArrayList;
 
 /**
- * 
- * Verwaltung aller relevanten Daten für die permanente Speicherung: 
- * Schülerdatenbestand, Unterrichtstage und -zeiten, 
+ *
+ * Verwaltung aller relevanten Daten für die permanente Speicherung:
+ * Schülerdatenbestand, Unterrichtstage und -zeiten,
  */
 public class Database {
 
     private ScheduleTimes scheduleTimes;
     private ArrayList<Student> studentDataList;
     private ArrayList<DatabaseListener> databaseListeners;
-    private int numberOfDays;
     private int numberOfStudents;
 
     public Database() {
         scheduleTimes = new ScheduleTimes();
         studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
-        numberOfDays = 0;
         numberOfStudents = 0;
     }
 
@@ -64,14 +62,6 @@ public class Database {
 
     public ArrayList<Student> getStudentDataList() {
         return studentDataList;
-    }
-
-    public int getNumberOfDays() {
-        return numberOfDays;
-    }
-
-    public void setNumberOfDays(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
     }
 
     public void addDatabaseListener(DatabaseListener l) {
