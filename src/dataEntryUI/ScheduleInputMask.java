@@ -14,7 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import core.ScheduleTimes;
-import exceptions.IllegalDayEraseException;
+import exceptions.DayEraseException;
 import exceptions.IllegalLectionEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
@@ -30,7 +30,6 @@ import util.Dialogs;
  */
 public class ScheduleInputMask extends JPanel {
 
-    //  private Database database;
     private MainFrame mainFrame;
     private ScheduleTimes scheduleTimes;
     private JScrollPane center;
@@ -40,7 +39,6 @@ public class ScheduleInputMask extends JPanel {
     private ActionListener cancelButtonListener, saveButtonListener, editButtonListener;
 
     public ScheduleInputMask(Database database, MainFrame mainFrame) {
-        //     this.database = database;
         this.mainFrame = mainFrame;
         scheduleTimes = database.getScheduleTimes();
         setLayout(new BorderLayout());
@@ -73,7 +71,6 @@ public class ScheduleInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dataEntryAndEdit.dispose();
-                //       scheduleTimes.cleanScheduleDays(); 
                 removeButtonListeners();
             }
         };
@@ -107,8 +104,7 @@ public class ScheduleInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     scheduleTimes.verifyInput();
-                    mainFrame.validateScheduleTimes();
-                    mainFrame.validateDayEntry();
+                    mainFrame.validateNewEntry();
                 } catch (NoEntryException ex) {
                     Dialogs.showNoInputError();
                     return;
@@ -117,48 +113,17 @@ public class ScheduleInputMask extends JPanel {
                     return;
                 } catch (IllegalLectionEraseException ex) {
                     Dialogs.showLectionEraseErrorMessage(ex.getMessage());
+                    scheduleTimes.returnToExistingSelection();
+                    scheduleEdit.dispose();
+                    removeButtonListeners();
                     return;
-                } catch (IllegalDayEraseException ex) {
-                    int choice = Dialogs.showDayEraseOptionMessage(scheduleTimes);
+                } catch (DayEraseException ex) {
+                    int choice = Dialogs.showDayEraseOptionMessage(ex.getMessage());
                     if (choice == JOptionPane.NO_OPTION) {
                         scheduleTimes.returnToExistingSelection();
                         return;
                     }
                 }
-//                switch (scheduleTimes.hasExistingDaysToBeErased()) {
-//                    case (ScheduleTimes.DAYS_ERASED):
-//                        int choice = Dialogs.showDayEraseOptionMessage(scheduleTimes); // choice: Abbrechen = 1 = NO_OPTION, sonst Löschen = 0 = YES_OPTION;      
-//                        if (choice == JOptionPane.NO_OPTION) {
-//                            scheduleTimes.returnToExistingSelection();
-//                            return;
-//                        } else if (choice == JOptionPane.YES_OPTION) {
-//                            mainFrame.updateAndShowSchedule();
-//                            mainFrame.updateAndShowStudentList();
-//                            break;
-//                        }
-//                    case (ScheduleTimes.DAYS_ADDED):
-//                        System.out.println("added");
-//                        mainFrame.updateAndShowSchedule();
-//                        mainFrame.updateAndShowStudentList();
-//                        break;
-//                    case (ScheduleTimes.DAYS_ERASED_AND_ADDED):
-//                        System.out.println("added and erased");
-//                        mainFrame.updateAndShowSchedule();
-//                        mainFrame.updateAndShowStudentList();
-//                        break;
-//                    default:
-//                        System.out.println("no change");
-//                        mainFrame.updateAndShowSchedule();
-//                        mainFrame.updateAndShowStudentList();
-//                        break;
-//                }
-//                if (scheduleTimes.hasExistingDaysToBeErased()) {
-//                    int choice = Dialogs.showDayEraseOptionMessage(scheduleTimes);
-//                    if (choice == JOptionPane.NO_OPTION) {
-//                        scheduleTimes.returnToExistingSelection();
-//                        return;
-//                    }
-//                }
                 mainFrame.updateAndShowUI();
                 scheduleEdit.dispose();
                 removeButtonListeners();

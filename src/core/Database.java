@@ -6,6 +6,8 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  *
@@ -29,7 +31,7 @@ public class Database {
     public void addStudent(Student student) {
         student.setStudentID(numberOfStudents);
         studentDataList.add(student);
-        numberOfStudents = studentDataList.size();
+        numberOfStudents = studentDataList.size(); // nächster Student
         for (DatabaseListener l : databaseListeners) {
             l.studentAdded(numberOfStudents, student);
         }
@@ -45,15 +47,29 @@ public class Database {
         studentDataList.remove(student);
         numberOfStudents = studentDataList.size();
         for (DatabaseListener l : databaseListeners) {
-            l.studentDeleted(numberOfStudents, student.getStudentID());
+            l.studentDeleted(numberOfStudents, student.getID());
         }
         updateStudentIDs();
     }
 
     private void updateStudentIDs() {
-        for (int i = 0; i < studentDataList.size(); i++) {
+        for (int i = 0; i < numberOfStudents; i++) {
             studentDataList.get(i).setStudentID(i);
         }
+    }
+
+    public void updateStudentDays() {
+        StudentTimes studentTimes = studentDataList.get(0).getStudentTimes();
+       HashMap<Integer, Integer> sharedDays = studentTimes.getSharedDays();
+        if (!sharedDays.isEmpty()) {
+            for (int i = 0; i < numberOfStudents; i++) {
+                studentDataList.get(i).getStudentTimes().updateDayStructure(sharedDays);
+            }
+        }
+    }
+
+    public Student getStudent(int id) {
+        return studentDataList.get(id);
     }
 
     public ScheduleTimes getScheduleTimes() {

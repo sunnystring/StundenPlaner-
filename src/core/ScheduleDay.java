@@ -14,7 +14,7 @@ import util.Time;
  */
 public class ScheduleDay implements Cloneable {
 
-    private String day = "";
+    private String dayName = "";
     private Time[] timeSlots;
 
     public ScheduleDay() {
@@ -66,11 +66,11 @@ public class ScheduleDay implements Cloneable {
     }
 
     public void setDayName(String day) {
-        this.day = day;
+        this.dayName = day;
     }
 
     public String getDayName() {
-        return day;
+        return dayName;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ScheduleDay implements Cloneable {
             return false;
         }
         scheduleDay = (ScheduleDay) obj;
-        if (!day.equals(scheduleDay.getDayName())) {
+        if (!dayName.equals(scheduleDay.getDayName())) {
             return false;
         }
         for (int i = 0; i < timeSlots.length; i++) {
@@ -111,6 +111,6 @@ public class ScheduleDay implements Cloneable {
         for (int i = 0; i < timeSlots.length; i++) {
             n += getTimeSlot(i).getHour() + getTimeSlot(i).getMinute();
         }
-        return n + day.hashCode();
+        return n + dayName.hashCode();
     }
 }

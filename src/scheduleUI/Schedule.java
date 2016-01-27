@@ -36,7 +36,7 @@ public class Schedule extends JPanel {
     }
 
     public void createHeader() {
-        for (int i = 0; i < scheduleData.getNumberOfDays(); i++) {
+        for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
         }
     }

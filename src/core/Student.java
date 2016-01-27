@@ -33,7 +33,7 @@ public class Student {
         studentID = index;
     }
 
-    public int getStudentID() {
+    public int getID() {
         return studentID;
     }
 

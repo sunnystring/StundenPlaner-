@@ -6,7 +6,7 @@
 package core;
 
 import dataEntryUI.ScheduleInputMask;
-import exceptions.IllegalDayEraseException;
+import exceptions.DayEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
 import java.util.ArrayList;
@@ -19,14 +19,14 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ScheduleTimes extends AbstractTableModel {
 
-    private static final int DAYS = 6, COLUMNS = 3;
-    private final ScheduleDay[] daySelectionList;
+    // public static final int DAYS = 6;
+    public static final int COLUMNS = 3;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+    public static final int DAYS = WEEKDAY_NAMES.length;
+    private final ScheduleDay[] daySelectionList;
+
     private final ArrayList<ScheduleDay> validScheduleDayList;
-    private ArrayList<ScheduleDay> temporaryScheduleDayList;
-    private String erasedDayString;
-    //  public static final int NO_DAY_CHANGED = 0, DAYS_ERASED = 1, DAYS_ADDED = 2, DAYS_ERASED_AND_ADDED = 3;
 
     public ScheduleTimes() {
         daySelectionList = new ScheduleDay[DAYS];
@@ -34,7 +34,6 @@ public class ScheduleTimes extends AbstractTableModel {
             daySelectionList[i] = new ScheduleDay();
         }
         validScheduleDayList = new ArrayList<>();
-        temporaryScheduleDayList = new ArrayList<>();
     }
 
     @Override
@@ -102,99 +101,51 @@ public class ScheduleTimes extends AbstractTableModel {
         return allSlotsValid;
     }
 
-//    public int findExistingDaysToBeErased() {
-//        int state = NO_DAY_CHANGED;
-//        boolean erased = false;
-//        boolean added = false;
-//        boolean noExistingDay;
-//        erasedDayString = " ";
-//        int k = 0;
-//        for (int i = k; i < daySelectionList.length; i++) {  // Auswahl-Tage
-//            noExistingDay = true;
-//            for (int j = 0; j < validScheduleDayList.size(); j++) {  // bestehende Tage
-//                if (daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName())) { // falls schon Tag besteht
-//                    if (!validScheduleDayList.get(j).isEmpty() && daySelectionList[i].isEmpty()) {
-//                        erased = true;
-//                        state = DAYS_ERASED;
-//                        erasedDayString += validScheduleDayList.get(j).getDayName() + " ";
-//                    }
-//                    noExistingDay = false;
-//                    k++;
-//                    break; // sobald Tag gefunden, nächstfolgender Tag (= k) checken
-//                }
-//            }
-//            if (noExistingDay && !daySelectionList[i].isEmpty()) {  // falls Tag noch nicht besteht
-//                state = DAYS_ADDED;
-//                added = true;
-//            }
-//        }
-//        if (!erased && !added) {
-//            state = NO_DAY_CHANGED;
-//        }
-//        if (erased && added) {
-//            state = DAYS_ERASED_AND_ADDED;
-//        }
-//        return state;
-//    }
-//    public boolean hasExistingDaysToBeErased() {
-//        boolean erased = false;
-//        erasedDayString = " ";
-//        for (int i = 0; i < daySelectionList.length; i++) {  // alle Tage
-//            for (int j = 0; j < validScheduleDayList.size(); j++) {  // bestehende Tage
-//                if (daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName())) {
-//                    if (!validScheduleDayList.get(j).isEmpty() && daySelectionList[i].isEmpty()) {
-//                        erased = true;
-//                        erasedDayString += validScheduleDayList.get(j).getDayName() + " ";
-//                    }
-//                }
-//            }
-//        }
-//        return erased;
-//    }
-    public void findExistingDaysToBeErased() {
-        boolean erased = false;
-        erasedDayString = " ";
-        for (int i = 0; i < daySelectionList.length; i++) {  // alle Tage
-            for (int j = 0; j < validScheduleDayList.size(); j++) {  // bestehende Tage
-                if (daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName())) {
-                    if (!validScheduleDayList.get(j).isEmpty() && daySelectionList[i].isEmpty()) {
-                        erased = true;
-                        erasedDayString += validScheduleDayList.get(j).getDayName() + " ";
-                    }
+    public void validateScheduleDayEntry() {
+        boolean hasDaysToBeErased = false;
+        String erasedDayString = " ";
+        for (int i = 0; i < validScheduleDayList.size(); i++) {  // bestehende Tage
+            if (isExistingDayToBeErased(i)) {
+                hasDaysToBeErased = true;
+                erasedDayString += validScheduleDayList.get(i).getDayName() + " ";
+            }
+        }
+        if (hasDaysToBeErased) {
+            throw new DayEraseException(erasedDayString);
+        }
+    }
+
+    public boolean isExistingDayToBeErased(int i) {
+        boolean toBeErased = false;
+        for (int j = 0; j < daySelectionList.length; j++) {  // alle Tage
+            if (daySelectionList[j].getDayName().equals(validScheduleDayList.get(i).getDayName())) {
+                if (!validScheduleDayList.get(i).isEmpty() && daySelectionList[j].isEmpty()) {
+                    toBeErased = true;
                 }
             }
         }
-        if (erased) {
-            throw new IllegalDayEraseException();
-        }
+        return toBeErased;
     }
 
     public void setValidScheduleDays() {
         for (int i = 0; i < DAYS; i++) {
-            if (isValidScheduleDay(i)) {
+            if (isValidDay(i)) {
                 daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
                 validScheduleDayList.add(daySelectionList[i].clone()); // Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
     }
 
-    public void setSelectedScheduleDays() {
-        for (int i = 0; i < DAYS; i++) {
-            if (isValidScheduleDay(i)) {
-                daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
-                temporaryScheduleDayList.add(daySelectionList[i].clone());
-            }
-        }
+    public void updateValidScheduleDays() {
+        validScheduleDayList.clear();
+        setValidScheduleDays();
+
     }
 
-//    public void clear() {
-//        validScheduleDayList.clear();
-//   //     setValidScheduleDays();
-//    }
     public void returnToExistingSelection() {
         for (int i = 0; i < validScheduleDayList.size(); i++) {
             for (int j = 0; j < daySelectionList.length; j++) {
-                if (validScheduleDayList.get(i).getDayName() == daySelectionList[j].getDayName()) {
+                if (validScheduleDayList.get(i).getDayName().equals(daySelectionList[j].getDayName())) {
                     daySelectionList[j] = validScheduleDayList.get(i).clone();
                 }
             }
@@ -206,7 +157,7 @@ public class ScheduleTimes extends AbstractTableModel {
         return validScheduleDayList.isEmpty();
     }
 
-    public boolean isValidScheduleDay(int i) {
+    public boolean isValidDay(int i) {
         return !daySelectionList[i].isEmpty();
     }
 
@@ -219,19 +170,11 @@ public class ScheduleTimes extends AbstractTableModel {
     }
 
     public int getNumberOfSelectedDays() {
-        return temporaryScheduleDayList.size();
+        return DAYS;
     }
 
     public ScheduleDay getSelectedScheduleDay(int i) {
-        return temporaryScheduleDayList.get(i);
-    }
-
-    public void clearTemporaryScheduleDays() {
-        temporaryScheduleDayList.clear();
-    }
-
-    public String getErasedDay() {
-        return erasedDayString;
+        return daySelectionList[i];
     }
 
 }

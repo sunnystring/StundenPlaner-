@@ -34,6 +34,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ScheduleData scheduleData;
     private StudentFieldData[] studentRow;
     private ArrayList<StudentFieldData[]> fieldDataMatrix;
+    // private ArrayList<StudentFieldData> fieldDataMemory;
     private int numberOfDays;
     private int numberOfStudents;
     private int selectedRow, selectedCol;
@@ -46,67 +47,110 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         numberOfDays = 0;
         numberOfStudents = 0;
         fieldDataMatrix = new ArrayList<>();
+        //  fieldDataMemory = new ArrayList<>();
     }
 
     @Override
     public void studentAdded(int numberOfStudents, Student student) {
         this.numberOfStudents = numberOfStudents;
         createStudentRow(student);
-        int studentID = student.getStudentID();
-        fireTableRowsInserted(studentID, studentID);
+        int row = student.getID();
+        fireTableRowsInserted(row, row);
         studentList.showNumberOfStudents();
     }
 
     @Override
     public void studentEdited(Student student) {
         updateStudentRow(student);
-        int studentID = student.getStudentID();
-        fireTableRowsUpdated(studentID, studentID);
+        int row = student.getID();
+        fireTableRowsUpdated(row, row);
     }
 
     @Override
     public void studentDeleted(int numberOfStudents, int studentID) {
-        this.numberOfStudents = numberOfStudents;
+        this.numberOfStudents = numberOfStudents; // = numberOfStudents--
         removeStudentRow(studentID);
         fireTableRowsDeleted(studentID, studentID);
         studentList.showNumberOfStudents();
+        updateStudentIDs();
+    }
+
+    private void updateStudentIDs() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                studentRow[j].setStudentID(i);
+            }
+        }
     }
 
     private void createStudentRow(Student student) {
         studentRow = new StudentFieldData[getColumnCount()];
         for (int i = 0; i < getColumnCount(); i++) {
-            StudentFieldData studentFieldData = new StudentFieldData();
-            studentFieldData.setStudent(student);
-            if (i == 0) {
-                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
-            } else {
-                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
-            }
-            studentRow[i] = studentFieldData;
+            // StudentFieldData studentFieldData = new StudentFieldData();
+            studentRow[i] = new StudentFieldData(database);
+            studentRow[i].setStudentID(student.getID());
+//            if (i == 0) {
+//                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
+//            } else {
+//                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
+//            }
+            setNameAndTimes(i, student);
+            // studentRow[i] = studentFieldData;
         }
-        fieldDataMatrix.add(studentRow);//getRowCount() - 1, 
+        //     fieldDataMemory.add(new StudentFieldData(database));
+        fieldDataMatrix.add(studentRow);
     }
 
     private void updateStudentRow(Student student) {
-        studentRow = fieldDataMatrix.get(student.getStudentID());
+        studentRow = fieldDataMatrix.get(student.getID());
         for (int i = 0; i < getColumnCount(); i++) {
-            if (i == 0) {
-                studentRow[i].setNameString(student.getFirstName() + " " + student.getName());
-            } else {
-                studentRow[i].setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
-            }
+            setNameAndTimes(i, student);
+//            if (i == 0) {
+//                studentRow[i].setNameString(student.getFirstName() + " " + student.getName());
+//            } else {
+//                studentRow[i].setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
+//            }
         }
     }
 
-    private void removeStudentRow(int studentID) {
-        fieldDataMatrix.remove(studentID);
+    private void removeStudentRow(int id) {
+        fieldDataMatrix.remove(id);
+        //      fieldDataMemory.remove(id);
     }
 
-    public void adjustColumnsToDayChange() {
+    public void updateTableData() {
+        ArrayList<StudentFieldData> fieldDataMemory = new ArrayList<>();
+        for (int i = 0; i < getRowCount(); i++) {
+    //        database.getStudent(i).getStudentTimes().updateDayStructure(); 
+            fieldDataMemory.add((StudentFieldData) getValueAt(i, 0)); // übernimmt die bestehenden StudentRow-FieldDaten
+        }
         fieldDataMatrix.clear();
-        for (Student student : database.getStudentDataList()) {
-            student.getStudentTimes().updateValidStudentDays();
-            createStudentRow(student);
+        for (int i = 0; i < getRowCount(); i++) {
+            rebuildStudentRow(database.getStudent(i), fieldDataMemory.get(i));
+        }
+    }
+
+    private void rebuildStudentRow(Student student, StudentFieldData fieldDataMemory) {
+        studentRow = new StudentFieldData[getColumnCount()];
+        for (int i = 0; i < getColumnCount(); i++) {
+            studentRow[i] = new StudentFieldData(database);
+            studentRow[i] = fieldDataMemory;  // Achtung! Neu machen: setzt überall gleiche Referenz
+            setNameAndTimes(i, student);
+//            if (i == 0) {
+//                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
+//            } else {
+//                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
+//            }
+            //    studentRow[i] = studentFieldData;
+        }
+        fieldDataMatrix.add(studentRow);
+    }
+
+    private void setNameAndTimes(int i, Student student) {
+        if (i == 0) {
+            studentRow[i].setNameString(student.getFirstName() + " " + student.getName());
+        } else {
+            studentRow[i].setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
         }
     }
 
@@ -146,7 +190,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1 
-                StudentFieldData studentFieldData = fieldDataMatrix.get(selectedRow)[selectedCol];
+                StudentFieldData studentFieldData = (StudentFieldData) getValueAt(selectedRow, selectedCol);;
                 if (selectedCol > 0) { // NameField nicht ansprechbar
                     if (studentFieldData.isStudentListReleased()) { // StudentDay selektiert 
                         studentFieldData.switchSelectionState();
@@ -171,12 +215,11 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
         if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
-            ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
-                allocatedRow = scheduleFieldData.getStudent().getStudentID();
+                allocatedRow = scheduleFieldData.getStudent().getID();
                 if (scheduleFieldData.isMoveEnabled()) {
                     if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
@@ -251,7 +294,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     public Student getStudent(int i) {
-        return database.getStudentDataList().get(i);
+        return database.getStudent(i);
     }
 
     public void setStudentList(StudentList studentList) {

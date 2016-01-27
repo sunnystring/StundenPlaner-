@@ -6,23 +6,45 @@
 package scheduleData;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+import util.Time;
 
 /**
  *
- * @author Mathias
+ * Einheit einer eingeteilten Lektion, bestehend aus n = Lektionsdauer/5 Zellen
+ * (= {@link ScheduleFieldData})
  */
 public class LectionData {
 
-    //   private ScheduleFieldData scheduleFieldData;
     private ArrayList<ScheduleFieldData> lection;
+    private int fieldCount;
 
     public LectionData() {
         lection = new ArrayList<>();
+        resetFieldCount();
     }
 
     public void add(ScheduleFieldData field) {
- //       System.out.println("field:" + field.getTime());
         lection.add(field);
+    }
+
+    public boolean hasNextField() {
+        return fieldCount < lection.size();
+    }
+
+    public ScheduleFieldData getNextField() {
+        ScheduleFieldData scheduleFieldData = lection.get(fieldCount);
+        fieldCount++;
+        return scheduleFieldData;
+    }
+
+    public void resetFieldCount() {
+        fieldCount = 0;
+    }
+
+    public Time getEnd() {
+        return lection.get(lection.size() - 1).getFieldTime();
     }
 
 }

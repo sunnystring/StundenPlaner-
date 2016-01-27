@@ -78,6 +78,11 @@ public class StudentList extends JTable {
 //        addMouseListener(timeField);
 //        addMouseListener(scheduleData);
     }
+    
+//    public void updateParameters(){  // ToDo
+//    
+//        
+//    } 
 
 //    public void updateParameters() {
 //       // removeMouseListeners();

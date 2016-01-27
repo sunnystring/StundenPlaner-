@@ -13,12 +13,14 @@ import util.Time;
  */
 public class StudentDay {
 
+    public static final int SLOTS = StudentTimes.COLUMNS - 1;
+    private String dayName = "";
     private Time[] timeSlots;
     boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
 
-    public StudentDay(int slots) {
-        timeSlots = new Time[slots];
-        for (int i = 0; i < slots; i++) {
+    public StudentDay() {
+        timeSlots = new Time[SLOTS];
+        for (int i = 0; i < SLOTS; i++) {
             timeSlots[i] = new Time();
         }
     }
@@ -58,9 +60,12 @@ public class StudentDay {
         }
     }
 
-    // ToDo....
-    public boolean isEmpty() {
-        return false;
+    public String getDayName() {
+        return dayName;
+    }
+
+    public void setDayName(String dayName) {
+        this.dayName = dayName;
     }
 
     public Time getStartTime1() {

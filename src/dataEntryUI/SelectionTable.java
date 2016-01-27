@@ -58,12 +58,12 @@ public class SelectionTable extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
                 setText(studentTimes.getValueAt(row, col).toString());
-                if (scheduleTimes.isValidScheduleDay(row)) {
+                if (scheduleTimes.isValidDay(row)) {
                     setBackground(Colors.BACKGROUND);
                 } else {
                     setBackground(Colors.LIGHT_GRAY);
                 }
-                if (isSelected && col > 0 && scheduleTimes.isValidScheduleDay(row)) {
+                if (isSelected && col > 0 && scheduleTimes.isValidDay(row)) {
                     setBackground(getSelectionBackground());
                 }
                 return this;

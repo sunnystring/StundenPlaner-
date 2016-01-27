@@ -5,6 +5,7 @@
  */
 package studentListData;
 
+import core.Database;
 import core.Student;
 import studentlistUI.StudentList;
 
@@ -14,7 +15,9 @@ import studentlistUI.StudentList;
  */
 public class StudentFieldData {
 
-    private Student student;
+    private Database database;
+  //  private Student student;
+    private int studentID;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
@@ -22,20 +25,25 @@ public class StudentFieldData {
     private boolean studentAllocated;
     private int selectedRowIndex;
 
-    public StudentFieldData() {
+    public StudentFieldData(Database database) {
+        this.database = database;
         fieldSelected = false;
         studentListReleased = true;
         selectedRowIndex = -1;
         studentAllocated = false;
     }
 
-    public Student getStudent() {
-        return student;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public Student getStudent() {
+        return database.getStudent(studentID);
     }
+
+//    public void setStudent(Student student) {
+//        this.student = student;
+//    }
 
     public String getNameString() {
         return nameString;

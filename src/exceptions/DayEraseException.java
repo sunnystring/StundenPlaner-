@@ -9,20 +9,20 @@ package exceptions;
  *
  * @author Mathias
  */
-public class IllegalDayEraseException extends RuntimeException {
+public class DayEraseException extends RuntimeException {
 
-    public IllegalDayEraseException() {
+    public DayEraseException() {
     }
 
-    public IllegalDayEraseException(String string) {
+    public DayEraseException(String string) {
         super(string);
     }
 
-    public IllegalDayEraseException(Throwable thrwbl) {
+    public DayEraseException(Throwable thrwbl) {
         super(thrwbl);
     }
 
-    public IllegalDayEraseException(String string, Throwable thrwbl) {
+    public DayEraseException(String string, Throwable thrwbl) {
         super(string, thrwbl);
     }
 

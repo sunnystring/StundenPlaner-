@@ -7,6 +7,7 @@ package scheduleUI;
 
 import javax.swing.JTable;
 import scheduleData.ScheduleData;
+import scheduleData.ScheduleFieldData;
 import studentListData.StudentListData;
 import util.Colors;
 
@@ -24,6 +25,7 @@ public class TimeTable extends JTable {
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
         this.studentListData = studentListData;
+        setModel(scheduleData);
         lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
         timeField = new TimeField(this, scheduleData);
         addMouseListener(lectionField);
@@ -32,7 +34,7 @@ public class TimeTable extends JTable {
         addMouseMotionListener(timeField);
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
-        setModel(scheduleData);
+
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowHeight(14);
@@ -40,7 +42,7 @@ public class TimeTable extends JTable {
 
     public void updateParameters() {
         createDefaultColumnsFromModel();
-    //    lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
+        //    lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
         //    timeField = new TimeField(this, scheduleData);
         lectionField.initTableDimension();
         lectionField.resetLectionColumn();
@@ -75,6 +77,19 @@ public class TimeTable extends JTable {
         removeMouseListener(scheduleData);
     }
 
+//    public void updateParameters() {  // ToDo
+//        setModel(scheduleData);
+//        createDefaultColumnsFromModel();
+//        for (int i = 0; i < scheduleData.getColumnCount(); i++) {
+//            if (i % 2 == 0) {
+//                getColumnModel().getColumn(i).setMaxWidth(10);
+//                getColumnModel().getColumn(i).setCellRenderer(timeField);
+//            } else {
+//                getColumnModel().getColumn(i).setPreferredWidth(50);
+//                getColumnModel().getColumn(i).setCellRenderer(lectionField);
+//            }
+//        }
+//    }
     public LectionField getLectionField() {
         return lectionField;
     }

@@ -5,13 +5,15 @@
  */
 package scheduleData;
 
+import core.Database;
 import core.Student;
 import scheduleUI.TimeTable;
 import util.Time;
 
 /**
  *
- * Model einer Zelle von {@link TimeTable} mit allen relevanten Student- und Time-Daten
+ * Kleinste Einheit des Stundenplans und Model einer Zelle von {@link TimeTable}
+ * mit allen relevanten Student- und Time-Daten
  */
 public class ScheduleFieldData {
 
@@ -19,7 +21,8 @@ public class ScheduleFieldData {
     public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
-    private Student student;
+    private Database database;
+    private int studentID;
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
@@ -29,7 +32,8 @@ public class ScheduleFieldData {
     private int lectionPanelAreaMark;
     private int nameMark;
 
-    public ScheduleFieldData() {
+    public ScheduleFieldData(Database database) {
+        this.database = database;
         lectionAllocated = false;
         moveEnabled = false;
         resetTimeMarks();
@@ -46,12 +50,12 @@ public class ScheduleFieldData {
         allocatedTimeMark = NO_VALUE;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
     public Student getStudent() {
-        return student;
+        return database.getStudent(studentID);
     }
 
     public void setFieldTime(Time fieldTime) {

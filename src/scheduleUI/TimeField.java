@@ -27,8 +27,8 @@ public class TimeField extends LectionField {
 
     private int movedRow, movedCol;
 
-    public TimeField(TimeTable timeTable,ScheduleData scheduleData ) {
-        super(timeTable,scheduleData);
+    public TimeField(TimeTable timeTable, ScheduleData scheduleData) {
+        super(timeTable, scheduleData);
         resetTimeColumn();
         setHorizontalAlignment(SwingConstants.CENTER);
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
@@ -94,9 +94,9 @@ public class TimeField extends LectionField {
         Point p = m.getPoint();
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            StudentListData studentListData = (StudentListData) studentList.getModel();
             int selectedRow = studentList.rowAtPoint(p);
             int selectedCol = studentList.columnAtPoint(p);
+            StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
                 StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {

@@ -204,7 +204,7 @@ public class StudentInputMask extends JPanel {
                     return;
                 }
                 studentTimes.setValidStudentDays();
-                transferEntryDataToStudent();
+                setStudentData();
                 database.addStudent(student);
                 studentEntry.dispose();
                 removeButtonsAndListeners();
@@ -224,7 +224,7 @@ public class StudentInputMask extends JPanel {
                     return;
                 }
                 studentTimes.updateValidStudentDays();
-                transferEntryDataToStudent();
+                setStudentData();
                 database.editStudent(student);
                 studentEdit.dispose();
                 removeButtonsAndListeners();
@@ -264,7 +264,7 @@ public class StudentInputMask extends JPanel {
         selectionTable.setParameters(studentTimes);
     }
 
-    private void transferEntryDataToStudent() {
+    private void setStudentData() {
         student.setFirstName(firstName);
         student.setName(name);
         student.setLectionLengthInMinutes(Integer.parseInt(lectionType));

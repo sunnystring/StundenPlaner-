@@ -14,8 +14,8 @@ import scheduleData.ScheduleTimeFrame;
 
 /**
  *
- * Hilfsklasse für die Bearbeitung von Zeiten, benutzt in {@link ScheduleDay}, {@link StudentDay},
- * {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
+ * Hilfsklasse für die Erzeugung und Bearbeitung von Zeiten, benutzt in {@link ScheduleDay}, 
+ * {@link StudentDay}, {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
  */
 public class Time implements Cloneable, Comparable {
 

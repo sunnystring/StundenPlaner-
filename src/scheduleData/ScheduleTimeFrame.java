@@ -6,7 +6,6 @@
 package scheduleData;
 
 import core.ScheduleDay;
-import exceptions.IllegalLectionEraseException;
 import util.Time;
 
 /**
@@ -24,7 +23,7 @@ public class ScheduleTimeFrame {
         reset();
     }
 
-    public void createTimeFrame(ScheduleDay scheduleDay) {
+    public void setBounds(ScheduleDay scheduleDay) {
         Time scheduleStart = scheduleDay.getValidStart();
         Time scheduleEnd = scheduleDay.getValidEnd();
         if (scheduleStart.lessThan(absoluteStart)) {

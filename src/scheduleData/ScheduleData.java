@@ -5,6 +5,7 @@ package scheduleData;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import core.Database;
 import core.ScheduleTimes;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -31,7 +32,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     private ArrayList<DayColumnData> dayColumnDataList;
     private ScheduleTimeFrame timeFrame;
     private ScheduleFieldData[][] fieldDataMatrix;
-    private int numberOfDays;
+    private int numberOfValidDays;
     private int dayColumnIndex;
     private int dayColumnFieldIndex;
 
@@ -39,69 +40,127 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         this.scheduleTimes = scheduleTimes;
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
-        numberOfDays = 0;
+        numberOfValidDays = 0;
         dayColumnFieldIndex = dayColumnIndex = -1;
         setScheduleDisabled();
     }
 
-    public void setTableData() {
-        numberOfDays = scheduleTimes.getNumberOfValidDays();
+    public void setTableData(Database database) {
+        numberOfValidDays = scheduleTimes.getNumberOfValidDays();
         defineTimeFrame();
-        createDayColumns();
+        createDayColumns(database);
         createFieldDataMatrix();
     }
 
-    public void updateTableData() {
-        numberOfDays = scheduleTimes.getNumberOfValidDays();
-        dayColumnDataList.clear();
-        restoreDayColumns();
+    public void updateTableData(Database database) {
+        timeFrame.reset();
+        numberOfValidDays = scheduleTimes.getNumberOfValidDays();
+        System.out.println("scheduleTimes.getNumberOfValidDays()=" + scheduleTimes.getNumberOfValidDays());
+        defineTimeFrame();
+        updateDayColumns(database);
         createFieldDataMatrix();
     }
 
-//    private void resetTableData() {
-//        dayColumnDataList.clear();
-//        timeFrame.reset();
-//    }
     public void defineTimeFrame() {
-        for (int i = 0; i < numberOfDays; i++) {
-            timeFrame.createTimeFrame(scheduleTimes.getValidScheduleDay(i));
+        for (int i = 0; i < numberOfValidDays; i++) {
+            timeFrame.setBounds(scheduleTimes.getValidScheduleDay(i));
         }
     }
 
-    public void verifyAllocationState() {
-
-        // ToDo.....
-    }
-
-    public void validateTimeFrame() {
-        ScheduleTimeFrame tempFrame = new ScheduleTimeFrame();
-        scheduleTimes.setSelectedScheduleDays();
-        for (int i = 0; i < scheduleTimes.getNumberOfSelectedDays(); i++) {
-            tempFrame.createTimeFrame(scheduleTimes.getSelectedScheduleDay(i)); // neuer, noch nicht definitiver TimeFrame bestimmen
-        }
-        boolean illegalEntry = false;
+    public void checkLectionAllocationState() {
+        boolean illegalDayEntry = false;
         String illegalDayString = " ";
-        for (int i = 0; i < numberOfDays; i++) {  // checkt neuer TimeFrame in den bestehenden DayColumns
-            illegalEntry = dayColumnDataList.get(i).checkAllocatedLectionBounds(tempFrame.getAbsoluteStart(), tempFrame.getAbsoluteEnd());
-            illegalDayString += dayColumnDataList.get(i).getDayName() + " ";
+        for (int i = 0; i < numberOfValidDays; i++) {
+            if (scheduleTimes.isExistingDayToBeErased(i)) {
+                if (dayColumnDataList.get(i).hasAllocatedLections()) {
+                    illegalDayEntry = true;
+                    illegalDayString += dayColumnDataList.get(i).getDayName() + " ";
+                }
+            }
         }
-        if (illegalEntry) {
-            throw new IllegalLectionEraseException(illegalDayString);
-        }
-        scheduleTimes.clearTemporaryScheduleDays();
-    }
-
-    private void createDayColumns() {
-        for (int i = 0; i < numberOfDays; i++) {
-            DayColumnData day = new DayColumnData();
-            day.createDayColumn(scheduleTimes.getValidScheduleDay(i), timeFrame);
-            dayColumnDataList.add(day);
+        if (illegalDayEntry) {
+            String msg = "Der" + illegalDayString + "kann nicht gelöscht werden!\n"
+                    + "Gesetzte Lektionen zurücklegen oder verschieben.";
+            throw new IllegalLectionEraseException(msg);
         }
     }
 
-    private void restoreDayColumns() {
-        // ToDo.......
+    public void checkTimeFrame() {
+        ScheduleTimeFrame tempFrame = new ScheduleTimeFrame();
+        for (int i = 0; i < scheduleTimes.getNumberOfSelectedDays(); i++) {
+            if (scheduleTimes.isValidDay(i)) {
+                tempFrame.setBounds(scheduleTimes.getSelectedScheduleDay(i));
+            }
+        }
+        boolean illegalTimeEntry = false;
+        String illegalDayString = " ";
+        for (int i = 0; i < numberOfValidDays; i++) {
+            if (dayColumnDataList.get(i).hasAllocatedLections()) {
+                if (dayColumnDataList.get(i).hasLectionsOutOfBounds(tempFrame.getAbsoluteStart(), tempFrame.getAbsoluteEnd())) {
+                    illegalTimeEntry = true;
+                    illegalDayString += dayColumnDataList.get(i).getDayName() + " ";
+                }
+            }
+        }
+        if (illegalTimeEntry) {
+            String msg = "Der Stundenplan kann nicht überschrieben werden!\n"
+                    + "Der" + illegalDayString + "hat noch Lektionen ausserhalb der gewählten Zeitrahmens.";
+            throw new IllegalLectionEraseException(msg);
+        }
     }
+
+    private void createDayColumns(Database database) {
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnData dayColumn = new DayColumnData(database);
+            dayColumn.createDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
+            dayColumnDataList.add(dayColumn);
+        }
+    }
+//-----------------------------------ToDo-------------------------
+
+  
+    private void updateDayColumns(Database database) {
+        System.out.println("vorher = " + dayColumnDataList.size());
+        removeUnusedDayColumns();  // 1. Fall: bestehende Tage, die nicht mehr gewählt sind
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnData dayColumn = new DayColumnData(database);
+            if (getExistingDayColumn(i) != null) {  // 2. Fall: bestehender Tag, der wieder gewählt ist
+                dayColumn = getExistingDayColumn(i);
+                dayColumn.updateDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
+            } else {  // 3. Fall: neuer Tag ist gewählt
+                dayColumn.createDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
+            }
+            dayColumnDataList.add(i, dayColumn);  // Bug: dayColumnDataList vergrössert sich
+        }
+        System.out.println("vorher = " + dayColumnDataList.size());
+
+    }
+
+    private void removeUnusedDayColumns() {
+        boolean DayColumnUnused;
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnUnused = true;
+            for (int j = 0; j < numberOfValidDays; j++) {
+                if (dayColumnDataList.get(i).getDayName().equals(scheduleTimes.getValidScheduleDay(j).getDayName())) {
+                    DayColumnUnused = false;
+                }
+            }
+            if (DayColumnUnused) {
+                dayColumnDataList.remove(i);
+            }
+        }
+    }
+
+    private DayColumnData getExistingDayColumn(int i) {  // Schnittmenge von bestehenden und neuen DayColumns
+        DayColumnData dayColumn = null;
+        for (int j = 0; j < numberOfValidDays; j++) {
+            if (scheduleTimes.getValidScheduleDay(i).getDayName().equals(dayColumnDataList.get(j).getDayName())) {
+                dayColumn = dayColumnDataList.get(j);
+            }
+        }
+        return dayColumn;
+    }
+//-----------------------------------------------------------------
 
     private void createFieldDataMatrix() {
         fieldDataMatrix = new ScheduleFieldData[getRowCount()][getColumnCount()];
@@ -128,7 +187,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
 
     @Override
     public int getColumnCount() {
-        return 4 * numberOfDays;
+        return 4 * numberOfValidDays;
     }
 
     @Override
@@ -164,11 +223,10 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         }
         if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
-            ScheduleData scheduleData = (ScheduleData) timeTable.getModel();
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn
-                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) getValueAt(selectedRow, selectedCol);
                 Student student = scheduleFieldData.getStudent();
                 if (scheduleFieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(selectedRow, selectedCol);
@@ -196,7 +254,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         int lectionLength = student.getLectionLength();
         int rowCount = timeFrame.getTotalNumberOfFields();
         ScheduleFieldData fieldData;
-        for (int studentDayID = 0; studentDayID < dayColumnDataList.size(); studentDayID++) {
+        for (int studentDayID = 0; studentDayID < numberOfValidDays; studentDayID++) {
             int headRow = -1;
             DayColumnData dayColumn = getDayColumn(studentDayID);
             for (int i = rowCount - 1; i >= 0; i--) {
@@ -209,7 +267,7 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
                 } else { // Sperrzonen: lectionLength unterhalb Lection und vor Stundenplan-Ende 
                     boolean isAllocatable = !(i < headRow && i > headRow - lectionLength) && (i <= rowCount - lectionLength);
                     fieldData.setMoveEnabled(isAllocatable);
-                    fieldData.setStudent(student);
+                    fieldData.setStudentID(student.getID());
                     fieldData.resetPanelAreaMarks();
                 }
             }
@@ -236,14 +294,14 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         DayColumnData dayColumn = getDayColumn(dayColumnIndex);
         ScheduleFieldData field;
         LectionData lection = new LectionData();
-        Time time = null;
+        Time startTime = null;
         int allocatedTimeMark = ScheduleFieldData.NO_VALUE;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
             field = dayColumn.getFieldData(i);
             if (i == dayColumnFieldIndex) {
                 field.setLectionPanelAreaMark(ScheduleFieldData.HEAD);
                 allocatedTimeMark = field.getValidTimeMark();
-                time = field.getFieldTime();
+                startTime = field.getFieldTime();
             }
             if (i > dayColumnFieldIndex && i < lectionEnd - 2) {
                 field.setLectionPanelAreaMark(ScheduleFieldData.CENTER);
@@ -263,14 +321,13 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
             field.setAllocatedTimeMark(allocatedTimeMark);
             lection.add(field);
         }
-        System.out.println("time addLection: " + time);
-        dayColumn.addLection(time, lection);
+        dayColumn.addLection(startTime, lection);
     }
 
     private void eraseLection(int lectionLength) {
         DayColumnData dayColumn = getDayColumn(dayColumnIndex);
         ScheduleFieldData field;
-        Time time = null;
+        Time startTime = null;
         while (dayColumn.getFieldData(dayColumnFieldIndex).getLectionPanelAreaMark() != ScheduleFieldData.HEAD) { // Start-Row bestimmen
             dayColumnFieldIndex--;
         }
@@ -282,11 +339,10 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
             field.resetPanelAreaMarks();
             field.resetTimeMarks();
             if (i == dayColumnFieldIndex) {
-                time = field.getFieldTime();
+                startTime = field.getFieldTime();
             }
         }
-        System.out.println("time removeLection: " + time);
-        dayColumn.removeLection(time);
+        dayColumn.removeLection(startTime);
     }
 
     private void convertTableToDayColumnCoordinates(int selectedRow, int selectedCol) {
@@ -298,10 +354,11 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
     }
 
     private void setAllValidTimeMarks(Student student) {
-        for (int studentDayID = 0; studentDayID < dayColumnDataList.size(); studentDayID++) {
-            DayColumnData dayColumn = dayColumnDataList.get(studentDayID);
-            dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnData dayColumn = dayColumnDataList.get(i);
+            dayColumn.setValidTimeMarks(student.getStudentDay(i));
         }
+
     }
 
     public void setScheduleDisabled() {
@@ -313,8 +370,8 @@ public class ScheduleData extends AbstractTableModel implements MouseListener {
         }
     }
 
-    public int getNumberOfDays() {
-        return numberOfDays;
+    public int getNumberOfValidDays() {
+        return numberOfValidDays;
     }
 
     public DayColumnData getDayColumn(int i) {
