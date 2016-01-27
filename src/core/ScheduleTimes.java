@@ -161,12 +161,23 @@ public class ScheduleTimes extends AbstractTableModel {
                         erased = true;
                         erasedDayString += validScheduleDayList.get(j).getDayName() + " ";
                     }
+                    noExistingDay = false;
+                    k++;
+                    break; // sobald Tag gefunden, nächstfolgender Tag (= k) checken
                 }
+            }
+            if (noExistingDay && !daySelectionList[i].isEmpty()) {  // falls Tag noch nicht besteht
+                state = DAYS_ADDED;
+                added = true;
             }
         }
         if (erased) {
             throw new IllegalDayEraseException();
         }
+        if (erased && added) {
+            state = DAYS_ERASED_AND_ADDED;
+        }
+        return state;
     }
 
     public void setValidScheduleDays() {

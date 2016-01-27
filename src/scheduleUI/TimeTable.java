@@ -75,6 +75,20 @@ public class TimeTable extends JTable {
         removeMouseListener(scheduleData);
     }
 
+//    public void updateParameters() {  // ToDo
+//        setModel(scheduleData);
+//        createDefaultColumnsFromModel();
+//        for (int i = 0; i < scheduleData.getColumnCount(); i++) {
+//            if (i % 2 == 0) {
+//                getColumnModel().getColumn(i).setMaxWidth(10);
+//                getColumnModel().getColumn(i).setCellRenderer(timeField);
+//            } else {
+//                getColumnModel().getColumn(i).setPreferredWidth(50);
+//                getColumnModel().getColumn(i).setCellRenderer(lectionField);
+//            }
+//        }
+//    }
+
     public LectionField getLectionField() {
         return lectionField;
     }

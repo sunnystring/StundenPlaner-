@@ -123,6 +123,11 @@ public class MainFrame extends JFrame {
         studentListData.setStudentList(studentList);
     }
 
+    private void setStudentListDataParameters() {
+        studentListData.setScheduleData(scheduleData);
+        studentListData.setStudentList(studentList);
+    }
+
     private void addListeners() {
         database.addDatabaseListener(studentListData);
         scheduleButton.addActionListener(new ActionListener() {
