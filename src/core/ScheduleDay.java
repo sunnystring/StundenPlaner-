@@ -40,7 +40,7 @@ public class ScheduleDay implements Cloneable {
         }
     }
 
-    public boolean isEmpty() {
+    public boolean isEmptyDay() {
         return getValidStart().isEmpty() && getValidEnd().isEmpty();
     }
 

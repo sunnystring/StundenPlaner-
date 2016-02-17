@@ -6,8 +6,6 @@
 package scheduleData;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
 import util.Time;
 
 /**
@@ -45,6 +43,15 @@ public class LectionData {
 
     public Time getEnd() {
         return lection.get(lection.size() - 1).getFieldTime();
+    }
+
+    public void updateStudentID(int deletedStudentID) {
+        for (ScheduleFieldData f : lection) {
+            if (f.getLocalStudentID() > deletedStudentID) {
+                f.decrementLocalStudentID();
+            }
+        }
+
     }
 
 }

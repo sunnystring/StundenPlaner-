@@ -30,8 +30,8 @@ import util.Dialogs;
  */
 public class ScheduleInputMask extends JPanel {
 
-    private MainFrame mainFrame;
-    private ScheduleTimes scheduleTimes;
+    private final MainFrame mainFrame;
+    private final ScheduleTimes scheduleTimes;
     private JScrollPane center;
     private JPanel bottom;
     private SelectionTable selectionTable;
@@ -82,7 +82,7 @@ public class ScheduleInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    scheduleTimes.verifyInput();
+                    scheduleTimes.checkTimeSlots();
                 } catch (NoEntryException ex) {
                     Dialogs.showNoInputError();
                     return;
@@ -103,7 +103,7 @@ public class ScheduleInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    scheduleTimes.verifyInput();
+                    scheduleTimes.checkTimeSlots();
                     mainFrame.validateNewEntry();
                 } catch (NoEntryException ex) {
                     Dialogs.showNoInputError();
@@ -114,8 +114,6 @@ public class ScheduleInputMask extends JPanel {
                 } catch (IllegalLectionEraseException ex) {
                     Dialogs.showLectionEraseErrorMessage(ex.getMessage());
                     scheduleTimes.returnToExistingSelection();
-                    scheduleEdit.dispose();
-                    removeButtonListeners();
                     return;
                 } catch (DayEraseException ex) {
                     int choice = Dialogs.showDayEraseOptionMessage(ex.getMessage());
@@ -127,6 +125,7 @@ public class ScheduleInputMask extends JPanel {
                 mainFrame.updateAndShowUI();
                 scheduleEdit.dispose();
                 removeButtonListeners();
+
             }
         };
         saveButton.addActionListener(editButtonListener);

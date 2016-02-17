@@ -42,8 +42,6 @@ public class TimeTable extends JTable {
 
     public void updateParameters() {
         createDefaultColumnsFromModel();
-        //    lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
-        //    timeField = new TimeField(this, scheduleData);
         lectionField.initTableDimension();
         lectionField.resetLectionColumn();
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
@@ -55,41 +53,8 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
-//        addMouseListener(lectionField);
-//        addMouseListener(timeField);
-//        addMouseMotionListener(lectionField);
-//        addMouseMotionListener(timeField);
-//        addMouseListener(studentListData);
-//        addMouseListener(scheduleData);
     }
 
-//    public void updateParameters() {
-// 
-//     //   removeMouseListeners();
-//        updateParameters();
-//    }
-    private void removeMouseListeners() {
-        removeMouseListener(lectionField);
-        removeMouseListener(timeField);
-        removeMouseMotionListener(lectionField);
-        removeMouseMotionListener(timeField);
-        removeMouseListener(studentListData);
-        removeMouseListener(scheduleData);
-    }
-
-//    public void updateParameters() {  // ToDo
-//        setModel(scheduleData);
-//        createDefaultColumnsFromModel();
-//        for (int i = 0; i < scheduleData.getColumnCount(); i++) {
-//            if (i % 2 == 0) {
-//                getColumnModel().getColumn(i).setMaxWidth(10);
-//                getColumnModel().getColumn(i).setCellRenderer(timeField);
-//            } else {
-//                getColumnModel().getColumn(i).setPreferredWidth(50);
-//                getColumnModel().getColumn(i).setCellRenderer(lectionField);
-//            }
-//        }
-//    }
     public LectionField getLectionField() {
         return lectionField;
     }

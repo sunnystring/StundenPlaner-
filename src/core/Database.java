@@ -6,8 +6,6 @@
 package core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
 
 /**
  *
@@ -45,11 +43,11 @@ public class Database {
 
     public void deleteStudent(Student student) {
         studentDataList.remove(student);
-        numberOfStudents = studentDataList.size();
+        numberOfStudents = studentDataList.size(); // = numberOfStudents--
+        updateStudentIDs();
         for (DatabaseListener l : databaseListeners) {
             l.studentDeleted(numberOfStudents, student.getID());
         }
-        updateStudentIDs();
     }
 
     private void updateStudentIDs() {
@@ -58,18 +56,27 @@ public class Database {
         }
     }
 
-    public void updateStudentDays() {
-        StudentTimes studentTimes = studentDataList.get(0).getStudentTimes();
-       HashMap<Integer, Integer> sharedDays = studentTimes.getSharedDays();
-        if (!sharedDays.isEmpty()) {
-            for (int i = 0; i < numberOfStudents; i++) {
-                studentDataList.get(i).getStudentTimes().updateDayStructure(sharedDays);
+    public void updateStudentTimes() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            StudentTimes studentTimes = studentDataList.get(i).getStudentTimes();
+            ArrayList<StudentDay> tempStudentDayList = new ArrayList<>();
+            for (int j = 0; j < scheduleTimes.getNumberOfValidDays(); j++) {
+                StudentDay studentDay;
+                Integer oldDayIndex = scheduleTimes.getSharedDayIndices().get(j);
+                if (oldDayIndex != null) {
+                    studentDay = studentTimes.getValidStudentDay(oldDayIndex);
+                } else {
+                    studentDay = new StudentDay();
+                    studentDay.setDayName(scheduleTimes.getValidScheduleDay(j).getDayName());
+                }
+                tempStudentDayList.add(studentDay);
             }
+            studentTimes.setValidStudentDayList(tempStudentDayList);
         }
     }
 
-    public Student getStudent(int id) {
-        return studentDataList.get(id);
+    public Student getStudent(int ID) {
+        return studentDataList.get(ID);
     }
 
     public ScheduleTimes getScheduleTimes() {

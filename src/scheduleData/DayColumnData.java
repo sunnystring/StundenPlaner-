@@ -37,6 +37,7 @@ public class DayColumnData {
         this.database = database;
         fieldList = new ArrayList<>();
         lectionMap = new TreeMap<>();
+      
     }
 
     public void createDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
@@ -46,18 +47,17 @@ public class DayColumnData {
     }
 
     public void updateDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
-        fieldList.clear();
         this.scheduleDay = scheduleDay;
         setTimeFrame(timeFrame);
         if (hasAllocatedLections()) {
-            resetLections();
+            resetLectionFieldCounts();
             rebuildFieldList();
         } else {
             createFieldList();
         }
     }
 
-    private void resetLections() {
+    private void resetLectionFieldCounts() {
         Set entrySet = lectionMap.entrySet();
         Iterator iterator = entrySet.iterator();
         while (iterator.hasNext()) {
@@ -114,8 +114,8 @@ public class DayColumnData {
     }
 
     public boolean hasLectionsOutOfBounds(Time absoluteStart, Time absoluteEnd) {
-        Time lastLectionEnd = lectionMap.lastEntry().getValue().getEnd();
-        return (absoluteStart.greaterThan(lectionMap.firstKey()) || absoluteEnd.lessThan(lastLectionEnd));
+        Time endOfLastLection = lectionMap.lastEntry().getValue().getEnd();
+        return (absoluteStart.greaterThan(lectionMap.firstKey()) || absoluteEnd.lessEqualsThan(endOfLastLection));
     }
 
     public void setValidTimeMark(StudentDay day, int listIndex) {
@@ -151,6 +151,15 @@ public class DayColumnData {
     public void removeLection(Time time) {
         lectionMap.remove(time);
     }
+    
+    public void updateStudentIDs(int deletedStudentID){
+     Set entrySet = lectionMap.entrySet();
+        Iterator iterator = entrySet.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            ((LectionData) mapEntry.getValue()).updateStudentID(deletedStudentID);
+        }
+    }
 
     public ScheduleFieldData getFieldData(int i) {
         return fieldList.get(i);
@@ -159,4 +168,13 @@ public class DayColumnData {
     public String getDayName() {
         return scheduleDay.getDayName();
     }
+
+    public void setLectionMap(TreeMap<Time, LectionData> lectionMap) {
+        this.lectionMap = lectionMap;
+    }
+
+    public TreeMap<Time, LectionData> getLectionMap() {
+        return lectionMap;
+    }
+
 }

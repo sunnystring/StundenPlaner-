@@ -34,7 +34,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ScheduleData scheduleData;
     private StudentFieldData[] studentRow;
     private ArrayList<StudentFieldData[]> fieldDataMatrix;
-    // private ArrayList<StudentFieldData> fieldDataMemory;
     private int numberOfDays;
     private int numberOfStudents;
     private int selectedRow, selectedCol;
@@ -47,7 +46,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         numberOfDays = 0;
         numberOfStudents = 0;
         fieldDataMatrix = new ArrayList<>();
-        //  fieldDataMemory = new ArrayList<>();
     }
 
     @Override
@@ -67,37 +65,23 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     @Override
-    public void studentDeleted(int numberOfStudents, int studentID) {
-        this.numberOfStudents = numberOfStudents; // = numberOfStudents--
-        removeStudentRow(studentID);
-        fireTableRowsDeleted(studentID, studentID);
+    public void studentDeleted(int updatedNumberOfStudents, int deletedStudentID) {
+        numberOfStudents = updatedNumberOfStudents;
+        removeStudentRow(deletedStudentID);
+        fireTableRowsDeleted(deletedStudentID, deletedStudentID);
+        updateFieldData();
         studentList.showNumberOfStudents();
-        updateStudentIDs();
-    }
-
-    private void updateStudentIDs() {
-        for (int i = 0; i < numberOfStudents; i++) {
-            for (int j = 0; j < getColumnCount(); j++) {
-                studentRow[j].setStudentID(i);
-            }
-        }
     }
 
     private void createStudentRow(Student student) {
         studentRow = new StudentFieldData[getColumnCount()];
         for (int i = 0; i < getColumnCount(); i++) {
-            // StudentFieldData studentFieldData = new StudentFieldData();
             studentRow[i] = new StudentFieldData(database);
             studentRow[i].setStudentID(student.getID());
-//            if (i == 0) {
-//                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
-//            } else {
-//                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
-//            }
+            studentRow[i].setAllocationState(student.isLectionAllocated());
+            studentRow[i].setStudentListReleased(!student.isLectionAllocated());
             setNameAndTimes(i, student);
-            // studentRow[i] = studentFieldData;
         }
-        //     fieldDataMemory.add(new StudentFieldData(database));
         fieldDataMatrix.add(studentRow);
     }
 
@@ -105,52 +89,40 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         studentRow = fieldDataMatrix.get(student.getID());
         for (int i = 0; i < getColumnCount(); i++) {
             setNameAndTimes(i, student);
-//            if (i == 0) {
-//                studentRow[i].setNameString(student.getFirstName() + " " + student.getName());
-//            } else {
-//                studentRow[i].setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
-//            }
         }
     }
 
-    private void removeStudentRow(int id) {
-        fieldDataMatrix.remove(id);
-        //      fieldDataMemory.remove(id);
+    private void updateFieldData() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                fieldDataMatrix.get(i)[j].setStudentID(i);
+            }
+        }
+    }
+
+    private void removeStudentRow(int row) {
+        fieldDataMatrix.remove(row);
     }
 
     public void updateTableData() {
-        ArrayList<StudentFieldData> fieldDataMemory = new ArrayList<>();
-        for (int i = 0; i < getRowCount(); i++) {
-    //        database.getStudent(i).getStudentTimes().updateDayStructure(); 
-            fieldDataMemory.add((StudentFieldData) getValueAt(i, 0)); // übernimmt die bestehenden StudentRow-FieldDaten
-        }
+        updateStudentAllocationState();
         fieldDataMatrix.clear();
-        for (int i = 0; i < getRowCount(); i++) {
-            rebuildStudentRow(database.getStudent(i), fieldDataMemory.get(i));
+        for (int i = 0; i < numberOfStudents; i++) {
+            createStudentRow(database.getStudent(i));
         }
     }
 
-    private void rebuildStudentRow(Student student, StudentFieldData fieldDataMemory) {
-        studentRow = new StudentFieldData[getColumnCount()];
-        for (int i = 0; i < getColumnCount(); i++) {
-            studentRow[i] = new StudentFieldData(database);
-            studentRow[i] = fieldDataMemory;  // Achtung! Neu machen: setzt überall gleiche Referenz
-            setNameAndTimes(i, student);
-//            if (i == 0) {
-//                studentFieldData.setNameString(student.getFirstName() + " " + student.getName());
-//            } else {
-//                studentFieldData.setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
-//            }
-            //    studentRow[i] = studentFieldData;
+    private void updateStudentAllocationState() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            database.getStudent(i).setAllocationState(((StudentFieldData) getValueAt(i, 0)).isStudentAllocated());
         }
-        fieldDataMatrix.add(studentRow);
     }
 
-    private void setNameAndTimes(int i, Student student) {
-        if (i == 0) {
-            studentRow[i].setNameString(student.getFirstName() + " " + student.getName());
+    private void setNameAndTimes(int col, Student student) {
+        if (col == 0) {
+            studentRow[col].setNameString(student.getFirstName() + " " + student.getName());
         } else {
-            studentRow[i].setValidTimeString("<html>" + student.getStudentDay(i - 1) + "<font color=blue>" + student.getStudentDay(i - 1).getFavorite().toString() + "</font></html>");
+            studentRow[col].setValidTimeString("<html>" + student.getStudentDay(col - 1) + "<font color=blue>" + student.getStudentDay(col - 1).getFavorite().toString() + "</font></html>");
         }
     }
 
@@ -262,13 +234,13 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void setAndDisableAllocatedRow(boolean allocated) {
         for (int j = 0; j < getColumnCount(); j++) {
-            fieldDataMatrix.get(allocatedRow)[j].setStudentAllocated(allocated);
+            fieldDataMatrix.get(allocatedRow)[j].setAllocationState(allocated);
             fieldDataMatrix.get(allocatedRow)[j].setStudentListReleased(!allocated);
         }
     }
 
     private void releaseStudentList() {
-        for (int i = 0; i < getRowCount(); i++) {
+        for (int i = 0; i < numberOfStudents; i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix.get(i)[j].setStudentListReleased(!fieldDataMatrix.get(i)[j].isStudentAllocated());
                 fieldDataMatrix.get(i)[j].setSelectedRowIndex(NULL_VALUE);
@@ -278,7 +250,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     private void blockStudentList() {
-        for (int i = 0; i < getRowCount(); i++) {
+        for (int i = 0; i < numberOfStudents; i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix.get(i)[j].setStudentListReleased(false);
             }

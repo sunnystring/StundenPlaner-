@@ -16,9 +16,11 @@ public class Student {
     private StudentTimes studentTimes;
     private int lectionLengthInMinutes;
     private int studentID;
+    private boolean lectionAllocationState;
 
     public Student() {
         studentTimes = new StudentTimes();
+        lectionAllocationState = false;
     }
 
     public void setStudentTimes(StudentTimes studentTimes) {
@@ -68,5 +70,18 @@ public class Student {
     public StudentDay getStudentDay(int index) {
         return studentTimes.getValidStudentDay(index);
     }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public void setAllocationState(boolean lectionAllocated) {
+        this.lectionAllocationState = lectionAllocated;
+    }
+
+    public boolean isLectionAllocated() {
+        return lectionAllocationState;
+    }
+    
 
 }

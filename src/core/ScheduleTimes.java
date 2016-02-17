@@ -10,6 +10,7 @@ import exceptions.DayEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -19,14 +20,13 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ScheduleTimes extends AbstractTableModel {
 
-    // public static final int DAYS = 6;
     public static final int COLUMNS = 3;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-    public static final int DAYS = WEEKDAY_NAMES.length;
+    private static final int DAYS = WEEKDAY_NAMES.length;
     private final ScheduleDay[] daySelectionList;
-
     private final ArrayList<ScheduleDay> validScheduleDayList;
+    private final HashMap<Integer, Integer> sharedDayIndicesMap;
 
     public ScheduleTimes() {
         daySelectionList = new ScheduleDay[DAYS];
@@ -34,6 +34,7 @@ public class ScheduleTimes extends AbstractTableModel {
             daySelectionList[i] = new ScheduleDay();
         }
         validScheduleDayList = new ArrayList<>();
+        sharedDayIndicesMap = new HashMap<>();
     }
 
     @Override
@@ -81,11 +82,11 @@ public class ScheduleTimes extends AbstractTableModel {
         daySelectionList[row].setTimeSlot(timeString, col);
     }
 
-    public boolean verifyInput() {
+    public boolean checkTimeSlots() {
         boolean allSlotsEmpty = true;
         boolean allSlotsValid = true;
-        for (int i = 0; i < daySelectionList.length; i++) {
-            if (!daySelectionList[i].isEmpty()) {
+        for (int i = 0; i < DAYS; i++) {
+            if (!daySelectionList[i].isEmptyDay()) {
                 allSlotsEmpty = false;
             }
             if (daySelectionList[i].hasInvalidTimeSlots()) {
@@ -101,13 +102,13 @@ public class ScheduleTimes extends AbstractTableModel {
         return allSlotsValid;
     }
 
-    public void validateScheduleDayEntry() {
+    public void validateDayEntry() {
         boolean hasDaysToBeErased = false;
         String erasedDayString = " ";
-        for (int i = 0; i < validScheduleDayList.size(); i++) {  // bestehende Tage
-            if (isExistingDayToBeErased(i)) {
+        for (int j = 0; j < getNumberOfValidDays(); j++) {  // bestehende Tage
+            if (isExistingDayToBeErasedAt(j)) {
                 hasDaysToBeErased = true;
-                erasedDayString += validScheduleDayList.get(i).getDayName() + " ";
+                erasedDayString += validScheduleDayList.get(j).getDayName() + " ";
             }
         }
         if (hasDaysToBeErased) {
@@ -115,16 +116,21 @@ public class ScheduleTimes extends AbstractTableModel {
         }
     }
 
-    public boolean isExistingDayToBeErased(int i) {
+    public boolean isExistingDayToBeErasedAt(int j) {
         boolean toBeErased = false;
-        for (int j = 0; j < daySelectionList.length; j++) {  // alle Tage
-            if (daySelectionList[j].getDayName().equals(validScheduleDayList.get(i).getDayName())) {
-                if (!validScheduleDayList.get(i).isEmpty() && daySelectionList[j].isEmpty()) {
+        for (int i = 0; i < DAYS; i++) {  // alle Tage
+            if (dayMatchesAt(i, j)) {
+                if (!validScheduleDayList.get(j).isEmptyDay() && daySelectionList[i].isEmptyDay()) {
                     toBeErased = true;
                 }
             }
         }
         return toBeErased;
+    }
+
+    private boolean dayMatchesAt(int i, int j) {
+        return daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName());
+
     }
 
     public void setValidScheduleDays() {
@@ -136,17 +142,35 @@ public class ScheduleTimes extends AbstractTableModel {
         }
     }
 
-    public void updateValidScheduleDays() {
+    public void updateValidDays() {
+        sharedDayIndicesMap.clear();
+        createSharedDayIndices();
         validScheduleDayList.clear();
         setValidScheduleDays();
+    }
 
+    private void createSharedDayIndices() {  // K = Index neuer Tag, V = Index bestehender Tag
+        int newDayIndex = 0;
+        int oldDayIndex;
+        for (int i = 0; i < DAYS; i++) {
+            if (isValidDay(i)) {
+                for (int j = 0; j < getNumberOfValidDays(); j++) {
+                    oldDayIndex = j;
+                    if (dayMatchesAt(i, oldDayIndex)) {
+                        sharedDayIndicesMap.put(newDayIndex, oldDayIndex);
+                    }
+                }
+                newDayIndex++;
+            }
+        }
     }
 
     public void returnToExistingSelection() {
-        for (int i = 0; i < validScheduleDayList.size(); i++) {
-            for (int j = 0; j < daySelectionList.length; j++) {
-                if (validScheduleDayList.get(i).getDayName().equals(daySelectionList[j].getDayName())) {
-                    daySelectionList[j] = validScheduleDayList.get(i).clone();
+        for (int i = 0; i < DAYS; i++) {
+            daySelectionList[i].cleanTimeSlots();
+            for (int j = 0; j < getNumberOfValidDays(); j++) {
+                if (dayMatchesAt(i, j)) {
+                    daySelectionList[i] = validScheduleDayList.get(j).clone();
                 }
             }
         }
@@ -158,7 +182,7 @@ public class ScheduleTimes extends AbstractTableModel {
     }
 
     public boolean isValidDay(int i) {
-        return !daySelectionList[i].isEmpty();
+        return !daySelectionList[i].isEmptyDay();
     }
 
     public int getNumberOfValidDays() {
@@ -169,12 +193,11 @@ public class ScheduleTimes extends AbstractTableModel {
         return validScheduleDayList.get(i);
     }
 
-    public int getNumberOfSelectedDays() {
-        return DAYS;
-    }
-
     public ScheduleDay getSelectedScheduleDay(int i) {
         return daySelectionList[i];
     }
 
+    public HashMap<Integer, Integer> getSharedDayIndices() {
+        return sharedDayIndicesMap;
+    }
 }

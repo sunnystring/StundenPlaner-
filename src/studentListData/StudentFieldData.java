@@ -15,13 +15,12 @@ import studentlistUI.StudentList;
  */
 public class StudentFieldData {
 
-    private Database database;
-  //  private Student student;
+    private final Database database;
     private int studentID;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
-    private boolean studentListReleased;
+    private boolean studentListReleased; // globaler und lokaler Row-Schalter: falls lokal, studentListReleased != studentAllocated
     private boolean studentAllocated;
     private int selectedRowIndex;
 
@@ -40,10 +39,6 @@ public class StudentFieldData {
     public Student getStudent() {
         return database.getStudent(studentID);
     }
-
-//    public void setStudent(Student student) {
-//        this.student = student;
-//    }
 
     public String getNameString() {
         return nameString;
@@ -73,10 +68,6 @@ public class StudentFieldData {
         fieldSelected = !fieldSelected;
     }
 
-    public boolean isStudentAllocated() {
-        return studentAllocated;
-    }
-
     public boolean isStudentListReleased() {
         return studentListReleased;
     }
@@ -85,8 +76,12 @@ public class StudentFieldData {
         this.studentListReleased = studentListReleased;
     }
 
-    public void setStudentAllocated(boolean studentAllocated) {
+    public void setAllocationState(boolean studentAllocated) {
         this.studentAllocated = studentAllocated;
+    }
+
+    public boolean isStudentAllocated() {
+        return studentAllocated;
     }
 
     public void setSelectedRowIndex(int selectedRowIndex) {
@@ -96,4 +91,5 @@ public class StudentFieldData {
     public int getSelectedRowIndex() {
         return selectedRowIndex;
     }
+
 }

@@ -30,6 +30,7 @@ import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
+import java.util.HashMap;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
@@ -62,7 +63,7 @@ public class MainFrame extends JFrame {
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
         scheduleTimes = database.getScheduleTimes();
-        scheduleData = new ScheduleData(scheduleTimes);
+        scheduleData = new ScheduleData(database);
         studentListData = new StudentListData(database, this);
         createWidgets();
         addWidgets();
@@ -123,12 +124,9 @@ public class MainFrame extends JFrame {
         studentListData.setStudentList(studentList);
     }
 
-//    private void setStudentListDataParameters() {
-//        studentListData.setScheduleData(scheduleData);
-//        studentListData.setStudentList(studentList);
-//    }
     private void addListeners() {
         database.addDatabaseListener(studentListData);
+        database.addDatabaseListener(scheduleData);
         scheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -163,7 +161,7 @@ public class MainFrame extends JFrame {
     }
 
     private void setScheduleData() {
-        scheduleData.setTableData(database);
+        scheduleData.setTableData();
     }
 
     private void setupAndShowSchedule() {
@@ -189,11 +187,11 @@ public class MainFrame extends JFrame {
     public void validateNewEntry() {
         scheduleData.checkLectionAllocationState();
         scheduleData.checkTimeFrame();
-        scheduleTimes.validateScheduleDayEntry();
+        scheduleTimes.validateDayEntry();
     }
 
     public void updateAndShowUI() {
-        scheduleTimes.updateValidScheduleDays();
+        scheduleTimes.updateValidDays();
         updateScheduleData();
         updateAndShowSchedule();
         updateStudentListData();
@@ -202,7 +200,7 @@ public class MainFrame extends JFrame {
     }
 
     private void updateScheduleData() {
-        scheduleData.updateTableData(database);
+        scheduleData.updateTableData();
     }
 
     private void updateAndShowSchedule() {
@@ -213,7 +211,7 @@ public class MainFrame extends JFrame {
 
     private void updateStudentListData() {
         studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
-        database.updateStudentDays(); // falls Tage geändert, bei allen Students anpassen
+        database.updateStudentTimes();
         studentListData.updateTableData();
     }
 
