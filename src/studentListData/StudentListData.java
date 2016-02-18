@@ -36,7 +36,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ArrayList<StudentFieldData[]> fieldDataMatrix;
     private int numberOfDays;
     private int numberOfStudents;
-    private int selectedRow, selectedCol;
+    private int selectedRow;
     private int allocatedRow;
     public static final int NULL_VALUE = -1;
 
@@ -158,11 +158,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void mousePressed(MouseEvent m) {
         Point p = m.getPoint();
+        int selectedCol;
         if (m.getSource() instanceof StudentList) {
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1 
-                StudentFieldData studentFieldData = (StudentFieldData) getValueAt(selectedRow, selectedCol);;
+                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
                 if (selectedCol > 0) { // NameField nicht ansprechbar
                     if (studentFieldData.isStudentListReleased()) { // StudentDay selektiert 
                         studentFieldData.switchSelectionState();
@@ -190,7 +191,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
-                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldAt(selectedRow, selectedCol);
                 allocatedRow = scheduleFieldData.getStudent().getID();
                 if (scheduleFieldData.isMoveEnabled()) {
                     if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
@@ -288,5 +289,4 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void mouseExited(MouseEvent me) {
     }
-
 }

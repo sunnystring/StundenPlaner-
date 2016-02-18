@@ -53,10 +53,10 @@ public class StudentDay {
 
     public void setSingleLections() {
         if (onlyStart1) {
-            timeSlots[1] = timeSlots[0];
+            timeSlots[1] = timeSlots[0].clone();
         }
         if (onlyStart2) {
-            timeSlots[3] = timeSlots[2];
+            timeSlots[3] = timeSlots[2].clone();
         }
     }
 

@@ -110,7 +110,7 @@ public class ScheduleFieldData {
         return teacherTime;
     }
 
-    public void setTeacherTime(boolean teacherTime) {
+    public void setTeacherTimeEnabled(boolean teacherTime) {
         this.teacherTime = teacherTime;
     }
 

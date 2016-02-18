@@ -23,7 +23,7 @@ public class ScheduleTimes extends AbstractTableModel {
     public static final int COLUMNS = 3;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-    private static final int DAYS = WEEKDAY_NAMES.length;
+    public static final int DAYS = WEEKDAY_NAMES.length;
     private final ScheduleDay[] daySelectionList;
     private final ArrayList<ScheduleDay> validScheduleDayList;
     private final HashMap<Integer, Integer> sharedDayIndicesMap;
@@ -185,6 +185,20 @@ public class ScheduleTimes extends AbstractTableModel {
         return !daySelectionList[i].isEmptyDay();
     }
 
+    public int getDayIndexOf(ScheduleDay scheduleDay) {
+        int index = -1;
+        for (int i = 0; i < DAYS; i++) {
+            if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    public Integer getSharedDayIndexOf(int newDayIndex) {
+        return sharedDayIndicesMap.get(newDayIndex);
+    }
+
     public int getNumberOfValidDays() {
         return validScheduleDayList.size();
     }
@@ -195,9 +209,5 @@ public class ScheduleTimes extends AbstractTableModel {
 
     public ScheduleDay getSelectedScheduleDay(int i) {
         return daySelectionList[i];
-    }
-
-    public HashMap<Integer, Integer> getSharedDayIndices() {
-        return sharedDayIndicesMap;
     }
 }

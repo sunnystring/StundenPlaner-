@@ -5,13 +5,12 @@
  */
 package core;
 
-import core.Student;
+import scheduleData.ScheduleData;
 import studentListData.StudentListData;
-import studentlistUI.StudentList;
 
 /**
  *
- * Passt {@link  StudentList} an bei Änderungen am Schülerdatenbestand
+ * Passt {@link  StudentListData} und {@link  ScheduleData} an bei Änderungen am Schülerdatenbestand
  */
 public interface DatabaseListener {
 

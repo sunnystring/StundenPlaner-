@@ -121,20 +121,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     private void updateDayColumns() {
-        ArrayList<DayColumnData> tempDayColumnDataList = new ArrayList<>();
+        dayColumnDataList.clear();
         for (int i = 0; i < numberOfValidDays; i++) {
             DayColumnData dayColumn = new DayColumnData(database);
-            Integer oldDayIndex = scheduleTimes.getSharedDayIndices().get(i);
-            if (oldDayIndex != null) {
-                //   dayColumn.setLectionMap(dayColumnDataList.get(oldDayIndex).getLectionMap());
-                dayColumn.getLectionMap().putAll(dayColumnDataList.get(oldDayIndex).getLectionMap());
-                dayColumn.updateDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
-            } else {
-                dayColumn.createDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
-            }
-            tempDayColumnDataList.add(dayColumn);
+            dayColumn.updateDayData(scheduleTimes.getValidScheduleDay(i), timeFrame);
+            dayColumnDataList.add(dayColumn);
         }
-        dayColumnDataList = tempDayColumnDataList;
     }
 
     private void createFieldDataMatrix() {
@@ -180,7 +172,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
-                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
                 int studentDayID = selectedCol - 1; // NameField = 0
                 DayColumnData dayColumn = getDayColumn(studentDayID);
                 if (studentFieldData.isFieldSelected()) {  // StudentDay selektiert 
@@ -201,7 +193,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn
-                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) getValueAt(selectedRow, selectedCol);
+                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldAt(selectedRow, selectedCol);
                 Student student = scheduleFieldData.getStudent();
                 if (scheduleFieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(selectedRow, selectedCol);
@@ -297,7 +289,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             lection.add(field);
         }
         dayColumn.addLection(startTime, lection);
-        showLectionMapAdd();  // test
+ //       showLectionMapAdd();  // test
     }
 
     private void eraseLection(int lectionLength) {
@@ -319,24 +311,27 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             }
         }
         dayColumn.removeLection(startTime);
-        showLectionMapRemove(); // test
+   //     showLectionMapRemove(); // test
     }
 
-    //------------TEST----------------------------
-    private void showLectionMapAdd() {
-        for (DayColumnData d : dayColumnDataList) {
-            System.out.println("add ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
-        }
-        System.out.println("----------------------------");
-    }
-
-    private void showLectionMapRemove() {
-        for (DayColumnData d : dayColumnDataList) {
-            System.out.println("remove ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
-        }
-        System.out.println("----------------------------");
-    }
-    //-----------------------------------------------
+//    //------------TEST----------------------------
+//    private void showLectionMapAdd() {
+//        for (DayColumnData d : dayColumnDataList) {
+//            System.out.println("add ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
+//        }
+//        database.showLectionMapsContent();
+//        System.out.println("----------------------------");
+//    }
+//
+//    private void showLectionMapRemove() {
+//        for (DayColumnData d : dayColumnDataList) {
+//            System.out.println("remove ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
+//        }
+//        database.showLectionMapsContent();
+//
+//        System.out.println("----------------------------");
+//    }
+//    //-----------------------------------------------
 
     private void convertTableToDayColumnCoordinates(int selectedRow, int selectedCol) {
         dayColumnFieldIndex = selectedRow;
@@ -351,7 +346,6 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             DayColumnData dayColumn = dayColumnDataList.get(i);
             dayColumn.setValidTimeMarks(student.getStudentDay(i));
         }
-
     }
 
     public void setScheduleDisabled() {
@@ -365,12 +359,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     @Override
     public void studentDeleted(int numberOfStudents, int deletedStudentID) {
-        updateFieldData(deletedStudentID);
+        updateLectionData(deletedStudentID);
     }
 
-    private void updateFieldData(int deletedStudentID) {
+    private void updateLectionData(int deletedStudentID) {
         for (DayColumnData d : dayColumnDataList) {
-            d.updateStudentIDs(deletedStudentID);
+            d.updateStudentID(deletedStudentID);
         }
     }
 

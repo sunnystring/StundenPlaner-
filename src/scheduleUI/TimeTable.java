@@ -34,7 +34,6 @@ public class TimeTable extends JTable {
         addMouseMotionListener(timeField);
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
-
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowHeight(14);
@@ -42,6 +41,8 @@ public class TimeTable extends JTable {
 
     public void updateParameters() {
         createDefaultColumnsFromModel();
+        timeField.initTableDimension();
+        timeField.resetTimeColumn();
         lectionField.initTableDimension();
         lectionField.resetLectionColumn();
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
@@ -53,6 +54,10 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
+    }
+
+    public ScheduleFieldData getScheduleFieldAt(int row, int col) {
+        return (ScheduleFieldData) getValueAt(row, col);
     }
 
     public LectionField getLectionField() {

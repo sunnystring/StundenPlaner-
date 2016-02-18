@@ -212,7 +212,7 @@ public class Time implements Cloneable, Comparable {
         return 0; 
     }
 
-    //------------unbenutzte Operationen---------
+    //------------unused---------
     public Time plus(int minute) {
         if (minute < 0 || minute >= 60) {
             throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");

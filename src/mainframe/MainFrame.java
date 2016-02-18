@@ -30,7 +30,6 @@ import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
-import java.util.HashMap;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
@@ -156,7 +155,7 @@ public class MainFrame extends JFrame {
         setupAndShowSchedule();
         setupStudentListData();
         setupAndShowStudentList();
-        fireUIDataChanged();
+        fireUIChanged();
         setStudentButtonsEnabled(true);
     }
 
@@ -178,7 +177,7 @@ public class MainFrame extends JFrame {
         studentList.updateParameters();
     }
 
-    private void fireUIDataChanged() {
+    private void fireUIChanged() {
         scheduleData.fireTableDataChanged();
         studentListData.fireTableDataChanged();
     }
@@ -192,11 +191,12 @@ public class MainFrame extends JFrame {
 
     public void updateAndShowUI() {
         scheduleTimes.updateValidDays();
+        database.updateStudentTimes();
         updateScheduleData();
         updateAndShowSchedule();
         updateStudentListData();
         updateAndShowStudentList();
-        fireUIDataChanged();
+        fireUIChanged();
     }
 
     private void updateScheduleData() {
@@ -211,7 +211,6 @@ public class MainFrame extends JFrame {
 
     private void updateStudentListData() {
         studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
-        database.updateStudentTimes();
         studentListData.updateTableData();
     }
 

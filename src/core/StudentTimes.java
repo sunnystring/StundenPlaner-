@@ -19,10 +19,9 @@ public class StudentTimes extends AbstractTableModel {
     public static final int COLUMNS = 6;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-    private static final int DAYS = WEEKDAY_NAMES.length;
+    public static final int DAYS = WEEKDAY_NAMES.length;
     private ScheduleTimes scheduleTimes;
     private StudentDay[] daySelectionList;
-
     private ArrayList<StudentDay> validStudentDayList;
 
     public StudentTimes() {
@@ -110,14 +109,10 @@ public class StudentTimes extends AbstractTableModel {
     }
 
     public void updateValidStudentDays() {
-        clearValidStudentDayList();
+        validStudentDayList.clear();
         setValidStudentDays();
     }
-
-    public void clearValidStudentDayList() {
-        validStudentDayList.clear();
-    }
-
+    
     public StudentDay getValidStudentDay(int i) {
         return validStudentDayList.get(i);
     }
@@ -129,5 +124,4 @@ public class StudentTimes extends AbstractTableModel {
     public void setValidStudentDayList(ArrayList<StudentDay> validStudentDayList) {
         this.validStudentDayList = validStudentDayList;
     }
-
 }

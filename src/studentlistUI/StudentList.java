@@ -12,6 +12,7 @@ import scheduleUI.TimeTable;
 import scheduleData.ScheduleData;
 import scheduleUI.LectionField;
 import scheduleUI.TimeField;
+import studentListData.StudentFieldData;
 import util.Colors;
 
 /**
@@ -31,7 +32,6 @@ public class StudentList extends JTable {
     public StudentList(StudentListData studentListData, TimeTable timeTable) {
         this.studentListData = studentListData;
         this.timeTable = timeTable;
-
         setModel(studentListData);
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
@@ -47,7 +47,6 @@ public class StudentList extends JTable {
         addMouseListener(lectionField);
         addMouseListener(timeField);
         addMouseListener(scheduleData);
-
         setShowGrid(true);
         setGridColor(Colors.BACKGROUND);
         setFillsViewportHeight(true);
@@ -67,7 +66,8 @@ public class StudentList extends JTable {
         header.repaint();
     }
 
-    public StudentField getStudentField() {
-        return studentField;
+    public StudentFieldData getStudentFieldAt(int row, int col) {
+        return (StudentFieldData) getValueAt(row, col);
     }
+
 }

@@ -16,33 +16,25 @@ import util.Time;
 public class LectionData {
 
     private ArrayList<ScheduleFieldData> lection;
-    private int fieldCount;
 
     public LectionData() {
         lection = new ArrayList<>();
-        resetFieldCount();
     }
 
     public void add(ScheduleFieldData field) {
         lection.add(field);
     }
 
-    public boolean hasNextField() {
-        return fieldCount < lection.size();
-    }
-
-    public ScheduleFieldData getNextField() {
-        ScheduleFieldData scheduleFieldData = lection.get(fieldCount);
-        fieldCount++;
-        return scheduleFieldData;
-    }
-
-    public void resetFieldCount() {
-        fieldCount = 0;
+    public ArrayList<ScheduleFieldData> getFieldList() {
+        return lection;
     }
 
     public Time getEnd() {
         return lection.get(lection.size() - 1).getFieldTime();
+    }
+
+    public int getLength() {
+        return lection.size();
     }
 
     public void updateStudentID(int deletedStudentID) {
@@ -51,7 +43,5 @@ public class LectionData {
                 f.decrementLocalStudentID();
             }
         }
-
     }
-
 }

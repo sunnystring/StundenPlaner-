@@ -35,7 +35,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     protected int lectionLenght;
     private int movedRow, movedCol;
     private int tempRow, tempCol;
-    private int lectionEnd, lectionDiff;
+    protected int lectionEnd, lectionDiff;
     protected static final int NULL_VALUE = -1;
 
     public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
@@ -45,6 +45,16 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         resetLectionColumn();
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
+    }
+
+    public void resetLectionColumn() {
+        movedRow = 0;
+        movedCol = 0;
+        tempRow = NULL_VALUE;
+        tempCol = 0;
+        lectionLenght = 0;
+        lectionEnd = 0;
+        lectionDiff = 0;
     }
 
     public void initTableDimension() {
@@ -160,13 +170,14 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     @Override
     public void mousePressed(MouseEvent m) {
         Point p = m.getPoint();
+        int selectedRow, selectedCol;
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            int selectedRow = studentList.rowAtPoint(p);
-            int selectedCol = studentList.columnAtPoint(p);
+            selectedRow = studentList.rowAtPoint(p);
+            selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
@@ -176,8 +187,8 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             }
         }
         if (m.getSource() instanceof TimeTable) {
-            int selectedRow = timeTable.rowAtPoint(p);
-            int selectedCol = timeTable.columnAtPoint(p);
+            selectedRow = timeTable.rowAtPoint(p);
+            selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
@@ -231,16 +242,6 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 timeTable.repaint(timeTable.getCellRect(movedRow - i, movedCol, false)); // dirty region oberhalb von Lection
             }
         }
-    }
-
-    public void resetLectionColumn() {
-        movedRow = 0;
-        movedCol = 0;
-        tempRow = NULL_VALUE;
-        tempCol = 0;
-        lectionLenght = 0;
-        lectionEnd = 0;
-        lectionDiff = 0;
     }
 
     @Override

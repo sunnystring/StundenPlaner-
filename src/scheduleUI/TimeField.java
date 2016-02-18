@@ -34,6 +34,11 @@ public class TimeField extends LectionField {
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
     }
 
+    public void resetTimeColumn() {
+        movedRow = NULL_VALUE;
+        movedCol = NULL_VALUE;
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
@@ -68,37 +73,34 @@ public class TimeField extends LectionField {
 
     @Override
     public void mouseMoved(MouseEvent m) {
-
         Point p = m.getPoint();
         if (timeTable.rowAtPoint(p) == NULL_VALUE) {  // ausserhalb JTable movedRow = -1
             return;
         }
         movedRow = timeTable.rowAtPoint(p);
-        if (timeTable.columnAtPoint(p) % 2 == 0) {
+        if (timeTable.columnAtPoint(p) % 2 == 0) { // falls TimeColumn
             movedCol = timeTable.columnAtPoint(p);
         } else {
             movedCol = timeTable.columnAtPoint(p) - 1; // falls LectionColumn, TimeColumn links davon zeichnen
         }
-        timeTable.repaint(timeTable.getCellRect(movedRow, movedCol, false));
-        if (movedRow + lectionLenght > rowCount) {  // Stundenplan-Ende
-            if (movedCol % 4 == 2) {
-                movedRow = rowCount - lectionLenght;
-            }
+        if (movedRow >= rowCount - lectionLenght && movedCol % 4 == 2) {  // Stundenplan-Ende  
+            movedRow = rowCount - lectionLenght;
         }
+        timeTable.repaint(timeTable.getCellRect(movedRow, movedCol, false));
     }
 
     /* Änderungen triggern beim Wechsel in MoveMode */
     @Override
     public void mousePressed(MouseEvent m) {
-
         Point p = m.getPoint();
+        int selectedRow, selectedCol;
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            int selectedRow = studentList.rowAtPoint(p);
-            int selectedCol = studentList.columnAtPoint(p);
+            selectedRow = studentList.rowAtPoint(p);
+            selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = (StudentFieldData) studentListData.getValueAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
@@ -108,8 +110,8 @@ public class TimeField extends LectionField {
             }
         }
         if (m.getSource() instanceof TimeTable) {
-            int selectedRow = timeTable.rowAtPoint(p);
-            int selectedCol = timeTable.columnAtPoint(p);
+            selectedRow = timeTable.rowAtPoint(p);
+            selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
@@ -117,10 +119,5 @@ public class TimeField extends LectionField {
                 }
             }
         }
-    }
-
-    private void resetTimeColumn() {
-        movedRow = NULL_VALUE;
-        movedCol = NULL_VALUE;
     }
 }
