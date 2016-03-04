@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,6 +29,7 @@ import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
@@ -50,7 +50,7 @@ public class MainFrame extends JFrame {
     private ScheduleInputMask scheduleInputMask;
     private StudentInputMask studentInputMask;
     private JPanel toolBar;
-    private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton;
+    private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton, resizeButton;
     private JToggleButton timeFilterButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
@@ -85,6 +85,7 @@ public class MainFrame extends JFrame {
         studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
         KGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
         automaticAllocationButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
+        resizeButton = new ScheduleButton("resize.png", "Stundenplan in verschiedenen Grössen anzeigen", 30);
         timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
         timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
         timeFilterButton.setPreferredSize(new Dimension(60, 0));
@@ -114,8 +115,10 @@ public class MainFrame extends JFrame {
         toolBar.add(studentButton);
         toolBar.add(KGUButton);
         toolBar.add(Box.createHorizontalGlue());
+        toolBar.add(resizeButton);
         toolBar.add(automaticAllocationButton);
         toolBar.add(timeFilterButton);
+
     }
 
     private void setStudentListDataParameters() {
@@ -144,6 +147,12 @@ public class MainFrame extends JFrame {
                 JDialog studentEntry = new StudentEntry(MainFrame.this, new Student());
                 studentInputMask.clearTextFields();
                 studentEntry.setVisible(true);
+            }
+        });
+        resizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                schedule.getTimeTable().fireNextScheduleSizeOption();
             }
         });
     }
@@ -233,7 +242,14 @@ public class MainFrame extends JFrame {
         public ScheduleButton(String iconName, String toolTip) {
             setIcon(Icons.setIcon(iconName));
             setToolTipText(toolTip);
-            setPreferredSize(new Dimension(60, 0));
+            setPreferredSize(new Dimension(50, 0));
+        }
+
+        public ScheduleButton(String iconName, String toolTip, int width) {
+            setIcon(Icons.setIcon(iconName));
+            setToolTipText(toolTip);
+            setPreferredSize(new Dimension(width, 0));
+
         }
     }
 

@@ -37,11 +37,19 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     private int tempRow, tempCol;
     protected int lectionEnd, lectionDiff;
     protected static final int NULL_VALUE = -1;
+    private static final float DEFAULT_SIZE_1 = (float) 10, DEFAULT_SIZE_2 = (float) 8;
+    private static final float INC1 = (float) 0.3, INC2 = (float) 0.2;
+    private static final float UPPER_SIZE_1 = DEFAULT_SIZE_1 + TimeTable.HEIGHT_DIFF * INC1;
+    private static final float UPPER_SIZE_2 = DEFAULT_SIZE_2 + TimeTable.HEIGHT_DIFF * INC2;
+    protected float size1, size2;
 
     public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
         this.timeTable = timeTable;
         this.scheduleData = scheduleData;
-        initTableDimension();
+        size1 = DEFAULT_SIZE_1;
+        size2 = DEFAULT_SIZE_2;
+        setFont(this.getFont().deriveFont(Font.PLAIN, size1));
+        initScheduleDimension();
         resetLectionColumn();
         setHorizontalAlignment(SwingConstants.LEADING);
         setOpaque(true);
@@ -57,9 +65,19 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         lectionDiff = 0;
     }
 
-    public void initTableDimension() {
+    public void initScheduleDimension() {
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
+    }
+
+    public void decrementFontSizes(boolean stillDecrementing) {
+        if (stillDecrementing) {
+            size1 -= INC1;
+            size2 -= INC2;
+        } else {
+            size1 = UPPER_SIZE_1;
+            size2 = UPPER_SIZE_2;
+        }
     }
 
     @Override
@@ -73,10 +91,10 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
             setForeground(fieldData.getAllocatedTimeMark() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
             setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
-            setFont(this.getFont().deriveFont(Font.BOLD, 10));
+            setFont(this.getFont().deriveFont(Font.BOLD, size1));
             if (fieldData.isHead()) {
                 setForeground(Color.GRAY);
-                setFont(this.getFont().deriveFont(Font.PLAIN, 8));
+                setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                 setText(" " + fieldData.getFieldTime().toString());
             } else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
                 setText(" " + fieldData.getStudent().getFirstName());
@@ -92,10 +110,10 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
                 setForeground(Color.WHITE);
                 setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
-                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setFont(this.getFont().deriveFont(Font.BOLD, size1));
                 if (row == movedRow) {
                     setForeground(Color.GRAY);
-                    setFont(this.getFont().deriveFont(Font.PLAIN, 8));
+                    setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                     setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
                     setText(" " + fieldData.getStudent().getFirstName());
@@ -112,7 +130,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
                     setForeground(Color.WHITE);
                     setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
-                    setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                    setFont(this.getFont().deriveFont(Font.BOLD, size1));
                     if (lectionDiff == lectionLenght - 2 && row == 0) { // noch 2 Fields in 1. Column
                         setText(" " + fieldData.getStudent().getName());
                     } else if (lectionDiff == lectionLenght - 1) { // nur noch Head in 1. Column

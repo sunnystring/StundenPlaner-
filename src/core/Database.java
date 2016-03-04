@@ -5,11 +5,7 @@
  */
 package core;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import scheduleData.LectionData;
 import util.Time;
@@ -107,18 +103,18 @@ public class Database {
         return lectionMaps.get(i);
     }
 
-    // test
-    public void showLectionMapsContent() {
-        for (int i = 0; i < scheduleTimes.DAYS; i++) {
-            TreeMap<Time, LectionData> lectionMap = lectionMaps.get(i);
-            Set entrySet = lectionMap.entrySet();
-            Iterator iterator = entrySet.iterator();
-            while (iterator.hasNext()) {
-                Map.Entry mapEntry = (Map.Entry) iterator.next();
-                Time time = ((Time) mapEntry.getKey());
-                System.out.println("key = " + time);
-            }
-        }
-    }
+//    // test
+//    public void showLectionMapsContent() {
+//        for (int i = 0; i < scheduleTimes.DAYS; i++) {
+//            TreeMap<Time, LectionData> lectionMap = lectionMaps.get(i);
+//            Set entrySet = lectionMap.entrySet();
+//            Iterator iterator = entrySet.iterator();
+//            while (iterator.hasNext()) {
+//                Map.Entry mapEntry = (Map.Entry) iterator.next();
+//                Time time = ((Time) mapEntry.getKey());
+//                System.out.println("key = " + time);
+//            }
+//        }
+//    }
 
 }

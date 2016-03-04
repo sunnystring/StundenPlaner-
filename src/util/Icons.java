@@ -43,6 +43,9 @@ public class Icons {
         if (name.equals("boy.png")) {
             img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         }
+        if (name.equals("resize.png")) {
+            img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        }
         return new ImageIcon(img);
     }
 }

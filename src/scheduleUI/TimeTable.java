@@ -20,7 +20,12 @@ public class TimeTable extends JTable {
     private TimeField timeField;
     private LectionField lectionField;
     private ScheduleData scheduleData;
-    StudentListData studentListData;
+    private StudentListData studentListData;
+    public static final int DEFAULT_HEIGHT = 14;
+    public static final int HEIGHT_DIFF = 4;
+    public static final int UPPER_HEIGHT = DEFAULT_HEIGHT + HEIGHT_DIFF;
+    public static final int LOWER_HEIGHT = DEFAULT_HEIGHT - HEIGHT_DIFF;
+    private int rowHeight;
 
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -28,6 +33,7 @@ public class TimeTable extends JTable {
         setModel(scheduleData);
         lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
         timeField = new TimeField(this, scheduleData);
+        rowHeight = DEFAULT_HEIGHT;
         addMouseListener(lectionField);
         addMouseListener(timeField);
         addMouseMotionListener(lectionField);
@@ -36,14 +42,14 @@ public class TimeTable extends JTable {
         addMouseListener(scheduleData);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-        setRowHeight(14);
+        setRowHeight(rowHeight);
     }
 
     public void updateParameters() {
         createDefaultColumnsFromModel();
-        timeField.initTableDimension();
+        timeField.initScheduleDimension();
         timeField.resetTimeColumn();
-        lectionField.initTableDimension();
+        lectionField.initScheduleDimension();
         lectionField.resetLectionColumn();
         for (int i = 0; i < scheduleData.getColumnCount(); i++) {
             if (i % 2 == 0) {
@@ -54,6 +60,22 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
+    }
+
+    public void fireNextScheduleSizeOption() {
+        lectionField.decrementFontSizes(decrementRowHeight());
+        setRowHeight(rowHeight);
+        scheduleData.fireTableDataChanged();
+    }
+
+    private boolean decrementRowHeight() {
+        boolean stillDecrementing = rowHeight > LOWER_HEIGHT;
+        if (stillDecrementing) {
+            rowHeight--;
+        } else {
+            rowHeight = UPPER_HEIGHT;
+        }
+        return stillDecrementing;
     }
 
     public ScheduleFieldData getScheduleFieldAt(int row, int col) {
