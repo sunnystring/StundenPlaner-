@@ -7,8 +7,10 @@ package studentListData;
 
 import core.Database;
 import core.DatabaseListener;
+import core.ScheduleTimes;
 import core.Student;
 import dataEntryUI.StudentEdit;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -20,6 +22,8 @@ import scheduleUI.TimeTable;
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentlistUI.StudentList;
+import userUtil.ColoredStudentTimes;
+import util.Colors;
 
 /**
  *
@@ -34,6 +38,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ScheduleData scheduleData;
     private StudentFieldData[] studentRow;
     private ArrayList<StudentFieldData[]> fieldDataMatrix;
+    private ColoredStudentTimes coloredStudentTimes;
     private int numberOfDays;
     private int numberOfStudents;
     private int selectedRow;
@@ -46,6 +51,21 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         numberOfDays = 0;
         numberOfStudents = 0;
         fieldDataMatrix = new ArrayList<>();
+    }
+
+    public void setTableData() {
+        numberOfDays = database.getScheduleTimes().getNumberOfValidDays();
+        coloredStudentTimes = new ColoredStudentTimes(database);
+    }
+
+    public void updateTableData() {
+        numberOfDays = database.getScheduleTimes().getNumberOfValidDays();
+        updateStudentAllocationState();
+        fieldDataMatrix.clear();
+        for (int i = 0; i < numberOfStudents; i++) {
+            createStudentRow(database.getStudent(i));
+        }
+        coloredStudentTimes = new ColoredStudentTimes(database);
     }
 
     @Override
@@ -102,14 +122,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void removeStudentRow(int row) {
         fieldDataMatrix.remove(row);
-    }
-
-    public void updateTableData() {
-        updateStudentAllocationState();
-        fieldDataMatrix.clear();
-        for (int i = 0; i < numberOfStudents; i++) {
-            createStudentRow(database.getStudent(i));
-        }
     }
 
     private void updateStudentAllocationState() {
@@ -258,12 +270,26 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
     }
 
-    public void setScheduleData(ScheduleData scheduleData) {
-        this.scheduleData = scheduleData;
+    public void setColoredStudentTimes() { 
+        for (int i = 0; i < numberOfStudents; i++) {
+            for (int j = 1; j < getColumnCount(); j++) {
+                fieldDataMatrix.get(i)[j].setLocalColor(coloredStudentTimes.getColor(i, j - 1));
+            }
+        }
+        fireTableDataChanged();
     }
 
-    public void setNumberOfDays(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
+    public void setDefaultBlue() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            for (int j = 1; j < getColumnCount(); j++) {
+                fieldDataMatrix.get(i)[j].setLocalColor(Colors.BLUE_DEFAULT);
+            }
+        }
+        fireTableDataChanged();
+    }
+
+    public void setScheduleData(ScheduleData scheduleData) {
+        this.scheduleData = scheduleData;
     }
 
     public Student getStudent(int i) {

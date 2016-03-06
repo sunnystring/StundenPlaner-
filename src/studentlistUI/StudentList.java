@@ -25,13 +25,11 @@ public class StudentList extends JTable {
     private HeaderField headerField;
     private StudentListData studentListData;
     private ScheduleData scheduleData;
-    private TimeTable timeTable;
     private LectionField lectionField;
     private TimeField timeField;
 
     public StudentList(StudentListData studentListData, TimeTable timeTable) {
         this.studentListData = studentListData;
-        this.timeTable = timeTable;
         setModel(studentListData);
         headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);

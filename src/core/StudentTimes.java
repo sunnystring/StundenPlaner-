@@ -8,6 +8,7 @@ package core;
 import dataEntryUI.StudentInputMask;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
+import userUtil.ColoredStudentTimes;
 
 /**
  *
@@ -112,7 +113,7 @@ public class StudentTimes extends AbstractTableModel {
         validStudentDayList.clear();
         setValidStudentDays();
     }
-    
+
     public StudentDay getValidStudentDay(int i) {
         return validStudentDayList.get(i);
     }

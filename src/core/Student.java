@@ -5,6 +5,9 @@
  */
 package core;
 
+import com.sun.beans.editors.ColorEditor;
+import userUtil.ColoredStudentTimes;
+
 /**
  *
  * Schülerprofil
@@ -82,6 +85,4 @@ public class Student {
     public boolean isLectionAllocated() {
         return lectionAllocationState;
     }
-    
-
 }

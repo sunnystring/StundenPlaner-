@@ -50,7 +50,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setForeground(Color.BLACK);
-        setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
+        setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getLocalColor());
         // Mouseover
         if (studentFieldData.isStudentListReleased() && row == selectedRow) {
             if (col == 0) {
@@ -61,7 +61,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setBackground(Colors.LIGHT_GREEN);
             }
         } else {
-            setBackground(col == 0 ? Colors.NAME_FIELD : Colors.STUDENT_FIELD_BLUE);
+            setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getLocalColor());
         }
         // Row selected
         if (row == studentFieldData.getSelectedRowIndex()) {

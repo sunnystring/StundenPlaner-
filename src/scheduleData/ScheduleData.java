@@ -289,7 +289,6 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             lection.add(field);
         }
         dayColumn.addLection(startTime, lection);
- //       showLectionMapAdd();  // test
     }
 
     private void eraseLection(int lectionLength) {
@@ -311,27 +310,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             }
         }
         dayColumn.removeLection(startTime);
-   //     showLectionMapRemove(); // test
     }
-
-//    //------------TEST----------------------------
-//    private void showLectionMapAdd() {
-//        for (DayColumnData d : dayColumnDataList) {
-//            System.out.println("add ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
-//        }
-//        database.showLectionMapsContent();
-//        System.out.println("----------------------------");
-//    }
-//
-//    private void showLectionMapRemove() {
-//        for (DayColumnData d : dayColumnDataList) {
-//            System.out.println("remove ->  " + d.getDayName() + ": " + "mapsize = " + d.getLectionMap().size());
-//        }
-//        database.showLectionMapsContent();
-//
-//        System.out.println("----------------------------");
-//    }
-//    //-----------------------------------------------
 
     private void convertTableToDayColumnCoordinates(int selectedRow, int selectedCol) {
         dayColumnFieldIndex = selectedRow;

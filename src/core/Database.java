@@ -31,7 +31,7 @@ public class Database {
         for (int i = 0; i < scheduleTimes.DAYS; i++) {
             lectionMaps.add(new TreeMap());
         }
-        numberOfStudents = 0; 
+        numberOfStudents = 0;
     }
 
     public void addStudent(Student student) {
@@ -63,8 +63,8 @@ public class Database {
             studentDataList.get(i).setStudentID(i);
         }
     }
-
-    public void updateStudentTimes() {
+ 
+    public void updateStudentDays() {
         for (int i = 0; i < numberOfStudents; i++) {
             StudentTimes studentTimes = studentDataList.get(i).getStudentTimes();
             ArrayList<StudentDay> tempStudentDayList = new ArrayList<>();
@@ -102,19 +102,4 @@ public class Database {
     public TreeMap<Time, LectionData> getLectionMapAt(int i) {
         return lectionMaps.get(i);
     }
-
-//    // test
-//    public void showLectionMapsContent() {
-//        for (int i = 0; i < scheduleTimes.DAYS; i++) {
-//            TreeMap<Time, LectionData> lectionMap = lectionMaps.get(i);
-//            Set entrySet = lectionMap.entrySet();
-//            Iterator iterator = entrySet.iterator();
-//            while (iterator.hasNext()) {
-//                Map.Entry mapEntry = (Map.Entry) iterator.next();
-//                Time time = ((Time) mapEntry.getKey());
-//                System.out.println("key = " + time);
-//            }
-//        }
-//    }
-
 }

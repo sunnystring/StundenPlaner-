@@ -14,7 +14,7 @@ import scheduleData.ScheduleTimeFrame;
 
 /**
  *
- * Hilfsklasse für die Erzeugung und Bearbeitung von Zeiten, benutzt in {@link ScheduleDay}, 
+ * Hilfsklasse für die Erzeugung und Bearbeitung von Zeiten, benutzt in {@link ScheduleDay},
  * {@link StudentDay}, {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
  */
 public class Time implements Cloneable, Comparable {
@@ -28,6 +28,10 @@ public class Time implements Cloneable, Comparable {
     }
 
     public Time() {
+        reset();
+    }
+
+    public void reset() {
         this.hour = 0;
         this.minute = 0;
         this.timeString = "";
@@ -209,10 +213,9 @@ public class Time implements Cloneable, Comparable {
         if (this.lessThan(time)) {
             return -1;
         }
-        return 0; 
+        return 0;
     }
 
-    //------------unused---------
     public Time plus(int minute) {
         if (minute < 0 || minute >= 60) {
             throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");

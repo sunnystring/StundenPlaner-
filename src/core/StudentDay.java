@@ -16,13 +16,15 @@ public class StudentDay {
     public static final int SLOTS = StudentTimes.COLUMNS - 1;
     private String dayName = "";
     private Time[] timeSlots;
-    boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
+    private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
+   // private int coloredTimeState;
 
     public StudentDay() {
         timeSlots = new Time[SLOTS];
         for (int i = 0; i < SLOTS; i++) {
             timeSlots[i] = new Time();
         }
+   //     coloredTimeState = -1;
     }
 
     public void setTimeSlot(String timeString, int slot) {

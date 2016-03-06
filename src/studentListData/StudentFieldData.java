@@ -7,7 +7,9 @@ package studentListData;
 
 import core.Database;
 import core.Student;
+import java.awt.Color;
 import studentlistUI.StudentList;
+import util.Colors;
 
 /**
  *
@@ -16,6 +18,7 @@ import studentlistUI.StudentList;
 public class StudentFieldData {
 
     private final Database database;
+    private Color localColor;
     private int studentID;
     private String nameString;
     private String validTimeString;
@@ -26,10 +29,19 @@ public class StudentFieldData {
 
     public StudentFieldData(Database database) {
         this.database = database;
+        localColor = Colors.BLUE_DEFAULT;
         fieldSelected = false;
         studentListReleased = true;
         selectedRowIndex = -1;
         studentAllocated = false;
+    }
+
+    public void setLocalColor(Color localColor) {
+        this.localColor = localColor;
+    }
+
+    public Color getLocalColor() {
+        return localColor;
     }
 
     public void setStudentID(int studentID) {

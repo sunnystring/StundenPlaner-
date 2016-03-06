@@ -29,6 +29,8 @@ import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import scheduleUI.Schedule;
@@ -51,7 +53,7 @@ public class MainFrame extends JFrame {
     private StudentInputMask studentInputMask;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton, resizeButton;
-    private JToggleButton timeFilterButton;
+    private JToggleButton timeScopeButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
 
@@ -85,10 +87,11 @@ public class MainFrame extends JFrame {
         studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
         KGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
         automaticAllocationButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
+        automaticAllocationButton.setEnabled(false);  // ToDo...
         resizeButton = new ScheduleButton("resize.png", "Stundenplan in verschiedenen Grössen anzeigen", 30);
-        timeFilterButton = new JToggleButton(Icons.setIcon("color.png"));
-        timeFilterButton.setToolTipText("Verteilung der Zeiten anzeigen: je später, desto dunkler");
-        timeFilterButton.setPreferredSize(new Dimension(60, 0));
+        timeScopeButton = new JToggleButton(Icons.setIcon("color.png"));
+        timeScopeButton.setToolTipText("Verteilung der Schülerzeiten anzeigen: je später, desto dunkler");
+        timeScopeButton.setPreferredSize(new Dimension(35, 0));
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.75);
@@ -114,10 +117,10 @@ public class MainFrame extends JFrame {
         toolBar.add(scheduleButton);
         toolBar.add(studentButton);
         toolBar.add(KGUButton);
+        toolBar.add(automaticAllocationButton);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(resizeButton);
-        toolBar.add(automaticAllocationButton);
-        toolBar.add(timeFilterButton);
+        toolBar.add(timeScopeButton);
 
     }
 
@@ -155,6 +158,16 @@ public class MainFrame extends JFrame {
                 schedule.getTimeTable().fireNextScheduleSizeOption();
             }
         });
+        timeScopeButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    studentListData.setColoredStudentTimes();
+                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    studentListData.setDefaultBlue();
+                }
+            }
+        });
     }
 
 //------------- Schedule Entry -----------
@@ -164,7 +177,7 @@ public class MainFrame extends JFrame {
         setupAndShowSchedule();
         setupStudentListData();
         setupAndShowStudentList();
-        fireUIChanged();
+        fireUIDataChanged();
         setStudentButtonsEnabled(true);
     }
 
@@ -178,7 +191,7 @@ public class MainFrame extends JFrame {
     }
 
     private void setupStudentListData() {
-        studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
+        studentListData.setTableData();
     }
 
     private void setupAndShowStudentList() {
@@ -186,7 +199,7 @@ public class MainFrame extends JFrame {
         studentList.updateParameters();
     }
 
-    private void fireUIChanged() {
+    private void fireUIDataChanged() {
         scheduleData.fireTableDataChanged();
         studentListData.fireTableDataChanged();
     }
@@ -200,12 +213,12 @@ public class MainFrame extends JFrame {
 
     public void updateAndShowUI() {
         scheduleTimes.updateValidDays();
-        database.updateStudentTimes();
+        database.updateStudentDays();
         updateScheduleData();
         updateAndShowSchedule();
         updateStudentListData();
         updateAndShowStudentList();
-        fireUIChanged();
+        fireUIDataChanged();
     }
 
     private void updateScheduleData() {
@@ -219,7 +232,6 @@ public class MainFrame extends JFrame {
     }
 
     private void updateStudentListData() {
-        studentListData.setNumberOfDays(scheduleTimes.getNumberOfValidDays());
         studentListData.updateTableData();
     }
 
