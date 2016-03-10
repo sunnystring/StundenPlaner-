@@ -7,10 +7,8 @@ package studentListData;
 
 import core.Database;
 import core.DatabaseListener;
-import core.ScheduleTimes;
 import core.Student;
 import dataEntryUI.StudentEdit;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -273,7 +271,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     public void setColoredStudentTimes() { 
         for (int i = 0; i < numberOfStudents; i++) {
             for (int j = 1; j < getColumnCount(); j++) {
-                fieldDataMatrix.get(i)[j].setLocalColor(coloredStudentTimes.getColor(i, j - 1));
+                fieldDataMatrix.get(i)[j].setLocalColor(coloredStudentTimes.getColorAt(i, j - 1));
             }
         }
         fireTableDataChanged();

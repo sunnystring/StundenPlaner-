@@ -9,6 +9,8 @@ import core.Database;
 import core.ScheduleTimes;
 import core.Student;
 import core.StudentTimes;
+import exceptions.IllegalTimeSlotException;
+import exceptions.ScheduleOutOfBoundException;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -22,12 +24,16 @@ import javax.swing.BoxLayout;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import mainframe.MainFrame;
+import scheduleData.ScheduleTimeFrame;
 import util.Dialogs;
 
 /**
@@ -144,7 +150,7 @@ public class StudentInputMask extends JPanel {
             @Override
             public void caretUpdate(CaretEvent ce) {
                 JTextField f = (JTextField) ce.getSource();
-                lectionType = (f.getText().trim().isEmpty()) ? lectiontypeField.getText() : f.getText();
+                lectionType = f.getText().trim().isEmpty() ? lectiontypeField.getText() : f.getText();
             }
         });
         lectiontypeField.addFocusListener(new FocusAdapter() {
@@ -194,13 +200,18 @@ public class StudentInputMask extends JPanel {
     }
 
     public void addSaveButtonListener(StudentEntry studentEntry) {
+        ScheduleTimeFrame scheduleTimeFrame = studentEntry.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                } catch (IllegalStateException ex) {
+                    studentTimes.checkScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
+                    return;
+                } catch (ScheduleOutOfBoundException ex) {
+                    showAndCorrectInvalidEntryTimes(ex, studentEntry.getMainFrame());
                     return;
                 }
                 studentTimes.setValidStudentDays();
@@ -214,13 +225,18 @@ public class StudentInputMask extends JPanel {
     }
 
     public void addEditSaveButtonListener(StudentEdit studentEdit) {
+        ScheduleTimeFrame scheduleTimeFrame = studentEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                } catch (IllegalStateException ex) {
+                    studentTimes.checkScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
+                    return;
+                } catch (ScheduleOutOfBoundException ex) {
+                    showAndCorrectInvalidEntryTimes(ex, studentEdit.getMainFrame());
                     return;
                 }
                 studentTimes.updateValidStudentDays();
@@ -231,6 +247,15 @@ public class StudentInputMask extends JPanel {
             }
         };
         saveButton.addActionListener(saveButtonListener);
+    }
+
+    private void showAndCorrectInvalidEntryTimes(ScheduleOutOfBoundException ex, MainFrame mainFrame) {
+        int choice = Dialogs.showScheduleOutOfBoundErrorMessage(ex.getMessage());
+        if (choice == JOptionPane.YES_OPTION) // Stundenplan anpassen, falls NO_OPTION Schülerzeit anpassen
+        {
+            JDialog scheduleEdit = new ScheduleEdit(mainFrame);
+            scheduleEdit.setVisible(true);
+        }
     }
 
     public void addDeleteButtonListener(StudentEdit studentEdit) {
@@ -281,5 +306,9 @@ public class StudentInputMask extends JPanel {
         firstnameField.setText(student.getFirstName());
         nameField.setText(student.getName());
         lectiontypeField.setText(String.valueOf(student.getLectionLengthInMinutes()));
+    }
+
+    private int getLectionLengthInFields() {
+        return Integer.parseInt(lectionType) / 5;
     }
 }

@@ -40,7 +40,11 @@ public class ScheduleDay implements Cloneable {
         }
     }
 
-    public boolean isEmptyDay() {
+    public boolean matches(String dayname) {
+        return this.dayName.equals(dayname);
+    }
+
+    public boolean isEmpty() {
         return getValidStart().isEmpty() && getValidEnd().isEmpty();
     }
 
@@ -73,6 +77,7 @@ public class ScheduleDay implements Cloneable {
         return dayName;
     }
 
+//-------------unbenutzt----------------------
     @Override
     public ScheduleDay clone() {
         ScheduleDay scheduleDay = null;

@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentListData.StudentListData;
+import userUtil.ScheduleZoom;
 import util.Colors;
 
 /**
@@ -21,11 +22,6 @@ public class TimeTable extends JTable {
     private LectionField lectionField;
     private ScheduleData scheduleData;
     private StudentListData studentListData;
-    public static final int DEFAULT_HEIGHT = 14;
-    public static final int HEIGHT_DIFF = 4;
-    public static final int UPPER_HEIGHT = DEFAULT_HEIGHT + HEIGHT_DIFF;
-    public static final int LOWER_HEIGHT = DEFAULT_HEIGHT - HEIGHT_DIFF;
-    private int rowHeight;
 
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -33,7 +29,6 @@ public class TimeTable extends JTable {
         setModel(scheduleData);
         lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
         timeField = new TimeField(this, scheduleData);
-        rowHeight = DEFAULT_HEIGHT;
         addMouseListener(lectionField);
         addMouseListener(timeField);
         addMouseMotionListener(lectionField);
@@ -42,7 +37,7 @@ public class TimeTable extends JTable {
         addMouseListener(scheduleData);
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
-        setRowHeight(rowHeight);
+        setRowHeight(ScheduleZoom.DEFAULT_HEIGHT);
     }
 
     public void updateParameters() {
@@ -60,22 +55,6 @@ public class TimeTable extends JTable {
                 getColumnModel().getColumn(i).setCellRenderer(lectionField);
             }
         }
-    }
-
-    public void fireNextScheduleSizeOption() {
-        lectionField.decrementFontSizes(decrementRowHeight());
-        setRowHeight(rowHeight);
-        scheduleData.fireTableDataChanged();
-    }
-
-    private boolean decrementRowHeight() {
-        boolean stillDecrementing = rowHeight > LOWER_HEIGHT;
-        if (stillDecrementing) {
-            rowHeight--;
-        } else {
-            rowHeight = UPPER_HEIGHT;
-        }
-        return stillDecrementing;
     }
 
     public ScheduleFieldData getScheduleFieldAt(int row, int col) {

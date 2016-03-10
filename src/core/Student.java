@@ -5,8 +5,7 @@
  */
 package core;
 
-import com.sun.beans.editors.ColorEditor;
-import userUtil.ColoredStudentTimes;
+import scheduleData.ScheduleTimeFrame;
 
 /**
  *

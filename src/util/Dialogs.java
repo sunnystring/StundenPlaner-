@@ -21,7 +21,7 @@ public class Dialogs {
 
     public static void showStudentTimeSlotError() {
         JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
-                + "Anfangszeit nicht angeben oder grösser als Schlusszeit", "Schülerzeiten", JOptionPane.ERROR_MESSAGE);
+                + "Anfangszeit leer oder grösser als Schlusszeit", "Schülerzeiten", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showNoInputError() {
@@ -39,16 +39,24 @@ public class Dialogs {
                 + "oder Feld löschen!", "Zeiteingabe", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static int showDayEraseOptionMessage(String erasedDay) {
-        String msg = "Der" + erasedDay + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
-                + "Soll der" + erasedDay + "gelöscht werden?";
-        Object[] options = {"Löschen", "Abbrechen"};
-        return JOptionPane.showOptionDialog(null, msg, "Stundenplan", // Abbrechen = 1 = NO_OPTION, Löschen = 0 = YES_OPTION;
+    public static int showDayEraseOptionMessage(String day) {
+        String msg = "Der" + day + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
+                + "Soll der" + day + "gelöscht werden?";
+        Object[] options = {"Löschen", "Abbrechen"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
+        return JOptionPane.showOptionDialog(null, msg, "Stundenplan",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     }
 
     public static void showLectionEraseErrorMessage(String msg) {
         JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static int showScheduleOutOfBoundErrorMessage(String day) {
+        String msg = "Die eingebene Schülerzeit am" + day + "liegt ausserhalb des Stundenplans.\n"
+                + "Der Stundenplan oder die Schülerzeit muss angepasst werden.";
+        Object[] options = {"Stundenplan anpassen", "Schülerzeit anpassen"};
+        return JOptionPane.showOptionDialog(null, msg, "Zeiteingabe",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     }
 
 }

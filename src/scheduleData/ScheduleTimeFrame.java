@@ -36,7 +36,7 @@ public class ScheduleTimeFrame {
     }
 
     public void reset() {
-        absoluteStart = new Time("23.00");
+        absoluteStart = new Time("23.55");
         absoluteEnd = new Time();
         totalNumberOfFields = 0;
     }

@@ -7,10 +7,13 @@ package dataEntryUI;
 
 import javax.swing.JDialog;
 import mainframe.MainFrame;
+import scheduleData.ScheduleTimeFrame;
 
 /**
  *
- * Superklasse von {@link ScheduleEntry}, {@link ScheduleEdit}, {@link StudentEntry} und {@link StudentEdit}
+ * Superklasse von
+ * {@link ScheduleEntry}, {@link ScheduleEdit}, {@link StudentEntry} und
+ * {@link StudentEdit}
  */
 public abstract class DataEntryAndEdit extends JDialog {
 
@@ -27,6 +30,14 @@ public abstract class DataEntryAndEdit extends JDialog {
         setModal(true);
         setLocationRelativeTo(mainFrame);
         setResizable(false);
+    }
+
+    public MainFrame getMainFrame() {
+        return mainFrame;
+    }
+
+    public ScheduleTimeFrame getScheduleTimeFrame() {
+        return mainFrame.getScheduleData().getTimeFrame();
     }
 
     public abstract void setUpMask();

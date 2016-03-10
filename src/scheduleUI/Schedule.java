@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
+import userUtil.ScheduleZoom;
 import util.Colors;
 
 /**
@@ -19,9 +20,10 @@ import util.Colors;
  */
 public class Schedule extends JPanel {
 
-    private ScheduleData scheduleData;
+    private final ScheduleData scheduleData;
     private JPanel header;
-    private TimeTable timeTable;
+    private final TimeTable timeTable;
+    private final ScheduleZoom scheduleZoom;
 
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -29,6 +31,7 @@ public class Schedule extends JPanel {
         header.setLayout(new GridLayout(1, 4));
         header.setBackground(Colors.BACKGROUND);
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
+        scheduleZoom = new ScheduleZoom();
         setLayout(new BorderLayout());
         setBackground(Colors.BACKGROUND);
         add(BorderLayout.NORTH, header);
@@ -39,6 +42,14 @@ public class Schedule extends JPanel {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
         }
+    }
+
+    public void fireNextScheduleSize() {
+        scheduleZoom.setNextSize();
+        timeTable.setRowHeight(scheduleZoom.getRowHeight());
+        timeTable.getLectionField().setFontSize1(scheduleZoom.getFontSize1());
+        timeTable.getLectionField().setFontSize2(scheduleZoom.getFontSize2());
+        scheduleData.fireTableDataChanged();
     }
 
     public void removeHeader() {

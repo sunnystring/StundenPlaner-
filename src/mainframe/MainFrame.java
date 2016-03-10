@@ -6,6 +6,7 @@
 package mainframe;
 
 import core.Database;
+import core.DatabaseListener;
 import core.ScheduleTimes;
 import studentListData.StudentListData;
 import dataEntryUI.StudentInputMask;
@@ -41,7 +42,7 @@ import util.Icons;
  *
  * Erzeugung und Initialisierung der StundenPlaner-GUI
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements DatabaseListener {
 
     private Database database;
     private ScheduleTimes scheduleTimes;
@@ -52,8 +53,8 @@ public class MainFrame extends JFrame {
     private ScheduleInputMask scheduleInputMask;
     private StudentInputMask studentInputMask;
     private JPanel toolBar;
-    private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton, resizeButton;
-    private JToggleButton timeScopeButton;
+    private ScheduleButton openButton, saveButton, printButton, scheduleButton, studentButton, KGUButton, automaticAllocationButton, zoomButton;
+    private JToggleButton coloredStudentTimesButton;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
 
@@ -81,17 +82,22 @@ public class MainFrame extends JFrame {
         toolBar.setPreferredSize(new Dimension(0, 30));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 12, 0, 15));
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
+        openButton.setEnabled(false);
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
+        saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
+        printButton.setEnabled(false);
         scheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
         studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
         KGUButton = new ScheduleButton("boy&girl.png", "Gruppen-Profil erstellen");
         automaticAllocationButton = new ScheduleButton("coffee.png", "Automatischer Einteilungsvorschlag machen");
         automaticAllocationButton.setEnabled(false);  // ToDo...
-        resizeButton = new ScheduleButton("resize.png", "Stundenplan in verschiedenen Grössen anzeigen", 30);
-        timeScopeButton = new JToggleButton(Icons.setIcon("color.png"));
-        timeScopeButton.setToolTipText("Verteilung der Schülerzeiten anzeigen: je später, desto dunkler");
-        timeScopeButton.setPreferredSize(new Dimension(35, 0));
+        zoomButton = new ScheduleButton("resize.png", "Stundenplan in verschiedenen Grössen anzeigen", 30);
+        zoomButton.setEnabled(false);
+        coloredStudentTimesButton = new JToggleButton(Icons.setIcon("color.png"));
+        coloredStudentTimesButton.setToolTipText("Verteilung der Schülerzeiten anzeigen: je später, desto dunkler");
+        coloredStudentTimesButton.setPreferredSize(new Dimension(35, 0));
+        coloredStudentTimesButton.setEnabled(false);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.75);
@@ -119,8 +125,8 @@ public class MainFrame extends JFrame {
         toolBar.add(KGUButton);
         toolBar.add(automaticAllocationButton);
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(resizeButton);
-        toolBar.add(timeScopeButton);
+        toolBar.add(zoomButton);
+        toolBar.add(coloredStudentTimesButton);
 
     }
 
@@ -132,6 +138,7 @@ public class MainFrame extends JFrame {
     private void addListeners() {
         database.addDatabaseListener(studentListData);
         database.addDatabaseListener(scheduleData);
+        database.addDatabaseListener(this);
         scheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -152,13 +159,13 @@ public class MainFrame extends JFrame {
                 studentEntry.setVisible(true);
             }
         });
-        resizeButton.addActionListener(new ActionListener() {
+        zoomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                schedule.getTimeTable().fireNextScheduleSizeOption();
+                schedule.fireNextScheduleSize();
             }
         });
-        timeScopeButton.addItemListener(new ItemListener() {
+        coloredStudentTimesButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -179,6 +186,7 @@ public class MainFrame extends JFrame {
         setupAndShowStudentList();
         fireUIDataChanged();
         setStudentButtonsEnabled(true);
+        zoomButton.setEnabled(true);
     }
 
     private void setScheduleData() {
@@ -239,7 +247,7 @@ public class MainFrame extends JFrame {
         studentList.updateParameters();
     }
 
-    //--------------Other-------------
+    //--------------------------------
     public void setScheduleButtonEnabled(boolean state) {
         scheduleButton.setEnabled(state);
     }
@@ -273,4 +281,21 @@ public class MainFrame extends JFrame {
         return studentInputMask;
     }
 
+    public ScheduleData getScheduleData() {
+        return scheduleData;
+    }
+
+    @Override
+    public void studentAdded(int numberOfStudents, Student student) {
+        coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
+    }
+
+    @Override
+    public void studentEdited(Student student) {
+    }
+
+    @Override
+    public void studentDeleted(int numberOfStudents, int studentID) {
+        coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
+    }
 }

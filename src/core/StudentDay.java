@@ -5,6 +5,7 @@
  */
 package core;
 
+import scheduleData.ScheduleTimeFrame;
 import util.Time;
 
 /**
@@ -17,14 +18,12 @@ public class StudentDay {
     private String dayName = "";
     private Time[] timeSlots;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
-   // private int coloredTimeState;
 
     public StudentDay() {
         timeSlots = new Time[SLOTS];
         for (int i = 0; i < SLOTS; i++) {
             timeSlots[i] = new Time();
         }
-   //     coloredTimeState = -1;
     }
 
     public void setTimeSlot(String timeString, int slot) {
@@ -60,6 +59,33 @@ public class StudentDay {
         if (onlyStart2) {
             timeSlots[3] = timeSlots[2].clone();
         }
+    }
+
+    public boolean isEmpty() {
+        return getStartTime1().isEmpty() && getStartTime2().isEmpty() && getFavorite().isEmpty();
+    }
+
+    public boolean isOutOfTimeFrame(ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
+        Time absoluteEnd = scheduleTimeFrame.getAbsoluteEnd();
+        Time absoluteStart = scheduleTimeFrame.getAbsoluteStart();
+        Time end1 = getStartTime1().plusLengthOf(lectionLength);
+        Time end2 = getStartTime2().plusLengthOf(lectionLength);
+        Time favoriteEnd = getFavorite().plusLengthOf(lectionLength);
+        boolean outOfUpperBound = end1.greaterThan(absoluteEnd) || favoriteEnd.greaterThan(absoluteEnd) || end2.greaterThan(absoluteEnd);
+        boolean outOfTime1 = !getEndTime1().isEmpty() && getEndTime1().lessThan(absoluteStart);
+        boolean outOfFavorite = !getFavorite().isEmpty() && getFavorite().lessThan(absoluteStart);
+        boolean outOfTime2 = !getEndTime2().isEmpty() && getEndTime2().lessThan(absoluteStart);
+        boolean outOfLowerBound = outOfTime1 || outOfFavorite || outOfTime2;
+        return outOfUpperBound || outOfLowerBound;
+    }
+
+    public boolean isOutOfValidEnd(ScheduleTimes scheduleTimes) {
+        Time validScheduleEnd = new Time("23.55");
+        ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(this);
+        if (scheduleDay != null) {
+            validScheduleEnd = scheduleDay.getValidEnd();
+        }
+        return getStartTime1().greaterThan(validScheduleEnd) || getFavorite().greaterEqualsThan(validScheduleEnd);
     }
 
     public String getDayName() {

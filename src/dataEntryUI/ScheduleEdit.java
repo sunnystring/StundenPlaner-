@@ -9,12 +9,13 @@ import mainframe.MainFrame;
 
 /**
  *
- *  Zeitrahmen des Stundenplans ändern
+ * Zeitrahmen des Stundenplans ändern
  */
 public class ScheduleEdit extends DataEntryAndEdit {
 
     public ScheduleEdit(MainFrame mainFrame) {
         super(mainFrame, "Stundenplan ändern");
+        this.mainFrame = mainFrame;
         setUpMask();
         pack();
     }

@@ -114,10 +114,11 @@ public class ScheduleInputMask extends JPanel {
                 } catch (IllegalLectionEraseException ex) {
                     Dialogs.showLectionEraseErrorMessage(ex.getMessage());
                     scheduleTimes.returnToExistingSelection();
+                    scheduleEdit.dispose();
                     return;
                 } catch (DayEraseException ex) {
                     int choice = Dialogs.showDayEraseOptionMessage(ex.getMessage());
-                    if (choice == JOptionPane.NO_OPTION) {
+                    if (choice == JOptionPane.NO_OPTION) { // = Abbrechen
                         scheduleTimes.returnToExistingSelection();
                         return;
                     }
@@ -125,7 +126,6 @@ public class ScheduleInputMask extends JPanel {
                 mainFrame.updateAndShowUI();
                 scheduleEdit.dispose();
                 removeButtonListeners();
-
             }
         };
         saveButton.addActionListener(editButtonListener);

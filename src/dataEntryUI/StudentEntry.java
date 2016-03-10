@@ -19,7 +19,7 @@ public class StudentEntry extends DataEntryAndEdit {
     private Student student;
 
     public StudentEntry(MainFrame mainFrame, Student student) {
-        super(mainFrame, "Schülerprofil erstellen");
+        super(mainFrame, "Neues Schülerprofil erstellen");
         this.student = student;
         setUpMask();
         pack();

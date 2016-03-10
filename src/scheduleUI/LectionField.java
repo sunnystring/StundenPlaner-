@@ -21,6 +21,7 @@ import scheduleData.ScheduleData;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
+import userUtil.ScheduleZoom;
 import util.Colors;
 
 /**
@@ -37,17 +38,13 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     private int tempRow, tempCol;
     protected int lectionEnd, lectionDiff;
     protected static final int NULL_VALUE = -1;
-    private static final float DEFAULT_SIZE_1 = (float) 10, DEFAULT_SIZE_2 = (float) 8;
-    private static final float INC1 = (float) 0.3, INC2 = (float) 0.2;
-    private static final float UPPER_SIZE_1 = DEFAULT_SIZE_1 + TimeTable.HEIGHT_DIFF * INC1;
-    private static final float UPPER_SIZE_2 = DEFAULT_SIZE_2 + TimeTable.HEIGHT_DIFF * INC2;
     protected float size1, size2;
 
     public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
         this.timeTable = timeTable;
         this.scheduleData = scheduleData;
-        size1 = DEFAULT_SIZE_1;
-        size2 = DEFAULT_SIZE_2;
+        size1 = ScheduleZoom.DEFAULT_SIZE_1;
+        size2 = ScheduleZoom.DEFAULT_SIZE_2;
         setFont(this.getFont().deriveFont(Font.PLAIN, size1));
         initScheduleDimension();
         resetLectionColumn();
@@ -68,16 +65,6 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     public void initScheduleDimension() {
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
-    }
-
-    public void decrementFontSizes(boolean stillDecrementing) {
-        if (stillDecrementing) {
-            size1 -= INC1;
-            size2 -= INC2;
-        } else {
-            size1 = UPPER_SIZE_1;
-            size2 = UPPER_SIZE_2;
-        }
     }
 
     @Override
@@ -260,6 +247,14 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 timeTable.repaint(timeTable.getCellRect(movedRow - i, movedCol, false)); // dirty region oberhalb von Lection
             }
         }
+    }
+
+    public void setFontSize1(float size1) {
+        this.size1 = size1;
+    }
+
+    public void setFontSize2(float size2) {
+        this.size2 = size2;
     }
 
     @Override

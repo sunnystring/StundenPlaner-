@@ -22,7 +22,7 @@ public class ScheduleTimes extends AbstractTableModel {
 
     public static final int COLUMNS = 3;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
-    private static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+    public static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
     public static final int DAYS = WEEKDAY_NAMES.length;
     private final ScheduleDay[] daySelectionList;
     private final ArrayList<ScheduleDay> validScheduleDayList;
@@ -32,6 +32,7 @@ public class ScheduleTimes extends AbstractTableModel {
         daySelectionList = new ScheduleDay[DAYS];
         for (int i = 0; i < DAYS; i++) {
             daySelectionList[i] = new ScheduleDay();
+            daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
         }
         validScheduleDayList = new ArrayList<>();
         sharedDayIndicesMap = new HashMap<>();
@@ -86,7 +87,7 @@ public class ScheduleTimes extends AbstractTableModel {
         boolean allSlotsEmpty = true;
         boolean allSlotsValid = true;
         for (int i = 0; i < DAYS; i++) {
-            if (!daySelectionList[i].isEmptyDay()) {
+            if (!daySelectionList[i].isEmpty()) {
                 allSlotsEmpty = false;
             }
             if (daySelectionList[i].hasInvalidTimeSlots()) {
@@ -120,7 +121,7 @@ public class ScheduleTimes extends AbstractTableModel {
         boolean toBeErased = false;
         for (int i = 0; i < DAYS; i++) {  // alle Tage
             if (dayMatchesAt(i, j)) {
-                if (!validScheduleDayList.get(j).isEmptyDay() && daySelectionList[i].isEmptyDay()) {
+                if (!validScheduleDayList.get(j).isEmpty() && daySelectionList[i].isEmpty()) {
                     toBeErased = true;
                 }
             }
@@ -182,7 +183,7 @@ public class ScheduleTimes extends AbstractTableModel {
     }
 
     public boolean isValidDay(int i) {
-        return !daySelectionList[i].isEmptyDay();
+        return !daySelectionList[i].isEmpty();
     }
 
     public int getDayIndexOf(ScheduleDay scheduleDay) {
@@ -193,6 +194,16 @@ public class ScheduleTimes extends AbstractTableModel {
             }
         }
         return index;
+    }
+
+    public ScheduleDay getMatchingScheduleDayOf(StudentDay studentDay) {
+        ScheduleDay matchingDay = null;
+        for (ScheduleDay scheduleDay : validScheduleDayList) {
+            if (scheduleDay.matches(studentDay.getDayName())) {
+                matchingDay = scheduleDay;
+            }
+        }
+        return matchingDay;
     }
 
     public Integer getSharedDayIndexOf(int newDayIndex) {

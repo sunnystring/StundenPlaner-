@@ -8,6 +8,7 @@ package userUtil;
 import core.Database;
 import core.ScheduleDay;
 import core.ScheduleTimes;
+import core.StudentDay;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -15,8 +16,8 @@ import util.Colors;
 import util.Time;
 
 /**
- *
- * @author mathiaskielholz
+ * Zeigt die Verteilung der Schülerzeiten in 5 verschiedenen Blautönen an aufgrund von Anfangszeit 1 oder Favorit
+ * 
  */
 public class ColoredStudentTimes {
 
@@ -50,7 +51,7 @@ public class ColoredStudentTimes {
         timeMark = new Time();
         timeMark = scheduleDay.getValidStart().clone();
         inc = new Time();
-        inc = (scheduleDay.getValidEnd().minus(scheduleDay.getValidStart())).divBy(COLOR_RANGE);
+        inc = (scheduleDay.getValidEnd().minus(scheduleDay.getValidStart())).divBy(COLOR_RANGE,Time.ROUND_UP);
     }
 
     private void createMappingAt(int colorIndex) {
@@ -74,8 +75,9 @@ public class ColoredStudentTimes {
         timeMark = timeMark.plus(inc);
     }
 
-    public Color getColor(int studentID, int dayIndex) {
-        Time studentTime = database.getStudent(studentID).getStudentTimes().getValidStudentDay(dayIndex).getStartTime1();
+    public Color getColorAt(int studentID, int dayIndex) {
+        StudentDay studentDay = database.getStudent(studentID).getStudentTimes().getValidStudentDay(dayIndex);
+        Time studentTime = !studentDay.getStartTime1().isEmpty() ? studentDay.getStartTime1() : studentDay.getFavorite();
         if (studentTime.isEmpty()) {
             return Colors.BLUE_DEFAULT;
         } else {

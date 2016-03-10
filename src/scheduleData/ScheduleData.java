@@ -355,6 +355,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return dayColumnDataList.get(i);
     }
 
+    public ScheduleTimeFrame getTimeFrame() {
+        return timeFrame;
+    }
+
     @Override
     public void mouseClicked(MouseEvent me) {
     }
