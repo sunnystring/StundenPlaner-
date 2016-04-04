@@ -13,8 +13,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import util.Time;
+import utils.Time;
+import static scheduleData.ScheduleFieldData.*;
 
 /**
  *
@@ -24,9 +24,10 @@ import util.Time;
  */
 public class DayColumnData {
 
-    private Database database;
-    private ArrayList<ScheduleFieldData> fieldList;
+    private final Database database;
+    private final ArrayList<ScheduleFieldData> fieldList;
     private TreeMap<Time, LectionData> lectionMap;
+    private TreeMap<Time, Integer> timeToFieldIndexMap;
     private Time absoluteStart;
     private int totalNumberOfFields;
     private int fieldCountStart;
@@ -36,29 +37,25 @@ public class DayColumnData {
     public DayColumnData(Database database) {
         this.database = database;
         fieldList = new ArrayList<>();
+        timeToFieldIndexMap = new TreeMap<>();
     }
 
     public void createDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
         this.scheduleDay = scheduleDay;
-        setLectionMap();
+        lectionMap = database.getLectionMapAt(scheduleDay);
         setTimeFrame(timeFrame);
         createFieldList();
     }
 
     public void updateDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
         this.scheduleDay = scheduleDay;
-        setLectionMap();
+        lectionMap = database.getLectionMapAt(scheduleDay);
         setTimeFrame(timeFrame);
         if (hasAllocatedLections()) {
             rebuildFieldList();
         } else {
             createFieldList();
         }
-    }
-
-    private void setLectionMap() {
-        int convertedDayIndex = database.getScheduleTimes().getDayIndexOf(scheduleDay);
-        lectionMap = database.getLectionMapAt(convertedDayIndex);
     }
 
     private void setTimeFrame(ScheduleTimeFrame timeFrame) {
@@ -69,26 +66,30 @@ public class DayColumnData {
     }
 
     private void createFieldList() {
-        Time time = absoluteStart.clone();
+        timeToFieldIndexMap.clear();
+        Time fieldTime = absoluteStart.clone();
         for (int i = 0; i < totalNumberOfFields; i++) {
             ScheduleFieldData scheduleField = new ScheduleFieldData(database);
-            scheduleField.setFieldTime(time.clone());
+            scheduleField.setFieldTime(fieldTime.clone());
             scheduleField.setTeacherTimeEnabled(i >= fieldCountStart && i <= fieldCountEnd);
             fieldList.add(scheduleField);
-            time.inc();
+            timeToFieldIndexMap.put(fieldTime.clone(), i);
+            fieldTime.inc();
         }
     }
 
     private void rebuildFieldList() {
+        timeToFieldIndexMap.clear();
         int i = 0;
         Time fieldTime = absoluteStart.clone();
         while (i < totalNumberOfFields) {
             ScheduleFieldData scheduleField = new ScheduleFieldData(database);
             LectionData lection = lectionMap.get(fieldTime);
             if (lection != null) {
+                lection.updateTeacherTime(i >= fieldCountStart && i <= fieldCountEnd);
                 fieldList.addAll(lection.getFieldList());
                 for (int j = 0; j < lection.getLength(); j++) {
-                    scheduleField.setTeacherTimeEnabled(i >= fieldCountStart && i <= fieldCountEnd);
+                    timeToFieldIndexMap.put(fieldTime.clone(), i);
                     fieldTime.inc();
                     i++;
                 }
@@ -96,6 +97,7 @@ public class DayColumnData {
                 scheduleField.setFieldTime(fieldTime.clone());
                 scheduleField.setTeacherTimeEnabled(i >= fieldCountStart && i <= fieldCountEnd);
                 fieldList.add(scheduleField);
+                timeToFieldIndexMap.put(fieldTime.clone(), i);
                 fieldTime.inc();
                 i++;
             }
@@ -114,14 +116,14 @@ public class DayColumnData {
     public void setValidTimeMark(StudentDay day, int listIndex) {
         ScheduleFieldData field = fieldList.get(listIndex);
         Time listTime = field.getFieldTime();
-        if (listTime.greaterEqualsThan(day.getStartTime1()) && listTime.lessEqualsThan(day.getEndTime1())) {
-            field.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_1);
+        if (listTime.greaterEqualsThan(day.start1()) && listTime.lessEqualsThan(day.end1())) {
+            field.setValidTimeMark(TIME_INTERVAL_1);
         }
-        if (listTime.greaterEqualsThan(day.getStartTime2()) && listTime.lessEqualsThan(day.getEndTime2())) {
-            field.setValidTimeMark(ScheduleFieldData.TIME_INTERVAL_2);
+        if (listTime.greaterEqualsThan(day.start2()) && listTime.lessEqualsThan(day.end2())) {
+            field.setValidTimeMark(TIME_INTERVAL_2);
         }
-        if (listTime.equals(day.getFavorite())) {
-            field.setValidTimeMark(ScheduleFieldData.FAVORITE);
+        if (listTime.equals(day.favorite())) {
+            field.setValidTimeMark(FAVORITE);
         }
     }
 
@@ -133,7 +135,7 @@ public class DayColumnData {
 
     public void resetValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldList.get(i).setValidTimeMark(ScheduleFieldData.NO_VALUE);
+            fieldList.get(i).setValidTimeMark(NO_VALUE);
         }
     }
 
@@ -154,7 +156,7 @@ public class DayColumnData {
         }
     }
 
-    public ScheduleFieldData getFieldData(int i) {
+    public ScheduleFieldData getFieldDataAt(int i) {
         return fieldList.get(i);
     }
 
@@ -162,8 +164,7 @@ public class DayColumnData {
         return scheduleDay.getDayName();
     }
 
-//    // TEST
-//    public TreeMap<Time, LectionData> getLectionMap() {
-//        return lectionMap;
-//    }
+    public int getFieldIndexAt(Time fieldTime) {
+        return timeToFieldIndexMap.get(fieldTime);
+    }
 }

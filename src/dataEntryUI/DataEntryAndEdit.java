@@ -8,6 +8,7 @@ package dataEntryUI;
 import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
+import studentListData.StudentListData;
 
 /**
  *
@@ -38,6 +39,10 @@ public abstract class DataEntryAndEdit extends JDialog {
 
     public ScheduleTimeFrame getScheduleTimeFrame() {
         return mainFrame.getScheduleData().getTimeFrame();
+    }
+
+    public StudentListData getStudentListData() {
+        return mainFrame.getStudentListData();
     }
 
     public abstract void setUpMask();

@@ -8,7 +8,8 @@ package core;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import scheduleData.LectionData;
-import util.Time;
+import utils.Time;
+import static core.ScheduleTimes.DAYS;
 
 /**
  *
@@ -21,6 +22,7 @@ public class Database {
     private final ArrayList<Student> studentDataList;
     private final ArrayList<DatabaseListener> databaseListeners;
     private final ArrayList<TreeMap<Time, LectionData>> lectionMaps;
+
     private int numberOfStudents;
 
     public Database() {
@@ -28,7 +30,7 @@ public class Database {
         studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
         lectionMaps = new ArrayList<>();
-        for (int i = 0; i < scheduleTimes.DAYS; i++) {
+        for (int i = 0; i < DAYS; i++) {
             lectionMaps.add(new TreeMap());
         }
         numberOfStudents = 0;
@@ -54,7 +56,7 @@ public class Database {
         numberOfStudents = studentDataList.size(); // = numberOfStudents--
         updateStudentIDs();
         for (DatabaseListener l : databaseListeners) {
-            l.studentDeleted(numberOfStudents, student.getID());
+            l.studentDeleted(numberOfStudents, student);
         }
     }
 
@@ -63,7 +65,7 @@ public class Database {
             studentDataList.get(i).setStudentID(i);
         }
     }
- 
+
     public void updateStudentDays() {
         for (int i = 0; i < numberOfStudents; i++) {
             StudentTimes studentTimes = studentDataList.get(i).getStudentTimes();
@@ -75,7 +77,7 @@ public class Database {
                     studentDay = studentTimes.getValidStudentDay(oldDayIndex);
                 } else {
                     studentDay = new StudentDay();
-                    studentDay.setDayName(scheduleTimes.getValidScheduleDay(j).getDayName());
+                    studentDay.setDayName(scheduleTimes.getValidScheduleDayAt(j).getDayName());
                 }
                 tempStudentDayList.add(studentDay);
             }
@@ -91,6 +93,10 @@ public class Database {
         return studentDataList.get(ID);
     }
 
+    public int getNumberOfStudents() {
+        return numberOfStudents;
+    }
+
     public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
     }
@@ -99,7 +105,11 @@ public class Database {
         return studentDataList;
     }
 
-    public TreeMap<Time, LectionData> getLectionMapAt(int i) {
-        return lectionMaps.get(i);
+    public TreeMap<Time, LectionData> getLectionMapAt(int validDayIndex) {
+        return lectionMaps.get(scheduleTimes.getStaticDayIndexOf(validDayIndex));
+    }
+
+    public TreeMap<Time, LectionData> getLectionMapAt(ScheduleDay scheduleDay) {
+        return lectionMaps.get(scheduleTimes.getStaticDayIndexOf(scheduleDay));
     }
 }

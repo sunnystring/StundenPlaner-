@@ -10,8 +10,8 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
-import userUtil.ScheduleZoom;
-import util.Colors;
+import userUtilsUI.ScheduleZoom;
+import utils.Colors;
 
 /**
  *
@@ -46,9 +46,9 @@ public class Schedule extends JPanel {
 
     public void fireNextScheduleSize() {
         scheduleZoom.setNextSize();
-        timeTable.setRowHeight(scheduleZoom.getRowHeight());
         timeTable.getLectionField().setFontSize1(scheduleZoom.getFontSize1());
         timeTable.getLectionField().setFontSize2(scheduleZoom.getFontSize2());
+        timeTable.setRowHeight(scheduleZoom.getRowHeight());
         scheduleData.fireTableDataChanged();
     }
 

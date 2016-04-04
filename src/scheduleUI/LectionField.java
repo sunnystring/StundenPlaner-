@@ -21,8 +21,8 @@ import scheduleData.ScheduleData;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
-import userUtil.ScheduleZoom;
-import util.Colors;
+import userUtilsUI.ScheduleZoom;
+import utils.Colors;
 
 /**
  *
@@ -52,7 +52,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         setOpaque(true);
     }
 
-    public void resetLectionColumn() {
+    public final void resetLectionColumn() {
         movedRow = 0;
         movedCol = 0;
         tempRow = NULL_VALUE;
@@ -62,7 +62,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         lectionDiff = 0;
     }
 
-    public void initScheduleDimension() {
+    public final void initScheduleDimension() {
         rowCount = scheduleData.getRowCount();
         columnCount = scheduleData.getColumnCount();
     }
@@ -182,7 +182,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();

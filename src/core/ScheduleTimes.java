@@ -9,9 +9,11 @@ import dataEntryUI.ScheduleInputMask;
 import exceptions.DayEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
+import exceptions.OutOfBoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
+import scheduleData.ScheduleTimeFrame;
 
 /**
  *
@@ -131,7 +133,48 @@ public class ScheduleTimes extends AbstractTableModel {
 
     private boolean dayMatchesAt(int i, int j) {
         return daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName());
+    }
 
+    public void checkStudentListBounds(Database database) {
+        String daysAndStudents = "";
+        boolean hasDaysOutOfBounds = false;
+        ScheduleTimeFrame tempTimeFrame = createTemporaryTimeFrame();
+        for (int i = 0; i < daySelectionList.length; i++) {
+            ScheduleDay scheduleDay = daySelectionList[i];
+            boolean thisDayOutOfBounds = false;
+            if (!scheduleDay.isEmpty()) {
+                String studentNames = "";
+                for (Student student : database.getStudentDataList()) {
+                    StudentTimes studentTimes = student.getStudentTimes();
+                    StudentDay studentDay = studentTimes.getMatchingStudentDayOf(scheduleDay);
+                    if (studentDay != null && !studentDay.isEmpty()) {
+                        boolean outOfValidEnd = studentDay.outOfValidEndOf(scheduleDay);
+                        boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, student.getLectionLength());
+                        if (outOfTimeFrame || outOfValidEnd) {
+                            studentNames += student.getFirstName() + " " + student.getName() + "\n";
+                            thisDayOutOfBounds = true;
+                        }
+                    }
+                }
+                if (thisDayOutOfBounds) {
+                    hasDaysOutOfBounds = true;
+                    daysAndStudents += scheduleDay.getDayName() + ":\n" + studentNames + "\n";
+                }
+            }
+        }
+        if (hasDaysOutOfBounds) {
+            throw new OutOfBoundException(daysAndStudents);
+        }
+    }
+
+    public ScheduleTimeFrame createTemporaryTimeFrame() {
+        ScheduleTimeFrame tempFrame = new ScheduleTimeFrame();
+        for (int i = 0; i < getRowCount(); i++) {
+            if (isValidDay(i)) {
+                tempFrame.setBounds(getSelectedScheduleDay(i));
+            }
+        }
+        return tempFrame;
     }
 
     public void setValidScheduleDays() {
@@ -186,16 +229,6 @@ public class ScheduleTimes extends AbstractTableModel {
         return !daySelectionList[i].isEmpty();
     }
 
-    public int getDayIndexOf(ScheduleDay scheduleDay) {
-        int index = -1;
-        for (int i = 0; i < DAYS; i++) {
-            if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
     public ScheduleDay getMatchingScheduleDayOf(StudentDay studentDay) {
         ScheduleDay matchingDay = null;
         for (ScheduleDay scheduleDay : validScheduleDayList) {
@@ -206,6 +239,28 @@ public class ScheduleTimes extends AbstractTableModel {
         return matchingDay;
     }
 
+    public int getStaticDayIndexOf(int validDayIndex) {
+        int index = -1;
+        for (int i = 0; i < DAYS; i++) {
+            if (WEEKDAY_NAMES[i].equals(validScheduleDayList.get(validDayIndex).getDayName())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public int getStaticDayIndexOf(ScheduleDay scheduleDay) {
+        int index = -1;
+        for (int i = 0; i < DAYS; i++) {
+            if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     public Integer getSharedDayIndexOf(int newDayIndex) {
         return sharedDayIndicesMap.get(newDayIndex);
     }
@@ -214,7 +269,7 @@ public class ScheduleTimes extends AbstractTableModel {
         return validScheduleDayList.size();
     }
 
-    public ScheduleDay getValidScheduleDay(int i) {
+    public ScheduleDay getValidScheduleDayAt(int i) {
         return validScheduleDayList.get(i);
     }
 

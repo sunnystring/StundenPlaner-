@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package utils;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -44,7 +44,7 @@ public class Icons {
             img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         }
         if (name.equals("resize.png")) {
-            img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            img = img.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
         }
         return new ImageIcon(img);
     }

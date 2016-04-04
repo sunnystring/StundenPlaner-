@@ -18,11 +18,13 @@ import exceptions.DayEraseException;
 import exceptions.IllegalLectionEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
+import exceptions.OutOfBoundException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import mainframe.MainFrame;
-import util.Dialogs;
+import scheduleData.ScheduleData;
+import utils.Dialogs;
 
 /**
  *
@@ -31,6 +33,8 @@ import util.Dialogs;
 public class ScheduleInputMask extends JPanel {
 
     private final MainFrame mainFrame;
+    private final Database database;
+    private final ScheduleData scheduleData;
     private final ScheduleTimes scheduleTimes;
     private JScrollPane center;
     private JPanel bottom;
@@ -39,7 +43,9 @@ public class ScheduleInputMask extends JPanel {
     private ActionListener cancelButtonListener, saveButtonListener, editButtonListener;
 
     public ScheduleInputMask(Database database, MainFrame mainFrame) {
+        this.database = database;
         this.mainFrame = mainFrame;
+        scheduleData = mainFrame.getScheduleData();
         scheduleTimes = database.getScheduleTimes();
         setLayout(new BorderLayout());
         createWidgets();
@@ -66,12 +72,18 @@ public class ScheduleInputMask extends JPanel {
         add(BorderLayout.PAGE_END, bottom);
     }
 
-    public void addCancelButtonListener(DataEntryAndEdit dataEntryAndEdit) {  // ev zusammenfassen mit DataEntryAndEdit
+    public void addCancelButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                scheduleTimes.returnToExistingSelection();
+                cancelButton.removeActionListener(cancelButtonListener);
+                if (dataEntryAndEdit instanceof ScheduleEntry) {
+                    saveButton.removeActionListener(saveButtonListener);
+                } else if (dataEntryAndEdit instanceof ScheduleEdit) {
+                    saveButton.removeActionListener(editButtonListener);
+                }
                 dataEntryAndEdit.dispose();
-                removeButtonListeners();
             }
         };
         cancelButton.addActionListener(cancelButtonListener);
@@ -91,8 +103,9 @@ public class ScheduleInputMask extends JPanel {
                     return;
                 }
                 mainFrame.setupAndShowUI();
+                cancelButton.removeActionListener(cancelButtonListener);
+                saveButton.removeActionListener(saveButtonListener);
                 scheduleEntry.dispose();
-                removeButtonListeners();
             }
         };
         saveButton.addActionListener(saveButtonListener);
@@ -104,17 +117,25 @@ public class ScheduleInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     scheduleTimes.checkTimeSlots();
-                    mainFrame.validateNewEntry();
+                    scheduleTimes.checkStudentListBounds(database);
+                    scheduleData.checkIfScheduleDayErasable();
+                    scheduleData.checkIfLectionsWithinTimeFrame();
+                    scheduleTimes.validateDayEntry();
                 } catch (NoEntryException ex) {
                     Dialogs.showNoInputError();
+                    scheduleTimes.returnToExistingSelection();
                     return;
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showScheduleTimeSlotError();
+                    scheduleTimes.returnToExistingSelection();
                     return;
                 } catch (IllegalLectionEraseException ex) {
                     Dialogs.showLectionEraseErrorMessage(ex.getMessage());
                     scheduleTimes.returnToExistingSelection();
-                    scheduleEdit.dispose();
+                    return;
+                } catch (OutOfBoundException ex) {
+                    Dialogs.showScheduleOutOfBoundErrorMessage(ex.getMessage());
+                    scheduleTimes.returnToExistingSelection();
                     return;
                 } catch (DayEraseException ex) {
                     int choice = Dialogs.showDayEraseOptionMessage(ex.getMessage());
@@ -124,16 +145,11 @@ public class ScheduleInputMask extends JPanel {
                     }
                 }
                 mainFrame.updateAndShowUI();
+                cancelButton.removeActionListener(cancelButtonListener);
+                saveButton.removeActionListener(editButtonListener);
                 scheduleEdit.dispose();
-                removeButtonListeners();
             }
         };
         saveButton.addActionListener(editButtonListener);
-    }
-
-    private void removeButtonListeners() {
-        cancelButton.removeActionListener(cancelButtonListener);
-        saveButton.removeActionListener(saveButtonListener);
-        saveButton.removeActionListener(editButtonListener);
     }
 }

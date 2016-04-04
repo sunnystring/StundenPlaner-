@@ -6,24 +6,36 @@
 package core;
 
 import scheduleData.ScheduleTimeFrame;
-import util.Time;
+import utils.Time;
+import static core.StudentTimes.COLUMNS;
+import java.util.ArrayList;
+import scheduleData.DayColumnData;
 
 /**
  *
  * Einheit eines Unterrichtages mit den verfügbaren Schülerzeiten
  */
-public class StudentDay {
+public class StudentDay implements Comparable<StudentDay> {
 
-    public static final int SLOTS = StudentTimes.COLUMNS - 1;
+    public static final int SLOTS = COLUMNS - 1;
     private String dayName = "";
-    private Time[] timeSlots;
+    private final Time[] timeSlots;
+    private boolean isEmpty;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
+    private Time earliestStart, latestStart, earliestEnd, latestEnd; // Timebounds
+    private final ArrayList<ValidTimePairs> validTimes; // für IncompatibleStudentTimes (K = startTime, V = endTime)
 
     public StudentDay() {
         timeSlots = new Time[SLOTS];
         for (int i = 0; i < SLOTS; i++) {
             timeSlots[i] = new Time();
         }
+        earliestStart = new Time();
+        latestStart = new Time();
+        earliestEnd = new Time();
+        latestEnd = new Time();
+        validTimes = new ArrayList<>();
+        isEmpty = true;
     }
 
     public void setTimeSlot(String timeString, int slot) {
@@ -31,25 +43,8 @@ public class StudentDay {
         timeSlots[slot].setTime(timeString);
     }
 
-    public boolean hasInvalidTimeSlots() {
-        noStart1 = getStartTime1().isEmpty() && !getEndTime1().isEmpty();
-        noStart2 = getStartTime2().isEmpty() && !getEndTime2().isEmpty();
-        endSmallerStart1 = getEndTime1().lessThan(getStartTime1());
-        endSmallerStart2 = getEndTime2().lessThan(getStartTime2());
-        onlyStart1 = !getStartTime1().isEmpty() & getEndTime1().isEmpty();
-        onlyStart2 = !getStartTime2().isEmpty() & getEndTime2().isEmpty();
-        return (noStart1 || noStart2 || endSmallerStart1 && !onlyStart1 || endSmallerStart2 && !onlyStart2);
-    }
-
-    public void correctInvalidTimeSlots() {
-        if (noStart1 || endSmallerStart1) {
-            timeSlots[0] = new Time();
-            timeSlots[1] = new Time();
-        }
-        if (noStart2 || endSmallerStart2) {
-            timeSlots[2] = new Time();
-            timeSlots[3] = new Time();
-        }
+    public void setSelectionState() {
+        isEmpty = start1().isEmpty() && start2().isEmpty() && favorite().isEmpty();
     }
 
     public void setSingleLections() {
@@ -61,31 +56,176 @@ public class StudentDay {
         }
     }
 
-    public boolean isEmpty() {
-        return getStartTime1().isEmpty() && getStartTime2().isEmpty() && getFavorite().isEmpty();
+    public void setLowestAndHighestBounds() {
+        if (!isEmpty) {
+            setEarliestStartAndEnd();
+            setLatestStartAndEnd();
+        }
     }
 
-    public boolean isOutOfTimeFrame(ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
+    private void setEarliestStartAndEnd() {
+        earliestStart = new Time("23.55");
+        earliestEnd = new Time("23.55");
+        for (int i = 0; i < SLOTS; i++) {
+            if (!timeSlots[i].isEmpty()) {
+                if (i != 1 && i != 3) {
+                    if (timeSlots[i].lessEqualsThan(earliestStart)) {
+                        earliestStart = timeSlots[i];
+                    }
+                }
+                if (i != 0 && i != 2) {
+                    if (timeSlots[i].lessEqualsThan(earliestEnd)) {
+                        earliestEnd = timeSlots[i];
+                    }
+                }
+            }
+        }
+    }
+
+    private void setLatestStartAndEnd() {
+        for (int i = 0; i < SLOTS; i++) {
+            if (!timeSlots[i].isEmpty()) {
+                if (i != 1 && i != 3) {
+                    if (timeSlots[i].greaterEqualsThan(latestStart)) {
+                        latestStart = timeSlots[i];
+                    }
+                }
+                if (i != 0 && i != 2) {
+                    if (timeSlots[i].greaterEqualsThan(latestEnd)) {
+                        latestEnd = timeSlots[i];
+                    }
+                }
+            }
+        }
+    }
+
+    public void setValidTimes() {
+        validTimes.clear();
+        if (!start1().isEmpty()) {
+            validTimes.add(new ValidTimePairs(start1(), end1()));
+        }
+        if (!start2().isEmpty()) {
+            validTimes.add(new ValidTimePairs(start2(), end2()));
+        }
+        if (!favorite().isEmpty()) {
+            validTimes.add(new ValidTimePairs(favorite(), favorite()));
+        }
+    }
+
+    public boolean validateTimeSlots() {
+        noStart1 = start1().isEmpty() && !end1().isEmpty();
+        noStart2 = start2().isEmpty() && !end2().isEmpty();
+        endSmallerStart1 = end1().lessThan(start1());
+        endSmallerStart2 = end2().lessThan(start2());
+        onlyStart1 = !start1().isEmpty() & end1().isEmpty();
+        onlyStart2 = !start2().isEmpty() & end2().isEmpty();
+        return (noStart1 || noStart2 || endSmallerStart1 && !onlyStart1 || endSmallerStart2 && !onlyStart2);
+    }
+
+    public void correctInvalidTimeSlots() {
+        if (noStart1 || endSmallerStart1) {
+            timeSlots[0].reset();
+            timeSlots[1].reset();
+        }
+        if (noStart2 || endSmallerStart2) {
+            timeSlots[2].reset();
+            timeSlots[3].reset();
+        }
+    }
+
+    public boolean matches(String dayname) {
+        return this.dayName.equals(dayname);
+    }
+
+    public boolean outOfTimeFrame(ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
         Time absoluteEnd = scheduleTimeFrame.getAbsoluteEnd();
         Time absoluteStart = scheduleTimeFrame.getAbsoluteStart();
-        Time end1 = getStartTime1().plusLengthOf(lectionLength);
-        Time end2 = getStartTime2().plusLengthOf(lectionLength);
-        Time favoriteEnd = getFavorite().plusLengthOf(lectionLength);
-        boolean outOfUpperBound = end1.greaterThan(absoluteEnd) || favoriteEnd.greaterThan(absoluteEnd) || end2.greaterThan(absoluteEnd);
-        boolean outOfTime1 = !getEndTime1().isEmpty() && getEndTime1().lessThan(absoluteStart);
-        boolean outOfFavorite = !getFavorite().isEmpty() && getFavorite().lessThan(absoluteStart);
-        boolean outOfTime2 = !getEndTime2().isEmpty() && getEndTime2().lessThan(absoluteStart);
-        boolean outOfLowerBound = outOfTime1 || outOfFavorite || outOfTime2;
+        boolean outOfUpperBound = !earliestStart.isEmpty() && earliestStart.plusTimeOf(lectionLength).greaterThan(absoluteEnd);
+        boolean outOfLowerBound = !latestEnd.isEmpty() && latestEnd.lessThan(absoluteStart);
         return outOfUpperBound || outOfLowerBound;
     }
 
-    public boolean isOutOfValidEnd(ScheduleTimes scheduleTimes) {
+    public boolean outOfValidEndOf(ScheduleDay scheduleDay) {
         Time validScheduleEnd = new Time("23.55");
-        ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(this);
         if (scheduleDay != null) {
             validScheduleEnd = scheduleDay.getValidEnd();
         }
-        return getStartTime1().greaterThan(validScheduleEnd) || getFavorite().greaterEqualsThan(validScheduleEnd);
+        return earliestStart.greaterEqualsThan(validScheduleEnd);
+    }
+
+    public boolean isWithin(StudentDay refDay, int refLection) { // this = searchDay
+        if (isEmpty) {
+            return false;
+        }
+        Time refEnd = refDay.getLatestEnd().plusTimeOf(refLection);
+        return earliestStart.lessEqualsThan(refEnd);
+    }
+
+    public boolean isIncompatibleTo(StudentDay refDay, int refLection, int searchLection) { // this = searchDay
+        boolean isIncompatible = true;
+        Time searchEnd, refEnd;
+        for (int i = 0; i < SLOTS; i++) {
+            if (i != 0 && i != 2) {
+                searchEnd = timeSlots[i];
+                refEnd = refDay.getTimeAt(i);
+                if (!searchEnd.isEmpty()) {  // 1. check: search incompatible to ref
+                    for (ValidTimePairs timePairs : refDay.getValidTimes()) {
+                        Time refStart = timePairs.start();
+                        Time refLength = refStart.plusTimeOf(refLection);
+                        if (searchEnd.greaterEqualsThan(refLength)) {
+                            isIncompatible = false;
+                        }
+                    }
+                }
+                if (isIncompatible && !refEnd.isEmpty()) { // 2. check: ref incompatible to search
+                    for (ValidTimePairs timePairs : validTimes) {
+                        Time searchStart = timePairs.start();
+                        Time searchLength = searchStart.plusTimeOf(searchLection);
+                        if (refEnd.greaterEqualsThan(searchLength)) {
+                            isIncompatible = false;
+                        }
+                    }
+                }
+            }
+        }
+        return isIncompatible;
+    }
+
+    public boolean isBlocked(DayColumnData dayColumn, int searchLectionLength) {
+        boolean isBlocked = true;
+        for (ValidTimePairs timePairs : validTimes) {
+            Time startTime = timePairs.start();
+            Time endTime = timePairs.end();
+            int fieldIndex = dayColumn.getFieldIndexAt(startTime);
+            int lastFieldIndex = dayColumn.getFieldIndexAt(endTime);
+            int lectionFieldCount = 0;
+            while (fieldIndex < lastFieldIndex + searchLectionLength) {
+                lectionFieldCount++;
+                if (dayColumn.getFieldDataAt(fieldIndex).isLectionAllocated()) {
+                    lectionFieldCount = 0;
+                }
+                if (lectionFieldCount > searchLectionLength - 1) {
+                    isBlocked = false;
+                }
+                fieldIndex++;
+            }
+        }
+        return isBlocked;
+    }
+
+    @Override
+    public int compareTo(StudentDay d) {
+        if (earliestStart.greaterThan(d.getEarliestStart())) {
+            return 1;
+        }
+        if (earliestStart.lessThan(d.getEarliestStart())) {
+            return -1;
+        }
+        return 0;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
     }
 
     public String getDayName() {
@@ -96,31 +236,73 @@ public class StudentDay {
         this.dayName = dayName;
     }
 
-    public Time getStartTime1() {
+    public Time getTimeAt(int i) {
+        return timeSlots[i];
+    }
+
+    public Time start1() {
         return timeSlots[0];
     }
 
-    public Time getEndTime1() {
+    public Time end1() {
         return timeSlots[1];
     }
 
-    public Time getStartTime2() {
+    public Time start2() {
         return timeSlots[2];
     }
 
-    public Time getEndTime2() {
+    public Time end2() {
         return timeSlots[3];
     }
 
-    public Time getFavorite() {
+    public Time favorite() {
         return timeSlots[4];
+    }
+
+    public Time getEarliestStart() {
+        return earliestStart;
+    }
+
+    public Time getEarliestEnd() {
+        return earliestEnd;
+    }
+
+    public Time getLatestStart() {
+        return latestStart;
+    }
+
+    public Time getLatestEnd() {
+        return latestEnd;
+    }
+
+    public ArrayList<ValidTimePairs> getValidTimes() {
+        return validTimes;
     }
 
     @Override
     public String toString() {
         String endString1, endString2;
-        endString1 = getEndTime1().toString().trim().isEmpty() ? getEndTime1().toString() : "-" + getEndTime1().toString();
-        endString2 = getEndTime2().toString().trim().isEmpty() ? getEndTime2().toString() : "-" + getEndTime2().toString();
-        return " " + getStartTime1() + endString1 + " " + getStartTime2() + endString2 + " ";
+        endString1 = end1().toString().trim().isEmpty() ? end1().toString() : "-" + end1().toString();
+        endString2 = end2().toString().trim().isEmpty() ? end2().toString() : "-" + end2().toString();
+        return " " + start1() + endString1 + " " + start2() + endString2 + " ";
+    }
+
+    private class ValidTimePairs {
+
+        private Time start, end;
+
+        public ValidTimePairs(Time start, Time end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public Time start() {
+            return start;
+        }
+
+        public Time end() {
+            return end;
+        }
     }
 }

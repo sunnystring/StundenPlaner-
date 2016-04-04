@@ -5,8 +5,6 @@
  */
 package core;
 
-import scheduleData.ScheduleTimeFrame;
-
 /**
  *
  * Schülerprofil

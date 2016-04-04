@@ -8,7 +8,7 @@ package scheduleData;
 import core.Database;
 import core.Student;
 import scheduleUI.TimeTable;
-import util.Time;
+import utils.Time;
 
 /**
  *
@@ -22,7 +22,7 @@ public class ScheduleFieldData {
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
     private Database database;
-    private int localStudentID;
+    private int tempStudentID;
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
@@ -51,19 +51,19 @@ public class ScheduleFieldData {
     }
 
     public void decrementLocalStudentID() {
-        localStudentID--;
+        tempStudentID--;
     }
 
-    public void setLocalStudentID(int localStudentID) {
-        this.localStudentID = localStudentID;
+    public void setTempStudentID(int tempStudentID) {
+        this.tempStudentID = tempStudentID;
     }
 
-    public int getLocalStudentID() {
-        return localStudentID;
+    public int getTempStudentID() {
+        return tempStudentID;
     }
 
     public Student getStudent() {
-        return database.getStudent(localStudentID);
+        return database.getStudent(tempStudentID);
     }
 
     public void setFieldTime(Time fieldTime) {

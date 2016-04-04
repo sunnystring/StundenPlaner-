@@ -6,9 +6,7 @@
 package dataEntryUI;
 
 import core.Student;
-import javax.swing.JDialog;
 import mainframe.MainFrame;
-import studentlistUI.StudentList;
 
 /**
  *

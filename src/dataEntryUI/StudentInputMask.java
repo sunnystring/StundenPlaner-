@@ -10,7 +10,7 @@ import core.ScheduleTimes;
 import core.Student;
 import core.StudentTimes;
 import exceptions.IllegalTimeSlotException;
-import exceptions.ScheduleOutOfBoundException;
+import exceptions.OutOfBoundException;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -34,12 +34,8 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
-import util.Dialogs;
+import utils.Dialogs;
 
-/**
- *
- * UI, das von {@link StudentEntry} und {@link StudentEdit} benutzt wird
- */
 public class StudentInputMask extends JPanel {
 
     private Database database;
@@ -181,8 +177,8 @@ public class StudentInputMask extends JPanel {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                studentEntry.dispose();
                 removeButtonsAndListeners();
+                studentEntry.dispose();
             }
         };
         cancelButton.addActionListener(cancelButtonListener);
@@ -192,8 +188,8 @@ public class StudentInputMask extends JPanel {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                studentEdit.dispose();
                 removeButtonsAndListeners();
+                studentEdit.dispose();
             }
         };
         cancelButton.addActionListener(cancelButtonListener);
@@ -206,19 +202,19 @@ public class StudentInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.checkScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                    studentTimes.initAndCheckScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
-                } catch (ScheduleOutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex, studentEntry.getMainFrame());
+                } catch (OutOfBoundException ex) {
+                    showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEntry.getMainFrame());
                     return;
                 }
                 studentTimes.setValidStudentDays();
                 setStudentData();
                 database.addStudent(student);
-                studentEntry.dispose();
                 removeButtonsAndListeners();
+                studentEntry.dispose();
             }
         };
         saveButton.addActionListener(saveButtonListener);
@@ -231,26 +227,26 @@ public class StudentInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.checkScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                    studentTimes.initAndCheckScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
-                } catch (ScheduleOutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex, studentEdit.getMainFrame());
+                } catch (OutOfBoundException ex) {
+                    showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEdit.getMainFrame());
                     return;
                 }
                 studentTimes.updateValidStudentDays();
                 setStudentData();
                 database.editStudent(student);
-                studentEdit.dispose();
                 removeButtonsAndListeners();
+                studentEdit.dispose();
             }
         };
         saveButton.addActionListener(saveButtonListener);
     }
 
-    private void showAndCorrectInvalidEntryTimes(ScheduleOutOfBoundException ex, MainFrame mainFrame) {
-        int choice = Dialogs.showScheduleOutOfBoundErrorMessage(ex.getMessage());
+    private void showAndCorrectInvalidEntryTimes(String msg, MainFrame mainFrame) {
+        int choice = Dialogs.showStudentTimesOutOfBoundOptionMessage(msg);
         if (choice == JOptionPane.YES_OPTION) // Stundenplan anpassen, falls NO_OPTION Schülerzeit anpassen
         {
             JDialog scheduleEdit = new ScheduleEdit(mainFrame);
@@ -263,8 +259,8 @@ public class StudentInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 database.deleteStudent(student);
-                studentEdit.dispose();
                 removeButtonsAndListeners();
+                studentEdit.dispose();
             }
         };
         deleteButton.addActionListener(deleteButtonListener);
@@ -305,7 +301,8 @@ public class StudentInputMask extends JPanel {
     public void updateTextFields() {
         firstnameField.setText(student.getFirstName());
         nameField.setText(student.getName());
-        lectiontypeField.setText(String.valueOf(student.getLectionLengthInMinutes()));
+        lectionType = String.valueOf(student.getLectionLengthInMinutes());
+        lectiontypeField.setText(lectionType);
     }
 
     private int getLectionLengthInFields() {

@@ -7,10 +7,11 @@ package core;
 
 import dataEntryUI.StudentInputMask;
 import exceptions.IllegalTimeSlotException;
-import exceptions.ScheduleOutOfBoundException;
+import exceptions.OutOfBoundException;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import scheduleData.ScheduleTimeFrame;
+import static core.ScheduleTimes.*;
 
 /**
  *
@@ -21,8 +22,6 @@ public class StudentTimes extends AbstractTableModel {
 
     public static final int COLUMNS = 6;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
-    private final String[] WEEKDAY_NAMES = ScheduleTimes.WEEKDAY_NAMES;
-    private final int DAYS = ScheduleTimes.DAYS;
     private ScheduleTimes scheduleTimes;
     private final StudentDay[] daySelectionList;
     private ArrayList<StudentDay> validStudentDayList;
@@ -67,15 +66,15 @@ public class StudentTimes extends AbstractTableModel {
             case 0:
                 return WEEKDAY_NAMES[row];
             case 1:
-                return daySelectionList[row].getStartTime1();
+                return daySelectionList[row].start1();
             case 2:
-                return daySelectionList[row].getEndTime1();
+                return daySelectionList[row].end1();
             case 3:
-                return daySelectionList[row].getStartTime2();
+                return daySelectionList[row].start2();
             case 4:
-                return daySelectionList[row].getEndTime2();
+                return daySelectionList[row].end2();
             case 5:
-                return daySelectionList[row].getFavorite();
+                return daySelectionList[row].favorite();
             default:
                 return null;
         }
@@ -89,8 +88,8 @@ public class StudentTimes extends AbstractTableModel {
 
     public void checkAndCorrectTimeEntries() {
         boolean allSlotsValid = true;
-        for (int i = 0; i < daySelectionList.length; i++) {
-            if (daySelectionList[i].hasInvalidTimeSlots()) {
+        for (int i = 0; i < DAYS; i++) {
+            if (daySelectionList[i].validateTimeSlots()) {
                 allSlotsValid = false;
                 daySelectionList[i].correctInvalidTimeSlots();
             }
@@ -101,35 +100,33 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    public void checkScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame scheduleTimeFrame, int lectionLengthInFields) {
-        boolean daysOutOfBound = false;
-        String dayName = " ";
-        for (int i = 0; i < daySelectionList.length; i++) {
+    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame scheduleTimeFrame, int lectionLengthInFields) {
+        String dayNames = " ";
+        boolean daysOutOfBounds = false;
+        for (int i = 0; i < DAYS; i++) {
             StudentDay studentDay = daySelectionList[i];
+            studentDay.setSelectionState(); // emptyDay, falls keine Zeiteinträge
+            studentDay.setSingleLections();
+            studentDay.setLowestAndHighestBounds();
             if (!studentDay.isEmpty()) {
-                boolean dayOutOfBound = false;
-                if (studentDay.isOutOfTimeFrame(scheduleTimeFrame, lectionLengthInFields)) {
-                    dayOutOfBound = true;
-                }
-                if (studentDay.isOutOfValidEnd(scheduleTimes)) {
-                    dayOutOfBound = true;
-                }
-                if (dayOutOfBound) {
-                    dayName += studentDay.getDayName() + " ";
-                    daysOutOfBound = true;
+                boolean outOfValidEnd = studentDay.outOfValidEndOf(scheduleTimes.getMatchingScheduleDayOf(studentDay));
+                boolean outOfTimeFrame = studentDay.outOfTimeFrame(scheduleTimeFrame, lectionLengthInFields);
+                if (outOfValidEnd || outOfTimeFrame) {
+                    dayNames += studentDay.getDayName() + " ";
+                    daysOutOfBounds = true;
                 }
             }
         }
-        if (daysOutOfBound) {
-            throw new ScheduleOutOfBoundException(dayName);
+        if (daysOutOfBounds) {
+            throw new OutOfBoundException(dayNames);
         }
     }
 
     public void setValidStudentDays() {
         for (int i = 0; i < DAYS; i++) {
-            daySelectionList[i].setSingleLections(); // falls solche gesetzt: endTime = startTime
             if (scheduleTimes.isValidDay(i)) {
                 daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
+                daySelectionList[i].setValidTimes(); // für IncompatibleStudentTimes
                 validStudentDayList.add(daySelectionList[i]); // Mapping: 1. StudentDay = 0 usw.
             }
         }
@@ -138,6 +135,16 @@ public class StudentTimes extends AbstractTableModel {
     public void updateValidStudentDays() {
         validStudentDayList.clear();
         setValidStudentDays();
+    }
+
+    public StudentDay getMatchingStudentDayOf(ScheduleDay scheduleDay) {
+        StudentDay matchingDay = null;
+        for (StudentDay studentDay : validStudentDayList) {
+            if (studentDay.matches(scheduleDay.getDayName())) {
+                matchingDay = studentDay;
+            }
+        }
+        return matchingDay;
     }
 
     public StudentDay getValidStudentDay(int i) {

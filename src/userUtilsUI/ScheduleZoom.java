@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package userUtil;
+package userUtilsUI;
 
 import scheduleUI.TimeTable;
 
 /**
- * Jeder Klick auf Zoom-Button verkleinert oder vergrössert Stundenplan-View (4 Stufen), 
- * enthält Default-Schriftgrössen und -RowHeight von {@link TimeTable}
- * 
+ * Jeder Klick auf Zoom-Button verkleinert oder vergrössert Stundenplan-View (4
+ * Stufen), enthält Default-Schriftgrössen und -RowHeight von {@link TimeTable}
+ *
  */
 public class ScheduleZoom {
 
@@ -23,7 +23,7 @@ public class ScheduleZoom {
     private static final float UPPER_SIZE_1 = DEFAULT_SIZE_1 + HEIGHT_DIFF * INC1;
     private static final float UPPER_SIZE_2 = DEFAULT_SIZE_2 + HEIGHT_DIFF * INC2;
     private int rowHeight = DEFAULT_HEIGHT;
-    private float fontSize1, fontSize2;
+    private float fontSize1 = DEFAULT_SIZE_1, fontSize2 = DEFAULT_SIZE_2;
 
     public void setNextSize() {
         if (rowHeight > LOWER_HEIGHT) {

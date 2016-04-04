@@ -11,7 +11,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import util.Colors;
+import utils.Colors;
 
 /**
  *

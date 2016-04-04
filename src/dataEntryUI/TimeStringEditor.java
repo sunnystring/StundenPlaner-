@@ -12,8 +12,8 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import util.Colors;
-import util.Dialogs;
+import utils.Colors;
+import utils.Dialogs;
 
 /**
  *

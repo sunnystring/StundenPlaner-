@@ -5,12 +5,13 @@
  */
 package scheduleUI;
 
+import java.awt.Point;
 import javax.swing.JTable;
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentListData.StudentListData;
-import userUtil.ScheduleZoom;
-import util.Colors;
+import userUtilsUI.ScheduleZoom;
+import utils.Colors;
 
 /**
  *
@@ -18,14 +19,12 @@ import util.Colors;
  */
 public class TimeTable extends JTable {
 
-    private TimeField timeField;
-    private LectionField lectionField;
-    private ScheduleData scheduleData;
-    private StudentListData studentListData;
+    private final TimeField timeField;
+    private final LectionField lectionField;
+    private final ScheduleData scheduleData;
 
     public TimeTable(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
-        this.studentListData = studentListData;
         setModel(scheduleData);
         lectionField = new LectionField(this, scheduleData); // darf erst hier erzeugt werden, weil scheduleData noch nicht definiert
         timeField = new TimeField(this, scheduleData);
@@ -40,7 +39,7 @@ public class TimeTable extends JTable {
         setRowHeight(ScheduleZoom.DEFAULT_HEIGHT);
     }
 
-    public void updateParameters() {
+    public void update() {
         createDefaultColumnsFromModel();
         timeField.initScheduleDimension();
         timeField.resetTimeColumn();
@@ -57,7 +56,7 @@ public class TimeTable extends JTable {
         }
     }
 
-    public ScheduleFieldData getScheduleFieldAt(int row, int col) {
+    public ScheduleFieldData getScheduleFieldDataAt(int row, int col) {
         return (ScheduleFieldData) getValueAt(row, col);
     }
 

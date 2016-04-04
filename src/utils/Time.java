@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package utils;
 
 import core.ScheduleDay;
 import core.StudentDay;
@@ -17,7 +17,7 @@ import scheduleData.ScheduleTimeFrame;
  * Hilfsklasse für die Erzeugung und Bearbeitung von Zeiten, benutzt in {@link ScheduleDay},
  * {@link StudentDay}, {@link DayColumnData}, {@link ScheduleFieldData}, {@link ScheduleTimeFrame}
  */
-public class Time implements Cloneable, Comparable {
+public class Time implements Cloneable, Comparable<Time> {
 
     private int hour, minute;
     private String timeString;
@@ -85,7 +85,7 @@ public class Time implements Cloneable, Comparable {
         return timeString;
     }
 
-    /* Differenz in 5-Min-Auflösung */
+    /* Differenz als Anzahl 5-Min-Fields */
     public int diff(Time t) {
         Time temp;
         int i = 0;
@@ -111,11 +111,20 @@ public class Time implements Cloneable, Comparable {
     public void inc() {
         this.minute = this.minute + 5;
         if (this.minute > 55) {
-            this.hour = this.hour + 1;
+            this.hour++;
             if (this.hour > 24 || this.hour == 24 && this.minute > 0) {
                 throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
             }
             this.minute = 0;
+        }
+    }
+
+    /* Dekrementierung in 5-Min-Auflösung */
+    public void dec() {
+        this.minute = this.minute - 5;
+        if (this.minute < 0) {
+            this.hour--;
+            this.minute = 55;
         }
     }
 
@@ -163,24 +172,28 @@ public class Time implements Cloneable, Comparable {
         return time;
     }
 
-    public Time plusLengthOf(int numberOfFields) {
-        Time time = new Time();
-        time = this.clone();
+    public Time plusTimeOf(int numberOfFields) {
+        Time time = this.clone();
         for (int i = 0; i < numberOfFields; i++) {
             time.inc();
         }
         return time;
     }
 
-    public Time minus(int minute) {
-        if (minute < 0 || minute >= 60) {
-            throw new IllegalArgumentException(" Nur Zahlen zwischen 0 und 60 möglich");
+    public Time minusLengthOf(int numberOfFields) {
+        Time time = this.clone();
+        for (int i = 0; i < numberOfFields; i++) {
+            time.dec();
         }
+        return time;
+    }
+
+    public Time minus(int minute) {
         Time time = new Time();
         time.minute = this.minute - minute;
         if (time.minute < 0) {
             time.hour = this.hour - 1;
-            time.minute = 60 + time.minute;
+            time.minute = 60 + time.minute; // = 60 - |time.minute|
         } else {
             time.hour = this.hour;
         }
@@ -190,15 +203,9 @@ public class Time implements Cloneable, Comparable {
     public Time minus(Time t) {
         Time time = new Time();
         time.hour = this.hour - t.hour;
-        if (time.hour < 0) {
-            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-        }
         time.minute = this.minute - t.minute;
         if (time.minute < 0) {
-            time.hour -= 1;
-            if (time.hour < 0) {
-                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-            }
+            time.hour--;
             time.minute = 60 + time.minute;
         }
         return time;
@@ -207,19 +214,7 @@ public class Time implements Cloneable, Comparable {
     public Time minus(String inputString) {
         Time time = new Time();
         time.checkAndExtractTimeComponents(inputString);
-        time.hour = this.hour - time.hour;
-        if (time.hour < 0) {
-            throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-        }
-        time.minute = this.minute - time.minute;
-        if (time.minute < 0) {
-            time.hour -= 1;
-            if (time.hour < 0) {
-                throw new IllegalArgumentException(" Ergebnis liegt unter 00.00");
-            }
-            time.minute = 60 + time.minute;
-        }
-        return time;
+        return minus(time);
     }
 
     /* Ganzzahldivision in 5-Min-Auflösung */
@@ -246,28 +241,22 @@ public class Time implements Cloneable, Comparable {
     }
 
     public boolean isEmpty() {
-        return timeString.isEmpty() || (hour == 0 && minute == 0);
+        return hour == 0 && minute == 0;
     }
 
     public boolean greaterThan(Time t) {
-        if (this.equals(t)) {
-            return false;
-        }
         if (this.hour < t.hour) {
             return false;
-        } else if (this.hour == t.hour && this.minute < t.minute) {
+        } else if (this.hour == t.hour && this.minute <= t.minute) {
             return false;
         }
         return true;
     }
 
     public boolean lessThan(Time t) {
-        if (this.equals(t)) {
-            return false;
-        }
         if (this.hour > t.hour) {
             return false;
-        } else if (this.hour == t.hour && this.minute > t.minute) {
+        } else if (this.hour == t.hour && this.minute >= t.minute) {
             return false;
         }
         return true;
@@ -332,12 +321,11 @@ public class Time implements Cloneable, Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Time time = (Time) o;
-        if (this.greaterThan(time)) {
+    public int compareTo(Time t) {
+        if (this.greaterThan(t)) {
             return 1;
         }
-        if (this.lessThan(time)) {
+        if (this.lessThan(t)) {
             return -1;
         }
         return 0;

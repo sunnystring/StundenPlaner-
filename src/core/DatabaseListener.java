@@ -18,5 +18,5 @@ public interface DatabaseListener {
 
     public void studentEdited(Student student);
 
-    public void studentDeleted(int numberOfStudents, int studentID);
+    public void studentDeleted(int numberOfStudents, Student student);
 }

@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
-import util.Colors;
+import utils.Colors;
 
 /**
  *
@@ -30,6 +30,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     private int selectedRow, tempRow;
     private int columnCount;
     public static final int NULL_ROW = -1;
+    private static final int PAINTED_ROWS = 10;
 
     public StudentField(StudentList studentList, StudentListData studentListData) {
         this.studentList = studentList;
@@ -40,17 +41,13 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setOpaque(true);
     }
 
-    public void setColumnCount(int columnCount) {
-        this.columnCount = columnCount;
-    }
-
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         StudentFieldData studentFieldData = (StudentFieldData) value;
         setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setForeground(Color.BLACK);
-        setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getLocalColor());
+        setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
         // Mouseover
         if (studentFieldData.isStudentListReleased() && row == selectedRow) {
             if (col == 0) {
@@ -61,7 +58,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setBackground(Colors.LIGHT_GREEN);
             }
         } else {
-            setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getLocalColor());
+            setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
         }
         // Row selected
         if (row == studentFieldData.getSelectedRowIndex()) {
@@ -87,21 +84,25 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     public void mouseMoved(MouseEvent m) {
         Point point = m.getPoint();
         selectedRow = studentList.rowAtPoint(point);
-        if (selectedRow != tempRow) {
-            paintStudentRow(selectedRow < tempRow);
-            tempRow = selectedRow;
+        if (selectedRow >= 0) {
+            if (selectedRow != tempRow) {
+                paintStudentRow(selectedRow < tempRow);
+                tempRow = selectedRow;
+            }
+        } else { // ausserhalb Table (unten)
+            studentList.repaint();
         }
     }
 
     private void paintStudentRow(boolean moveUp) {
         if (moveUp) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < PAINTED_ROWS; i++) {
                 for (int j = 0; j < columnCount; j++) {
                     studentList.repaint(studentList.getCellRect(selectedRow + i, j, false));
                 }
             }
         } else {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < PAINTED_ROWS; i++) {
                 for (int j = 0; j < columnCount; j++) {
                     studentList.repaint(studentList.getCellRect(selectedRow - i, j, false));
                 }
@@ -109,9 +110,13 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         }
     }
 
-    public void resetStudentRows() {
+    public final void resetStudentRows() {
         selectedRow = NULL_ROW;
         tempRow = NULL_ROW;
+    }
+
+    public final void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
     }
 
     @Override

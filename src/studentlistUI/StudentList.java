@@ -5,6 +5,8 @@
  */
 package studentlistUI;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
@@ -13,7 +15,7 @@ import scheduleData.ScheduleData;
 import scheduleUI.LectionField;
 import scheduleUI.TimeField;
 import studentListData.StudentFieldData;
-import util.Colors;
+import utils.Colors;
 
 /**
  *
@@ -23,8 +25,8 @@ public class StudentList extends JTable {
 
     private StudentField studentField;
     private HeaderField headerField;
-    private StudentListData studentListData;
-    private ScheduleData scheduleData;
+    private final StudentListData studentListData;
+    private final ScheduleData scheduleData;
     private LectionField lectionField;
     private TimeField timeField;
 
@@ -52,7 +54,7 @@ public class StudentList extends JTable {
         setRowHeight(25);
     }
 
-    public void updateParameters() {
+    public void update() {
         createDefaultColumnsFromModel();
         studentField.setColumnCount(studentListData.getColumnCount());
         studentField.resetStudentRows();
@@ -64,8 +66,29 @@ public class StudentList extends JTable {
         header.repaint();
     }
 
-    public StudentFieldData getStudentFieldAt(int row, int col) {
+    public StudentFieldData getStudentFieldDataAt(int row, int col) {
         return (StudentFieldData) getValueAt(row, col);
     }
 
+    public StudentField getStudentField() {
+        return studentField;
+    }
+
+    @Override
+    public String getToolTipText(MouseEvent e) {
+        Point p = e.getPoint();
+        int row = rowAtPoint(p), col = columnAtPoint(p);
+        int validCol = convertColumnIndexToModel(col);
+        if (row >= 0) {
+            StudentFieldData field = (StudentFieldData) getValueAt(row, validCol);
+            if (field.isIncompatible() && !field.isBlocked()) {
+                return "unvereinbar";
+            } else if (field.isBlocked()) {
+                return "gesperrt";
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
 }

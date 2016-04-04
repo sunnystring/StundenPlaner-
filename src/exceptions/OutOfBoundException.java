@@ -9,20 +9,20 @@ package exceptions;
  *
  * @author mathiaskielholz
  */
-public class ScheduleOutOfBoundException extends RuntimeException{
+public class OutOfBoundException extends RuntimeException{
 
-    public ScheduleOutOfBoundException() {
+    public OutOfBoundException() {
     }
 
-    public ScheduleOutOfBoundException(String message) {
+    public OutOfBoundException(String message) {
         super(message);
     }
 
-    public ScheduleOutOfBoundException(Throwable cause) {
+    public OutOfBoundException(Throwable cause) {
         super(cause);
     }
 
-    public ScheduleOutOfBoundException(String message, Throwable cause) {
+    public OutOfBoundException(String message, Throwable cause) {
         super(message, cause);
     }
     

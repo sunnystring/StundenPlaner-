@@ -5,12 +5,12 @@
  */
 package core;
 
-import util.Time;
+import utils.Time;
 
 /**
  *
- * Einheit eines Unterrichtstages mit den Unterrichtszeiten (vom Lehrer
- * vorgegeben)
+ * Einheit eines Unterrichtstages mit dem vom Lehrer vorgegebenen Zeitrahmen
+ * 
  */
 public class ScheduleDay implements Cloneable {
 

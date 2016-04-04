@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package utils;
 
-import core.ScheduleTimes;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,7 +20,7 @@ public class Dialogs {
 
     public static void showStudentTimeSlotError() {
         JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
-                + "Anfangszeit leer oder grösser als Schlusszeit", "Schülerzeiten", JOptionPane.ERROR_MESSAGE);
+                + "Anfangszeit leer oder grösser als Schlusszeit", "Schülerliste", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showNoInputError() {
@@ -30,7 +29,7 @@ public class Dialogs {
 
     public static void showLectionFormatError() {
         JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
-                + "Nur 30 oder 40 Minuten möglich!\n", "Zeiteingabe", JOptionPane.ERROR_MESSAGE);
+                + "Nur 30 oder 40 Minuten möglich!\n", "Schülerliste", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showTimeInputFormatError() {
@@ -39,9 +38,9 @@ public class Dialogs {
                 + "oder Feld löschen!", "Zeiteingabe", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static int showDayEraseOptionMessage(String day) {
-        String msg = "Der" + day + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
-                + "Soll der" + day + "gelöscht werden?";
+    public static int showDayEraseOptionMessage(String days) {
+        String msg = "Der" + days + "hat ev. noch Zeiteinträge in der Schülerliste.\n"
+                + "Soll der" + days + "gelöscht werden?";
         Object[] options = {"Löschen", "Abbrechen"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
         return JOptionPane.showOptionDialog(null, msg, "Stundenplan",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
@@ -51,12 +50,17 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static int showScheduleOutOfBoundErrorMessage(String day) {
-        String msg = "Die eingebene Schülerzeit am" + day + "liegt ausserhalb des Stundenplans.\n"
-                + "Der Stundenplan oder die Schülerzeit muss angepasst werden.";
+    public static int showStudentTimesOutOfBoundOptionMessage(String days) {
+        String msg = "Die Zeiteingabe am" + days + "\nliegt ausserhalb des Stundenplans!\n";
         Object[] options = {"Stundenplan anpassen", "Schülerzeit anpassen"};
-        return JOptionPane.showOptionDialog(null, msg, "Zeiteingabe",
+        return JOptionPane.showOptionDialog(null, msg, "Schülerliste",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+    }
+
+    public static void showScheduleOutOfBoundErrorMessage(String errorLog) {
+        String msg = "Der eingebene Zeitrahmen ist in\n"
+                + "Konflikt mit den Schülerzeiten!\n\n" + errorLog;
+        JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
 }

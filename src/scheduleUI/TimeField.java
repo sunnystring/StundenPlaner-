@@ -17,7 +17,7 @@ import scheduleData.ScheduleFieldData;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
-import util.Colors;
+import utils.Colors;
 
 /**
  *
@@ -100,7 +100,7 @@ public class TimeField extends LectionField {
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = studentList.getStudentFieldAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
                     lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();

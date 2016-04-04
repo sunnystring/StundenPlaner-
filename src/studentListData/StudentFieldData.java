@@ -9,7 +9,7 @@ import core.Database;
 import core.Student;
 import java.awt.Color;
 import studentlistUI.StudentList;
-import util.Colors;
+import utils.Colors;
 
 /**
  *
@@ -18,30 +18,38 @@ import util.Colors;
 public class StudentFieldData {
 
     private final Database database;
-    private Color localColor;
+    private Color fieldColor;
     private int studentID;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
     private boolean studentListReleased; // globaler und lokaler Row-Schalter: falls lokal, studentListReleased != studentAllocated
     private boolean studentAllocated;
+    private boolean incompatible;
+    private boolean blocked;
     private int selectedRowIndex;
 
     public StudentFieldData(Database database) {
         this.database = database;
-        localColor = Colors.BLUE_DEFAULT;
+        reset();
+    }
+
+    public void reset() {
+        fieldColor = Colors.BLUE_DEFAULT;
         fieldSelected = false;
         studentListReleased = true;
         selectedRowIndex = -1;
         studentAllocated = false;
+        incompatible = false;
+        blocked = false;
     }
 
-    public void setLocalColor(Color localColor) {
-        this.localColor = localColor;
+    public void setFieldColor(Color fieldColor) {
+        this.fieldColor = fieldColor;
     }
 
-    public Color getLocalColor() {
-        return localColor;
+    public Color getFieldColor() {
+        return fieldColor;
     }
 
     public void setStudentID(int studentID) {
@@ -94,6 +102,22 @@ public class StudentFieldData {
 
     public boolean isStudentAllocated() {
         return studentAllocated;
+    }
+
+    public void setIncompatible(boolean incompatible) {
+        this.incompatible = incompatible;
+    }
+
+    public boolean isIncompatible() {
+        return incompatible;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     public void setSelectedRowIndex(int selectedRowIndex) {
