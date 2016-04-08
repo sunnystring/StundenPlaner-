@@ -6,7 +6,9 @@
 package scheduleUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
@@ -24,6 +26,7 @@ public class Schedule extends JPanel {
     private JPanel header;
     private final TimeTable timeTable;
     private final ScheduleZoom scheduleZoom;
+    private ArrayList<DayField> headerFieldList;
 
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -32,6 +35,7 @@ public class Schedule extends JPanel {
         header.setBackground(Colors.BACKGROUND);
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
+        headerFieldList = new ArrayList<>();
         setLayout(new BorderLayout());
         setBackground(Colors.BACKGROUND);
         add(BorderLayout.NORTH, header);
@@ -40,7 +44,9 @@ public class Schedule extends JPanel {
 
     public void createHeader() {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
-            header.add(new DayField(scheduleData.getDayColumn(i).getDayName()));
+            DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            headerFieldList.add(dayField);
+            header.add(dayField);
         }
     }
 
@@ -53,7 +59,14 @@ public class Schedule extends JPanel {
     }
 
     public void removeHeader() {
+        headerFieldList.clear();
         header.removeAll();
+    }
+
+    public void showBreakRequired(int dayIndex, Color col, String msg) {
+        DayField dayField = headerFieldList.get(dayIndex);
+        dayField.setBackground(col);
+        dayField.setText("  " + msg);
     }
 
     public TimeTable getTimeTable() {

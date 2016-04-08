@@ -106,10 +106,18 @@ public class Database {
     }
 
     public TreeMap<Time, LectionData> getLectionMapAt(int validDayIndex) {
-        return lectionMaps.get(scheduleTimes.getStaticDayIndexOf(validDayIndex));
+        return lectionMaps.get(scheduleTimes.getAbsoluteDayIndexOf(validDayIndex));
     }
 
     public TreeMap<Time, LectionData> getLectionMapAt(ScheduleDay scheduleDay) {
-        return lectionMaps.get(scheduleTimes.getStaticDayIndexOf(scheduleDay));
+        return lectionMaps.get(scheduleTimes.getAbsoluteDayIndexOf(scheduleDay));
+    }
+
+    public String getDayNameAt(int dayIndex) {
+        return getScheduleTimes().getValidScheduleDayAt(dayIndex).getDayName();
+    }
+
+    public int getNumberOfDays() {
+        return scheduleTimes.getNumberOfValidDays();
     }
 }

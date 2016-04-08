@@ -5,14 +5,10 @@
  */
 package dataEntryUI;
 
-import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import utils.Colors;
 import utils.Dialogs;
 
 /**

@@ -25,6 +25,7 @@ public class StudentTimes extends AbstractTableModel {
     private ScheduleTimes scheduleTimes;
     private final StudentDay[] daySelectionList;
     private ArrayList<StudentDay> validStudentDayList;
+    private int numberOfSelectedDays;
 
     public StudentTimes() {
         daySelectionList = new StudentDay[DAYS];
@@ -33,6 +34,7 @@ public class StudentTimes extends AbstractTableModel {
             daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
         }
         validStudentDayList = new ArrayList<>();
+        numberOfSelectedDays = 0;
     }
 
     @Override
@@ -100,17 +102,18 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame scheduleTimeFrame, int lectionLengthInFields) {
+    
+    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
         String dayNames = " ";
         boolean daysOutOfBounds = false;
         for (int i = 0; i < DAYS; i++) {
             StudentDay studentDay = daySelectionList[i];
             studentDay.setSelectionState(); // emptyDay, falls keine Zeiteinträge
-            studentDay.setSingleLections();
+            studentDay.setSingleSlots();
             studentDay.setLowestAndHighestBounds();
             if (!studentDay.isEmpty()) {
                 boolean outOfValidEnd = studentDay.outOfValidEndOf(scheduleTimes.getMatchingScheduleDayOf(studentDay));
-                boolean outOfTimeFrame = studentDay.outOfTimeFrame(scheduleTimeFrame, lectionLengthInFields);
+                boolean outOfTimeFrame = studentDay.outOfTimeFrame(scheduleTimeFrame, lectionLength);
                 if (outOfValidEnd || outOfTimeFrame) {
                     dayNames += studentDay.getDayName() + " ";
                     daysOutOfBounds = true;
@@ -123,10 +126,15 @@ public class StudentTimes extends AbstractTableModel {
     }
 
     public void setValidStudentDays() {
+            numberOfSelectedDays = 0;
         for (int i = 0; i < DAYS; i++) {
             if (scheduleTimes.isValidDay(i)) {
-                daySelectionList[i].setDayName(WEEKDAY_NAMES[i]);
-                daySelectionList[i].setValidTimes(); // für IncompatibleStudentTimes
+                StudentDay studentDay = daySelectionList[i];
+                studentDay.setDayName(WEEKDAY_NAMES[i]);
+                studentDay.setValidTimes(); // für IncompatibleStudentTimes
+                if (!studentDay.isEmpty()) {
+                    numberOfSelectedDays++;
+                }
                 validStudentDayList.add(daySelectionList[i]); // Mapping: 1. StudentDay = 0 usw.
             }
         }
@@ -157,5 +165,9 @@ public class StudentTimes extends AbstractTableModel {
 
     public void setValidStudentDayList(ArrayList<StudentDay> validStudentDayList) {
         this.validStudentDayList = validStudentDayList;
+    }
+
+    public int getNumberOfSelectedDays() {
+        return numberOfSelectedDays;
     }
 }

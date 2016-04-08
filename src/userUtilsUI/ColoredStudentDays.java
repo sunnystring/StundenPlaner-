@@ -6,9 +6,7 @@
 package userUtilsUI;
 
 import core.Database;
-import core.DatabaseListener;
 import core.ScheduleTimes;
-import core.Student;
 import core.StudentDay;
 import java.awt.Color;
 import scheduleData.ScheduleData;
@@ -23,13 +21,13 @@ import utils.Time;
  * {@link IncompatibleStudentTimes}
  *
  */
-public class ColoredStudentDays implements DatabaseListener {
+public class ColoredStudentDays {
 
     public static final boolean COLORED = true, DEFAULT_COLORS = false;
     private final Database database;
     private final ScheduleTimes scheduleTimes;
-    private StudentTimesDistribution timeDistribution;
-    private IncompatibleStudentTimes incompatibleStudentTimes;
+    private final StudentTimesDistribution timeDistribution;
+    private final IncompatibleStudentTimes incompatibleStudentTimes;
     private boolean isColored;
 
     public ColoredStudentDays(Database database, StudentListData studentListData) {
@@ -52,8 +50,13 @@ public class ColoredStudentDays implements DatabaseListener {
 
     public void findIncompatibleStudentTimes() {
         incompatibleStudentTimes.resetAllStudentFields();
-        incompatibleStudentTimes.findBlockedDays();
+        incompatibleStudentTimes.findBlockingScheduleTimes();
         incompatibleStudentTimes.findAll();
+    }
+
+    public void updateIncompatibleStudentDays() {
+        incompatibleStudentTimes.update();
+        findIncompatibleStudentTimes();
     }
 
     public Color getColorAt(int rowIndex, int dayIndex, boolean isIncompatible) { // rowIndex = studentID, dayIndex = col-1
@@ -78,23 +81,5 @@ public class ColoredStudentDays implements DatabaseListener {
 
     public void setMode(boolean isColored) {
         this.isColored = isColored;
-    }
-
-    @Override
-    public void studentAdded(int numberOfStudents, Student student) {
-        incompatibleStudentTimes.updateStudentAdd(student);
-        findIncompatibleStudentTimes();
-    }
-
-    @Override
-    public void studentEdited(Student student) {
-        incompatibleStudentTimes.updateStudentEdit(student);
-        findIncompatibleStudentTimes();
-    }
-
-    @Override
-    public void studentDeleted(int numberOfStudents, Student student) {
-        incompatibleStudentTimes.updateStudentDelete(student);
-        findIncompatibleStudentTimes();
     }
 }

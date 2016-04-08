@@ -52,12 +52,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     public void setup() {
-        numberOfDays = database.getScheduleTimes().getNumberOfValidDays();
+        numberOfDays = database.getNumberOfDays();
         coloredStudentDays.init(scheduleData);
     }
 
     public void update() {
-        numberOfDays = database.getScheduleTimes().getNumberOfValidDays();
+        numberOfDays = database.getNumberOfDays();
         updateStudentAllocationState();
         fieldDataMatrix.clear();
         for (int i = 0; i < numberOfStudents; i++) {
@@ -65,7 +65,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
         coloredStudentDays.update();
         setIncompatibleStudentDays();
-        
+
     }
 
     @Override
@@ -75,6 +75,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         int row = student.getID();
         fireTableRowsInserted(row, row);
         studentList.showNumberOfStudents();
+        coloredStudentDays.updateIncompatibleStudentDays();
     }
 
     @Override
@@ -82,6 +83,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         updateStudentRow(student);
         int row = student.getID();
         fireTableRowsUpdated(row, row);
+        coloredStudentDays.updateIncompatibleStudentDays();
+
     }
 
     @Override
@@ -92,6 +95,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         fireTableRowsDeleted(deletedStudentID, deletedStudentID);
         updateStudentIDs();
         studentList.showNumberOfStudents();
+        coloredStudentDays.updateIncompatibleStudentDays();
+
     }
 
     private void createStudentRow(Student student) {
@@ -296,7 +301,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private String getColoredTimeString(boolean isBlocked, int StudentID, int col) {
         Student student = database.getStudent(StudentID);
         if (isBlocked) {
-            return "<html>" + "<font color=red>"+ student.getStudentDay(col - 1) + "<font color=red>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>";
+            return "<html>" + "<font color=red>" + student.getStudentDay(col - 1) + "<font color=red>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>";
         } else {
             return "<html>" + student.getStudentDay(col - 1) + "<font color=blue>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>";
         }
@@ -312,10 +317,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void setStudentList(StudentList studentList) {
         this.studentList = studentList;
-    }
-
-    public ColoredStudentDays getColoredStudentDays() {
-        return coloredStudentDays;
     }
 
     @Override

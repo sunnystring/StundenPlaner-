@@ -82,4 +82,8 @@ public class Student {
     public boolean isLectionAllocated() {
         return lectionAllocationState;
     }
+
+    public int getNumberOfSelectedDays() {
+        return studentTimes.getNumberOfSelectedDays();
+    }
 }

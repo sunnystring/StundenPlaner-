@@ -47,7 +47,7 @@ public class StudentDay implements Comparable<StudentDay> {
         isEmpty = start1().isEmpty() && start2().isEmpty() && favorite().isEmpty();
     }
 
-    public void setSingleLections() {
+    public void setSingleSlots() {
         if (onlyStart1) {
             timeSlots[1] = timeSlots[0].clone();
         }
@@ -140,8 +140,8 @@ public class StudentDay implements Comparable<StudentDay> {
     public boolean outOfTimeFrame(ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
         Time absoluteEnd = scheduleTimeFrame.getAbsoluteEnd();
         Time absoluteStart = scheduleTimeFrame.getAbsoluteStart();
-        boolean outOfUpperBound = !earliestStart.isEmpty() && earliestStart.plusTimeOf(lectionLength).greaterThan(absoluteEnd);
-        boolean outOfLowerBound = !latestEnd.isEmpty() && latestEnd.lessThan(absoluteStart);
+        boolean outOfUpperBound = !latestEnd.isEmpty() && latestEnd.plusTimeOf(lectionLength).greaterEqualsThan(absoluteEnd);
+        boolean outOfLowerBound = !earliestStart.isEmpty() && earliestStart.lessThan(absoluteStart);
         return outOfUpperBound || outOfLowerBound;
     }
 
@@ -195,11 +195,11 @@ public class StudentDay implements Comparable<StudentDay> {
         boolean isBlocked = true;
         for (ValidTimePairs timePairs : validTimes) {
             Time startTime = timePairs.start();
-            Time endTime = timePairs.end();
+            Time endTime = timePairs.end().plusTimeOf(searchLectionLength);
             int fieldIndex = dayColumn.getFieldIndexAt(startTime);
             int lastFieldIndex = dayColumn.getFieldIndexAt(endTime);
             int lectionFieldCount = 0;
-            while (fieldIndex < lastFieldIndex + searchLectionLength) {
+            while (fieldIndex < lastFieldIndex ) {
                 lectionFieldCount++;
                 if (dayColumn.getFieldDataAt(fieldIndex).isLectionAllocated()) {
                     lectionFieldCount = 0;

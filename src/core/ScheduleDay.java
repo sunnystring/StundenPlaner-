@@ -10,7 +10,7 @@ import utils.Time;
 /**
  *
  * Einheit eines Unterrichtstages mit dem vom Lehrer vorgegebenen Zeitrahmen
- * 
+ *
  */
 public class ScheduleDay implements Cloneable {
 
@@ -53,7 +53,7 @@ public class ScheduleDay implements Cloneable {
         timeSlots[slot].setTime(s);
     }
 
-    public void setTimeSlot(Time t, int slot) {
+    private void setTimeSlot(Time t, int slot) {
         timeSlots[slot].setTime(t);
     }
 
@@ -77,7 +77,6 @@ public class ScheduleDay implements Cloneable {
         return dayName;
     }
 
-//-------------unbenutzt----------------------
     @Override
     public ScheduleDay clone() {
         ScheduleDay scheduleDay = null;

@@ -81,13 +81,13 @@ public class StudentList extends JTable {
         int validCol = convertColumnIndexToModel(col);
         if (row >= 0) {
             StudentFieldData field = (StudentFieldData) getValueAt(row, validCol);
-            if (field.isIncompatible() && !field.isBlocked()) {
-                return "unvereinbar";
+            if (field.isUnallocatable()) {
+                return "zusammen nicht einteilbar";
             } else if (field.isBlocked()) {
-                return "gesperrt";
-            } else {
-                return null;
-            }
+                return "gesperrte Zeit";
+            } else if (field.isIncompatible()) {
+                return "unvereinbare Zeit";
+            } 
         }
         return null;
     }

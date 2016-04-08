@@ -27,6 +27,7 @@ public class StudentFieldData {
     private boolean studentAllocated;
     private boolean incompatible;
     private boolean blocked;
+    private boolean unallocatable;
     private int selectedRowIndex;
 
     public StudentFieldData(Database database) {
@@ -42,6 +43,7 @@ public class StudentFieldData {
         studentAllocated = false;
         incompatible = false;
         blocked = false;
+        unallocatable = false;
     }
 
     public void setFieldColor(Color fieldColor) {
@@ -114,6 +116,14 @@ public class StudentFieldData {
 
     public boolean isBlocked() {
         return blocked;
+    }
+
+    public boolean isUnallocatable() {
+        return unallocatable;
+    }
+
+    public void setUnallocatable(boolean unAllocatable) {
+        this.unallocatable = unAllocatable;
     }
 
     public void setBlocked(boolean blocked) {

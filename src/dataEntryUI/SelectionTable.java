@@ -20,7 +20,7 @@ import utils.Colors;
  */
 public class SelectionTable extends JTable {
 
-    ScheduleTimes scheduleTimes;
+    private final ScheduleTimes scheduleTimes;
 
     public SelectionTable(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;

@@ -15,7 +15,8 @@ public class Dialogs {
 
     public static void showScheduleTimeSlotError() {
         JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
-                + "Beginn und Schluss passen nicht zusammen!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
+                + "Beginn und Schluss passen nicht zusammen\n"
+                + "oder die Zeit wurde nicht im Format hh.m0 eingeben!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showStudentTimeSlotError() {
@@ -62,5 +63,4 @@ public class Dialogs {
                 + "Konflikt mit den Schülerzeiten!\n\n" + errorLog;
         JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
-
 }

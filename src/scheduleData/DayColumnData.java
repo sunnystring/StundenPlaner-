@@ -27,7 +27,7 @@ public class DayColumnData {
     private final Database database;
     private final ArrayList<ScheduleFieldData> fieldList;
     private TreeMap<Time, LectionData> lectionMap;
-    private TreeMap<Time, Integer> timeToFieldIndexMap;
+    private TreeMap<Time, Integer> timeToFieldIndexMap;  // für IncomaptibleStudentTimes
     private Time absoluteStart;
     private int totalNumberOfFields;
     private int fieldCountStart;
@@ -165,6 +165,7 @@ public class DayColumnData {
     }
 
     public int getFieldIndexAt(Time fieldTime) {
+        System.out.println("fieldTime = " + fieldTime + "   index = " + timeToFieldIndexMap.get(fieldTime));
         return timeToFieldIndexMap.get(fieldTime);
     }
 }

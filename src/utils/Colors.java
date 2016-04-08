@@ -28,15 +28,15 @@ public class Colors {
             FAVORITE = Color.BLUE,
             LECTION_FIELD_OUT_OF_BOUNDS = Color.ORANGE,
             BACKGROUND = Color.WHITE,
-            RED_DEFAULT = new Color(255, 204, 204),
-            RED_1 = new Color(255, 153, 153),
-            RED_2 = new Color(255, 102, 102),
-            RED_3 = new Color(255, 51, 51),
-            RED_4 = new Color(204, 0, 0),
+            RED_1 = new Color(255, 180, 180),
+            RED_DEFAULT = new Color(255, 210, 210),
+            RED_2 = new Color(240, 150, 140),
+            RED_3 = new Color(230, 120, 110),
+            RED_4 = new Color(210, 0, 0),
             TIMEFIELD_HOUR = new Color(255, 229, 204);
 
     private static final Color[] BLUE_TYPES = {BLUE_0, BLUE_DEFAULT, BLUE_2, BLUE_3, BLUE_4};
-    private static final Color[] RED_TYPES = {RED_DEFAULT, RED_1, RED_2, RED_3, RED_4};
+    private static final Color[] RED_TYPES = {RED_1, RED_DEFAULT, RED_2, RED_3, RED_4};
 
     public static Color getBlue(int i) {
         return BLUE_TYPES[i];

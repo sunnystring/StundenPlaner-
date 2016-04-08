@@ -21,6 +21,7 @@ import studentListData.StudentListData;
 import studentlistUI.StudentList;
 import utils.Time;
 import static scheduleData.ScheduleFieldData.*;
+import userUtils.BreakWatcher;
 
 /**
  *
@@ -35,6 +36,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private final StudentListData studentListData;
     private final ArrayList<DayColumnData> dayColumnDataList;
     private final ScheduleTimeFrame timeFrame;
+    private final BreakWatcher breakWatcher;
     private ScheduleFieldData[][] fieldDataMatrix;
     private int numberOfValidDays;
     private int dayColumnIndex;
@@ -46,6 +48,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         this.studentListData = studentListData;
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
+        breakWatcher = new BreakWatcher();
         numberOfValidDays = 0;
         dayColumnIndex = -1;
         dayColumnFieldIndex = -1;
@@ -192,6 +195,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn
                 ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
                 Student student = scheduleFieldData.getStudent();
+                int dayIndex = selectedCol / 4;
                 if (scheduleFieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(selectedRow, selectedCol);
                     if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
@@ -202,13 +206,14 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         }
                         if (scheduleFieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             eraseLection(student.getLectionLength());
-                            studentListData.setIncompatibleStudentDays();
+                            breakWatcher.check(dayIndex);
                         }
                     } else { // in AllocatedMode wechseln
                         createLection(student.getLectionLength());
                         setAllocatedMode();
-                        studentListData.setIncompatibleStudentDays();
+                        breakWatcher.check(dayIndex);
                     }
+                    studentListData.setIncompatibleStudentDays();
                     fireTableDataChanged();
                     studentListData.fireTableDataChanged();
                 }
@@ -269,7 +274,6 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 field.setLectionPanelAreaMark(HEAD);
                 allocatedTimeMark = field.getValidTimeMark();
                 startTime = field.getFieldTime();
-
             }
             if (i > dayColumnFieldIndex && i < lectionEnd - 2) {
                 field.setLectionPanelAreaMark(CENTER);
@@ -337,11 +341,6 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         }
     }
 
-    @Override
-    public void studentDeleted(int numberOfStudents, Student student) {
-        updateLectionData(student.getID());
-    }
-
     private void updateLectionData(int deletedStudentID) {
         for (DayColumnData d : dayColumnDataList) {
             d.updateStudentID(deletedStudentID);
@@ -352,12 +351,33 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return numberOfValidDays;
     }
 
+    public String getDayNameAt(int dayIndex) {
+        return getDayColumn(dayIndex).getDayName();
+    }
+
     public DayColumnData getDayColumn(int dayIndex) {
         return dayColumnDataList.get(dayIndex);
     }
 
     public ScheduleTimeFrame getTimeFrame() {
         return timeFrame;
+    }
+
+    public BreakWatcher getBreakWatcher() {
+        return breakWatcher;
+    }
+
+    @Override
+    public void studentDeleted(int numberOfStudents, Student student) {
+        updateLectionData(student.getID());
+    }
+
+    @Override
+    public void studentAdded(int numberOfStudents, Student student) {
+    }
+
+    @Override
+    public void studentEdited(Student student) {
     }
 
     @Override
@@ -374,13 +394,5 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     @Override
     public void mouseExited(MouseEvent m) {
-    }
-
-    @Override
-    public void studentAdded(int numberOfStudents, Student student) {
-    }
-
-    @Override
-    public void studentEdited(Student student) {
     }
 }

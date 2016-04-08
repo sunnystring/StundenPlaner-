@@ -218,12 +218,12 @@ public class Time implements Cloneable, Comparable<Time> {
     }
 
     /* Ganzzahldivision in 5-Min-Auflösung */
-    public Time divBy(int t, boolean rounding) {
+    public Time divBy(int t, boolean roundUp) {
         Time time = new Time();
         int minutes = this.hour * 60 + this.minute;
         int numberOfFields = minutes / 5;
         int numberOfIncrements = numberOfFields / t;
-        if (numberOfFields % t != 0 && rounding) {
+        if (minutes % t != 0 && roundUp) {
             numberOfIncrements++;
         }
         for (int i = 0; i < numberOfIncrements; i++) {
@@ -238,6 +238,15 @@ public class Time implements Cloneable, Comparable<Time> {
         minutes = this.hour * 60 + this.minute;
         fields = minutes / 5;
         return fields % t;
+    }
+
+    public int getNumberOfFields(boolean roundUp) {
+        int minutes = this.hour * 60 + this.minute;
+        int numberOfFields = minutes / 5;
+        if (minutes % 5 != 0 && roundUp) {
+            numberOfFields++;
+        }
+        return numberOfFields;
     }
 
     public boolean isEmpty() {

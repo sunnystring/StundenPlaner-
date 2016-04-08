@@ -88,9 +88,13 @@ public class ScheduleTimes extends AbstractTableModel {
     public boolean checkTimeSlots() {
         boolean allSlotsEmpty = true;
         boolean allSlotsValid = true;
+        boolean allSlotsEven = true;
         for (int i = 0; i < DAYS; i++) {
             if (!daySelectionList[i].isEmpty()) {
                 allSlotsEmpty = false;
+                if (daySelectionList[i].getValidEnd().getMinute() % 10 == 5) {
+                    allSlotsEven = false;
+                }
             }
             if (daySelectionList[i].hasInvalidTimeSlots()) {
                 allSlotsValid = false;
@@ -99,7 +103,7 @@ public class ScheduleTimes extends AbstractTableModel {
         if (allSlotsEmpty) {
             throw new NoEntryException();
         }
-        if (!allSlotsValid) {
+        if (!allSlotsValid || !allSlotsEven) {
             throw new IllegalTimeSlotException();
         }
         return allSlotsValid;
@@ -239,7 +243,7 @@ public class ScheduleTimes extends AbstractTableModel {
         return matchingDay;
     }
 
-    public int getStaticDayIndexOf(int validDayIndex) {
+    public int getAbsoluteDayIndexOf(int validDayIndex) {
         int index = -1;
         for (int i = 0; i < DAYS; i++) {
             if (WEEKDAY_NAMES[i].equals(validScheduleDayList.get(validDayIndex).getDayName())) {
@@ -250,7 +254,7 @@ public class ScheduleTimes extends AbstractTableModel {
         return index;
     }
 
-    public int getStaticDayIndexOf(ScheduleDay scheduleDay) {
+    public int getAbsoluteDayIndexOf(ScheduleDay scheduleDay) {
         int index = -1;
         for (int i = 0; i < DAYS; i++) {
             if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
