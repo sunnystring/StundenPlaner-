@@ -23,7 +23,7 @@ public class StudentDay implements Comparable<StudentDay> {
     private boolean isEmpty;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
     private Time earliestStart, latestStart, earliestEnd, latestEnd; // Timebounds
-    private final ArrayList<ValidTimePairs> validTimes; // für IncompatibleStudentTimes (K = startTime, V = endTime)
+    private final ArrayList<ValidTimes> validTimes; // für IncompatibleStudentTimes (K = startTime, V = endTime)
 
     public StudentDay() {
         timeSlots = new Time[SLOTS];
@@ -102,13 +102,13 @@ public class StudentDay implements Comparable<StudentDay> {
     public void setValidTimes() {
         validTimes.clear();
         if (!start1().isEmpty()) {
-            validTimes.add(new ValidTimePairs(start1(), end1()));
+            validTimes.add(new ValidTimes(start1(), end1()));
         }
         if (!start2().isEmpty()) {
-            validTimes.add(new ValidTimePairs(start2(), end2()));
+            validTimes.add(new ValidTimes(start2(), end2()));
         }
         if (!favorite().isEmpty()) {
-            validTimes.add(new ValidTimePairs(favorite(), favorite()));
+            validTimes.add(new ValidTimes(favorite(), favorite()));
         }
     }
 
@@ -168,20 +168,20 @@ public class StudentDay implements Comparable<StudentDay> {
             if (i != 0 && i != 2) {
                 searchEnd = timeSlots[i];
                 refEnd = refDay.getTimeAt(i);
-                if (!searchEnd.isEmpty()) {  // 1. check: search incompatible to ref
-                    for (ValidTimePairs timePairs : refDay.getValidTimes()) {
-                        Time refStart = timePairs.start();
-                        Time refLength = refStart.plusTimeOf(refLection);
-                        if (searchEnd.greaterEqualsThan(refLength)) {
+                if (!searchEnd.isEmpty()) {  // test A: search incompatible to ref
+                    for (ValidTimes times : refDay.getValidTimes()) {
+                        Time refStart = times.start();
+                        Time refLectionEnd = refStart.plusTimeOf(refLection);
+                        if (searchEnd.greaterEqualsThan(refLectionEnd)) {
                             isIncompatible = false;
                         }
                     }
                 }
-                if (isIncompatible && !refEnd.isEmpty()) { // 2. check: ref incompatible to search
-                    for (ValidTimePairs timePairs : validTimes) {
-                        Time searchStart = timePairs.start();
-                        Time searchLength = searchStart.plusTimeOf(searchLection);
-                        if (refEnd.greaterEqualsThan(searchLength)) {
+                if (isIncompatible && !refEnd.isEmpty()) { // test B: ref incompatible to search
+                    for (ValidTimes times : validTimes) {
+                        Time searchStart = times.start();
+                        Time searchLectionEnd  = searchStart.plusTimeOf(searchLection);
+                        if (refEnd.greaterEqualsThan(searchLectionEnd )) {
                             isIncompatible = false;
                         }
                     }
@@ -193,9 +193,9 @@ public class StudentDay implements Comparable<StudentDay> {
 
     public boolean isBlocked(DayColumnData dayColumn, int searchLectionLength) {
         boolean isBlocked = true;
-        for (ValidTimePairs timePairs : validTimes) {
-            Time startTime = timePairs.start();
-            Time endTime = timePairs.end().plusTimeOf(searchLectionLength);
+        for (ValidTimes times : validTimes) {
+            Time startTime = times.start();
+            Time endTime = times.end().plusTimeOf(searchLectionLength);
             int fieldIndex = dayColumn.getFieldIndexAt(startTime);
             int lastFieldIndex = dayColumn.getFieldIndexAt(endTime);
             int lectionFieldCount = 0;
@@ -276,7 +276,7 @@ public class StudentDay implements Comparable<StudentDay> {
         return latestEnd;
     }
 
-    public ArrayList<ValidTimePairs> getValidTimes() {
+    public ArrayList<ValidTimes> getValidTimes() {
         return validTimes;
     }
 
@@ -288,11 +288,11 @@ public class StudentDay implements Comparable<StudentDay> {
         return " " + start1() + endString1 + " " + start2() + endString2 + " ";
     }
 
-    private class ValidTimePairs {
+    private class ValidTimes {
 
         private Time start, end;
 
-        public ValidTimePairs(Time start, Time end) {
+        public ValidTimes(Time start, Time end) {
             this.start = start;
             this.end = end;
         }

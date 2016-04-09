@@ -75,7 +75,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         setText("");
         // Lection setzen
         if (fieldData.isLectionAllocated()) {
-            setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+            setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.UNVALID);
             setForeground(fieldData.getAllocatedTimeMark() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
             setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
             setFont(this.getFont().deriveFont(Font.BOLD, size1));
@@ -94,7 +94,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         } // Lection moven
         else if (fieldDataAtMovedCoordinates.isMoveEnabled() && !fieldDataAtMovedCoordinates.isLectionAllocated() && movedRow >= 0) { // ausserhalb JTable movedRow = -1
             if (col == movedCol && row >= movedRow && row < lectionEnd) {
-                setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+                setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.UNVALID);
                 setForeground(Color.WHITE);
                 setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
                 setFont(this.getFont().deriveFont(Font.BOLD, size1));
@@ -114,7 +114,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             // Übertrag auf 2. LectionColumn (Head bleibt in 1. Column stehen)
             if (lectionDiff > 0) {
                 if (col == movedCol + 2 && row >= 0 && row < lectionDiff) {
-                    setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.LECTION_FIELD_OUT_OF_BOUNDS);
+                    setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.UNVALID);
                     setForeground(Color.WHITE);
                     setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
                     setFont(this.getFont().deriveFont(Font.BOLD, size1));

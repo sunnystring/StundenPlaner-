@@ -106,6 +106,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             studentRow[col].setStudentID(student.getID());
             studentRow[col].setAllocationState(student.isLectionAllocated());
             studentRow[col].setStudentListReleased(!student.isLectionAllocated());
+            if (col > 0) {
+                studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
+            }
             setNameAndTimes(col, student);
         }
         fieldDataMatrix.add(studentRow);
@@ -114,6 +117,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private void updateStudentRow(Student student) {
         studentRow = fieldDataMatrix.get(student.getID());
         for (int col = 0; col < getColumnCount(); col++) {
+            if (col > 0) {
+                studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
+            }
             setNameAndTimes(col, student);
         }
     }
@@ -292,8 +298,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 1; j < getColumnCount(); j++) {
                 StudentFieldData field = fieldDataMatrix.get(i)[j];
-                field.setFieldColor(coloredStudentDays.getColorAt(i, j - 1, field.isIncompatible()));
-                field.setValidTimeString(getColoredTimeString(field.isBlocked(), i, j));
+                field.setFieldColor(coloredStudentDays.getFieldColorAt(i, j - 1, field.isIncompatible(), field.isSingleDay()));
+                field.setValidTimeString(getColoredTimeString(field.isBlocked() || field.isUnallocatable(), i, j));
             }
         }
     }

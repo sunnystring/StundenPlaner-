@@ -50,6 +50,16 @@ public class Schedule extends JPanel {
         }
     }
 
+    public void updateHeader() {
+        removeHeader();
+        for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
+            DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            headerFieldList.add(dayField);
+            header.add(dayField);
+            scheduleData.getBreakWatcher().check(i);
+        }
+    }
+
     public void fireNextScheduleSize() {
         scheduleZoom.setNextSize();
         timeTable.getLectionField().setFontSize1(scheduleZoom.getFontSize1());

@@ -5,7 +5,6 @@
  */
 package scheduleUI;
 
-import java.awt.Point;
 import javax.swing.JTable;
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;

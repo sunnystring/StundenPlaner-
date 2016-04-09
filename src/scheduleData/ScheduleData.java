@@ -206,16 +206,15 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         }
                         if (scheduleFieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             eraseLection(student.getLectionLength());
-                            breakWatcher.check(dayIndex);
                         }
                     } else { // in AllocatedMode wechseln
                         createLection(student.getLectionLength());
                         setAllocatedMode();
-                        breakWatcher.check(dayIndex);
                     }
                     studentListData.setIncompatibleStudentDays();
                     fireTableDataChanged();
                     studentListData.fireTableDataChanged();
+                    breakWatcher.check(dayIndex);
                 }
             }
         }

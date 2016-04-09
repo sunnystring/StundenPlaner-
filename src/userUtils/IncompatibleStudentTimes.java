@@ -124,8 +124,8 @@ public class IncompatibleStudentTimes {
                 int refStudentID = studentIDMaps.get(dayIndex).get(refDay);
                 StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
                 if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
-                    Student refStudent = database.getStudent(refStudentID);
-                    int refLectionLength = refStudent.getLectionLength();
+                    //    Student refStudent = database.getStudent(refStudentID);
+                    int refLectionLength = database.getStudent(refStudentID).getLectionLength();
                     int searchIndex = refIndex + 1;
                     while (searchIndex < dayList.size()) {
                         StudentDay searchDay = dayList.get(searchIndex);
@@ -138,8 +138,7 @@ public class IncompatibleStudentTimes {
                             Student searchStudent = database.getStudent(searchStudentID);
                             int searchLectionLength = searchStudent.getLectionLength();
                             boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
-                            boolean unallocatable = incompatible && refStudent.getNumberOfSelectedDays() == 1
-                                    && searchStudent.getNumberOfSelectedDays() == 1;
+                            boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
                             if (!refField.isIncompatible()) {
                                 refField.setIncompatible(incompatible);
                             }

@@ -26,17 +26,22 @@ public class Colors {
             BLUE_DEFAULT = new Color(153, 204, 255),
             BLUE_0 = new Color(204, 229, 255),
             FAVORITE = Color.BLUE,
-            LECTION_FIELD_OUT_OF_BOUNDS = Color.ORANGE,
+            UNVALID = Color.ORANGE,
             BACKGROUND = Color.WHITE,
+            PURPLE_1 = new Color(204, 153, 255),
+            PURPLE_DEFAULT = new Color(229, 204, 255),
+            PURPLE_2 = new Color(178, 102, 255),
+            PURPLE_3 = new Color(153, 51, 255),
+            PURPLE_4 = new Color(127, 0, 255),
             RED_1 = new Color(255, 180, 180),
             RED_DEFAULT = new Color(255, 210, 210),
             RED_2 = new Color(240, 150, 140),
             RED_3 = new Color(230, 120, 110),
             RED_4 = new Color(210, 0, 0),
             TIMEFIELD_HOUR = new Color(255, 229, 204);
-
     private static final Color[] BLUE_TYPES = {BLUE_0, BLUE_DEFAULT, BLUE_2, BLUE_3, BLUE_4};
     private static final Color[] RED_TYPES = {RED_1, RED_DEFAULT, RED_2, RED_3, RED_4};
+    private static final Color[] PURPLE_TYPES = {PURPLE_1, PURPLE_DEFAULT, PURPLE_2, PURPLE_3, PURPLE_4};
 
     public static Color getBlue(int i) {
         return BLUE_TYPES[i];
@@ -46,4 +51,7 @@ public class Colors {
         return RED_TYPES[i];
     }
 
+    public static Color getPurple(int i) {
+        return PURPLE_TYPES[i];
+    }
 }

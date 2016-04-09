@@ -28,6 +28,7 @@ public class StudentFieldData {
     private boolean incompatible;
     private boolean blocked;
     private boolean unallocatable;
+    private boolean singleDay;
     private int selectedRowIndex;
 
     public StudentFieldData(Database database) {
@@ -44,6 +45,7 @@ public class StudentFieldData {
         incompatible = false;
         blocked = false;
         unallocatable = false;
+        singleDay = true;
     }
 
     public void setFieldColor(Color fieldColor) {
@@ -106,6 +108,14 @@ public class StudentFieldData {
         return studentAllocated;
     }
 
+    public void setSelectedRowIndex(int selectedRowIndex) {
+        this.selectedRowIndex = selectedRowIndex;
+    }
+
+    public int getSelectedRowIndex() {
+        return selectedRowIndex;
+    }
+
     public void setIncompatible(boolean incompatible) {
         this.incompatible = incompatible;
     }
@@ -130,12 +140,11 @@ public class StudentFieldData {
         this.blocked = blocked;
     }
 
-    public void setSelectedRowIndex(int selectedRowIndex) {
-        this.selectedRowIndex = selectedRowIndex;
+    public boolean isSingleDay() {
+        return singleDay;
     }
 
-    public int getSelectedRowIndex() {
-        return selectedRowIndex;
+    public void setSingleDay(boolean singleDay) {
+        this.singleDay = singleDay;
     }
-
 }

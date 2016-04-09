@@ -59,7 +59,7 @@ public class ColoredStudentDays {
         findIncompatibleStudentTimes();
     }
 
-    public Color getColorAt(int rowIndex, int dayIndex, boolean isIncompatible) { // rowIndex = studentID, dayIndex = col-1
+    public Color getFieldColorAt(int rowIndex, int dayIndex, boolean isIncompatible, boolean isSingleDay) { // rowIndex = studentID, dayIndex = col-1
         StudentDay studentDay = database.getStudent(rowIndex).getStudentTimes().getValidStudentDay(dayIndex);
         Time time = studentDay.getEarliestStart();
         if (isColored) {
@@ -67,12 +67,16 @@ public class ColoredStudentDays {
                 return Colors.LIGHT_GRAY;
             } else if (isIncompatible) {
                 return timeDistribution.getRed(time, dayIndex);
+            } else if (isSingleDay) {
+                return timeDistribution.getPurple(time, dayIndex);
             } else {
                 return timeDistribution.getBlue(time, dayIndex);
             }
         } else {
             if (isIncompatible) {
                 return Colors.RED_DEFAULT;
+            } else if (isSingleDay) {
+                return Colors.PURPLE_DEFAULT;
             } else {
                 return Colors.BLUE_DEFAULT;
             }

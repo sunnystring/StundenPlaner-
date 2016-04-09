@@ -28,7 +28,5 @@ public class DayField extends JLabel {
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.BACKGROUND));
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
-
     }
-
 }

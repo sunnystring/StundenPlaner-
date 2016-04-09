@@ -83,7 +83,7 @@ public class Student {
         return lectionAllocationState;
     }
 
-    public int getNumberOfSelectedDays() {
-        return studentTimes.getNumberOfSelectedDays();
+    public boolean getDaySelectionStateAt(int dayIndex) {
+        return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
     }
 }

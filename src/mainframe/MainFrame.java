@@ -228,8 +228,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
     
     private void updateAndShowSchedule() {
-        schedule.removeHeader();
-        schedule.createHeader();
+      //  schedule.removeHeader();
+        schedule.updateHeader();
         schedule.getTimeTable().update();
     }
     

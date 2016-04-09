@@ -73,9 +73,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             }
         }
         if (studentFieldData.isUnallocatable()) {
-            setBackground(Color.red);
-            setFont(this.getFont().deriveFont(Font.BOLD, 10));
-            setForeground(Color.WHITE);
+            setBackground(Colors.UNVALID);
         }
         if (studentFieldData.isStudentAllocated()) {
             setBackground(Colors.LIGHT_GRAY);
