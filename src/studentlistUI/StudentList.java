@@ -7,9 +7,11 @@ package studentlistUI;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Comparator;
 import studentListData.StudentListData;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 import scheduleUI.TimeTable;
 import scheduleData.ScheduleData;
 import scheduleUI.LectionField;
@@ -39,7 +41,7 @@ public class StudentList extends JTable {
         getTableHeader().setDefaultRenderer(headerField);
         scheduleData = (ScheduleData) timeTable.getModel();
         studentField = new StudentField(this, studentListData);
-        setDefaultRenderer(String.class, studentField);
+        setDefaultRenderer(StudentFieldData.class, studentField);
         lectionField = timeTable.getLectionField();
         timeField = timeTable.getTimeField();
         addMouseListener(studentListData);
@@ -52,12 +54,28 @@ public class StudentList extends JTable {
         setFillsViewportHeight(true);
         setBackground(Colors.BACKGROUND);
         setRowHeight(25);
+
+    }
+
+    private void addRowSorter() {
+        TableRowSorter<StudentListData> rowSorter = new TableRowSorter<>(studentListData);
+        for (int col = 1; col < getColumnCount(); col++) {
+            rowSorter.setComparator(col, new Comparator<StudentFieldData>() {
+                @Override
+                public int compare(StudentFieldData field1, StudentFieldData field2) {
+                    return field1.getStudentDay().compareTo(field2.getStudentDay());
+                }
+            });
+        }
+        rowSorter.setSortable(0, false);
+        setRowSorter(rowSorter);
     }
 
     public void update() {
-        createDefaultColumnsFromModel();
+        createDefaultColumnsFromModel(); 
+        addRowSorter();
         studentField.setColumnCount(studentListData.getColumnCount());
-        studentField.resetStudentRows();
+        studentField.resetRowIndices();
     }
 
     public void showNumberOfStudents() {
@@ -66,8 +84,8 @@ public class StudentList extends JTable {
         header.repaint();
     }
 
-    public StudentFieldData getStudentFieldDataAt(int row, int col) {
-        return (StudentFieldData) getValueAt(row, col);
+    public StudentFieldData getStudentFieldDataFromViewAt(int rowInView, int columnInView) {
+        return (StudentFieldData) getValueAt(rowInView, columnInView);
     }
 
     public StudentField getStudentField() {
@@ -82,12 +100,12 @@ public class StudentList extends JTable {
         if (row >= 0) {
             StudentFieldData field = (StudentFieldData) getValueAt(row, validCol);
             if (field.isUnallocatable()) {
-                return "zusammen nicht einteilbar";
+                return "nicht einteilbar";
             } else if (field.isBlocked()) {
                 return "gesperrte Zeit";
             } else if (field.isIncompatible()) {
                 return "unvereinbare Zeit";
-            } 
+            }
         }
         return null;
     }

@@ -26,7 +26,7 @@ import utils.Colors;
 public class TimeField extends LectionField {
 
     private int movedRow, movedCol;
-   
+
     public TimeField(TimeTable timeTable, ScheduleData scheduleData) {
         super(timeTable, scheduleData);
         resetTimeColumn();
@@ -100,11 +100,11 @@ public class TimeField extends LectionField {
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
-                    lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
-                } else if (studentFieldData.isStudentListReleased()) {
+                    lectionLenght = studentFieldData.getStudent().getLectionLength();
+                } else if (studentListData.isStudentListReleased()) {
                     resetTimeColumn();
                 }
             }

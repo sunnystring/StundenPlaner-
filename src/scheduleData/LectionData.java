@@ -39,7 +39,7 @@ public class LectionData {
 
     public void updateStudentID(int deletedStudentID) {
         for (ScheduleFieldData f : lection) {
-            if (f.getTempStudentID() > deletedStudentID) {
+            if (f.getStudentID() > deletedStudentID) {
                 f.decrementLocalStudentID();
             }
         }

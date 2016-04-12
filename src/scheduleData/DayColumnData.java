@@ -165,7 +165,6 @@ public class DayColumnData {
     }
 
     public int getFieldIndexAt(Time fieldTime) {
-        System.out.println("fieldTime = " + fieldTime + "   index = " + timeToFieldIndexMap.get(fieldTime));
         return timeToFieldIndexMap.get(fieldTime);
     }
 }

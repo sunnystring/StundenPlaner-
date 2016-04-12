@@ -47,7 +47,7 @@ public class BreakWatcher {
             if (fieldCount > SIX_HOURS_BOUND && !enoughBreakForSixHours) {
                 schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
             } else if (fieldCount > FOUR_HOURS_BOUND && !enoughBreakForFourHours) {
-                schedule.showBreakRequired(dayIndex, Colors.RED_3, "15 Minuten Pause einplanen!");
+                schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
             } else {
                 schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, database.getDayNameAt(dayIndex));
             }

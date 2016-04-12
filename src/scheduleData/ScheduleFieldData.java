@@ -22,7 +22,7 @@ public class ScheduleFieldData {
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
     private Database database;
-    private int tempStudentID;
+    private int studentID;
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
@@ -51,19 +51,19 @@ public class ScheduleFieldData {
     }
 
     public void decrementLocalStudentID() {
-        tempStudentID--;
+        studentID--;
     }
 
-    public void setTempStudentID(int tempStudentID) {
-        this.tempStudentID = tempStudentID;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
-    public int getTempStudentID() {
-        return tempStudentID;
+    public int getStudentID() {
+        return studentID;
     }
 
     public Student getStudent() {
-        return database.getStudent(tempStudentID);
+        return database.getStudent(studentID);
     }
 
     public void setFieldTime(Time fieldTime) {

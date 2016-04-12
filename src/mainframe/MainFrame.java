@@ -41,7 +41,7 @@ import static userUtilsUI.ColoredStudentDays.DEFAULT_COLORS;
  * Erzeugung und Initialisierung der StundenPlaner-GUI
  */
 public class MainFrame extends JFrame implements DatabaseListener {
-    
+
     private Database database;
     private ScheduleTimes scheduleTimes;
     private ScheduleData scheduleData;
@@ -56,7 +56,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private boolean buttonState;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
-    
+
     public MainFrame() {
         setTitle("StundenPlaner");
         setIconImage(Icons.getImage("table.png"));
@@ -76,14 +76,16 @@ public class MainFrame extends JFrame implements DatabaseListener {
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
+
     private void createWidgets() {
         toolBar = new JPanel();
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.LINE_AXIS));
         toolBar.setPreferredSize(new Dimension(0, 30));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 12, 0, 15));
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
+        openButton.setEnabled(false);
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
+        saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         printButton.setEnabled(false);
         scheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
@@ -92,7 +94,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         KGUButton.setEnabled(false);
         zoomButton = new ScheduleButton("resize.png", "Stundenplan: Höhe anpassen");
         zoomButton.setEnabled(false);
-        coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Zeitliche Verteilung der Schülerzeiten anzeigen");
+        coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Verteilung der Zeiten anzeigen");
         coloredStudentTimesButton.setEnabled(false);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
@@ -106,7 +108,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleInputMask = new ScheduleInputMask(database, this);
         studentInputMask = new StudentInputMask(database);
     }
-    
+
     private void addWidgets() {
         splitPane.setLeftComponent(leftScroll);
         splitPane.setRightComponent(rightScroll);
@@ -123,17 +125,17 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.add(zoomButton);
         toolBar.add(coloredStudentTimesButton);
     }
-    
+
     private void setScheduleDataParameters() {
         scheduleData.getBreakWatcher().setDatabase(database);
         scheduleData.getBreakWatcher().setSchedule(schedule);
     }
-    
+
     private void setStudentListDataParameters() {
         studentListData.setScheduleData(scheduleData);
         studentListData.setStudentList(studentList);
     }
-    
+
     private void addListeners() {
         database.addDatabaseListener(studentListData);
         database.addDatabaseListener(scheduleData);
@@ -172,7 +174,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             }
         });
     }
-    
+
     public void resetColoredStudentTimesButtonState() {
         buttonState = false;
     }
@@ -188,25 +190,25 @@ public class MainFrame extends JFrame implements DatabaseListener {
         setStudentButtonsEnabled(true);
         zoomButton.setEnabled(true);
     }
-    
+
     private void setScheduleData() {
         scheduleData.setTableData();
     }
-    
+
     private void setupAndShowSchedule() {
         schedule.createHeader();
         schedule.getTimeTable().update();
     }
-    
+
     private void setupStudentListData() {
         studentListData.setup();
     }
-    
+
     private void setupAndShowStudentList() {
         studentList.getTableHeader().setVisible(true);
         studentList.update();
     }
-    
+
     private void fireUIDataChanged() {
         scheduleData.fireTableDataChanged();
         studentListData.fireTableDataChanged();
@@ -222,21 +224,20 @@ public class MainFrame extends JFrame implements DatabaseListener {
         updateAndShowStudentList();
         fireUIDataChanged();
     }
-    
+
     private void updateScheduleData() {
         scheduleData.updateTableData();
     }
-    
+
     private void updateAndShowSchedule() {
-      //  schedule.removeHeader();
         schedule.updateHeader();
         schedule.getTimeTable().update();
     }
-    
+
     private void updateStudentListData() {
         studentListData.update();
     }
-    
+
     private void updateAndShowStudentList() {
         studentList.update();
     }
@@ -245,56 +246,60 @@ public class MainFrame extends JFrame implements DatabaseListener {
     public void setScheduleButtonEnabled(boolean state) {
         scheduleButton.setEnabled(state);
     }
-    
+
     public void setStudentButtonsEnabled(boolean state) {
         studentButton.setEnabled(state);
-        // KGUButton.setEnabled(state);
     }
-    
+
+    public void setButtonsEnabled(boolean state) {
+        setScheduleButtonEnabled(state);
+        setStudentButtonsEnabled(state);
+    }
+
     private class ScheduleButton extends JButton {
-        
+
         public ScheduleButton(String iconName, String toolTip) {
             setIcon(Icons.setIcon(iconName));
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(50, 0));
         }
-        
+
         public ScheduleButton(String iconName, String toolTip, int width) {
             setIcon(Icons.setIcon(iconName));
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(width, 0));
         }
     }
-    
+
     public ScheduleInputMask getScheduleInputMask() {
         return scheduleInputMask;
     }
-    
+
     public StudentInputMask getStudentInputMask() {
         return studentInputMask;
     }
-    
+
     public ScheduleData getScheduleData() {
         return scheduleData;
     }
-    
+
     public StudentListData getStudentListData() {
         return studentListData;
     }
-    
+
     @Override
     public void studentAdded(int numberOfStudents, Student student) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }
-    
+
     @Override
     public void studentEdited(Student student) {
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }
-    
+
     @Override
     public void studentDeleted(int numberOfStudents, Student student) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);

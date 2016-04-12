@@ -182,11 +182,11 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
-                    lectionLenght = studentListData.getStudent(selectedRow).getLectionLength();
-                } else if (studentFieldData.isStudentListReleased()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
+                    lectionLenght = studentFieldData.getStudent().getLectionLength();
+                } else if (studentListData.isStudentListReleased()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
                     resetLectionColumn();
                 }
             }

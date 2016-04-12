@@ -7,9 +7,11 @@ package studentListData;
 
 import core.Database;
 import core.Student;
+import core.StudentDay;
 import java.awt.Color;
 import studentlistUI.StudentList;
 import utils.Colors;
+import static studentListData.StudentListData.NULL_VALUE;
 
 /**
  *
@@ -20,10 +22,10 @@ public class StudentFieldData {
     private final Database database;
     private Color fieldColor;
     private int studentID;
+    private int dayIndex;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
-    private boolean studentListReleased; // globaler und lokaler Row-Schalter: falls lokal, studentListReleased != studentAllocated
     private boolean studentAllocated;
     private boolean incompatible;
     private boolean blocked;
@@ -39,8 +41,8 @@ public class StudentFieldData {
     public void reset() {
         fieldColor = Colors.BLUE_DEFAULT;
         fieldSelected = false;
-        studentListReleased = true;
-        selectedRowIndex = -1;
+        selectedRowIndex = NULL_VALUE;
+        dayIndex = dayIndex = NULL_VALUE;
         studentAllocated = false;
         incompatible = false;
         blocked = false;
@@ -60,8 +62,24 @@ public class StudentFieldData {
         this.studentID = studentID;
     }
 
+    public int getStudentID() {
+        return studentID;
+    }
+
     public Student getStudent() {
         return database.getStudent(studentID);
+    }
+
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
+    }
+
+    public int getDayIndex() {
+        return dayIndex;
+    }
+
+    public StudentDay getStudentDay() {
+        return getStudent().getStudentDay(dayIndex);
     }
 
     public String getNameString() {
@@ -92,40 +110,36 @@ public class StudentFieldData {
         fieldSelected = !fieldSelected;
     }
 
-    public boolean isStudentListReleased() {
-        return studentListReleased;
-    }
-
-    public void setStudentListReleased(boolean studentListReleased) {
-        this.studentListReleased = studentListReleased;
+    public boolean isStudentAllocated() {
+        return studentAllocated;
     }
 
     public void setAllocationState(boolean studentAllocated) {
         this.studentAllocated = studentAllocated;
     }
 
-    public boolean isStudentAllocated() {
-        return studentAllocated;
-    }
-
     public void setSelectedRowIndex(int selectedRowIndex) {
         this.selectedRowIndex = selectedRowIndex;
     }
 
-    public int getSelectedRowIndex() {
+    public int selectedRowIndex() {
         return selectedRowIndex;
-    }
-
-    public void setIncompatible(boolean incompatible) {
-        this.incompatible = incompatible;
     }
 
     public boolean isIncompatible() {
         return incompatible;
     }
 
+    public void setIncompatible(boolean incompatible) {
+        this.incompatible = incompatible;
+    }
+
     public boolean isBlocked() {
         return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     public boolean isUnallocatable() {
@@ -134,10 +148,6 @@ public class StudentFieldData {
 
     public void setUnallocatable(boolean unAllocatable) {
         this.unallocatable = unAllocatable;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 
     public boolean isSingleDay() {

@@ -26,16 +26,18 @@ import utils.Colors;
  */
 public class StudentField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
-    private StudentList studentList;
-    private int selectedRow, tempRow;
+    private final StudentList studentList;
+    private final StudentListData studentListData;
+    private int movedRow, tempRow;
     private int columnCount;
     public static final int NULL_ROW = -1;
     private static final int PAINTED_ROWS = 10;
 
     public StudentField(StudentList studentList, StudentListData studentListData) {
         this.studentList = studentList;
+        this.studentListData = studentListData;
         setColumnCount(studentListData.getColumnCount());
-        resetStudentRows();
+        resetRowIndices();
         setHorizontalAlignment(SwingConstants.LEADING);
         setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
         setOpaque(true);
@@ -49,7 +51,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setForeground(Color.BLACK);
         setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
         // Mouseover
-        if (studentFieldData.isStudentListReleased() && row == selectedRow) {
+        if (studentListData.isStudentListReleased() && row == movedRow) { // studentListData.isStudentListReleased()
             if (col == 0) {
                 setBackground(Colors.NAME_FIELD_SELECTED);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
@@ -61,19 +63,17 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
         }
         // Row selected
-        if (row == studentFieldData.getSelectedRowIndex()) {
+        if (row == studentFieldData.selectedRowIndex()) {
             if (col == 0) {
-                if (col == 0) {
-                    setBackground(Colors.NAME_FIELD_SELECTED);
-                    setFont(this.getFont().deriveFont(Font.BOLD, 10));
-                    setForeground(Color.WHITE);
-                }
+                setBackground(Colors.NAME_FIELD_SELECTED);
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setForeground(Color.WHITE);
             } else {
                 setBackground(studentFieldData.isFieldSelected() ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
             }
         }
         if (studentFieldData.isUnallocatable()) {
-            setBackground(Colors.UNVALID);
+            setBackground(Colors.PURPLE_DEFAULT);
         }
         if (studentFieldData.isStudentAllocated()) {
             setBackground(Colors.LIGHT_GRAY);
@@ -85,11 +85,11 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     @Override
     public void mouseMoved(MouseEvent m) {
         Point point = m.getPoint();
-        selectedRow = studentList.rowAtPoint(point);
-        if (selectedRow >= 0) {
-            if (selectedRow != tempRow) {
-                paintStudentRow(selectedRow < tempRow);
-                tempRow = selectedRow;
+        movedRow = studentList.rowAtPoint(point);
+        if (movedRow >= 0) {
+            if (movedRow != tempRow) {
+                paintStudentRow(movedRow < tempRow);
+                tempRow = movedRow;
             }
         } else { // ausserhalb Table (unten)
             studentList.repaint();
@@ -100,20 +100,20 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         if (moveUp) {
             for (int i = 0; i < PAINTED_ROWS; i++) {
                 for (int j = 0; j < columnCount; j++) {
-                    studentList.repaint(studentList.getCellRect(selectedRow + i, j, false));
+                    studentList.repaint(studentList.getCellRect(movedRow + i, j, false));
                 }
             }
         } else {
             for (int i = 0; i < PAINTED_ROWS; i++) {
                 for (int j = 0; j < columnCount; j++) {
-                    studentList.repaint(studentList.getCellRect(selectedRow - i, j, false));
+                    studentList.repaint(studentList.getCellRect(movedRow - i, j, false));
                 }
             }
         }
     }
 
-    public final void resetStudentRows() {
-        selectedRow = NULL_ROW;
+    public final void resetRowIndices() {
+        movedRow = NULL_ROW;
         tempRow = NULL_ROW;
     }
 

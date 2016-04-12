@@ -67,8 +67,8 @@ public class Student {
         this.lectionLengthInMinutes = lectionLengthInMinutes;
     }
 
-    public StudentDay getStudentDay(int index) {
-        return studentTimes.getValidStudentDay(index);
+    public StudentDay getStudentDay(int dayIndex) {
+        return studentTimes.getValidStudentDay(dayIndex);
     }
 
     public int getStudentID() {

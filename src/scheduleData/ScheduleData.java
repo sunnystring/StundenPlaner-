@@ -166,23 +166,21 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     @Override
     public void mousePressed(MouseEvent m) {
         Point p = m.getPoint();
-        int selectedRow, selectedCol;
+        int row, col;
         if (m.getSource() instanceof StudentList) {
             StudentList studentList = (StudentList) m.getSource();
-            selectedRow = studentList.rowAtPoint(p);
-            selectedCol = studentList.columnAtPoint(p);
-            if (selectedRow >= 0 && selectedCol > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
-                int studentDayID = selectedCol - 1; // NameField = 0
-                DayColumnData dayColumn = getDayColumn(studentDayID);
-                if (studentFieldData.isFieldSelected()) {  // StudentDay selektiert 
-                    int studentID = selectedRow;
-                    Student student = database.getStudent(studentID);
-                    dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
+            row = studentList.rowAtPoint(p);
+            col = studentList.columnAtPoint(p);
+            if (row >= 0 && col > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(row, col);
+                DayColumnData dayColumn = getDayColumn(studentFieldData.getDayIndex());
+                if (studentFieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
+                    Student student = studentFieldData.getStudent();
+                    dayColumn.setValidTimeMarks(studentFieldData.getStudentDay());
                     setMoveMode(student);
-                } else if (selectedRow == studentFieldData.getSelectedRowIndex()) { // Selection rückgängig gemacht, aber noch in SelectionState
+                } else if (row == studentFieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
                     dayColumn.resetValidTimeMarks();
-                } else if (studentFieldData.isStudentListReleased()) { // alle Selections gelöscht
+                } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
                     setAllocatedMode();
                 }
                 fireTableDataChanged();
@@ -190,14 +188,14 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         }
         if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
-            selectedRow = timeTable.rowAtPoint(p);
-            selectedCol = timeTable.columnAtPoint(p);
-            if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn
-                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
+            row = timeTable.rowAtPoint(p);
+            col = timeTable.columnAtPoint(p);
+            if (row >= 0 && col % 2 == 1) { // keine Events aus TimeColumn
+                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldDataAt(row, col);
                 Student student = scheduleFieldData.getStudent();
-                int dayIndex = selectedCol / 4;
+                int dayIndex = col / 4;
                 if (scheduleFieldData.isMoveEnabled()) {
-                    convertTableToDayColumnCoordinates(selectedRow, selectedCol);
+                    convertTableToDayColumnCoordinates(row, col);
                     if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (scheduleFieldData.getLectionPanelAreaMark() == HEAD) {
                             eraseLection(student.getLectionLength());
@@ -238,7 +236,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else { // Sperrzonen: lectionLength unterhalb Lection und vor Stundenplan-Ende 
                     boolean isAllocatable = !(i < headRow && i > headRow - lectionLength) && (i <= rowCount - lectionLength);
                     fieldData.setMoveEnabled(isAllocatable);
-                    fieldData.setTempStudentID(student.getID());
+                    fieldData.setStudentID(student.getID());
                     fieldData.resetPanelAreaMarks();
                 }
             }
