@@ -173,11 +173,11 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAt(selectedRow, selectedCol);
-                int studentDayID = selectedCol - 1; // NameField = 0
+                int studentDayID = studentFieldData.getDayIndex(); // NameField = 0
                 DayColumnData dayColumn = getDayColumn(studentDayID);
                 if (studentFieldData.isFieldSelected()) {  // StudentDay selektiert 
-                    int studentID = selectedRow;
-                    Student student = database.getStudent(studentID);
+                   // int studentID = selectedRow;
+                    Student student = studentFieldData.getStudent();
                     dayColumn.setValidTimeMarks(student.getStudentDay(studentDayID));
                     setMoveMode(student);
                 } else if (selectedRow == studentFieldData.getSelectedRowIndex()) { // Selection rückgängig gemacht, aber noch in SelectionState

@@ -7,9 +7,11 @@ package studentListData;
 
 import core.Database;
 import core.Student;
+import core.StudentDay;
 import java.awt.Color;
 import studentlistUI.StudentList;
 import utils.Colors;
+import static studentListData.StudentListData.NULL_VALUE;
 
 /**
  *
@@ -20,6 +22,7 @@ public class StudentFieldData {
     private final Database database;
     private Color fieldColor;
     private int studentID;
+    private int dayIndex;
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
@@ -40,7 +43,8 @@ public class StudentFieldData {
         fieldColor = Colors.BLUE_DEFAULT;
         fieldSelected = false;
         studentListReleased = true;
-        selectedRowIndex = -1;
+        selectedRowIndex = NULL_VALUE;
+        dayIndex = dayIndex = NULL_VALUE;
         studentAllocated = false;
         incompatible = false;
         blocked = false;
@@ -62,6 +66,18 @@ public class StudentFieldData {
 
     public Student getStudent() {
         return database.getStudent(studentID);
+    }
+
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
+    }
+
+    public int getDayIndex() {
+        return dayIndex;
+    }
+
+    public StudentDay getStudentDay() {
+        return getStudent().getStudentDay(dayIndex);
     }
 
     public String getNameString() {

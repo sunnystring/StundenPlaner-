@@ -26,7 +26,7 @@ import utils.Colors;
  */
 public class StudentField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
-    private StudentList studentList;
+    private final StudentList studentList;
     private int selectedRow, tempRow;
     private int columnCount;
     public static final int NULL_ROW = -1;
@@ -73,7 +73,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             }
         }
         if (studentFieldData.isUnallocatable()) {
-            setBackground(Colors.UNVALID);
+            setBackground(Colors.PURPLE_DEFAULT);
         }
         if (studentFieldData.isStudentAllocated()) {
             setBackground(Colors.LIGHT_GRAY);

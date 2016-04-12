@@ -83,7 +83,9 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.setPreferredSize(new Dimension(0, 30));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 12, 0, 15));
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
+        openButton.setEnabled(false);
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
+        saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         printButton.setEnabled(false);
         scheduleButton = new ScheduleButton("calendar.png", "Stundenplan erstellen oder ändern");
@@ -92,7 +94,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         KGUButton.setEnabled(false);
         zoomButton = new ScheduleButton("resize.png", "Stundenplan: Höhe anpassen");
         zoomButton.setEnabled(false);
-        coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Zeitliche Verteilung der Schülerzeiten anzeigen");
+        coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Verteilung der Zeiten anzeigen");
         coloredStudentTimesButton.setEnabled(false);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
@@ -228,7 +230,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
     
     private void updateAndShowSchedule() {
-      //  schedule.removeHeader();
         schedule.updateHeader();
         schedule.getTimeTable().update();
     }

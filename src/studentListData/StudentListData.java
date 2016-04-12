@@ -108,6 +108,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             studentRow[col].setStudentListReleased(!student.isLectionAllocated());
             if (col > 0) {
                 studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
+                studentRow[col].setDayIndex(col - 1);
             }
             setNameAndTimes(col, student);
         }
@@ -170,8 +171,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     @Override
-    public Class<?> getColumnClass(int i) {
-        return String.class;
+    public Class<?> getColumnClass(int col) {
+        return StudentFieldData.class;
     }
 
     @Override
