@@ -82,6 +82,18 @@ public class StudentFieldData {
         return getStudent().getStudentDay(dayIndex);
     }
 
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
+    }
+
+    public int getDayIndex() {
+        return dayIndex;
+    }
+
+    public StudentDay getStudentDay() {
+        return getStudent().getStudentDay(dayIndex);
+    }
+
     public String getNameString() {
         return nameString;
     }
