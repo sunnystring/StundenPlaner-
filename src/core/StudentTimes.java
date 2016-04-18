@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import scheduleData.ScheduleTimeFrame;
 import static core.ScheduleTimes.*;
+import utils.Time;
 
 /**
  *
@@ -102,31 +103,46 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    
-    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
-        String dayNames = " ";
+    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame timeFrame, int lectionLength) {
+        String errorLog = "";
         boolean daysOutOfBounds = false;
         for (int i = 0; i < DAYS; i++) {
             StudentDay studentDay = daySelectionList[i];
             studentDay.setSelectionState(); // emptyDay, falls keine Zeiteinträge
             studentDay.setSingleSlots();
             studentDay.setLowestAndHighestBounds();
+            ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(studentDay);
+            boolean outOfTimeFrame = studentDay.outOfTimeFrame(timeFrame, lectionLength);
+            boolean outOfScheduleDayBounds = studentDay.outOfValidBoundsOf(scheduleDay);
             if (!studentDay.isEmpty()) {
-                boolean outOfValidEnd = studentDay.outOfValidEndOf(scheduleTimes.getMatchingScheduleDayOf(studentDay));
-                boolean outOfTimeFrame = studentDay.outOfTimeFrame(scheduleTimeFrame, lectionLength);
-                if (outOfValidEnd || outOfTimeFrame) {
-                    dayNames += studentDay.getDayName() + " ";
+                if (outOfTimeFrame || outOfScheduleDayBounds) {
+                    daysOutOfBounds = true;
+                }
+                Time endTimeFrame = timeFrame.getAbsoluteEnd().minusLengthOf(lectionLength + 1);
+                Time endScheduleDay = scheduleDay.getValidEnd();
+                if (outOfTimeFrame) {
+                    if (endScheduleDay.lessEqualsThan(endTimeFrame)) {
+                        endTimeFrame = endScheduleDay;
+                    }
+                    errorLog += studentDay.getDayName() + ":\n" + scheduleDay.getValidStart()
+                            + " bis " + endTimeFrame + "\n";
+                } else if (outOfScheduleDayBounds) {
+                    if (endTimeFrame.lessThan(endScheduleDay)) {
+                        endScheduleDay = endTimeFrame;
+                    }
+                    errorLog += studentDay.getDayName() + ":\n" + scheduleDay.getValidStart()
+                            + " bis " + endScheduleDay + "\n";
                     daysOutOfBounds = true;
                 }
             }
         }
         if (daysOutOfBounds) {
-            throw new OutOfBoundException(dayNames);
+            throw new OutOfBoundException(errorLog);
         }
     }
 
     public void setValidStudentDays() {
-            numberOfSelectedDays = 0;
+        numberOfSelectedDays = 0;
         for (int i = 0; i < DAYS; i++) {
             if (scheduleTimes.isValidDay(i)) {
                 StudentDay studentDay = daySelectionList[i];

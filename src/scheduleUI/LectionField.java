@@ -23,6 +23,7 @@ import studentListData.StudentListData;
 import studentlistUI.StudentList;
 import userUtilsUI.ScheduleZoom;
 import utils.Colors;
+import static studentListData.StudentListData.NULL_VALUE;
 
 /**
  *
@@ -37,7 +38,6 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     private int movedRow, movedCol;
     private int tempRow, tempCol;
     protected int lectionEnd, lectionDiff;
-    protected static final int NULL_VALUE = -1;
     protected float size1, size2;
 
     public LectionField(TimeTable timeTable, ScheduleData scheduleData) {
@@ -70,12 +70,15 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
-        ScheduleFieldData fieldDataAtMovedCoordinates = (ScheduleFieldData) scheduleData.getValueAt(movedRow, movedCol);
+        ScheduleFieldData fieldDataAtMovedCoordinates = scheduleData.getValueAt(movedRow, movedCol);
         setBackground(Colors.BACKGROUND);
         setText("");
-        // Lection setzen
+        // Allocated Mode
         if (fieldData.isLectionAllocated()) {
             setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.UNVALID);
+            if (fieldData.isLectionGapFiller()) {
+                setBackground(Colors.LIGHT_GREEN);
+            }
             setForeground(fieldData.getAllocatedTimeMark() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
             setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
             setFont(this.getFont().deriveFont(Font.BOLD, size1));
@@ -91,7 +94,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.LAST_ROW) {
                 setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
             }
-        } // Lection moven
+        } // Move Mode
         else if (fieldDataAtMovedCoordinates.isMoveEnabled() && !fieldDataAtMovedCoordinates.isLectionAllocated() && movedRow >= 0) { // ausserhalb JTable movedRow = -1
             if (col == movedCol && row >= movedRow && row < lectionEnd) {
                 setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.UNVALID);
@@ -182,7 +185,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
             if (selectedRow >= 0 && selectedCol > 0) {
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(selectedRow, selectedCol);
+                StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
                     lectionLenght = studentFieldData.getStudent().getLectionLength();
@@ -195,7 +198,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
-                ScheduleFieldData scheduleFieldData = (ScheduleFieldData) scheduleData.getValueAt(selectedRow, selectedCol);
+                ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     lectionLenght = scheduleFieldData.getStudent().getLectionLength();
                     lectionEnd = selectedRow + lectionLenght;

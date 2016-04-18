@@ -87,7 +87,7 @@ public class StudentList extends JTable {
         header.repaint();
     }
 
-    public StudentFieldData getStudentFieldDataFromViewAt(int rowInView, int columnInView) {
+    public StudentFieldData getStudentFieldDataAtView(int rowInView, int columnInView) {
         return (StudentFieldData) getValueAt(rowInView, columnInView);
     }
 

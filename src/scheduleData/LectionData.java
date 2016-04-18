@@ -16,6 +16,7 @@ import utils.Time;
 public class LectionData {
 
     private ArrayList<ScheduleFieldData> lection;
+    private int studentID;
 
     public LectionData() {
         lection = new ArrayList<>();
@@ -23,6 +24,7 @@ public class LectionData {
 
     public void add(ScheduleFieldData field) {
         lection.add(field);
+        studentID = field.getStudentID();
     }
 
     public ArrayList<ScheduleFieldData> getFieldList() {
@@ -40,7 +42,7 @@ public class LectionData {
     public void updateStudentID(int deletedStudentID) {
         for (ScheduleFieldData f : lection) {
             if (f.getStudentID() > deletedStudentID) {
-                f.decrementLocalStudentID();
+                f.decrementStudentID();
             }
         }
     }
@@ -49,5 +51,15 @@ public class LectionData {
         for (ScheduleFieldData f : lection) {
             f.setTeacherTimeEnabled(teacherTime);
         }
+    }
+
+    public void setGapFillerMarkEnabled(boolean state) {
+        for (ScheduleFieldData f : lection) {
+            f.setLectionGapFiller(state);
+        }
+    }
+
+    public int getStudentID() {
+        return studentID;
     }
 }

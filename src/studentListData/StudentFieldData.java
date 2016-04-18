@@ -31,6 +31,7 @@ public class StudentFieldData {
     private boolean blocked;
     private boolean unallocatable;
     private boolean singleDay;
+    private boolean lectionGapFiller;
     private int selectedRowIndex;
 
     public StudentFieldData(Database database) {
@@ -47,6 +48,7 @@ public class StudentFieldData {
         incompatible = false;
         blocked = false;
         unallocatable = false;
+        lectionGapFiller = false;
         singleDay = true;
     }
 
@@ -68,18 +70,6 @@ public class StudentFieldData {
 
     public Student getStudent() {
         return database.getStudent(studentID);
-    }
-
-    public void setDayIndex(int dayIndex) {
-        this.dayIndex = dayIndex;
-    }
-
-    public int getDayIndex() {
-        return dayIndex;
-    }
-
-    public StudentDay getStudentDay() {
-        return getStudent().getStudentDay(dayIndex);
     }
 
     public void setDayIndex(int dayIndex) {
@@ -126,7 +116,7 @@ public class StudentFieldData {
         return studentAllocated;
     }
 
-    public void setAllocationState(boolean studentAllocated) {
+    public void setStudentAllocated(boolean studentAllocated) {
         this.studentAllocated = studentAllocated;
     }
 
@@ -168,5 +158,13 @@ public class StudentFieldData {
 
     public void setSingleDay(boolean singleDay) {
         this.singleDay = singleDay;
+    }
+
+    public boolean isLectionGapFiller() {
+        return lectionGapFiller;
+    }
+
+    public void setLectionGapFiller(boolean lectionGapFillerMark) {
+        this.lectionGapFiller = lectionGapFillerMark;
     }
 }

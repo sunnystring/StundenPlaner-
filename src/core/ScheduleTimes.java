@@ -152,7 +152,7 @@ public class ScheduleTimes extends AbstractTableModel {
                     StudentTimes studentTimes = student.getStudentTimes();
                     StudentDay studentDay = studentTimes.getMatchingStudentDayOf(scheduleDay);
                     if (studentDay != null && !studentDay.isEmpty()) {
-                        boolean outOfValidEnd = studentDay.outOfValidEndOf(scheduleDay);
+                        boolean outOfValidEnd = studentDay.outOfValidBoundsOf(scheduleDay);
                         boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, student.getLectionLength());
                         if (outOfTimeFrame || outOfValidEnd) {
                             studentNames += student.getFirstName() + " " + student.getName() + "\n";

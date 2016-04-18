@@ -16,11 +16,11 @@ public class Student {
     private StudentTimes studentTimes;
     private int lectionLengthInMinutes;
     private int studentID;
-    private boolean lectionAllocationState;
+    private boolean allocated;
 
     public Student() {
         studentTimes = new StudentTimes();
-        lectionAllocationState = false;
+        allocated = false;
     }
 
     public void setStudentTimes(StudentTimes studentTimes) {
@@ -71,16 +71,12 @@ public class Student {
         return studentTimes.getValidStudentDay(dayIndex);
     }
 
-    public int getStudentID() {
-        return studentID;
+    public void setAllocated(boolean lectionAllocated) {
+        this.allocated = lectionAllocated;
     }
 
-    public void setAllocationState(boolean lectionAllocated) {
-        this.lectionAllocationState = lectionAllocated;
-    }
-
-    public boolean isLectionAllocated() {
-        return lectionAllocationState;
+    public boolean isAllocated() {
+        return allocated;
     }
 
     public boolean getDaySelectionStateAt(int dayIndex) {

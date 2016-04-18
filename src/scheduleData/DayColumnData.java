@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import utils.Time;
 import static scheduleData.ScheduleFieldData.*;
+import studentListData.StudentListData;
+import userUtils.LectionGapFiller;
 
 /**
  *
@@ -27,17 +29,19 @@ public class DayColumnData {
     private final Database database;
     private final ArrayList<ScheduleFieldData> fieldList;
     private TreeMap<Time, LectionData> lectionMap;
-    private TreeMap<Time, Integer> timeToFieldIndexMap;  // für IncomaptibleStudentTimes
-    private Time absoluteStart;
+    private final TreeMap<Time, Integer> timeToFieldIndexMap;
+    private Time absoluteStart, absoluteEnd;
     private int totalNumberOfFields;
     private int fieldCountStart;
     private int fieldCountEnd;
     private ScheduleDay scheduleDay;
+    private LectionGapFiller lectionGapFiller;
 
-    public DayColumnData(Database database) {
+    public DayColumnData(Database database, StudentListData studentListData) {
         this.database = database;
         fieldList = new ArrayList<>();
         timeToFieldIndexMap = new TreeMap<>();
+        lectionGapFiller = new LectionGapFiller(database, this, studentListData);
     }
 
     public void createDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
@@ -61,6 +65,7 @@ public class DayColumnData {
     private void setTimeFrame(ScheduleTimeFrame timeFrame) {
         totalNumberOfFields = timeFrame.getTotalNumberOfFields();
         absoluteStart = timeFrame.getAbsoluteStart();
+        absoluteEnd = timeFrame.getAbsoluteEnd();
         fieldCountStart = scheduleDay.getValidStart().diff(absoluteStart);
         fieldCountEnd = scheduleDay.getValidEnd().diff(absoluteStart);
     }
@@ -141,9 +146,11 @@ public class DayColumnData {
 
     public void addLection(Time time, LectionData lection) {
         lectionMap.put(time, lection);
+        database.getGlobalLectionMap().put(lection.getStudentID(), lection);
     }
 
     public void removeLection(Time time) {
+        database.getGlobalLectionMap().remove(lectionMap.get(time).getStudentID());
         lectionMap.remove(time);
     }
 
@@ -166,5 +173,29 @@ public class DayColumnData {
 
     public int getFieldIndexAt(Time fieldTime) {
         return timeToFieldIndexMap.get(fieldTime);
+    }
+
+    public LectionGapFiller getLectionGapFiller() {
+        return lectionGapFiller;
+    }
+
+    public void setLectionGapFiller(LectionGapFiller lectionGapFiller) {
+        this.lectionGapFiller = lectionGapFiller;
+    }
+
+    public int getFieldCountStart() {
+        return fieldCountStart;
+    }
+
+    public int getFieldCountEnd() {
+        return fieldCountEnd;
+    }
+
+    public Time getAbsoluteStart() {
+        return absoluteStart;
+    }
+
+    public Time getAbsoluteEnd() {
+        return absoluteEnd;
     }
 }

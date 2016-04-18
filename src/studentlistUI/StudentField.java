@@ -19,6 +19,7 @@ import javax.swing.table.TableCellRenderer;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import utils.Colors;
+import static studentListData.StudentListData.NULL_VALUE;
 
 /**
  *
@@ -30,7 +31,6 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     private final StudentListData studentListData;
     private int movedRow, tempRow;
     private int columnCount;
-    public static final int NULL_ROW = -1;
     private static final int PAINTED_ROWS = 10;
 
     public StudentField(StudentList studentList, StudentListData studentListData) {
@@ -72,9 +72,15 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setBackground(studentFieldData.isFieldSelected() ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
             }
         }
+        // nicht einteilbar
         if (studentFieldData.isUnallocatable()) {
             setBackground(Colors.PURPLE_DEFAULT);
         }
+        // LectionGapFiller aktiviert
+        if (studentFieldData.isLectionGapFiller()) {
+            setBackground(Colors.LIGHT_GREEN);
+        }
+        // eingeteilt
         if (studentFieldData.isStudentAllocated()) {
             setBackground(Colors.LIGHT_GRAY);
             setForeground(Color.GRAY);
@@ -113,8 +119,8 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     }
 
     public final void resetRowIndices() {
-        movedRow = NULL_ROW;
-        tempRow = NULL_ROW;
+        movedRow = NULL_VALUE;
+        tempRow = NULL_VALUE;
     }
 
     public final void setColumnCount(int columnCount) {
@@ -122,6 +128,6 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     }
 
     @Override
-    public void mouseDragged(MouseEvent me) {
+    public void mouseDragged(MouseEvent e) {
     }
 }

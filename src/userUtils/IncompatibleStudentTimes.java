@@ -7,11 +7,8 @@ package userUtils;
 
 import core.Database;
 import core.ScheduleTimes;
-import core.Student;
 import core.StudentDay;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import scheduleData.DayColumnData;
@@ -23,8 +20,9 @@ import utils.Time;
 
 /**
  *
- * Findet die Schülerzeiten, zu denen nicht gleichzeitig eingeteilt werden kann,
- * die entsprechenden Felder werden rot markiert
+ * Findet die Schülerzeiten zu denen nicht gleichzeitig eingeteilt werden kann oder die durch eine 
+ * Einteilung gesperrt sind, die entsprechenden Felder/Schrift werden rot markiert
+ * 
  */
 public class IncompatibleStudentTimes {
 
@@ -32,41 +30,11 @@ public class IncompatibleStudentTimes {
     private final StudentListData studentListData;
     private final ScheduleTimes scheduleTimes;
     private ScheduleData scheduleData;
-    private final ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
-    private final ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
 
     public IncompatibleStudentTimes(Database database, StudentListData studentListData) {
         this.studentListData = studentListData;
         this.database = database;
         scheduleTimes = database.getScheduleTimes();
-        sortedStudentDayLists = new ArrayList<>();
-        studentIDMaps = new ArrayList<>();
-    }
-
-    public void init(ScheduleData scheduleData) {
-        this.scheduleData = scheduleData;
-        for (int i = 0; i < scheduleTimes.getNumberOfValidDays(); i++) {
-            studentIDMaps.add(new HashMap<>());
-            sortedStudentDayLists.add(new ArrayList<>());
-        }
-    }
-
-    public void update() {
-        sortedStudentDayLists.clear();
-        studentIDMaps.clear();
-        for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
-            HashMap<StudentDay, Integer> studentIDMap = new HashMap<>();
-            ArrayList<StudentDay> sortedStudentDays = new ArrayList<>();
-            for (int studentID = 0; studentID < database.getNumberOfStudents(); studentID++) {
-                StudentDay studentDay = database.getStudent(studentID).getStudentDay(dayIndex);
-                studentIDMap.put(studentDay, studentID);
-                sortedStudentDays.add(studentDay);
-            }
-            studentIDMaps.add(studentIDMap);
-            Collections.sort(sortedStudentDays);
-            sortedStudentDayLists.add(sortedStudentDays);
-            resetStudentFieldsAt(dayIndex);
-        }
     }
 
     public void resetAllStudentFields() {
@@ -88,7 +56,7 @@ public class IncompatibleStudentTimes {
         for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
             TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(dayIndex);
             if (!lectionMap.isEmpty()) {
-                ArrayList<StudentDay> dayList = sortedStudentDayLists.get(dayIndex);
+                ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
                 DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
                 for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
                     Time startSearchLection = entry.getKey();
@@ -96,12 +64,12 @@ public class IncompatibleStudentTimes {
                     for (int i = 0; i < dayList.size(); i++) {
                         StudentDay searchDay = dayList.get(i);
                         if (!searchDay.isEmpty()) {
-                            int searchStudentID = studentIDMaps.get(dayIndex).get(searchDay);
+                            int searchStudentID = database.getStudentID(dayIndex, searchDay);
                             StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
                             if (!searchField.isStudentAllocated()) {
                                 int searchLectionLength = database.getStudent(searchStudentID).getLectionLength();
-                                boolean withinValidBounds = searchDay.getEarliestStart().lessEqualsThan(endSearchLection)
-                                        || searchDay.getLatestEnd().plusTimeOf(searchLectionLength).greaterEqualsThan(startSearchLection);
+                                boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
+                                        || searchDay.latestEnd().plusTimeOf(searchLectionLength).greaterEqualsThan(startSearchLection);
                                 if (withinValidBounds) {
                                     boolean blocked = searchDay.isBlocked(dayColumn, searchLectionLength);
                                     searchField.setBlocked(blocked);
@@ -118,25 +86,23 @@ public class IncompatibleStudentTimes {
     public void findAll() {
         for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
             int refIndex = 0;
-            ArrayList<StudentDay> dayList = sortedStudentDayLists.get(dayIndex);
+            ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
             while (refIndex < dayList.size()) {
                 StudentDay refDay = dayList.get(refIndex);
-                int refStudentID = studentIDMaps.get(dayIndex).get(refDay);
+                int refStudentID = database.getStudentID(dayIndex, refDay);
                 StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
                 if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
-                    //    Student refStudent = database.getStudent(refStudentID);
                     int refLectionLength = database.getStudent(refStudentID).getLectionLength();
                     int searchIndex = refIndex + 1;
                     while (searchIndex < dayList.size()) {
                         StudentDay searchDay = dayList.get(searchIndex);
-                        int searchStudentID = studentIDMaps.get(dayIndex).get(searchDay);
+                        int searchStudentID = database.getStudentID(dayIndex, searchDay);
                         StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
                         if (!searchField.isStudentAllocated() && searchDay.isWithin(refDay, refLectionLength)) {
                             searchDay = dayList.get(searchIndex);
-                            searchStudentID = studentIDMaps.get(dayIndex).get(searchDay);
+                            searchStudentID = database.getStudentID(dayIndex, searchDay);
                             searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                            Student searchStudent = database.getStudent(searchStudentID);
-                            int searchLectionLength = searchStudent.getLectionLength();
+                            int searchLectionLength = database.getStudent(searchStudentID).getLectionLength();
                             boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
                             boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
                             if (!refField.isIncompatible()) {
@@ -160,5 +126,9 @@ public class IncompatibleStudentTimes {
                 }
             }
         }
+    }
+
+    public void setScheduleData(ScheduleData scheduleData) {
+        this.scheduleData = scheduleData;
     }
 }
