@@ -40,12 +40,12 @@ public class ColoredStudentDays {
 
     public void init(ScheduleData scheduleData) {
         timeDistribution.init();
-        incompatibleStudentTimes.init(scheduleData);
+        incompatibleStudentTimes.setScheduleData(scheduleData);
     }
 
     public void update() {
         timeDistribution.update();
-        incompatibleStudentTimes.update();
+        incompatibleStudentTimes.resetAllStudentFields();
     }
 
     public void findIncompatibleStudentTimes() {
@@ -55,13 +55,13 @@ public class ColoredStudentDays {
     }
 
     public void updateIncompatibleStudentDays() {
-        incompatibleStudentTimes.update();
+        incompatibleStudentTimes.resetAllStudentFields();
         findIncompatibleStudentTimes();
     }
 
     public Color getFieldColorAt(int rowIndex, int dayIndex, boolean isIncompatible, boolean isSingleDay) { // rowIndex = studentID, dayIndex = col-1
         StudentDay studentDay = database.getStudent(rowIndex).getStudentTimes().getValidStudentDay(dayIndex);
-        Time time = studentDay.getEarliestStart();
+        Time time = studentDay.earliestStart();
         if (isColored) {
             if (time.isEmpty()) {
                 return Colors.LIGHT_GRAY;

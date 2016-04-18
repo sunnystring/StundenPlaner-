@@ -291,11 +291,7 @@ public class Time implements Cloneable, Comparable<Time> {
 
     @Override
     public boolean equals(Object obj) {
-        Time time;
-        if (!(obj instanceof Time)) {
-            return false;
-        }
-        time = (Time) obj;
+        Time time = (Time) obj;
         if (this.minute != time.minute) {
             return false;
         }
@@ -306,6 +302,14 @@ public class Time implements Cloneable, Comparable<Time> {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + this.hour;
+        hash = 67 * hash + this.minute;
+        return hash;
+    }
+
+    @Override
     public Time clone() {
         Time time = null;
         try {
@@ -313,11 +317,6 @@ public class Time implements Cloneable, Comparable<Time> {
         } catch (CloneNotSupportedException ex) {
         }
         return time;
-    }
-
-    @Override
-    public int hashCode() {
-        return hour + minute + timeString.hashCode();
     }
 
     @Override

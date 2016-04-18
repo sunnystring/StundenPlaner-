@@ -178,30 +178,22 @@ public class MainFrame extends JFrame implements DatabaseListener {
     public void resetColoredStudentTimesButtonState() {
         buttonState = false;
     }
-//------------- Schedule Entry -----------
 
+//------------- Schedule Entry --------------
     public void setupAndShowUI() {
         scheduleTimes.setValidScheduleDays();
-        setScheduleData();
+        scheduleData.setTableData();
         setupAndShowSchedule();
-        setupStudentListData();
+        studentListData.setup();
         setupAndShowStudentList();
         fireUIDataChanged();
         setStudentButtonsEnabled(true);
         zoomButton.setEnabled(true);
     }
 
-    private void setScheduleData() {
-        scheduleData.setTableData();
-    }
-
     private void setupAndShowSchedule() {
         schedule.createHeader();
         schedule.getTimeTable().update();
-    }
-
-    private void setupStudentListData() {
-        studentListData.setup();
     }
 
     private void setupAndShowStudentList() {
@@ -214,19 +206,15 @@ public class MainFrame extends JFrame implements DatabaseListener {
         studentListData.fireTableDataChanged();
     }
 
-    //------------- Schedule Edit -------------
+//------------- Schedule Edit -------------
     public void updateAndShowUI() {
         scheduleTimes.updateValidDays();
-        database.updateStudentDays();
-        updateScheduleData();
-        updateAndShowSchedule();
-        updateStudentListData();
-        updateAndShowStudentList();
-        fireUIDataChanged();
-    }
-
-    private void updateScheduleData() {
+        database.update();
         scheduleData.updateTableData();
+        updateAndShowSchedule();
+        studentListData.update();
+        studentList.update();
+        fireUIDataChanged();
     }
 
     private void updateAndShowSchedule() {
@@ -234,15 +222,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         schedule.getTimeTable().update();
     }
 
-    private void updateStudentListData() {
-        studentListData.update();
-    }
-
-    private void updateAndShowStudentList() {
-        studentList.update();
-    }
-
-    //--------------------------------
+//----------------------------------------
     public void setScheduleButtonEnabled(boolean state) {
         scheduleButton.setEnabled(state);
     }

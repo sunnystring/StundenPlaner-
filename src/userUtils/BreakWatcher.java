@@ -9,13 +9,15 @@ import core.Database;
 import java.util.Map;
 import java.util.TreeMap;
 import scheduleData.LectionData;
+import scheduleUI.DayField;
 import scheduleUI.Schedule;
 import utils.Colors;
 import utils.Time;
 
 /**
+ * 
+ * Zeigt im {@link DayField} des Stundenplans an, sobald eine 15- oder 30-Minuten-Pause gemacht werden muss
  *
- * @author mathiaskielholz
  */
 public class BreakWatcher {
 

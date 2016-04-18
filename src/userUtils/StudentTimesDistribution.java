@@ -15,8 +15,8 @@ import utils.Time;
 
 /**
  *
- * Die Schülerzeiten werden gemäss 5 verschiedenen Zeitbereichen (auf der Basis
- * von Anfangszeit 1 oder Wunschzeit) mit Blautönen markiert
+ * Die Schülerzeiten werden gemäss 5 verschiedenen Zeitbereichen (auf Basis
+ * der Anfangszeit 1) mit Blautönen markiert
  *
  */
 public class StudentTimesDistribution {

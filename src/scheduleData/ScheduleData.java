@@ -22,6 +22,7 @@ import studentlistUI.StudentList;
 import utils.Time;
 import static scheduleData.ScheduleFieldData.*;
 import userUtils.BreakWatcher;
+import userUtils.LectionGapFiller;
 
 /**
  *
@@ -114,18 +115,18 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     private void createDayColumns() {
-        for (int i = 0; i < numberOfValidDays; i++) {
-            DayColumnData dayColumn = new DayColumnData(database);
-            dayColumn.createDayData(scheduleTimes.getValidScheduleDayAt(i), timeFrame);
+        for (int dayIndex = 0; dayIndex < numberOfValidDays; dayIndex++) {
+            DayColumnData dayColumn = new DayColumnData(database, studentListData);
+            dayColumn.createDayData(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
             dayColumnDataList.add(dayColumn);
         }
     }
 
     private void updateDayColumns() {
         dayColumnDataList.clear();
-        for (int i = 0; i < numberOfValidDays; i++) {
-            DayColumnData dayColumn = new DayColumnData(database);
-            dayColumn.updateDayData(scheduleTimes.getValidScheduleDayAt(i), timeFrame);
+        for (int dayIndex = 0; dayIndex < numberOfValidDays; dayIndex++) {
+            DayColumnData dayColumn = new DayColumnData(database, studentListData);
+            dayColumn.updateDayData(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
             dayColumnDataList.add(dayColumn);
         }
     }
@@ -159,7 +160,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     @Override
-    public Object getValueAt(int row, int col) {
+    public ScheduleFieldData getValueAt(int row, int col) {
         return fieldDataMatrix[row][col];
     }
 
@@ -172,13 +173,14 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             row = studentList.rowAtPoint(p);
             col = studentList.columnAtPoint(p);
             if (row >= 0 && col > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(row, col);
-                DayColumnData dayColumn = getDayColumn(studentFieldData.getDayIndex());
-                if (studentFieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
-                    Student student = studentFieldData.getStudent();
-                    dayColumn.setValidTimeMarks(studentFieldData.getStudentDay());
+                StudentFieldData fieldData = studentList.getStudentFieldDataAtView(row, col);
+                DayColumnData dayColumn = getDayColumn(fieldData.getDayIndex());
+                if (fieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
+                    Student student = fieldData.getStudent();
+                    dayColumn.getLectionGapFiller().clear();
+                    dayColumn.setValidTimeMarks(fieldData.getStudentDay());
                     setMoveMode(student);
-                } else if (row == studentFieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
+                } else if (row == fieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
                     dayColumn.resetValidTimeMarks();
                 } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
                     setAllocatedMode();
@@ -191,18 +193,19 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             row = timeTable.rowAtPoint(p);
             col = timeTable.columnAtPoint(p);
             if (row >= 0 && col % 2 == 1) { // keine Events aus TimeColumn
-                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldDataAt(row, col);
-                Student student = scheduleFieldData.getStudent();
+                ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(row, col);
+                Student student = fieldData.getStudent();
                 int dayIndex = col / 4;
-                if (scheduleFieldData.isMoveEnabled()) {
+                LectionGapFiller lectionGapFiller = dayColumnDataList.get(dayIndex).getLectionGapFiller();
+                if (fieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(row, col);
-                    if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
-                        if (scheduleFieldData.getLectionPanelAreaMark() == HEAD) {
+                    if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
+                        if (fieldData.getLectionPanelAreaMark() == HEAD) {
                             eraseLection(student.getLectionLength());
                             setAllValidTimeMarks(student);
                             setMoveMode(student);
                         }
-                        if (scheduleFieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (fieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             eraseLection(student.getLectionLength());
                         }
                     } else { // in AllocatedMode wechseln
@@ -210,10 +213,13 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         setAllocatedMode();
                     }
                     studentListData.setIncompatibleStudentDays();
-                    fireTableDataChanged();
-                    studentListData.fireTableDataChanged();
+                    lectionGapFiller.clear();
                     breakWatcher.check(dayIndex);
+                } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
+                    lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
                 }
+                fireTableDataChanged();
+                studentListData.fireTableDataChanged();
             }
         }
     }

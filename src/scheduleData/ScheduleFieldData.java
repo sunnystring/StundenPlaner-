@@ -21,7 +21,7 @@ public class ScheduleFieldData {
     public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
-    private Database database;
+    private final Database database;
     private int studentID;
     private Time fieldTime;
     private int validTimeMark;
@@ -29,6 +29,7 @@ public class ScheduleFieldData {
     private boolean teacherTime;
     private boolean lectionAllocated;
     private boolean moveEnabled;
+    private boolean lectionGapFiller;
     private int lectionPanelAreaMark;
     private int nameMark;
 
@@ -36,6 +37,7 @@ public class ScheduleFieldData {
         this.database = database;
         lectionAllocated = false;
         moveEnabled = false;
+        lectionGapFiller = false;
         resetTimeMarks();
         resetPanelAreaMarks();
     }
@@ -50,7 +52,7 @@ public class ScheduleFieldData {
         allocatedTimeMark = NO_VALUE;
     }
 
-    public void decrementLocalStudentID() {
+    public void decrementStudentID() {
         studentID--;
     }
 
@@ -108,6 +110,14 @@ public class ScheduleFieldData {
 
     public boolean isTeacherTime() {
         return teacherTime;
+    }
+
+    public void setLectionGapFiller(boolean lectionGapFiller) {
+        this.lectionGapFiller = lectionGapFiller;
+    }
+
+    public boolean isLectionGapFiller() {
+        return lectionGapFiller;
     }
 
     public void setTeacherTimeEnabled(boolean teacherTime) {

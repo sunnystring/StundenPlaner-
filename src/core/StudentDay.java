@@ -157,7 +157,7 @@ public class StudentDay implements Comparable<StudentDay> {
         if (isEmpty) {
             return false;
         }
-        Time refEnd = refDay.getLatestEnd().plusTimeOf(refLection);
+        Time refEnd = refDay.latestEnd().plusTimeOf(refLection);
         return earliestStart.lessEqualsThan(refEnd);
     }
 
@@ -212,13 +212,13 @@ public class StudentDay implements Comparable<StudentDay> {
         }
         return isBlocked;
     }
-
+ 
     @Override
     public int compareTo(StudentDay d) {
-        if (earliestStart.greaterThan(d.getEarliestStart())) {
+        if (earliestStart.greaterThan(d.earliestStart())) {
             return 1;
         }
-        if (earliestStart.lessThan(d.getEarliestStart())) {
+        if (earliestStart.lessThan(d.earliestStart())) {
             return -1;
         }
         return 0;
@@ -260,19 +260,19 @@ public class StudentDay implements Comparable<StudentDay> {
         return timeSlots[4];
     }
 
-    public Time getEarliestStart() {
+    public Time earliestStart() {
         return earliestStart;
     }
 
-    public Time getEarliestEnd() {
+    public Time earliestEnd() {
         return earliestEnd;
     }
 
-    public Time getLatestStart() {
+    public Time latestStart() {
         return latestStart;
     }
 
-    public Time getLatestEnd() {
+    public Time latestEnd() {
         return latestEnd;
     }
 
@@ -288,7 +288,7 @@ public class StudentDay implements Comparable<StudentDay> {
         return " " + start1() + endString1 + " " + start2() + endString2 + " ";
     }
 
-    private class ValidTimes {
+    public class ValidTimes {
 
         private Time start, end;
 

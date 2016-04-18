@@ -104,8 +104,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
             studentRow[col].setStudentID(student.getID());
-            studentRow[col].setAllocationState(student.isLectionAllocated());
-            setStudentListReleased(!student.isLectionAllocated());
+            studentRow[col].setStudentAllocated(student.isAllocated());
+            setStudentListReleased(!student.isAllocated());
             if (col > 0) {
                 studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
                 studentRow[col].setDayIndex(col - 1);
@@ -139,7 +139,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void updateStudentAllocationState() {
         for (int i = 0; i < numberOfStudents; i++) {
-            database.getStudent(i).setAllocationState(((StudentFieldData) getValueAt(i, 0)).isStudentAllocated());
+            database.getStudent(i).setAllocated((getValueAt(i, 0)).isStudentAllocated());
         }
     }
 
@@ -188,15 +188,15 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1 
-                StudentFieldData studentFieldData = studentList.getStudentFieldDataFromViewAt(selectedRow, selectedCol);
-                if (!studentFieldData.isStudentAllocated()) {
+                StudentFieldData fieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
+                if (!fieldData.isStudentAllocated()) {
                     if (selectedCol > 0) { // NameField nicht ansprechbar
                         if (isStudentListReleased()) { // 1. StudentDay selektieren
                             setSelectedRow(selectedRow);
-                            studentFieldData.switchSelectionState();
+                            fieldData.switchSelectionState();
                             blockStudentList();
-                        } else if (selectedRow == studentFieldData.selectedRowIndex()) { // weitere Selections bzw. Selections rückgängig machen
-                            studentFieldData.switchSelectionState();
+                        } else if (selectedRow == fieldData.selectedRowIndex()) { // weitere Selections bzw. Selections rückgängig machen
+                            fieldData.switchSelectionState();
                             if (isRowReleased(selectedRow)) { // alle Selections gelöscht
                                 releaseStudentAtViewCoordinates(selectedRow);
                             }
@@ -204,7 +204,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         mainFrame.setButtonsEnabled(isStudentListReleased());
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) { // Schülerprofil ändern/löschen
-                        JDialog studentEditDialog = new StudentEdit(mainFrame, studentFieldData.getStudent());
+                        JDialog studentEditDialog = new StudentEdit(mainFrame, fieldData.getStudent());
                         studentEditDialog.setVisible(true);
                     }
                 }
@@ -215,21 +215,24 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
-                ScheduleFieldData scheduleFieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
-                int allocatedRow = scheduleFieldData.getStudentID();
-                if (scheduleFieldData.isMoveEnabled()) {
-                    if (scheduleFieldData.isLectionAllocated()) { // in MoveMode wechseln
-                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
+                ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
+                int allocatedRow = fieldData.getStudentID();
+                Student student = fieldData.getStudent();
+                if (fieldData.isMoveEnabled()) {
+                    if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
+                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
                             blockStudentList();
                             mainFrame.setButtonsEnabled(false);
                         }
-                        if (scheduleFieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocated(allocatedRow, false);
+                            student.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);
                             mainFrame.setButtonsEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
                         setRowAllocated(allocatedRow, true);
+                        student.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
                         mainFrame.setButtonsEnabled(true);
                     }
@@ -241,7 +244,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private boolean isRowReleased(int row) {
         for (int i = 0; i < getColumnCount(); i++) {
-            if (studentList.getStudentFieldDataFromViewAt(row, i).isFieldSelected()) {
+            if (studentList.getStudentFieldDataAtView(row, i).isFieldSelected()) {
                 return false;
             }
         }
@@ -250,14 +253,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void setSelectedRow(int row) {
         for (int j = 0; j < getColumnCount(); j++) {
-            studentList.getStudentFieldDataFromViewAt(row, j).setSelectedRowIndex(row);
+            studentList.getStudentFieldDataAtView(row, j).setSelectedRowIndex(row);
         }
     }
 
     private void setRowAllocated(int allocatedRow, boolean state) {
         studentListReleased = !state;
         for (int j = 0; j < getColumnCount(); j++) {
-            fieldDataMatrix.get(allocatedRow)[j].setAllocationState(state);
+            fieldDataMatrix.get(allocatedRow)[j].setStudentAllocated(state);
         }
     }
 
@@ -272,8 +275,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private void releaseStudentAtViewCoordinates(int row) {
         studentListReleased = true;
         for (int i = 0; i < getColumnCount(); i++) {
-            studentList.getStudentFieldDataFromViewAt(row, i).setSelectedRowIndex(NULL_VALUE);
-            studentList.getStudentFieldDataFromViewAt(row, i).setFieldSelected(false);
+            studentList.getStudentFieldDataAtView(row, i).setSelectedRowIndex(NULL_VALUE);
+            studentList.getStudentFieldDataAtView(row, i).setFieldSelected(false);
         }
     }
 
