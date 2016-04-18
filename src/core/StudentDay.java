@@ -214,7 +214,7 @@ public class StudentDay implements Comparable<StudentDay> {
         }
         return isBlocked;
     }
-
+ 
     @Override
     public int compareTo(StudentDay d) {
         if (earliestStart.greaterThan(d.earliestStart())) {

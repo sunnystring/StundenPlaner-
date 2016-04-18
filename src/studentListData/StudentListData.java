@@ -236,8 +236,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         releaseStudentListAtModelCoordinates(allocatedRow);
                         mainFrame.setButtonsEnabled(true);
                     }
-                    studentList.getStudentField().resetRowIndices();
                 }
+                studentList.getStudentField().resetRowIndices();
             }
         }
     }
