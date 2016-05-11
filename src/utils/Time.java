@@ -5,6 +5,7 @@
  */
 package utils;
 
+import com.google.gson.annotations.Expose;
 import core.ScheduleDay;
 import core.StudentDay;
 import java.text.DecimalFormat;
@@ -172,7 +173,7 @@ public class Time implements Cloneable, Comparable<Time> {
         return time;
     }
 
-    public Time plusTimeOf(int numberOfFields) {
+    public Time plusLengthOf(int numberOfFields) {
         Time time = this.clone();
         for (int i = 0; i < numberOfFields; i++) {
             time.inc();

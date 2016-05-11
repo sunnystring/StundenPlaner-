@@ -32,12 +32,12 @@ import userUtils.LectionGapFiller;
  */
 public class ScheduleData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
-    private final Database database;
-    private final ScheduleTimes scheduleTimes;
-    private final StudentListData studentListData;
-    private final ArrayList<DayColumnData> dayColumnDataList;
-    private final ScheduleTimeFrame timeFrame;
-    private final BreakWatcher breakWatcher;
+    private Database database;
+    private ScheduleTimes scheduleTimes;
+    private StudentListData studentListData;
+    private ArrayList<DayColumnData> dayColumnDataList;
+    private ScheduleTimeFrame timeFrame;
+    private BreakWatcher breakWatcher;
     private ScheduleFieldData[][] fieldDataMatrix;
     private int numberOfValidDays;
     private int dayColumnIndex;
@@ -108,8 +108,9 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             }
         }
         if (illegalTimeEntry) {
-            String msg = "Der Stundenplan kann nicht überschrieben werden!\n"
-                    + "Der" + illegalDayString + "hat noch Lektionen ausserhalb der gewählten Zeitrahmens.";
+            String msg = "Der" + illegalDayString + "hat noch Lektionen ausserhalb\n"
+                    + "des gewählten Zeitrahmens von " + tempFrame.getAbsoluteStart()
+                    + " bis " + tempFrame.getAbsoluteEnd();
             throw new IllegalLectionEraseException(msg);
         }
     }
@@ -117,7 +118,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private void createDayColumns() {
         for (int dayIndex = 0; dayIndex < numberOfValidDays; dayIndex++) {
             DayColumnData dayColumn = new DayColumnData(database, studentListData);
-            dayColumn.createDayData(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
+            dayColumn.create(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
             dayColumnDataList.add(dayColumn);
         }
     }
@@ -126,7 +127,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayColumnDataList.clear();
         for (int dayIndex = 0; dayIndex < numberOfValidDays; dayIndex++) {
             DayColumnData dayColumn = new DayColumnData(database, studentListData);
-            dayColumn.updateDayData(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
+            dayColumn.update(scheduleTimes.getValidScheduleDayAt(dayIndex), timeFrame);
             dayColumnDataList.add(dayColumn);
         }
     }
@@ -201,15 +202,15 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     convertTableToDayColumnCoordinates(row, col);
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (fieldData.getLectionPanelAreaMark() == HEAD) {
-                            eraseLection(student.getLectionLength());
+                            eraseLection(student.getLectionLengthInFields());
                             setAllValidTimeMarks(student);
                             setMoveMode(student);
                         }
                         if (fieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
-                            eraseLection(student.getLectionLength());
+                            eraseLection(student.getLectionLengthInFields());
                         }
                     } else { // in AllocatedMode wechseln
-                        createLection(student.getLectionLength());
+                        createLection(student.getLectionLengthInFields());
                         setAllocatedMode();
                     }
                     studentListData.setIncompatibleStudentDays();
@@ -226,7 +227,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     /* gesetzte Lections sperren, Sperrzonen setzen, der restliche Schedule einteilbar machen und current Student global setzen*/
     private void setMoveMode(Student student) {
-        int lectionLength = student.getLectionLength();
+        int lectionLength = student.getLectionLengthInFields();
         int rowCount = timeFrame.getTotalNumberOfFields();
         ScheduleFieldData fieldData;
         for (int studentDayID = 0; studentDayID < numberOfValidDays; studentDayID++) {
@@ -362,12 +363,20 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return dayColumnDataList.get(dayIndex);
     }
 
+    public ArrayList<DayColumnData> getDayColumnDataList() {
+        return dayColumnDataList;
+    }
+
     public ScheduleTimeFrame getTimeFrame() {
         return timeFrame;
     }
 
     public BreakWatcher getBreakWatcher() {
         return breakWatcher;
+    }
+
+    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+        this.scheduleTimes = scheduleTimes;
     }
 
     @Override

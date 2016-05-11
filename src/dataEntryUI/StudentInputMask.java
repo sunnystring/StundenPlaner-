@@ -231,7 +231,7 @@ public class StudentInputMask extends JPanel {
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
-                } catch (OutOfBoundException ex) { 
+                } catch (OutOfBoundException ex) {
                     showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEdit.getMainFrame());
                     return;
                 }

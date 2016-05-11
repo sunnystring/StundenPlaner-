@@ -27,9 +27,9 @@ import userUtils.LectionGapFiller;
 public class DayColumnData {
 
     private final Database database;
-    private final ArrayList<ScheduleFieldData> fieldList;
+    private ArrayList<ScheduleFieldData> fieldList;
     private TreeMap<Time, LectionData> lectionMap;
-    private final TreeMap<Time, Integer> timeToFieldIndexMap;
+    private TreeMap<Time, Integer> timeToFieldIndexMap;
     private Time absoluteStart, absoluteEnd;
     private int totalNumberOfFields;
     private int fieldCountStart;
@@ -44,14 +44,14 @@ public class DayColumnData {
         lectionGapFiller = new LectionGapFiller(database, this, studentListData);
     }
 
-    public void createDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
+    public void create(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
         this.scheduleDay = scheduleDay;
         lectionMap = database.getLectionMapAt(scheduleDay);
         setTimeFrame(timeFrame);
         createFieldList();
     }
 
-    public void updateDayData(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
+    public void update(ScheduleDay scheduleDay, ScheduleTimeFrame timeFrame) {
         this.scheduleDay = scheduleDay;
         lectionMap = database.getLectionMapAt(scheduleDay);
         setTimeFrame(timeFrame);
@@ -114,7 +114,7 @@ public class DayColumnData {
     }
 
     public boolean hasLectionsOutOfBounds(Time absoluteStart, Time absoluteEnd) {
-        Time endOfLastLection = lectionMap.lastEntry().getValue().getEnd();
+        Time endOfLastLection = lectionMap.lastEntry().getValue().end();
         return (hasAllocatedLections() && (absoluteStart.greaterThan(lectionMap.firstKey()) || absoluteEnd.lessEqualsThan(endOfLastLection)));
     }
 
@@ -146,11 +146,11 @@ public class DayColumnData {
 
     public void addLection(Time time, LectionData lection) {
         lectionMap.put(time, lection);
-        database.getGlobalLectionMap().put(lection.getStudentID(), lection);
+        database.getLectionIDMap().put(lection.getStudentID(), lection);
     }
 
     public void removeLection(Time time) {
-        database.getGlobalLectionMap().remove(lectionMap.get(time).getStudentID());
+        database.getLectionIDMap().remove(lectionMap.get(time).getStudentID());
         lectionMap.remove(time);
     }
 
@@ -179,8 +179,8 @@ public class DayColumnData {
         return lectionGapFiller;
     }
 
-    public void setLectionGapFiller(LectionGapFiller lectionGapFiller) {
-        this.lectionGapFiller = lectionGapFiller;
+    public int getTotalNumberOfFields() {
+        return totalNumberOfFields;
     }
 
     public int getFieldCountStart() {

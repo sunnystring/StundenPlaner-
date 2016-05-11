@@ -52,7 +52,7 @@ public class Dialogs {
     }
 
     public static int showStudentTimesOutOfBoundOptionMessage(String errorLog) {
-        String msg = "Die Zeiteingabe liegt ausserhalb der Stundenplans!\n\nEinteilbare Zeit am\n" + errorLog;
+        String msg = "Die Zeiteingabe liegt ausserhalb des Stundenplans!\n\nEinteilbare Zeit am\n" + errorLog;
         Object[] options = {"Stundenplan anpassen", "Schülerzeit anpassen"};
         return JOptionPane.showOptionDialog(null, msg, "Schülerdaten",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);

@@ -20,15 +20,16 @@ import utils.Time;
 
 /**
  *
- * Findet die Schülerzeiten zu denen nicht gleichzeitig eingeteilt werden kann oder die durch eine 
- * Einteilung gesperrt sind, die entsprechenden Felder/Schrift werden rot markiert
- * 
+ * Findet die Schülerzeiten zu denen nicht gleichzeitig eingeteilt werden kann
+ * oder die durch eine Einteilung gesperrt sind, die entsprechenden
+ * Felder/Schrift werden rot markiert
+ *
  */
 public class IncompatibleStudentTimes {
 
-    private final Database database;
-    private final StudentListData studentListData;
-    private final ScheduleTimes scheduleTimes;
+    private Database database;
+    private StudentListData studentListData;
+    private ScheduleTimes scheduleTimes;
     private ScheduleData scheduleData;
 
     public IncompatibleStudentTimes(Database database, StudentListData studentListData) {
@@ -60,16 +61,16 @@ public class IncompatibleStudentTimes {
                 DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
                 for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
                     Time startSearchLection = entry.getKey();
-                    Time endSearchLection = entry.getValue().getEnd();
+                    Time endSearchLection = entry.getValue().end();
                     for (int i = 0; i < dayList.size(); i++) {
                         StudentDay searchDay = dayList.get(i);
                         if (!searchDay.isEmpty()) {
                             int searchStudentID = database.getStudentID(dayIndex, searchDay);
                             StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
                             if (!searchField.isStudentAllocated()) {
-                                int searchLectionLength = database.getStudent(searchStudentID).getLectionLength();
+                                int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
                                 boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
-                                        || searchDay.latestEnd().plusTimeOf(searchLectionLength).greaterEqualsThan(startSearchLection);
+                                        || searchDay.latestEnd().plusLengthOf(searchLectionLength).greaterEqualsThan(startSearchLection);
                                 if (withinValidBounds) {
                                     boolean blocked = searchDay.isBlocked(dayColumn, searchLectionLength);
                                     searchField.setBlocked(blocked);
@@ -92,7 +93,7 @@ public class IncompatibleStudentTimes {
                 int refStudentID = database.getStudentID(dayIndex, refDay);
                 StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
                 if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
-                    int refLectionLength = database.getStudent(refStudentID).getLectionLength();
+                    int refLectionLength = database.getStudent(refStudentID).getLectionLengthInFields();
                     int searchIndex = refIndex + 1;
                     while (searchIndex < dayList.size()) {
                         StudentDay searchDay = dayList.get(searchIndex);
@@ -102,7 +103,7 @@ public class IncompatibleStudentTimes {
                             searchDay = dayList.get(searchIndex);
                             searchStudentID = database.getStudentID(dayIndex, searchDay);
                             searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                            int searchLectionLength = database.getStudent(searchStudentID).getLectionLength();
+                            int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
                             boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
                             boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
                             if (!refField.isIncompatible()) {

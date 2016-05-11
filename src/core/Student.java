@@ -31,8 +31,8 @@ public class Student {
         return studentTimes;
     }
 
-    public void setStudentID(int index) {
-        studentID = index;
+    public void setID(int studentID) {
+        this.studentID = studentID;
     }
 
     public int getID() {
@@ -55,7 +55,7 @@ public class Student {
         this.name = name;
     }
 
-    public int getLectionLength() {
+    public int getLectionLengthInFields() {
         return lectionLengthInMinutes / 5;
     }
 

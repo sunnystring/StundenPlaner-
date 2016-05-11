@@ -5,6 +5,7 @@
  */
 package scheduleData;
 
+import core.Database;
 import java.util.ArrayList;
 import utils.Time;
 
@@ -31,7 +32,11 @@ public class LectionData {
         return lection;
     }
 
-    public Time getEnd() {
+    public Time start() {
+        return lection.get(0).getFieldTime();
+    }
+
+    public Time end() {
         return lection.get(lection.size() - 1).getFieldTime();
     }
 
@@ -56,6 +61,12 @@ public class LectionData {
     public void setGapFillerMarkEnabled(boolean state) {
         for (ScheduleFieldData f : lection) {
             f.setLectionGapFiller(state);
+        }
+    }
+
+    public void setDatabaseReference(Database database) {
+        for (ScheduleFieldData field : lection) {
+            field.setDatabase(database);
         }
     }
 

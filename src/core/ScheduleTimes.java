@@ -26,9 +26,11 @@ public class ScheduleTimes extends AbstractTableModel {
     private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
     public static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
     public static final int DAYS = WEEKDAY_NAMES.length;
-    private final ScheduleDay[] daySelectionList;
-    private final ArrayList<ScheduleDay> validScheduleDayList;
-    private final HashMap<Integer, Integer> sharedDayIndicesMap;
+    @SuppressWarnings("FieldMayBeFinal")
+    private ScheduleDay[] daySelectionList;
+    private ArrayList<ScheduleDay> validScheduleDayList;
+    private HashMap<Integer, Integer> sharedDayIndicesMap;
+    private int numberOfValidDays;
 
     public ScheduleTimes() {
         daySelectionList = new ScheduleDay[DAYS];
@@ -38,6 +40,7 @@ public class ScheduleTimes extends AbstractTableModel {
         }
         validScheduleDayList = new ArrayList<>();
         sharedDayIndicesMap = new HashMap<>();
+        numberOfValidDays = 0;
     }
 
     @Override
@@ -139,7 +142,7 @@ public class ScheduleTimes extends AbstractTableModel {
         return daySelectionList[i].getDayName().equals(validScheduleDayList.get(j).getDayName());
     }
 
-    public void checkStudentListBounds(Database database) {
+    public void checkStudentTimesBounds(Database database) {
         String daysAndStudents = "";
         boolean hasDaysOutOfBounds = false;
         ScheduleTimeFrame tempTimeFrame = createTemporaryTimeFrame();
@@ -153,7 +156,7 @@ public class ScheduleTimes extends AbstractTableModel {
                     StudentDay studentDay = studentTimes.getMatchingStudentDayOf(scheduleDay);
                     if (studentDay != null && !studentDay.isEmpty()) {
                         boolean outOfValidEnd = studentDay.outOfValidBoundsOf(scheduleDay);
-                        boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, student.getLectionLength());
+                        boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, student.getLectionLengthInFields());
                         if (outOfTimeFrame || outOfValidEnd) {
                             studentNames += student.getFirstName() + " " + student.getName() + "\n";
                             thisDayOutOfBounds = true;
@@ -188,6 +191,7 @@ public class ScheduleTimes extends AbstractTableModel {
                 validScheduleDayList.add(daySelectionList[i].clone()); // Mapping: 1. Unterrichtstag = 0 usw.
             }
         }
+        numberOfValidDays = validScheduleDayList.size();
     }
 
     public void updateValidDays() {
@@ -270,7 +274,7 @@ public class ScheduleTimes extends AbstractTableModel {
     }
 
     public int getNumberOfValidDays() {
-        return validScheduleDayList.size();
+        return numberOfValidDays;
     }
 
     public ScheduleDay getValidScheduleDayAt(int i) {

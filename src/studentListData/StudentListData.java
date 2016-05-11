@@ -51,7 +51,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         coloredStudentDays = new ColoredStudentDays(database, this);
     }
 
-    public void setup() {
+    public void init() {
         numberOfDays = database.getNumberOfDays();
         coloredStudentDays.init(scheduleData);
     }
@@ -66,6 +66,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         coloredStudentDays.update();
         setIncompatibleStudentDays();
 
+    }
+
+    public void setStudentData() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            createStudentRow(database.getStudent(i));
+        }
     }
 
     @Override
@@ -201,7 +207,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                                 releaseStudentAtViewCoordinates(selectedRow);
                             }
                         }
-                        mainFrame.setButtonsEnabled(isStudentListReleased());
+                        mainFrame.setDataEntryButtonsEnabled(isStudentListReleased());
+                        mainFrame.setFileButtonsEnabled(isStudentListReleased());
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) { // Schülerprofil ändern/löschen
                         JDialog studentEditDialog = new StudentEdit(mainFrame, fieldData.getStudent());
@@ -222,19 +229,22 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
                             blockStudentList();
-                            mainFrame.setButtonsEnabled(false);
+                            mainFrame.setDataEntryButtonsEnabled(false);
+                            mainFrame.setFileButtonsEnabled(false);
                         }
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocated(allocatedRow, false);
                             student.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);
-                            mainFrame.setButtonsEnabled(true);
+                            mainFrame.setDataEntryButtonsEnabled(true);
+                            mainFrame.setFileButtonsEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
                         setRowAllocated(allocatedRow, true);
                         student.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
-                        mainFrame.setButtonsEnabled(true);
+                        mainFrame.setDataEntryButtonsEnabled(true);
+                        mainFrame.setFileButtonsEnabled(true);
                     }
                 }
                 studentList.getStudentField().resetRowIndices();
@@ -333,6 +343,18 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void setStudentList(StudentList studentList) {
         this.studentList = studentList;
+    }
+
+    public void setColoredStudentDays(ColoredStudentDays coloredStudentDays) {
+        this.coloredStudentDays = coloredStudentDays;
+    }
+
+    public ColoredStudentDays getColoredStudentDays() {
+        return coloredStudentDays;
+    }
+
+    public void setNumberOfStudents(int numberOfStudents) {
+        this.numberOfStudents = numberOfStudents;
     }
 
     @Override

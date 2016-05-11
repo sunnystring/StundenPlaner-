@@ -17,21 +17,22 @@ import utils.Time;
 
 /**
  *
- * Beim Klick auf ein nicht eingeteiltes, genug grosses Zeitintervall im Stundenplan
- * werden alle verfügbaren Zeiten angezeigt (als Lection oder StudentDay)
+ * Beim Klick auf ein nicht eingeteiltes, genug grosses Zeitintervall im
+ * Stundenplan werden alle verfügbaren Zeiten angezeigt (als Lection oder
+ * StudentDay)
  */
 public class LectionGapFiller {
 
     private final Database database;
     private final DayColumnData dayColumn;
     private final StudentListData studentListData;
-    private static Gap gap;
+    private static LectionGap gap;
 
     public LectionGapFiller(Database database, DayColumnData dayColumn, StudentListData studentListData) {
         this.database = database;
         this.dayColumn = dayColumn;
         this.studentListData = studentListData;
-        gap = new Gap();
+        gap = new LectionGap();
     }
 
     public void clear() {
@@ -47,9 +48,9 @@ public class LectionGapFiller {
                 StudentDay studentDay = dayList.get(i);
                 int studentID = database.getStudentID(dayIndex, studentDay);
                 Student student = database.getStudent(studentID);
-                if (gap.matchesTimeOf(studentDay, student)) {
+                LectionData lection = database.getLectionByID(studentID);
+                if (gap.matchesTimeOf(studentDay, student, isAdjacentTo(lection))) {
                     if (student.isAllocated()) {
-                        LectionData lection = database.getLection(studentID);
                         if (lection != null && lection.getStudentID() == studentID) {
                             lection.setGapFillerMarkEnabled(true);
                         }
@@ -58,6 +59,14 @@ public class LectionGapFiller {
                     }
                 }
             }
+        }
+    }
+
+    private boolean isAdjacentTo(LectionData lection) {
+        if (lection == null) {
+            return false;
+        } else {
+            return lection.start().equals(gap.end().plus(5));
         }
     }
 
@@ -73,7 +82,7 @@ public class LectionGapFiller {
     }
 
     private boolean locateGap(Time selectedTime, int dayIndex) {
-        Gap newGap = createGap(selectedTime, dayIndex);
+        LectionGap newGap = createGap(selectedTime, dayIndex);
         if (newGap.equals(gap)) {
             gap.reset();
             return false;
@@ -83,11 +92,11 @@ public class LectionGapFiller {
         }
     }
 
-    private Gap createGap(Time selectedTime, int dayIndex) {
+    private LectionGap createGap(Time selectedTime, int dayIndex) {
         Time start = selectedTime.clone();
         Time end = selectedTime.clone();
         int fieldIndex = dayColumn.getFieldIndexAt(selectedTime);
-        while (fieldIndex > dayColumn.getFieldCountStart()) {
+        while (fieldIndex > 0) {
             if (dayColumn.getFieldDataAt(fieldIndex).isLectionAllocated()) {
                 start.inc();
                 break;
@@ -96,7 +105,7 @@ public class LectionGapFiller {
             fieldIndex--;
         }
         fieldIndex = dayColumn.getFieldIndexAt(selectedTime);
-        while (fieldIndex < dayColumn.getFieldCountEnd() - 1) {
+        while (fieldIndex < dayColumn.getTotalNumberOfFields()) {
             if (dayColumn.getFieldDataAt(fieldIndex).isLectionAllocated()) {
                 end.dec();
                 break;
@@ -104,6 +113,6 @@ public class LectionGapFiller {
             end.inc();
             fieldIndex++;
         }
-        return new Gap(start, end, dayIndex);
+        return new LectionGap(start, end, dayIndex);
     }
 }

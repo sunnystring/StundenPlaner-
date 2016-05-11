@@ -12,6 +12,7 @@ import utils.Time;
 import static core.ScheduleTimes.DAYS;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -20,13 +21,13 @@ import java.util.HashMap;
  */
 public class Database {
 
-    private final ScheduleTimes scheduleTimes;
-    private final ArrayList<Student> studentDataList;
-    private final ArrayList<DatabaseListener> databaseListeners;
-    private final ArrayList<TreeMap<Time, LectionData>> lectionMaps;
-    private final HashMap<Integer, LectionData> globalLectionMap;
-    private final ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
-    private final ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
+    private ScheduleTimes scheduleTimes;
+    private ArrayList<Student> studentDataList;
+    private ArrayList<DatabaseListener> databaseListeners;
+    private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
+    private HashMap<Integer, LectionData> lectionIDMap;
+    private ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
+    private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
     private int numberOfStudents;
 
     public Database() {
@@ -34,7 +35,7 @@ public class Database {
         studentDataList = new ArrayList<>();
         databaseListeners = new ArrayList<>();
         lectionMaps = new ArrayList<>();
-        globalLectionMap = new HashMap<>();
+        lectionIDMap = new HashMap<>();
         for (int i = 0; i < DAYS; i++) {
             lectionMaps.add(new TreeMap());
         }
@@ -44,7 +45,7 @@ public class Database {
     }
 
     public void addStudent(Student student) {
-        student.setStudentID(numberOfStudents);
+        student.setID(numberOfStudents);
         studentDataList.add(student);
         numberOfStudents = studentDataList.size(); // nächster Student
         updateUserUtilsCollections();
@@ -72,7 +73,7 @@ public class Database {
 
     private void updateStudentIDs() {
         for (int i = 0; i < numberOfStudents; i++) {
-            studentDataList.get(i).setStudentID(i);
+            studentDataList.get(i).setID(i);
         }
     }
 
@@ -100,7 +101,7 @@ public class Database {
         }
     }
 
-    private void updateUserUtilsCollections() {
+    public void updateUserUtilsCollections() {
         sortedStudentDayLists.clear();
         studentIDMaps.clear();
         for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
@@ -115,6 +116,23 @@ public class Database {
             sortedStudentDayLists.add(sortedStudentDays);
             studentIDMaps.add(studentIDMap);
         }
+    }
+
+    public void setDatabaseReferenceToLectionFields() {
+        for (TreeMap<Time, LectionData> map : lectionMaps) {
+            for (Map.Entry<Time, LectionData> entry : map.entrySet()) {
+                LectionData lection = entry.getValue();
+                lection.setDatabaseReference(this);
+            }
+        }
+    }
+
+    public void updateNumberOfStudents() {
+        numberOfStudents = studentDataList.size();
+    }
+
+    public int getNumberOfStudents() {
+        return numberOfStudents;
     }
 
     public ArrayList<StudentDay> getSortedStudentDayListAt(int dayIndex) {
@@ -133,12 +151,16 @@ public class Database {
         return studentDataList.get(ID);
     }
 
-    public int getNumberOfStudents() {
-        return numberOfStudents;
+    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+        this.scheduleTimes = scheduleTimes;
     }
 
     public ScheduleTimes getScheduleTimes() {
         return scheduleTimes;
+    }
+
+    public void setStudentDataList(ArrayList<Student> studentDataList) {
+        this.studentDataList = studentDataList;
     }
 
     public ArrayList<Student> getStudentDataList() {
@@ -153,12 +175,8 @@ public class Database {
         return lectionMaps.get(scheduleTimes.getAbsoluteDayIndexOf(scheduleDay));
     }
 
-    public HashMap<Integer, LectionData> getGlobalLectionMap() {
-        return globalLectionMap;
-    }
-
-    public LectionData getLection(int studentID) {
-        return globalLectionMap.get(studentID);
+    public LectionData getLectionByID(int studentID) {
+        return lectionIDMap.get(studentID);
     }
 
     public String getDayNameAt(int dayIndex) {
@@ -168,4 +186,17 @@ public class Database {
     public int getNumberOfDays() {
         return scheduleTimes.getNumberOfValidDays();
     }
+
+    public void setLectionMaps(ArrayList<TreeMap<Time, LectionData>> lectionMaps) {
+        this.lectionMaps = lectionMaps;
+    }
+
+    public ArrayList<TreeMap<Time, LectionData>> getLectionMaps() {
+        return lectionMaps;
+    }
+
+    public HashMap<Integer, LectionData> getLectionIDMap() {
+        return lectionIDMap;
+    }
+
 }

@@ -5,6 +5,7 @@
  */
 package core;
 
+import com.google.gson.annotations.Expose;
 import scheduleData.ScheduleTimeFrame;
 import utils.Time;
 import static core.StudentTimes.COLUMNS;
@@ -23,6 +24,7 @@ public class StudentDay implements Comparable<StudentDay> {
     private boolean isEmpty;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
     private Time earliestStart, latestStart, earliestEnd, latestEnd; // Timebounds
+
     private final ArrayList<ValidTimes> validTimes; // für IncompatibleStudentTimes (K = startTime, V = endTime)
 
     public StudentDay() {
@@ -140,7 +142,7 @@ public class StudentDay implements Comparable<StudentDay> {
     public boolean outOfTimeFrame(ScheduleTimeFrame scheduleTimeFrame, int lectionLength) {
         Time absoluteEnd = scheduleTimeFrame.getAbsoluteEnd();
         Time absoluteStart = scheduleTimeFrame.getAbsoluteStart();
-        boolean outOfUpperBound = !latestEnd.isEmpty() && latestEnd.plusTimeOf(lectionLength).greaterEqualsThan(absoluteEnd);
+        boolean outOfUpperBound = !latestEnd.isEmpty() && latestEnd.plusLengthOf(lectionLength).greaterEqualsThan(absoluteEnd);
         boolean outOfLowerBound = !earliestStart.isEmpty() && earliestStart.lessThan(absoluteStart);
         return outOfUpperBound || outOfLowerBound;
     }
@@ -159,7 +161,7 @@ public class StudentDay implements Comparable<StudentDay> {
         if (isEmpty) {
             return false;
         }
-        Time refEnd = refDay.latestEnd().plusTimeOf(refLection);
+        Time refEnd = refDay.latestEnd().plusLengthOf(refLection);
         return earliestStart.lessEqualsThan(refEnd);
     }
 
@@ -173,7 +175,7 @@ public class StudentDay implements Comparable<StudentDay> {
                 if (!searchEnd.isEmpty()) {  // test A: search incompatible to ref
                     for (ValidTimes times : refDay.getValidTimes()) {
                         Time refStart = times.start();
-                        Time refLectionEnd = refStart.plusTimeOf(refLection);
+                        Time refLectionEnd = refStart.plusLengthOf(refLection);
                         if (searchEnd.greaterEqualsThan(refLectionEnd)) {
                             isIncompatible = false;
                         }
@@ -182,7 +184,7 @@ public class StudentDay implements Comparable<StudentDay> {
                 if (isIncompatible && !refEnd.isEmpty()) { // test B: ref incompatible to search
                     for (ValidTimes times : validTimes) {
                         Time searchStart = times.start();
-                        Time searchLectionEnd = searchStart.plusTimeOf(searchLection);
+                        Time searchLectionEnd = searchStart.plusLengthOf(searchLection);
                         if (refEnd.greaterEqualsThan(searchLectionEnd)) {
                             isIncompatible = false;
                         }
@@ -197,7 +199,7 @@ public class StudentDay implements Comparable<StudentDay> {
         boolean isBlocked = true;
         for (ValidTimes times : validTimes) {
             Time startTime = times.start();
-            Time endTime = times.end().plusTimeOf(searchLectionLength);
+            Time endTime = times.end().plusLengthOf(searchLectionLength);
             int fieldIndex = dayColumn.getFieldIndexAt(startTime);
             int lastFieldIndex = dayColumn.getFieldIndexAt(endTime);
             int lectionFieldCount = 0;
@@ -214,7 +216,7 @@ public class StudentDay implements Comparable<StudentDay> {
         }
         return isBlocked;
     }
- 
+
     @Override
     public int compareTo(StudentDay d) {
         if (earliestStart.greaterThan(d.earliestStart())) {

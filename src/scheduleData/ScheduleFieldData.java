@@ -21,7 +21,7 @@ public class ScheduleFieldData {
     public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
     public static final int FIRST_NAME = 7, NAME = 8;
     public static final int NO_VALUE = -1;
-    private final Database database;
+    private transient Database database;
     private int studentID;
     private Time fieldTime;
     private int validTimeMark;
@@ -158,5 +158,9 @@ public class ScheduleFieldData {
 
     public int getNameMark() {
         return nameMark;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 }
