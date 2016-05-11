@@ -24,10 +24,10 @@ import utils.Time;
 public class ColoredStudentDays {
 
     public static final boolean COLORED = true, DEFAULT_COLORS = false;
-    private final Database database;
-    private final ScheduleTimes scheduleTimes;
-    private final StudentTimesDistribution timeDistribution;
-    private final IncompatibleStudentTimes incompatibleStudentTimes;
+    private Database database;
+    private ScheduleTimes scheduleTimes;
+    private StudentTimesDistribution timeDistribution;
+    private IncompatibleStudentTimes incompatibleStudentTimes;
     private boolean isColored;
 
     public ColoredStudentDays(Database database, StudentListData studentListData) {

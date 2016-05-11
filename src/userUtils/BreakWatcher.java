@@ -31,13 +31,13 @@ public class BreakWatcher {
             int fieldCount = 0;
             boolean enoughBreakForFourHours = false;
             boolean enoughBreakForSixHours = false;
-            Time lectionEnd = lectionMap.firstEntry().getValue().getEnd();
+            Time lectionEnd = lectionMap.firstEntry().getValue().end();
             for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
                 fieldCount += entry.getValue().getLength();
                 int diff = 0;
                 if (entry.getKey().greaterEqualsThan(lectionEnd)) {
                     diff = entry.getKey().minus(lectionEnd.plus(5)).getNumberOfFields(Time.ROUND_UP);
-                    lectionEnd = entry.getValue().getEnd();
+                    lectionEnd = entry.getValue().end();
                 }
                 if (diff >= FOUR_HOURS_MIN_BREAK) {
                     enoughBreakForFourHours = true;

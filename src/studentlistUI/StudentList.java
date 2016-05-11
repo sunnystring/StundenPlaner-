@@ -74,7 +74,7 @@ public class StudentList extends JTable {
         setRowSorter(rowSorter);
     }
 
-    public void update() {
+    public void setup() {
         createDefaultColumnsFromModel(); 
         addRowSorter();
         studentField.setColumnCount(studentListData.getColumnCount());

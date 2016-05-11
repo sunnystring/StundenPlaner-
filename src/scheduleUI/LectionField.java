@@ -188,7 +188,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
-                    lectionLenght = studentFieldData.getStudent().getLectionLength();
+                    lectionLenght = studentFieldData.getStudent().getLectionLengthInFields();
                 } else if (studentListData.isStudentListReleased()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
                     resetLectionColumn();
                 }
@@ -200,7 +200,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
-                    lectionLenght = scheduleFieldData.getStudent().getLectionLength();
+                    lectionLenght = scheduleFieldData.getStudent().getLectionLengthInFields();
                     lectionEnd = selectedRow + lectionLenght;
                     lectionDiff = lectionEnd - rowCount;
                 }

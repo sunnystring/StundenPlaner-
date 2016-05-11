@@ -104,7 +104,7 @@ public class TimeField extends LectionField {
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();
-                    lectionLenght = studentFieldData.getStudent().getLectionLength();
+                    lectionLenght = studentFieldData.getStudent().getLectionLengthInFields();
                 } else if (studentListData.isStudentListReleased()) {
                     resetTimeColumn();
                 }
@@ -116,7 +116,7 @@ public class TimeField extends LectionField {
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData =  scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
-                    lectionLenght = scheduleFieldData.getStudent().getLectionLength();
+                    lectionLenght = scheduleFieldData.getStudent().getLectionLengthInFields();
                 }
             }
         }

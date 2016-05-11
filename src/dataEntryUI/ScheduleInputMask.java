@@ -35,7 +35,7 @@ public class ScheduleInputMask extends JPanel {
     private final MainFrame mainFrame;
     private final Database database;
     private final ScheduleData scheduleData;
-    private final ScheduleTimes scheduleTimes;
+    private ScheduleTimes scheduleTimes;
     private JScrollPane center;
     private JPanel bottom;
     private SelectionTable selectionTable;
@@ -102,7 +102,8 @@ public class ScheduleInputMask extends JPanel {
                     Dialogs.showScheduleTimeSlotError();
                     return;
                 }
-                mainFrame.setupAndShowUI();
+                scheduleTimes.setValidScheduleDays();
+                mainFrame.showStundenPlanerAfterScheduleEntry();
                 cancelButton.removeActionListener(cancelButtonListener);
                 saveButton.removeActionListener(saveButtonListener);
                 scheduleEntry.dispose();
@@ -117,7 +118,7 @@ public class ScheduleInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     scheduleTimes.checkTimeSlots();
-                    scheduleTimes.checkStudentListBounds(database);
+                    scheduleTimes.checkStudentTimesBounds(database);
                     scheduleData.checkIfScheduleDayErasable();
                     scheduleData.checkIfLectionsWithinTimeFrame();
                     scheduleTimes.validateDayEntry();
@@ -144,7 +145,7 @@ public class ScheduleInputMask extends JPanel {
                         return;
                     }
                 }
-                mainFrame.updateAndShowUI();
+                mainFrame.showStundenPlanerAfterScheduleEdit();
                 cancelButton.removeActionListener(cancelButtonListener);
                 saveButton.removeActionListener(editButtonListener);
                 scheduleEdit.dispose();

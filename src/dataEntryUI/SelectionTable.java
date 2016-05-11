@@ -20,12 +20,12 @@ import utils.Colors;
  */
 public class SelectionTable extends JTable {
 
-    private final ScheduleTimes scheduleTimes;
+    private ScheduleTimes scheduleTimes;
 
     public SelectionTable(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
         setModel(scheduleTimes);
-        setRowHeight(25); 
+        setRowHeight(25);
         setShowGrid(true);
         putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
         setDefaultEditor(String.class, new TimeStringEditor());
@@ -88,4 +88,8 @@ public class SelectionTable extends JTable {
             ((JTextComponent) editor).selectAll();
         }
     }
+
+//    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+//        this.scheduleTimes = scheduleTimes;
+//    }
 }

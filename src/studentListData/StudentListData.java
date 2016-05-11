@@ -51,21 +51,33 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         coloredStudentDays = new ColoredStudentDays(database, this);
     }
 
-    public void setup() {
+    public void init() {
         numberOfDays = database.getNumberOfDays();
         coloredStudentDays.init(scheduleData);
     }
 
-    public void update() {
+    public void updateAfterFileEntry() {
+        fieldDataMatrix.clear();
+        init();
+        createStudentRows();
+        setIncompatibleStudentDays();
+        setStudentListReleased(true);
+    }
+
+    public void updateAfterScheduleEdit() {
         numberOfDays = database.getNumberOfDays();
         updateStudentAllocationState();
         fieldDataMatrix.clear();
+        createStudentRows();
+        coloredStudentDays.update();
+        setIncompatibleStudentDays();
+        setStudentListReleased(true);
+    }
+
+    public void createStudentRows() {
         for (int i = 0; i < numberOfStudents; i++) {
             createStudentRow(database.getStudent(i));
         }
-        coloredStudentDays.update();
-        setIncompatibleStudentDays();
-
     }
 
     @Override
@@ -105,7 +117,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             studentRow[col] = new StudentFieldData(database);
             studentRow[col].setStudentID(student.getID());
             studentRow[col].setStudentAllocated(student.isAllocated());
-            setStudentListReleased(!student.isAllocated());
             if (col > 0) {
                 studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
                 studentRow[col].setDayIndex(col - 1);
@@ -333,6 +344,18 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void setStudentList(StudentList studentList) {
         this.studentList = studentList;
+    }
+
+    public void setColoredStudentDays(ColoredStudentDays coloredStudentDays) {
+        this.coloredStudentDays = coloredStudentDays;
+    }
+
+    public ColoredStudentDays getColoredStudentDays() {
+        return coloredStudentDays;
+    }
+
+    public void setNumberOfStudents(int numberOfStudents) {
+        this.numberOfStudents = numberOfStudents;
     }
 
     @Override

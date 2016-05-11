@@ -5,7 +5,6 @@
  */
 package dataEntryUI;
 
-import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleUI.Schedule;
 

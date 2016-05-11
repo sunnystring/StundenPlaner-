@@ -202,7 +202,7 @@ public class StudentInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.initAndCheckScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                    studentTimes.initAndCheckScheduleBounds(scheduleTimeFrame, getLectionLengthInFields());
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
@@ -227,11 +227,11 @@ public class StudentInputMask extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.initAndCheckScheduleBounds(scheduleTimes, scheduleTimeFrame, getLectionLengthInFields());
+                    studentTimes.initAndCheckScheduleBounds(scheduleTimeFrame, getLectionLengthInFields());
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
-                } catch (OutOfBoundException ex) { 
+                } catch (OutOfBoundException ex) {
                     showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEdit.getMainFrame());
                     return;
                 }
@@ -281,7 +281,6 @@ public class StudentInputMask extends JPanel {
 
     public void setUpSelectionTable() {
         studentTimes = student.getStudentTimes();
-        studentTimes.setScheduleTimes(scheduleTimes);
         selectionTable.setParameters(studentTimes);
     }
 
@@ -289,7 +288,8 @@ public class StudentInputMask extends JPanel {
         student.setFirstName(firstName);
         student.setName(name);
         student.setLectionLengthInMinutes(Integer.parseInt(lectionType));
-        student.setStudentTimes(studentTimes);
+     //   studentTimes.setScheduleTimes(scheduleTimes);
+     //   student.setStudentTimes(studentTimes);
     }
 
     public void clearTextFields() {

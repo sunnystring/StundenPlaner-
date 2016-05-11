@@ -15,15 +15,15 @@ import utils.Time;
 
 /**
  *
- * Die Schülerzeiten werden gemäss 5 verschiedenen Zeitbereichen (auf Basis
- * der Anfangszeit 1) mit Blautönen markiert
+ * Die Schülerzeiten werden gemäss 5 verschiedenen Zeitbereichen (auf Basis der
+ * Anfangszeit 1) mit Blautönen markiert
  *
  */
 public class StudentTimesDistribution {
 
     public static final int COLOR_RANGE = 5;
-    private final ScheduleTimes scheduleTimes;
-    private final ArrayList<TreeMap> blueMaps, redMaps, purpleMaps;
+    private ScheduleTimes scheduleTimes;
+    private ArrayList<TreeMap> blueMaps, redMaps, purpleMaps;
     private Time inc, timeMark;
     private Color color;
 
@@ -50,7 +50,7 @@ public class StudentTimesDistribution {
             setTimeComponents(scheduleTimes.getValidScheduleDayAt(i));
             TreeMap<Time, Color> blueMap = new TreeMap<>();
             TreeMap<Time, Color> redMap = new TreeMap<>();
-             TreeMap<Time, Color> purpleMap = new TreeMap<>();
+            TreeMap<Time, Color> purpleMap = new TreeMap<>();
             for (int j = 0; j < COLOR_RANGE; j++) {
                 timeMark = timeMark.plus(inc);
                 color = Colors.getBlue(j);
@@ -82,8 +82,8 @@ public class StudentTimesDistribution {
         TreeMap<Time, Color> colorMap = redMaps.get(dayIndex);
         return colorMap.get(colorMap.ceilingKey(time));
     }
-    
-   public Color getPurple(Time time, int dayIndex) {
+
+    public Color getPurple(Time time, int dayIndex) {
         TreeMap<Time, Color> colorMap = purpleMaps.get(dayIndex);
         return colorMap.get(colorMap.ceilingKey(time));
     }

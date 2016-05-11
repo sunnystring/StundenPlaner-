@@ -103,15 +103,15 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    public void initAndCheckScheduleBounds(ScheduleTimes scheduleTimes, ScheduleTimeFrame timeFrame, int lectionLength) {
+    public void initAndCheckScheduleBounds(ScheduleTimeFrame timeFrame, int lectionLength) {
         String errorLog = "";
         boolean daysOutOfBounds = false;
         for (int i = 0; i < DAYS; i++) {
             StudentDay studentDay = daySelectionList[i];
+            ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(studentDay);
             studentDay.setSelectionState(); // emptyDay, falls keine Zeiteinträge
             studentDay.setSingleSlots();
             studentDay.setLowestAndHighestBounds();
-            ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(studentDay);
             boolean outOfTimeFrame = studentDay.outOfTimeFrame(timeFrame, lectionLength);
             boolean outOfScheduleDayBounds = studentDay.outOfValidBoundsOf(scheduleDay);
             if (!studentDay.isEmpty()) {
@@ -175,15 +175,15 @@ public class StudentTimes extends AbstractTableModel {
         return validStudentDayList.get(i);
     }
 
-    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
-        this.scheduleTimes = scheduleTimes;
-    }
-
     public void setValidStudentDayList(ArrayList<StudentDay> validStudentDayList) {
         this.validStudentDayList = validStudentDayList;
     }
 
     public int getNumberOfSelectedDays() {
         return numberOfSelectedDays;
+    }
+
+    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
+        this.scheduleTimes = scheduleTimes;
     }
 }
