@@ -97,7 +97,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 4));
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
-        //      saveButton.setEnabled(false);
+        saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         printButton.setEnabled(false);
         exitButton = new ScheduleButton("exit.png", "StundenPlaner beenden");
@@ -144,7 +144,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     private void setScheduleDataParameters() {
-        scheduleData.getBreakWatcher().setDatabase(database);
         scheduleData.getBreakWatcher().setSchedule(schedule);
     }
 
@@ -203,18 +202,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PrinterDialog printerDialog = new PrinterDialog(MainFrame.this, database);
-//                JDialog dialog = new JDialog(MainFrame.this);
-//                dialog.add(scheduleText);
-//                dialog.setMinimumSize(new Dimension(350, 500));
-//                dialog.setModal(true);
-//                dialog.setLocationRelativeTo(MainFrame.this);
-//                dialog.setVisible(true);
-//                try {
-//
-//                    scheduleText.print();
-//                } catch (PrinterException ex) {
-//                    ex.printStackTrace();
-//                }
             }
         });
         exitButton.addActionListener(new ActionListener() {
@@ -331,11 +318,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private void updateSchedule() {
         schedule.updateHeader();
         schedule.getTimeTable().update();
-    }
-
-    public void setButtonsEnabled(boolean state) {
-        setDataEntryButtonsEnabled(state);
-        setFileButtonsEnabled(state);
     }
 
     public void setDataEntryButtonsEnabled(boolean state) {

@@ -209,7 +209,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         } else if (selectedRow == fieldData.selectedRowIndex()) { // weitere Selections bzw. Selections rückgängig machen
                             fieldData.switchSelectionState();
                             if (isRowReleased(selectedRow)) { // alle Selections gelöscht
-                                releaseStudentAtViewCoordinates(selectedRow);
+                                releaseStudentListAtViewCoordinates(selectedRow);
                             }
                         }
                         mainFrame.setDataEntryButtonsEnabled(isStudentListReleased());
@@ -287,7 +287,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
     }
 
-    private void releaseStudentAtViewCoordinates(int row) {
+    private void releaseStudentListAtViewCoordinates(int row) {
         studentListReleased = true;
         for (int i = 0; i < getColumnCount(); i++) {
             studentList.getStudentFieldDataAtView(row, i).setSelectedRowIndex(NULL_VALUE);

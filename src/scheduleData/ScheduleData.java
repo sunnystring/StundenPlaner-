@@ -49,7 +49,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         this.studentListData = studentListData;
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
-        breakWatcher = new BreakWatcher();
+        breakWatcher = new BreakWatcher(database, this);
         numberOfValidDays = 0;
         dayColumnIndex = -1;
         dayColumnFieldIndex = -1;

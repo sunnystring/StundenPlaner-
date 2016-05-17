@@ -33,7 +33,7 @@ public class PrinterDialog extends JDialog {
     public PrinterDialog(MainFrame mainFrame, Database database) {
         super(mainFrame);
         textPane = new PrinterText(database);
-        setTitle("Druckansicht bearbeiten");
+        setTitle("Druckansicht");
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(350, 500));
         setModal(true);

@@ -163,6 +163,10 @@ public class DayColumnData {
         }
     }
 
+    public ArrayList<ScheduleFieldData> getFieldList() {
+        return fieldList;
+    }
+
     public ScheduleFieldData getFieldDataAt(int i) {
         return fieldList.get(i);
     }

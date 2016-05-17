@@ -7,57 +7,60 @@ package userUtils;
 
 import core.Database;
 import java.util.Map;
-import java.util.TreeMap;
+import scheduleData.DayColumnData;
 import scheduleData.LectionData;
+import scheduleData.ScheduleData;
+import scheduleData.ScheduleFieldData;
 import scheduleUI.DayField;
 import scheduleUI.Schedule;
 import utils.Colors;
 import utils.Time;
 
 /**
- * 
- * Zeigt im {@link DayField} des Stundenplans an, sobald eine 15- oder 30-Minuten-Pause gemacht werden muss
+ *
+ * Zeigt im {@link DayField} des Stundenplans an, sobald eine 15- oder
+ * 30-Minuten-Pause gemacht werden muss
  *
  */
 public class BreakWatcher {
 
     private Database database;
+    private ScheduleData scheduleData;
     private Schedule schedule;
     public static final int FOUR_HOURS_BOUND = 48, SIX_HOURS_BOUND = 72, FOUR_HOURS_MIN_BREAK = 3, SIX_HOURS_MIN_BREAK = 6;
 
-    public void check(int dayIndex) {
-        TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(dayIndex);
-        if (lectionMap.size() > 0) {
-            int fieldCount = 0;
-            boolean enoughBreakForFourHours = false;
-            boolean enoughBreakForSixHours = false;
-            Time lectionEnd = lectionMap.firstEntry().getValue().end();
-            for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
-                fieldCount += entry.getValue().getLength();
-                int diff = 0;
-                if (entry.getKey().greaterEqualsThan(lectionEnd)) {
-                    diff = entry.getKey().minus(lectionEnd.plus(5)).getNumberOfFields(Time.ROUND_UP);
-                    lectionEnd = entry.getValue().end();
-                }
-                if (diff >= FOUR_HOURS_MIN_BREAK) {
-                    enoughBreakForFourHours = true;
-                }
-                if (diff >= SIX_HOURS_MIN_BREAK) {
-                    enoughBreakForSixHours = true;
-                }
-            }
-            if (fieldCount > SIX_HOURS_BOUND && !enoughBreakForSixHours) {
-                schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
-            } else if (fieldCount > FOUR_HOURS_BOUND && !enoughBreakForFourHours) {
-                schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
-            } else {
-                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, database.getDayNameAt(dayIndex));
-            }
-        }
+    public BreakWatcher(Database database, ScheduleData scheduleData) {
+        this.database = database;
+        this.scheduleData = scheduleData;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
+    public void check(int dayIndex) {
+        if (!database.getLectionMapAt(dayIndex).isEmpty()) {
+            DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
+            Map.Entry<Time, LectionData> entry = database.getLectionMapAt(dayIndex).lastEntry();
+            Time endLastLection = entry.getValue().end();
+            int lectionFieldsTotal = 0;
+            int breakFields = 0;
+            int breakFieldMax = 0;
+            for (ScheduleFieldData field : dayColumn.getFieldList()) {
+                if (field.isLectionAllocated()) {
+                    lectionFieldsTotal++;
+                    breakFields = 0;
+                } else if (lectionFieldsTotal > 0 && field.getFieldTime().lessEqualsThan(endLastLection)) {
+                    breakFields++;
+                    if (breakFieldMax <= breakFields) {
+                        breakFieldMax = breakFields;
+                    }
+                }
+            }
+            if (lectionFieldsTotal > SIX_HOURS_BOUND && breakFieldMax < SIX_HOURS_MIN_BREAK) {
+                schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
+            } else if (lectionFieldsTotal > FOUR_HOURS_BOUND && breakFieldMax < FOUR_HOURS_MIN_BREAK) {
+                schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
+            } else {
+                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, dayColumn.getDayName());
+            }
+        }
     }
 
     public void setSchedule(Schedule schedule) {
