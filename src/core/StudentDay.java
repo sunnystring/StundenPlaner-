@@ -5,6 +5,7 @@
  */
 package core;
 
+import com.google.gson.annotations.Expose;
 import scheduleData.ScheduleTimeFrame;
 import utils.Time;
 import static core.StudentTimes.COLUMNS;

@@ -212,7 +212,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                                 releaseStudentAtViewCoordinates(selectedRow);
                             }
                         }
-                        mainFrame.setButtonsEnabled(isStudentListReleased());
+                        mainFrame.setDataEntryButtonsEnabled(isStudentListReleased());
+                        mainFrame.setFileButtonsEnabled(isStudentListReleased());
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) { // Schülerprofil ändern/löschen
                         JDialog studentEditDialog = new StudentEdit(mainFrame, fieldData.getStudent());
@@ -233,19 +234,22 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
                             blockStudentList();
-                            mainFrame.setButtonsEnabled(false);
+                            mainFrame.setDataEntryButtonsEnabled(false);
+                            mainFrame.setFileButtonsEnabled(false);
                         }
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocated(allocatedRow, false);
                             student.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);
-                            mainFrame.setButtonsEnabled(true);
+                            mainFrame.setDataEntryButtonsEnabled(true);
+                            mainFrame.setFileButtonsEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
                         setRowAllocated(allocatedRow, true);
                         student.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
-                        mainFrame.setButtonsEnabled(true);
+                        mainFrame.setDataEntryButtonsEnabled(true);
+                        mainFrame.setFileButtonsEnabled(true);
                     }
                 }
                 studentList.getStudentField().resetRowIndices();
