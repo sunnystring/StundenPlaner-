@@ -24,7 +24,6 @@ import java.util.TreeMap;
 import scheduleData.LectionData;
 import utils.Time;
 import static core.ScheduleTimes.DAYS;
-import java.io.FileNotFoundException;
 
 /**
  *

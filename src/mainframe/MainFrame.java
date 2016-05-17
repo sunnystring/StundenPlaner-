@@ -97,7 +97,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 4));
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
-        saveButton.setEnabled(false);
+        //      saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         printButton.setEnabled(false);
         exitButton = new ScheduleButton("exit.png", "StundenPlaner beenden");
