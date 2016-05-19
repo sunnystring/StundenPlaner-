@@ -42,24 +42,24 @@ public class LectionGapFiller {
 
     public void showAvailableTimes(Time selectedTime, int dayIndex) {
         clearAllMarks();
-        if (locateGap(selectedTime, dayIndex)) { // gap main switch  
-            ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
-            for (int i = 0; i < database.getNumberOfStudents(); i++) {
-                StudentDay studentDay = dayList.get(i);
-                int studentID = database.getStudentID(dayIndex, studentDay);
-                Student student = database.getStudent(studentID);
-                LectionData lection = database.getLectionByID(studentID);
-                if (gap.matchesTimeOf(studentDay, student, isAdjacentTo(lection))) {
-                    if (student.isAllocated()) {
-                        if (lection != null && lection.getStudentID() == studentID) {
-                            lection.setGapFillerMarkEnabled(true);
+                if (locateGap(selectedTime, dayIndex)) { // gap main switch  
+                    ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
+                    for (int i = 0; i < database.getNumberOfStudents(); i++) {
+                        StudentDay studentDay = dayList.get(i);
+                        int studentID = database.getStudentID(dayIndex, studentDay);
+                        Student student = database.getStudent(studentID);
+                        LectionData lection = database.getLectionByID(studentID);
+                        if (gap.matchesTimeOf(studentDay, student, isAdjacentTo(lection))) {
+                            if (student.isAllocated()) {
+                                if (lection != null && lection.getStudentID() == studentID) {
+                                    lection.setGapFillerMarkEnabled(true);
+                                }
+                            } else {
+                                studentListData.getValueAt(studentID, dayIndex + 1).setLectionGapFiller(true);
+                            }
                         }
-                    } else {
-                        studentListData.getValueAt(studentID, dayIndex + 1).setLectionGapFiller(true);
                     }
                 }
-            }
-        }
     }
 
     private boolean isAdjacentTo(LectionData lection) {
@@ -71,14 +71,14 @@ public class LectionGapFiller {
     }
 
     private void clearAllMarks() {
-        for (int dayIndex = 0; dayIndex < database.getNumberOfDays(); dayIndex++) {
-            for (Map.Entry<Time, LectionData> entry : database.getLectionMapAt(dayIndex).entrySet()) {
-                entry.getValue().setGapFillerMarkEnabled(false);
-            }
-            for (int studentID = 0; studentID < database.getNumberOfStudents(); studentID++) {
-                studentListData.getValueAt(studentID, dayIndex + 1).setLectionGapFiller(false);
-            }
-        }
+                for (int dayIndex = 0; dayIndex < database.getNumberOfDays(); dayIndex++) {
+                    for (Map.Entry<Time, LectionData> entry : database.getLectionMapAt(dayIndex).entrySet()) {
+                        entry.getValue().setGapFillerMarkEnabled(false);
+                    }
+                    for (int studentID = 0; studentID < database.getNumberOfStudents(); studentID++) {
+                        studentListData.getValueAt(studentID, dayIndex + 1).setLectionGapFiller(false);
+                    }
+                }
     }
 
     private boolean locateGap(Time selectedTime, int dayIndex) {

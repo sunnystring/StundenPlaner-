@@ -63,4 +63,19 @@ public class Dialogs {
                 + "Konflikt mit den Schülerzeiten!\n\n" + errorLog;
         JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
+
+    public static void showSaveFileErrorMessage() {
+        String msg = "Es ist ein Fehler aufgetreten!\nBitte versuche es nochmals.";
+        JOptionPane.showMessageDialog(null, msg, "Datei speichern", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void showLoadFileErrorMessage() {
+        String msg = "Es ist ein Fehler aufgetreten!\nBitte versuche es nochmals.";
+        JOptionPane.showMessageDialog(null, msg, "Datei laden", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void showUndefinedErrorMessage() {
+        String msg = "Es ist ein unbekannter Fehler aufgetreten!\nVorgang bitte wiederholen.";
+        JOptionPane.showMessageDialog(null, msg, "?", JOptionPane.ERROR_MESSAGE);
+    }
 }

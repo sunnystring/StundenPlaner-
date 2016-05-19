@@ -24,10 +24,11 @@ import java.util.TreeMap;
 import scheduleData.LectionData;
 import utils.Time;
 import static core.ScheduleTimes.DAYS;
+import utils.Dialogs;
 
 /**
  *
- * @author mathiaskielholz
+ * Speichern und Laden der Schüler- und Lection-Daten über JSON
  */
 public class DataTransferManager {
 
@@ -69,10 +70,8 @@ public class DataTransferManager {
         try (Writer writer = new FileWriter(file)) {
             String json = gson.toJson(dataList);
             writer.write(json);
-        } catch (IOException ex) {
-            
-            // ToDo
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            Dialogs.showSaveFileErrorMessage();
         }
     }
 
@@ -89,10 +88,8 @@ public class DataTransferManager {
                 }.getType());
                 lectionMaps.add(lectionMap);
             }
-        } catch (IOException ex) {
-            
-            // ToDo
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            Dialogs.showLoadFileErrorMessage();
         }
     }
 

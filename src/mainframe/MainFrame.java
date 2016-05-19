@@ -44,6 +44,7 @@ import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
 import utils.Icons;
 import static userUtilsUI.ColoredStudentDays.DEFAULT_COLORS;
+import utils.Dialogs;
 
 /**
  *
@@ -192,9 +193,13 @@ public class MainFrame extends JFrame implements DatabaseListener {
             public void actionPerformed(ActionEvent e) {
                 if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
                     dataTransferManager.load(fileChooser.getSelectedFile());
-                    updateDataAfterFileEntry();
-                    updateWidgetsAfterFileEntry();
-                    showStundenPlaner();
+                    try {
+                        updateDataAfterFileEntry();
+                        updateWidgetsAfterFileEntry();
+                        showStundenPlaner();
+                    } catch (Exception ex) {
+                        Dialogs.showUndefinedErrorMessage();
+                    }
                 }
             }
         });
