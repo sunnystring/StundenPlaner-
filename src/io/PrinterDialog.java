@@ -23,7 +23,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Druckansicht anzeigen, bearbeiten und ausdrucken
  */
 public class PrinterDialog extends JDialog {
 

@@ -27,7 +27,7 @@ import static core.ScheduleTimes.DAYS;
 
 /**
  *
- * @author mathiaskielholz
+ * Speichern und Laden der Schüler- und Lection-Daten über JSON
  */
 public class DataTransferManager {
 

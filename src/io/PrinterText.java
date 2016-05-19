@@ -22,7 +22,7 @@ import utils.Time;
 
 /**
  *
- * @author mathiaskielholz
+ * Bearbeitbare Druckansicht des Stundenplans
  */
 public class PrinterText extends JTextPane {
 

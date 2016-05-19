@@ -55,7 +55,6 @@ public class ColoredStudentDays {
     }
 
     public void updateIncompatibleStudentDays() {
-        incompatibleStudentTimes.resetAllStudentFields();
         findIncompatibleStudentTimes();
     }
 
