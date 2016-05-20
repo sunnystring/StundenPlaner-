@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mainframe.MainFrame;
+import utils.Dialogs;
 
 /**
  *
@@ -28,11 +29,12 @@ public class Main {
                             break;
                         }
                     }
+                    JFrame mainFrame = new MainFrame();
+                    mainFrame.setVisible(true);
                 } catch (Exception e) {
+                    Dialogs.showUnspecificErrorMessage();
                     e.printStackTrace();
                 }
-                JFrame mainFrame = new MainFrame();
-                mainFrame.setVisible(true);
             }
         });
     }

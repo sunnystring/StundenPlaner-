@@ -5,7 +5,6 @@
  */
 package utils;
 
-import com.google.gson.annotations.Expose;
 import core.ScheduleDay;
 import core.StudentDay;
 import java.text.DecimalFormat;

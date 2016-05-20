@@ -57,7 +57,9 @@ public class PrinterText extends JTextPane {
                             doc.getStyle("bold"));
                     for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
                         String lectionStart = entry.getKey().toString();
-                        doc.insertString(doc.getLength(), lectionStart,
+                        String lectionEnd = entry.getValue().end().plus(5).toString();
+                        String lectionTime = lectionStart + "-" + lectionEnd;
+                        doc.insertString(doc.getLength(), lectionTime,
                                 doc.getStyle("bold"));
                         Student student = database.getStudent(entry.getValue().getStudentID());
                         String nameLine = " " + student.getFirstName() + " " + student.getName();

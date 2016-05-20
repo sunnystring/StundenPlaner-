@@ -31,14 +31,11 @@ import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
 import io.DataTransferManager;
 import io.PrinterDialog;
-import io.PrinterText;
-import java.awt.print.PrinterException;
 import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.plaf.basic.BasicSliderUI;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
@@ -193,13 +190,9 @@ public class MainFrame extends JFrame implements DatabaseListener {
             public void actionPerformed(ActionEvent e) {
                 if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
                     dataTransferManager.load(fileChooser.getSelectedFile());
-                    try {
-                        updateDataAfterFileEntry();
-                        updateWidgetsAfterFileEntry();
-                        showStundenPlaner();
-                    } catch (Exception ex) {
-                        Dialogs.showUndefinedErrorMessage();
-                    }
+                    updateDataAfterFileEntry();
+                    updateWidgetsAfterFileEntry();
+                    showStundenPlaner();
                 }
             }
         });

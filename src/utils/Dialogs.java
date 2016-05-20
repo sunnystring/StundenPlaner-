@@ -74,7 +74,7 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, msg, "Datei laden", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showUndefinedErrorMessage() {
+    public static void showUnspecificErrorMessage() {
         String msg = "Es ist ein unbekannter Fehler aufgetreten!\nVorgang bitte wiederholen.";
         JOptionPane.showMessageDialog(null, msg, "?", JOptionPane.ERROR_MESSAGE);
     }
