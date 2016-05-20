@@ -31,6 +31,8 @@ import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
 import io.DataTransferManager;
 import io.PrinterDialog;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;

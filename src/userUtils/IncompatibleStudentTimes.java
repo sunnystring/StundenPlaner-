@@ -54,89 +54,79 @@ public class IncompatibleStudentTimes {
     }
 
     public void findBlockingScheduleTimes() {
-//        new Thread() {
-//            @Override
-//            public void run() {
-                for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
-                    TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(dayIndex);
-                    if (!lectionMap.isEmpty()) {
-                        ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
-                        DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
-                        for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
-                            Time startSearchLection = entry.getKey();
-                            Time endSearchLection = entry.getValue().end();
-                            for (int i = 0; i < dayList.size(); i++) {
-                                StudentDay searchDay = dayList.get(i);
-                                if (!searchDay.isEmpty()) {
-                                    int searchStudentID = database.getStudentID(dayIndex, searchDay);
-                                    StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                                    if (!searchField.isStudentAllocated()) {
-                                        int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
-                                        boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
-                                                || searchDay.latestEnd().plusLengthOf(searchLectionLength).greaterEqualsThan(startSearchLection);
-                                        if (withinValidBounds) {
-                                            boolean blocked = searchDay.isBlocked(dayColumn, searchLectionLength);
-                                            searchField.setBlocked(blocked);
-                                            searchField.setIncompatible(blocked);
-                                        }
-                                    }
+        for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
+            TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(dayIndex);
+            if (!lectionMap.isEmpty()) {
+                ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
+                DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
+                for (Map.Entry<Time, LectionData> entry : lectionMap.entrySet()) {
+                    Time startSearchLection = entry.getKey();
+                    Time endSearchLection = entry.getValue().end();
+                    for (int i = 0; i < dayList.size(); i++) {
+                        StudentDay searchDay = dayList.get(i);
+                        if (!searchDay.isEmpty()) {
+                            int searchStudentID = database.getStudentID(dayIndex, searchDay);
+                            StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
+                            if (!searchField.isStudentAllocated()) {
+                                int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
+                                boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
+                                        || searchDay.latestEnd().plusLengthOf(searchLectionLength).greaterEqualsThan(startSearchLection);
+                                if (withinValidBounds) {
+                                    boolean blocked = searchDay.isBlocked(dayColumn, searchLectionLength);
+                                    searchField.setBlocked(blocked);
+                                    searchField.setIncompatible(blocked);
                                 }
                             }
                         }
                     }
                 }
-    //        }
-  //      }.start();
+            }
+        }
     }
 
     public void findAll() {
-      //  new Thread() {
-        //    @Override
-       //     public void run() {
-                for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
-                    int refIndex = 0;
-                    ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
-                    while (refIndex < dayList.size()) {
-                        StudentDay refDay = dayList.get(refIndex);
-                        int refStudentID = database.getStudentID(dayIndex, refDay);
-                        StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
-                        if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
-                            int refLectionLength = database.getStudent(refStudentID).getLectionLengthInFields();
-                            int searchIndex = refIndex + 1;
-                            while (searchIndex < dayList.size()) {
-                                StudentDay searchDay = dayList.get(searchIndex);
-                                int searchStudentID = database.getStudentID(dayIndex, searchDay);
-                                StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                                if (!searchField.isStudentAllocated() && searchDay.isWithin(refDay, refLectionLength)) {
-                                    searchDay = dayList.get(searchIndex);
-                                    searchStudentID = database.getStudentID(dayIndex, searchDay);
-                                    searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                                    int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
-                                    boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
-                                    boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
-                                    if (!refField.isIncompatible()) {
-                                        refField.setIncompatible(incompatible);
-                                    }
-                                    if (!refField.isUnallocatable()) {
-                                        refField.setUnallocatable(unallocatable);
-                                    }
-                                    if (!searchField.isIncompatible()) {
-                                        searchField.setIncompatible(incompatible);
-                                    }
-                                    if (!searchField.isUnallocatable()) {
-                                        searchField.setUnallocatable(unallocatable);
-                                    }
-                                }
-                                searchIndex++;
+        for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
+            int refIndex = 0;
+            ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
+            while (refIndex < dayList.size()) {
+                StudentDay refDay = dayList.get(refIndex);
+                int refStudentID = database.getStudentID(dayIndex, refDay);
+                StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
+                if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
+                    int refLectionLength = database.getStudent(refStudentID).getLectionLengthInFields();
+                    int searchIndex = refIndex + 1;
+                    while (searchIndex < dayList.size()) {
+                        StudentDay searchDay = dayList.get(searchIndex);
+                        int searchStudentID = database.getStudentID(dayIndex, searchDay);
+                        StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
+                        if (!searchField.isStudentAllocated() && searchDay.isWithin(refDay, refLectionLength)) {
+                            searchDay = dayList.get(searchIndex);
+                            searchStudentID = database.getStudentID(dayIndex, searchDay);
+                            searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
+                            int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
+                            boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
+                            boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
+                            if (!refField.isIncompatible()) {
+                                refField.setIncompatible(incompatible);
                             }
-                            refIndex++;
-                        } else {
-                            refIndex++;
+                            if (!refField.isUnallocatable()) {
+                                refField.setUnallocatable(unallocatable);
+                            }
+                            if (!searchField.isIncompatible()) {
+                                searchField.setIncompatible(incompatible);
+                            }
+                            if (!searchField.isUnallocatable()) {
+                                searchField.setUnallocatable(unallocatable);
+                            }
                         }
+                        searchIndex++;
                     }
+                    refIndex++;
+                } else {
+                    refIndex++;
                 }
-       //     }
-     //   }.start();
+            }
+        }
     }
 
     public void setScheduleData(ScheduleData scheduleData) {

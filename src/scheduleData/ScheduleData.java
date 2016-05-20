@@ -162,6 +162,9 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     @Override
     public ScheduleFieldData getValueAt(int row, int col) {
+        if (row < 0 || col < 0) {
+            return null;
+        }
         return fieldDataMatrix[row][col];
     }
 

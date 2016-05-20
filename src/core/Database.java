@@ -37,7 +37,7 @@ public class Database {
         databaseListeners = new ArrayList<>();
         lectionMaps = new ArrayList<>();
         for (int i = 0; i < DAYS; i++) {
-            lectionMaps.add(new TreeMap());
+            lectionMaps.add(new TreeMap<>());
         }
         lectionIDMap = new HashMap<>();
         sortedStudentDayLists = new ArrayList<>();

@@ -35,37 +35,32 @@ public class BreakWatcher {
     }
 
     public void check(int dayIndex) {
-//        new Thread() {
-//            @Override
-//            public void run() {
-                if (!database.getLectionMapAt(dayIndex).isEmpty()) {
-                    DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
-                    Map.Entry<Time, LectionData> entry = database.getLectionMapAt(dayIndex).lastEntry();
-                    Time endLastLection = entry.getValue().end();
-                    int lectionFieldsTotal = 0;
-                    int breakFields = 0;
-                    int breakFieldMax = 0;
-                    for (ScheduleFieldData field : dayColumn.getFieldList()) {
-                        if (field.isLectionAllocated()) {
-                            lectionFieldsTotal++;
-                            breakFields = 0;
-                        } else if (lectionFieldsTotal > 0 && field.getFieldTime().lessEqualsThan(endLastLection)) {
-                            breakFields++;
-                            if (breakFieldMax <= breakFields) {
-                                breakFieldMax = breakFields;
-                            }
-                        }
-                    }
-                    if (lectionFieldsTotal > SIX_HOURS_BOUND && breakFieldMax < SIX_HOURS_MIN_BREAK) {
-                        schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
-                    } else if (lectionFieldsTotal > FOUR_HOURS_BOUND && breakFieldMax < FOUR_HOURS_MIN_BREAK) {
-                        schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
-                    } else {
-                        schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, dayColumn.getDayName());
+        if (!database.getLectionMapAt(dayIndex).isEmpty()) {
+            DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
+            Map.Entry<Time, LectionData> entry = database.getLectionMapAt(dayIndex).lastEntry();
+            Time endLastLection = entry.getValue().end();
+            int lectionFieldsTotal = 0;
+            int breakFields = 0;
+            int breakFieldMax = 0;
+            for (ScheduleFieldData field : dayColumn.getFieldList()) {
+                if (field.isLectionAllocated()) {
+                    lectionFieldsTotal++;
+                    breakFields = 0;
+                } else if (lectionFieldsTotal > 0 && field.getFieldTime().lessEqualsThan(endLastLection)) {
+                    breakFields++;
+                    if (breakFieldMax <= breakFields) {
+                        breakFieldMax = breakFields;
                     }
                 }
-//            }
-//        }.start();
+            }
+            if (lectionFieldsTotal > SIX_HOURS_BOUND && breakFieldMax < SIX_HOURS_MIN_BREAK) {
+                schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
+            } else if (lectionFieldsTotal > FOUR_HOURS_BOUND && breakFieldMax < FOUR_HOURS_MIN_BREAK) {
+                schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
+            } else {
+                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, dayColumn.getDayName());
+            }
+        }
     }
 
     public void setSchedule(Schedule schedule) {
