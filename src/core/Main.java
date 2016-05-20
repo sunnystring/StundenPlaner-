@@ -29,12 +29,12 @@ public class Main {
                             break;
                         }
                     }
-                    JFrame mainFrame = new MainFrame();
-                    mainFrame.setVisible(true);
                 } catch (Exception e) {
                     Dialogs.showUnspecificErrorMessage();
                     e.printStackTrace();
                 }
+                JFrame mainFrame = new MainFrame();
+                mainFrame.setVisible(true);
             }
         });
     }
