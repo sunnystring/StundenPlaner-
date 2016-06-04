@@ -24,6 +24,9 @@ import java.util.TreeMap;
 import scheduleData.LectionData;
 import utils.Time;
 import static core.ScheduleTimes.DAYS;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import utils.Dialogs;
 
 /**
@@ -67,7 +70,7 @@ public class DataTransferManager {
         if (!path.toLowerCase().endsWith(suffix)) {
             file = new File(path + suffix);
         }
-        try (Writer writer = new FileWriter(file)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file),Charset.forName("UTF8"))) {
             String json = gson.toJson(dataList);
             writer.write(json);
         } catch (Exception ex) {
