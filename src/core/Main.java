@@ -5,6 +5,8 @@
  */
 package core;
 
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

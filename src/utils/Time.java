@@ -8,6 +8,8 @@ package utils;
 import core.ScheduleDay;
 import core.StudentDay;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import scheduleData.DayColumnData;
 import scheduleData.ScheduleFieldData;
 import scheduleData.ScheduleTimeFrame;
@@ -21,8 +23,15 @@ public class Time implements Cloneable, Comparable<Time> {
 
     private int hour, minute;
     private String timeString;
-    private static final DecimalFormat OUTPUT_FORMAT = new DecimalFormat("##.00");
+    private static DecimalFormatSymbols symbols;
+    private static DecimalFormat outputFormat;
     public static final boolean ROUND_UP = true, ROUND_DOWN = false;
+
+    {
+        symbols = new DecimalFormatSymbols(Locale.US);
+        symbols.setDecimalSeparator('.');
+        outputFormat = new DecimalFormat("##.00", symbols);
+    }
 
     public Time(String timeString) {
         checkAndExtractTimeComponents(timeString);
@@ -324,7 +333,7 @@ public class Time implements Cloneable, Comparable<Time> {
         if (isEmpty()) {
             return " ";
         } else {
-            return OUTPUT_FORMAT.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
+            return outputFormat.format(Math.floor((hour * 100 + minute) + 0.5) / 100);
         }
     }
 
