@@ -349,8 +349,8 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     private void updateLectionData(int deletedStudentID) {
-        for (DayColumnData d : dayColumnDataList) {
-            d.updateStudentID(deletedStudentID);
+        for (DayColumnData dayColumn : dayColumnDataList) {
+            dayColumn.updateStudentID(deletedStudentID);
         }
     }
 

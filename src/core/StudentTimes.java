@@ -112,7 +112,7 @@ public class StudentTimes extends AbstractTableModel {
             ScheduleDay scheduleDay = scheduleTimes.getMatchingScheduleDayOf(studentDay);
             studentDay.setSelectionState(); // emptyDay, falls keine Zeiteinträge
             studentDay.setSingleSlots();
-            studentDay.setLowestAndHighestBounds();
+            studentDay.setTimeBounds();
             boolean outOfTimeFrame = studentDay.outOfTimeFrame(timeFrame, lectionLength);
             boolean outOfScheduleDayBounds = studentDay.outOfValidBoundsOf(scheduleDay);
             if (!studentDay.isEmpty()) {

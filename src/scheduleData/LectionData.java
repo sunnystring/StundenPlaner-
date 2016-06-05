@@ -40,11 +40,10 @@ public class LectionData {
         return lection.get(lection.size() - 1).getFieldTime();
     }
 
-    public int getLength() {
-        return lection.size();
-    }
-
     public void updateStudentID(int deletedStudentID) {
+        if (studentID > deletedStudentID) {
+            studentID--;
+        }
         for (ScheduleFieldData f : lection) {
             if (f.getStudentID() > deletedStudentID) {
                 f.decrementStudentID();
@@ -68,6 +67,10 @@ public class LectionData {
         for (ScheduleFieldData field : lection) {
             field.setDatabase(database);
         }
+    }
+
+    public int getLength() {
+        return lection.size();
     }
 
     public int getStudentID() {

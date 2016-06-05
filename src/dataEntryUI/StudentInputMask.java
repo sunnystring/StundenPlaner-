@@ -288,8 +288,6 @@ public class StudentInputMask extends JPanel {
         student.setFirstName(firstName);
         student.setName(name);
         student.setLectionLengthInMinutes(Integer.parseInt(lectionType));
-     //   studentTimes.setScheduleTimes(scheduleTimes);
-     //   student.setStudentTimes(studentTimes);
     }
 
     public void clearTextFields() {

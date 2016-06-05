@@ -5,7 +5,6 @@
  */
 package core;
 
-import com.google.gson.annotations.Expose;
 import scheduleData.ScheduleTimeFrame;
 import utils.Time;
 import static core.StudentTimes.COLUMNS;
@@ -32,12 +31,16 @@ public class StudentDay implements Comparable<StudentDay> {
         for (int i = 0; i < SLOTS; i++) {
             timeSlots[i] = new Time();
         }
+        initTimeBounds();
+        validTimes = new ArrayList<>();
+        isEmpty = true;
+    }
+
+    private void initTimeBounds() {
         earliestStart = new Time();
         latestStart = new Time();
         earliestEnd = new Time();
         latestEnd = new Time();
-        validTimes = new ArrayList<>();
-        isEmpty = true;
     }
 
     public void setTimeSlot(String timeString, int slot) {
@@ -58,7 +61,8 @@ public class StudentDay implements Comparable<StudentDay> {
         }
     }
 
-    public void setLowestAndHighestBounds() {
+    public void setTimeBounds() {
+        initTimeBounds();
         if (!isEmpty) {
             setEarliestStartAndEnd();
             setLatestStartAndEnd();
