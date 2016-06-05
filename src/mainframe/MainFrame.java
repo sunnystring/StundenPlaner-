@@ -31,19 +31,17 @@ import dataEntryUI.ScheduleInputMask;
 import dataEntryUI.StudentEntry;
 import io.DataTransferManager;
 import io.PrinterDialog;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
 import utils.Icons;
 import static userUtilsUI.ColoredStudentDays.DEFAULT_COLORS;
-import utils.Dialogs;
 
 /**
  *
@@ -109,7 +107,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         zoomButton.setEnabled(false);
         coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Verteilung der Zeiten anzeigen");
         coloredStudentTimesButton.setEnabled(false);
-        infoButton = new ScheduleButton("info.png", "Alle Funktionen auf einen Blick");
+        infoButton = new ScheduleButton("info.png", "Die wichtigsten Klicks auf einen Blick");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.75);
@@ -177,6 +175,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
         infoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                JDialog infoFrame = new JDialog(MainFrame.this);
+                JScrollPane pane = new JScrollPane(new JLabel(Icons.setIcon("screenshot.png")));
+                infoFrame.setMinimumSize(new Dimension(1400, 700));
+                infoFrame.add(pane);
+                infoFrame.setVisible(true);
             }
         });
         saveButton.addActionListener(new ActionListener() {
