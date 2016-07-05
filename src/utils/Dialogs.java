@@ -28,10 +28,10 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, "Keine Zeiteingabe gemacht!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showLectionFormatError() {
-        JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
-                + "Nur 30 oder 40 Minuten möglich!\n", "Schülerliste", JOptionPane.ERROR_MESSAGE);
-    }
+//    public static void showLectionFormatError() {
+//        JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
+//                + "Nur 30 oder 40 Minuten möglich!\n", "Schülerliste", JOptionPane.ERROR_MESSAGE);
+//    }
 
     public static void showTimeInputFormatError() {
         JOptionPane.showMessageDialog(null, "Ungültiges Zeitformat:\n"

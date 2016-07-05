@@ -21,9 +21,8 @@ import java.awt.event.FocusEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -43,11 +42,13 @@ public class StudentInputMask extends JPanel {
     private ScheduleTimes scheduleTimes;
     private StudentTimes studentTimes;
     private String firstName, name;
-    private String lectionType = "30";
+    private String lectionLength = "30";
+    private String[] lectionTypes = {"30", "40", "50", "KGU"};
     private JPanel top, bottom;
     private JScrollPane center;
     private JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;
-    private JTextField firstnameField, nameField, lectiontypeField;
+    private JTextField firstnameField, nameField; //lectiontypeField;
+    private JComboBox lectiontypeSelectionBox;
     private SelectionTable selectionTable;
     private JButton cancelButton, saveButton, deleteButton;
     private ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
@@ -59,6 +60,7 @@ public class StudentInputMask extends JPanel {
         createWidgets();
         addWidgets();
         addTextFieldListeners();
+        addLectiontypeSelectionListener();
     }
 
     private void createWidgets() {
@@ -73,13 +75,14 @@ public class StudentInputMask extends JPanel {
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         firstnameLabel = new JLabel("Vorname:");
         nameLabel = new JLabel("  Name:");
-        lectiontypeLabel = new JLabel("  Lektionsdauer:");
+        lectiontypeLabel = new JLabel("  Lektionstyp:");
         footnote = new JLabel("* Beginn der Lektion");
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
         firstnameField = new JTextField(" ");
         nameField = new JTextField(" ");
-        lectiontypeField = new JTextField(lectionType);
-        lectiontypeField.setMaximumSize(lectiontypeField.getPreferredSize());
+        //  lectiontypeField = new JTextField(lectionLength);
+        //  lectiontypeField.setMaximumSize(lectiontypeField.getPreferredSize());
+        lectiontypeSelectionBox = new JComboBox(lectionTypes);
         cancelButton = new JButton("abbrechen");
         saveButton = new JButton();
         deleteButton = new JButton();
@@ -93,7 +96,7 @@ public class StudentInputMask extends JPanel {
         top.add(nameField);
         top.add(Box.createHorizontalGlue());
         top.add(lectiontypeLabel);
-        top.add(lectiontypeField);
+        top.add(lectiontypeSelectionBox);
         bottom.add(footnote);
         bottom.add(Box.createHorizontalGlue());
         add(BorderLayout.PAGE_START, top);
@@ -142,33 +145,19 @@ public class StudentInputMask extends JPanel {
                 nameField.selectAll();
             }
         });
-        lectiontypeField.addCaretListener(new CaretListener() {
-            @Override
-            public void caretUpdate(CaretEvent ce) {
-                JTextField f = (JTextField) ce.getSource();
-                lectionType = f.getText().trim().isEmpty() ? lectiontypeField.getText() : f.getText();
-            }
-        });
-        lectiontypeField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                lectiontypeField.selectAll();
-            }
-        });
-        lectiontypeField.setInputVerifier(new InputVerifier() {
-            @Override
-            public boolean verify(JComponent input) {
-                JTextField field = (JTextField) input;
-                return field.getText().trim().matches("[34][0]");
-            }
+    }
 
+    private void addLectiontypeSelectionListener() {
+        lectiontypeSelectionBox.addActionListener(new ActionListener() {
             @Override
-            public boolean shouldYieldFocus(JComponent input) {
-                boolean valid = verify(input);
-                if (!valid) {
-                    Dialogs.showLectionFormatError();
+            public void actionPerformed(ActionEvent e) {
+                JComboBox selectionBox = (JComboBox) e.getSource();
+                String type = (String) selectionBox.getSelectedItem();
+                if ("KGU".equals(type)) {
+                    lectionLength = "45";
+                } else {
+                    lectionLength = type;
                 }
-                return valid;
             }
         });
     }
@@ -287,23 +276,43 @@ public class StudentInputMask extends JPanel {
     private void setStudentData() {
         student.setFirstName(firstName);
         student.setName(name);
-        student.setLectionLengthInMinutes(Integer.parseInt(lectionType));
+        student.setLectionLengthInMinutes(Integer.parseInt(lectionLength));
     }
 
-    public void clearTextFields() {
+    public void clearUpperEntryFields() {
         firstnameField.setText("");
         nameField.setText("");
-        lectiontypeField.setText("30");
+        lectiontypeSelectionBox.setSelectedIndex(0);
     }
 
-    public void updateTextFields() {
+    public void updateUpperEntryFields() {
         firstnameField.setText(student.getFirstName());
         nameField.setText(student.getName());
-        lectionType = String.valueOf(student.getLectionLengthInMinutes());
-        lectiontypeField.setText(lectionType);
+        lectionLength = String.valueOf(student.getLectionLengthInMinutes());
+        updateLectiontypeSelectionBox();
+    }
+
+    private void updateLectiontypeSelectionBox() {
+        switch (lectionLength) {
+            case "30":
+                lectiontypeSelectionBox.setSelectedIndex(0);
+                break;
+            case "40":
+                lectiontypeSelectionBox.setSelectedIndex(1);
+                break;
+            case "50":
+                lectiontypeSelectionBox.setSelectedIndex(2);
+                break;
+            case "45":
+                lectiontypeSelectionBox.setSelectedIndex(3);
+                break;
+            default:
+                lectiontypeSelectionBox.setSelectedIndex(0);
+                break;
+        }
     }
 
     private int getLectionLengthInFields() {
-        return Integer.parseInt(lectionType) / 5;
+        return Integer.parseInt(lectionLength) / 5;
     }
 }

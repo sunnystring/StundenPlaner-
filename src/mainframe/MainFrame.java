@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import scheduleData.ScheduleData;
 import core.Student;
+import dataEntryUI.GroupEntry;
 import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
@@ -59,7 +60,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private StudentInputMask studentInputMask;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, exitButton, scheduleButton,
-            studentButton, KGUButton, zoomButton, coloredStudentTimesButton, infoButton;
+            studentButton, groupButton, zoomButton, coloredStudentTimesButton, infoButton;
     private boolean buttonState;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
@@ -101,8 +102,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
         exitButton = new ScheduleButton("exit.png", "StundenPlaner beenden");
         scheduleButton = new ScheduleButton("schedule.png", "Stundenplan erstellen oder ändern");
         studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
-        KGUButton = new ScheduleButton("group.png", "Gruppenprofile erstellen");
-        KGUButton.setEnabled(false);
+        groupButton = new ScheduleButton("group.png", "Gruppenprofile erstellen");
+        //  KGUButton.setEnabled(false);
         zoomButton = new ScheduleButton("resize.png", "Stundenplan: Höhe anpassen");
         zoomButton.setEnabled(false);
         coloredStudentTimesButton = new ScheduleButton("color.png", "Schülerliste: Verteilung der Zeiten anzeigen");
@@ -135,7 +136,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(scheduleButton);
         toolBar.add(studentButton);
-        toolBar.add(KGUButton);
+        toolBar.add(groupButton);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(zoomButton);
         toolBar.add(coloredStudentTimesButton);
@@ -234,8 +235,15 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 Student student = new Student();
                 student.getStudentTimes().setScheduleTimes(scheduleTimes);
                 JDialog studentEntry = new StudentEntry(MainFrame.this, student);
-                studentInputMask.clearTextFields();
+                studentInputMask.clearUpperEntryFields();
                 studentEntry.setVisible(true);
+            }
+        });
+        groupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog groupEntry = new GroupEntry(MainFrame.this);
+                groupEntry.setVisible(true);
             }
         });
         zoomButton.addActionListener(new ActionListener() {
@@ -341,7 +349,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public void setStudentButtonsEnabled(boolean state) {
         studentButton.setEnabled(state);
-     //   KGUButton.setEnabled(state);
+        groupButton.setEnabled(state);
     }
 
     private class ScheduleButton extends JButton {

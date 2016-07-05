@@ -32,7 +32,7 @@ public class StudentEdit extends DataEntryAndEdit {
         studentInputMask.addDeleteButtonListener(this);
         studentInputMask.setStudent(student);
         studentInputMask.setUpSelectionTable();
-        studentInputMask.updateTextFields();
+        studentInputMask.updateUpperEntryFields();
         add(studentInputMask);
     }
 }
