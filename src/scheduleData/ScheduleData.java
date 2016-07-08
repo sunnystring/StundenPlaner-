@@ -40,7 +40,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private BreakWatcher breakWatcher;
     private ScheduleFieldData[][] fieldDataMatrix;
     private int numberOfValidDays;
-    private int dayColumnIndex;
+    private int dayIndex;
     private int dayColumnFieldIndex;
 
     public ScheduleData(Database database, StudentListData studentListData) {
@@ -51,7 +51,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
         numberOfValidDays = 0;
-        dayColumnIndex = -1;
+        dayIndex = -1;
         dayColumnFieldIndex = -1;
         setScheduleDisabled();
     }
@@ -270,9 +270,9 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     private void createLection(int lectionLength) {
         int lectionEnd = dayColumnFieldIndex + lectionLength;
-        DayColumnData dayColumn = getDayColumn(dayColumnIndex);
+        DayColumnData dayColumn = getDayColumn(dayIndex);
         ScheduleFieldData field;
-        LectionData lection = new LectionData();
+        LectionData lection = new LectionData(dayIndex);
         Time startTime = null;
         int allocatedTimeMark = NO_VALUE;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
@@ -304,7 +304,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     private void eraseLection(int lectionLength) {
-        DayColumnData dayColumn = getDayColumn(dayColumnIndex);
+        DayColumnData dayColumn = getDayColumn(dayIndex);
         ScheduleFieldData field;
         Time startTime = null;
         while (dayColumn.getFieldDataAt(dayColumnFieldIndex).getLectionPanelAreaMark() != HEAD) { // Start-Row bestimmen
@@ -329,7 +329,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         if (selectedCol % 4 == 3) {
             dayColumnFieldIndex = selectedRow + getRowCount();
         }
-        dayColumnIndex = selectedCol / 4;
+        dayIndex = selectedCol / 4;
     }
 
     private void setAllValidTimeMarks(Student student) {

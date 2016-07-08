@@ -18,8 +18,10 @@ public class LectionData {
 
     private ArrayList<ScheduleFieldData> lection;
     private int studentID;
+    private int dayIndex;
 
-    public LectionData() {
+    public LectionData(int dayIndex) {
+        this.dayIndex = dayIndex;
         lection = new ArrayList<>();
     }
 
@@ -75,5 +77,9 @@ public class LectionData {
 
     public int getStudentID() {
         return studentID;
+    }
+
+    public int getDayIndex() {
+        return dayIndex;
     }
 }
