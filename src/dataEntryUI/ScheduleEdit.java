@@ -22,9 +22,9 @@ public class ScheduleEdit extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
+        scheduleInputMask.removeButtonListeners();
         scheduleInputMask.addCancelButtonListener(this);
         scheduleInputMask.addEditSaveButtonListener(this);
         add(scheduleInputMask);
     }
-
 }

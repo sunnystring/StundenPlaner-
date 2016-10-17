@@ -7,6 +7,7 @@ package mainframe;
 
 import core.Database;
 import core.DatabaseListener;
+import core.Group;
 import core.ScheduleTimes;
 import studentListData.StudentListData;
 import dataEntryUI.StudentInputMask;
@@ -25,7 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import scheduleData.ScheduleData;
 import core.Student;
-import dataEntryUI.GroupEntry;
+import dataEntryUI.GroupInputMask;
+import dataEntryUI.GroupSelectionDialog;
 import dataEntryUI.ScheduleEdit;
 import dataEntryUI.ScheduleEntry;
 import dataEntryUI.ScheduleInputMask;
@@ -58,6 +60,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private StudentList studentList;
     private ScheduleInputMask scheduleInputMask;
     private StudentInputMask studentInputMask;
+    private GroupInputMask groupInputMask;
     private JPanel toolBar;
     private ScheduleButton openButton, saveButton, printButton, exitButton, scheduleButton,
             studentButton, groupButton, zoomButton, coloredStudentTimesButton, infoButton;
@@ -120,6 +123,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         rightScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         scheduleInputMask = new ScheduleInputMask(database, this);
         studentInputMask = new StudentInputMask(database);
+        groupInputMask = new GroupInputMask(database);
         fileChooser = new JFileChooser();
     }
 
@@ -177,7 +181,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog infoFrame = new JDialog(MainFrame.this);
-                JScrollPane pane = new JScrollPane(new JLabel(Icons.setIcon("screenshot.png")));
+                JScrollPane pane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
                 infoFrame.setMinimumSize(new Dimension(1400, 700));
                 infoFrame.add(pane);
                 infoFrame.setVisible(true);
@@ -242,8 +246,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
         groupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog groupEntry = new GroupEntry(MainFrame.this);
-                groupEntry.setVisible(true);
+                Group group = new Group();
+                group.getStudentTimes().setScheduleTimes(scheduleTimes);
+                JDialog groupSelection = new GroupSelectionDialog(MainFrame.this, group);
+                groupInputMask.clearUpperEntryFields();
+                groupSelection.setVisible(true);
             }
         });
         zoomButton.addActionListener(new ActionListener() {
@@ -272,6 +279,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private void updateWidgetsAfterFileEntry() {
         scheduleInputMask = new ScheduleInputMask(database, this);
         studentInputMask = new StudentInputMask(database);
+        groupInputMask = new GroupInputMask(database);
         studentListData.setColoredStudentDays(new ColoredStudentDays(database, studentListData));
         coloredStudentTimesButton.setEnabled(true);
         printButton.setEnabled(true);
@@ -355,13 +363,13 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private class ScheduleButton extends JButton {
 
         public ScheduleButton(String iconName, String toolTip) {
-            setIcon(Icons.setIcon(iconName));
+            setIcon(Icons.getIcon(iconName));
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(40, 32));
         }
 
         public ScheduleButton(String iconName, String toolTip, int width) {
-            setIcon(Icons.setIcon(iconName));
+            setIcon(Icons.getIcon(iconName));
             setToolTipText(toolTip);
             setPreferredSize(new Dimension(width, 0));
         }
@@ -373,6 +381,10 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public StudentInputMask getStudentInputMask() {
         return studentInputMask;
+    }
+
+    public GroupInputMask getGroupInputMask() {
+        return groupInputMask;
     }
 
     public ScheduleData getScheduleData() {

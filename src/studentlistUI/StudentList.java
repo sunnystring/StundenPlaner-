@@ -5,14 +5,11 @@
  */
 package studentlistUI;
 
-import core.StudentDay;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import studentListData.StudentListData;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import scheduleUI.TimeTable;

@@ -6,7 +6,6 @@
 package dataEntryUI;
 
 import core.Student;
-import javax.swing.JDialog;
 import mainframe.MainFrame;
 
 /**
@@ -31,7 +30,7 @@ public class StudentEdit extends DataEntryAndEdit {
         studentInputMask.addEditSaveButtonListener(this);
         studentInputMask.addDeleteButtonListener(this);
         studentInputMask.setStudent(student);
-        studentInputMask.setUpSelectionTable();
+        studentInputMask.setUpTimeSelectionTable();
         studentInputMask.updateUpperEntryFields();
         add(studentInputMask);
     }

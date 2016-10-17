@@ -38,7 +38,7 @@ public class ScheduleInputMask extends JPanel {
     private ScheduleTimes scheduleTimes;
     private JScrollPane center;
     private JPanel bottom;
-    private SelectionTable selectionTable;
+    private TimeSelectionTable selectionTable;
     private JButton cancelButton, saveButton;
     private ActionListener cancelButtonListener, saveButtonListener, editButtonListener;
 
@@ -53,7 +53,7 @@ public class ScheduleInputMask extends JPanel {
     }
 
     private void createWidgets() {
-        selectionTable = new SelectionTable(scheduleTimes);
+        selectionTable = new TimeSelectionTable(scheduleTimes);
         selectionTable.setParameters();
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -77,7 +77,7 @@ public class ScheduleInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 scheduleTimes.returnToExistingSelection();
-                cancelButton.removeActionListener(cancelButtonListener);
+                //  cancelButton.removeActionListener(cancelButtonListener);
                 if (dataEntryAndEdit instanceof ScheduleEntry) {
                     saveButton.removeActionListener(saveButtonListener);
                 } else if (dataEntryAndEdit instanceof ScheduleEdit) {
@@ -104,8 +104,8 @@ public class ScheduleInputMask extends JPanel {
                 }
                 scheduleTimes.setValidScheduleDays();
                 mainFrame.showStundenPlanerAfterScheduleEntry();
-                cancelButton.removeActionListener(cancelButtonListener);
-                saveButton.removeActionListener(saveButtonListener);
+                // cancelButton.removeActionListener(cancelButtonListener);
+                //  saveButton.removeActionListener(saveButtonListener);
                 scheduleEntry.dispose();
             }
         };
@@ -146,11 +146,17 @@ public class ScheduleInputMask extends JPanel {
                     }
                 }
                 mainFrame.showStundenPlanerAfterScheduleEdit();
-                cancelButton.removeActionListener(cancelButtonListener);
-                saveButton.removeActionListener(editButtonListener);
+               // cancelButton.removeActionListener(cancelButtonListener);
+                //   saveButton.removeActionListener(editButtonListener);
                 scheduleEdit.dispose();
             }
         };
         saveButton.addActionListener(editButtonListener);
+    }
+
+    public void removeButtonListeners() {
+        cancelButton.removeActionListener(cancelButtonListener);
+        saveButton.removeActionListener(saveButtonListener);
+        saveButton.removeActionListener(editButtonListener);
     }
 }

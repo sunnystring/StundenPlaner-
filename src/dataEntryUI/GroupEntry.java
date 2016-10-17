@@ -5,22 +5,34 @@
  */
 package dataEntryUI;
 
-import java.awt.Dimension;
-import javax.swing.JDialog;
+import core.Group;
 import mainframe.MainFrame;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class GroupEntry extends JDialog {
+public abstract class GroupEntry extends DataEntryAndEdit {
 
-    public GroupEntry(MainFrame mainFrame) {
-        setTitle("Gruppenprofile erstellen");
-        setModal(true);
-        setLocationRelativeTo(mainFrame);
-        setSize(new Dimension(300, 100));
-        setResizable(false);
+    private Group group;
+
+    public GroupEntry(MainFrame mainFrame, String title, Group group) {
+        super(mainFrame, title);
+        this.group = group;
+        setUpMask();
+        pack();
     }
 
+    @Override
+    public void setUpMask() {
+        groupInputMask.removeButtonsAndListeners();
+        groupInputMask.addEntryButtons();
+        groupInputMask.addCancelButtonListener(this);
+        groupInputMask.addSaveButtonListener(this);
+        groupInputMask.setGroup(group);
+        groupInputMask.setUpTimeSelectionTable();
+        add(groupInputMask);
+    }
+
+    public abstract void fitInputMaskToGroupProfile();
 }

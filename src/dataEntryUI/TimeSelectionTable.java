@@ -18,11 +18,11 @@ import utils.Colors;
  * Sub-UI für die Zeiteinträge, das von {@link ScheduleInputMask} und
  * {@link StudentInputMask} benutzt wird
  */
-public class SelectionTable extends JTable {
+public class TimeSelectionTable extends JTable {
 
     private ScheduleTimes scheduleTimes;
 
-    public SelectionTable(ScheduleTimes scheduleTimes) {
+    public TimeSelectionTable(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
         setModel(scheduleTimes);
         setRowHeight(25);
