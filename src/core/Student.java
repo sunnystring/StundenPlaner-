@@ -9,7 +9,7 @@ package core;
  *
  * Schülerprofil
  */
-public class Student {
+public class Student implements ProfileData{
 
     private String firstName;
     private String name;

@@ -21,15 +21,17 @@ public abstract class DataEntryAndEdit extends JDialog {
     protected MainFrame mainFrame;
     protected ScheduleInputMask scheduleInputMask;
     protected StudentInputMask studentInputMask;
+    protected GroupInputMask groupInputMask;
 
     public DataEntryAndEdit(MainFrame mainFrame, String title) {
         super(mainFrame);
         this.mainFrame = mainFrame;
         scheduleInputMask = mainFrame.getScheduleInputMask();
         studentInputMask = mainFrame.getStudentInputMask();
+        groupInputMask = mainFrame.getGroupInputMask();
         setTitle(title);
         setModal(true);
-        setLocationRelativeTo(mainFrame);
+        setLocation((int) (mainFrame.getSize().getWidth() / 2), 150);
         setResizable(false);
     }
 

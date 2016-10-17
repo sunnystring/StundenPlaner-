@@ -30,7 +30,7 @@ public class Icons {
         return bufImg;
     }
 
-    public static ImageIcon setIcon(String name) {
+    public static ImageIcon getIcon(String name) {
         Image img = getImage(name);
         //  img = img.getScaledInstance(25, 25, Image.SCALE_DEFAULT);
 //        if (name.equals("disk.png")) {

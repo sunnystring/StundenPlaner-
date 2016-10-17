@@ -17,7 +17,7 @@ public class StudentEntry extends DataEntryAndEdit {
     private Student student;
 
     public StudentEntry(MainFrame mainFrame, Student student) {
-        super(mainFrame, "Neues Schülerprofil erstellen");
+        super(mainFrame, "Schülerprofil erstellen");
         this.student = student;
         setUpMask();
         pack();
@@ -29,7 +29,7 @@ public class StudentEntry extends DataEntryAndEdit {
         studentInputMask.addCancelButtonListener(this);
         studentInputMask.addSaveButtonListener(this);
         studentInputMask.setStudent(student);
-        studentInputMask.setUpSelectionTable();
+        studentInputMask.setUpTimeSelectionTable();
         add(studentInputMask);
     }
 }

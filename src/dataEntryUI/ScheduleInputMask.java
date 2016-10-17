@@ -38,7 +38,7 @@ public class ScheduleInputMask extends JPanel {
     private ScheduleTimes scheduleTimes;
     private JScrollPane center;
     private JPanel bottom;
-    private SelectionTable selectionTable;
+    private TimeSelectionTable selectionTable;
     private JButton cancelButton, saveButton;
     private ActionListener cancelButtonListener, saveButtonListener, editButtonListener;
 
@@ -53,7 +53,7 @@ public class ScheduleInputMask extends JPanel {
     }
 
     private void createWidgets() {
-        selectionTable = new SelectionTable(scheduleTimes);
+        selectionTable = new TimeSelectionTable(scheduleTimes);
         selectionTable.setParameters();
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

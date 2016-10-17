@@ -41,17 +41,18 @@ public class StudentInputMask extends JPanel {
     private Student student;
     private ScheduleTimes scheduleTimes;
     private StudentTimes studentTimes;
-    private String firstName, name;
-    private String lectionLength = "30";
+    protected String firstName, name;
+    protected String lectionLength = "30";
     private String[] lectionTypes = {"30", "40", "50", "KGU"};
-    private JPanel top, bottom;
+    protected JPanel top;
+    private JPanel bottom;
     private JScrollPane center;
-    private JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;
-    private JTextField firstnameField, nameField; //lectiontypeField;
-    private JComboBox lectiontypeSelectionBox;
-    private SelectionTable selectionTable;
-    private JButton cancelButton, saveButton, deleteButton;
-    private ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
+    protected JLabel firstnameLabel, nameLabel, lectiontypeLabel, footnote;
+    private JTextField firstnameField, nameField;
+    protected JComboBox lectiontypeSelectionBox;
+    private TimeSelectionTable timeSelectionTable;
+    protected JButton cancelButton, saveButton, deleteButton;
+    protected ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
 
     public StudentInputMask(Database database) {
         this.database = database;
@@ -64,11 +65,11 @@ public class StudentInputMask extends JPanel {
     }
 
     private void createWidgets() {
-        selectionTable = new SelectionTable(scheduleTimes);
+        timeSelectionTable = new TimeSelectionTable(scheduleTimes);
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
         top.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+        center = new JScrollPane(timeSelectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
@@ -80,8 +81,6 @@ public class StudentInputMask extends JPanel {
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
         firstnameField = new JTextField(" ");
         nameField = new JTextField(" ");
-        //  lectiontypeField = new JTextField(lectionLength);
-        //  lectiontypeField.setMaximumSize(lectiontypeField.getPreferredSize());
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         cancelButton = new JButton("abbrechen");
         saveButton = new JButton();
@@ -162,30 +161,29 @@ public class StudentInputMask extends JPanel {
         });
     }
 
-    public void addCancelButtonListener(StudentEntry studentEntry) {
+    public void addCancelButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 removeButtonsAndListeners();
-                studentEntry.dispose();
+                dataEntryAndEdit.dispose();
             }
         };
         cancelButton.addActionListener(cancelButtonListener);
     }
 
-    public void addCancelButtonListener(StudentEdit studentEdit) {
-        cancelButtonListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeButtonsAndListeners();
-                studentEdit.dispose();
-            }
-        };
-        cancelButton.addActionListener(cancelButtonListener);
-    }
-
-    public void addSaveButtonListener(StudentEntry studentEntry) {
-        ScheduleTimeFrame scheduleTimeFrame = studentEntry.getScheduleTimeFrame();
+//    public void addCancelButtonListener(StudentEdit studentEdit) {
+//        cancelButtonListener = new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                removeButtonsAndListeners();
+//                studentEdit.dispose();
+//            }
+//        };
+//        cancelButton.addActionListener(cancelButtonListener);
+//    }
+    public void addSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+        ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -196,21 +194,21 @@ public class StudentInputMask extends JPanel {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEntry.getMainFrame());
+                    showAndCorrectInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
                     return;
                 }
                 studentTimes.setValidStudentDays();
                 setStudentData();
                 database.addStudent(student);
                 removeButtonsAndListeners();
-                studentEntry.dispose();
+                dataEntryAndEdit.dispose();
             }
         };
         saveButton.addActionListener(saveButtonListener);
     }
 
-    public void addEditSaveButtonListener(StudentEdit studentEdit) {
-        ScheduleTimeFrame scheduleTimeFrame = studentEdit.getScheduleTimeFrame();
+    public void addEditSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+        ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,14 +219,14 @@ public class StudentInputMask extends JPanel {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex.getMessage(), studentEdit.getMainFrame());
+                    showAndCorrectInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
                     return;
                 }
                 studentTimes.updateValidStudentDays();
                 setStudentData();
                 database.editStudent(student);
                 removeButtonsAndListeners();
-                studentEdit.dispose();
+                dataEntryAndEdit.dispose();
             }
         };
         saveButton.addActionListener(saveButtonListener);
@@ -255,7 +253,7 @@ public class StudentInputMask extends JPanel {
         deleteButton.addActionListener(deleteButtonListener);
     }
 
-    private void removeButtonsAndListeners() {
+    protected void removeButtonsAndListeners() {
         cancelButton.removeActionListener(cancelButtonListener);
         saveButton.removeActionListener(saveButtonListener);
         deleteButton.removeActionListener(deleteButtonListener);
@@ -264,13 +262,9 @@ public class StudentInputMask extends JPanel {
         bottom.remove(deleteButton);
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public void setUpSelectionTable() {
+    public void setUpTimeSelectionTable() {
         studentTimes = student.getStudentTimes();
-        selectionTable.setParameters(studentTimes);
+        timeSelectionTable.setParameters(studentTimes);
     }
 
     private void setStudentData() {
@@ -310,6 +304,10 @@ public class StudentInputMask extends JPanel {
                 lectiontypeSelectionBox.setSelectedIndex(0);
                 break;
         }
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     private int getLectionLengthInFields() {
