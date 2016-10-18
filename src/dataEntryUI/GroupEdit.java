@@ -5,10 +5,22 @@
  */
 package dataEntryUI;
 
+import core.Group;
+import mainframe.MainFrame;
+
 /**
  *
  * @author mathiaskielholz
  */
-public class GroupEdit {
-    
+public abstract class GroupEdit extends DataEntryAndEdit {
+
+    public GroupEdit(MainFrame mainFrame, String groupType, Group group) {
+        super(mainFrame, groupType + " erstellen");
+    }
+
+    @Override
+    public void setUpMask() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

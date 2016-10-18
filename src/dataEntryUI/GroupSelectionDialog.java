@@ -6,11 +6,6 @@
 package dataEntryUI;
 
 import core.Group;
-import dataEntryUI.groupProfiles.WorkshopEntry;
-import dataEntryUI.groupProfiles.InstrumentalformationEntry;
-import dataEntryUI.groupProfiles.ChorEntry;
-import dataEntryUI.groupProfiles.GrundschulungEntry;
-import dataEntryUI.groupProfiles.OtherEntry;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -113,32 +108,37 @@ public class GroupSelectionDialog extends JDialog {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    selectedEntry = new WorkshopEntry(mainFrame, "Workshop/Semesterkurs-Profil erstellen", group);
+                    selectedEntry = new GroupEntry(mainFrame, "Workshop/Semesterkurs-Profil", group);
+                    selectedEntry.setWorkshopProfile();
                 }
             }
         });
         instrumentalformationSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                selectedEntry = new InstrumentalformationEntry(mainFrame, "Instrumentalformation-Profil erstellen", group);
+                selectedEntry = new GroupEntry(mainFrame, "Instrumentalformation-Profil", group);
+                selectedEntry.setInstrumentalformationProfile();
             }
         });
         chorSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                selectedEntry = new ChorEntry(mainFrame, "Singschule/Chor-Profil erstellen", group);
+                selectedEntry = new GroupEntry(mainFrame, "Singschule/Chor-Profil", group);
+                selectedEntry.setChorProfile();
             }
         });
         grundschulungSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                selectedEntry = new GrundschulungEntry(mainFrame, "Musikalische Grundschulung-Profil erstellen", group);
+                selectedEntry = new GroupEntry(mainFrame, "Musikalische Grundschulung-Profil", group);
+                selectedEntry.setGrundschulungProfile();
             }
         });
         otherSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                selectedEntry = new OtherEntry(mainFrame, "Anderes Gruppenprofil erstellen", group);
+                selectedEntry = new GroupEntry(mainFrame, "Anderes Gruppenprofil", group);
+                selectedEntry.setOtherProfile();
             }
         });
     }

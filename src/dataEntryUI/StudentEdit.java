@@ -25,13 +25,15 @@ public class StudentEdit extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        studentInputMask.addEditButtons();
-        studentInputMask.addCancelButtonListener(this);
-        studentInputMask.addEditSaveButtonListener(this);
-        studentInputMask.addDeleteButtonListener(this);
+//        studentInputMask.removeButtonsAndListeners();
+//        studentInputMask.addEditButtons();
+//        studentInputMask.addCancelButtonListener(this);
+//        studentInputMask.addEditSaveButtonListener(this);
+//        studentInputMask.addDeleteButtonListener(this);
         studentInputMask.setStudent(student);
-        studentInputMask.setUpTimeSelectionTable();
-        studentInputMask.updateUpperEntryFields();
+    //    studentInputMask.setUpTimeSelectionTable();
+    //    studentInputMask.updateUpperEntryFields();
+        studentInputMask.setupEditUI(this);
         add(studentInputMask);
     }
 }

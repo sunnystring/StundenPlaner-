@@ -25,12 +25,8 @@ public class StudentEntry extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        studentInputMask.removeButtonsAndListeners();
-        studentInputMask.addEntryButtons();
-        studentInputMask.addCancelButtonListener(this);
-        studentInputMask.addSaveButtonListener(this);
         studentInputMask.setStudent(student);
-        studentInputMask.setUpTimeSelectionTable();
+        studentInputMask.setupEntryUI(this);
         add(studentInputMask);
     }
 }

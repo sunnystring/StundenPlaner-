@@ -9,6 +9,6 @@ package core;
  *
  * @author mathiaskielholz
  */
-public abstract class Profile {
+public interface ProfileData {
     
 }

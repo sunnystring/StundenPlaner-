@@ -217,6 +217,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) { // Schülerprofil ändern/löschen
                         JDialog studentEditDialog = new StudentEdit(mainFrame, fieldData.getStudent());
+                        //...groupEdits
                         studentEditDialog.setVisible(true);
                     }
                 }

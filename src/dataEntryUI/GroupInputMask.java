@@ -21,27 +21,27 @@ public class GroupInputMask extends StudentInputMask {
         
     }
 
-    public void fitToWorkshopProfile() {
+    public void workshopProfile() {
         lectionLength = "50";
         removeLectionTypeEntry();
     }
 
-    public void fitToInstrumentalformationProfile() {
+    public void instrumentalformationProfile() {
         lectionTypes = new String[]{"45", "60", "90", "105", "120", "180"};
         addLectionTypeEntry();
     }
 
-    public void fitToChorProfile() {
+    public void chorProfile() {
         lectionTypes = new String[]{"30", "45", "60", "90", "120"};
         addLectionTypeEntry();
     }
 
-    public void fitToGrundschulungProfile() {
+    public void grundschulungProfile() {
         lectionLength = "45";
         removeLectionTypeEntry();
     }
 
-    public void fitToOtherProfile() {
+    public void otherProfile() {
         lectionTypes = new String[]{"45", "60", "75", "90"};
         addLectionTypeEntry();
     }

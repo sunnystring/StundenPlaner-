@@ -12,27 +12,43 @@ import mainframe.MainFrame;
  *
  * @author mathiaskielholz
  */
-public abstract class GroupEntry extends DataEntryAndEdit {
+public class GroupEntry extends DataEntryAndEdit {
 
     private Group group;
 
-    public GroupEntry(MainFrame mainFrame, String title, Group group) {
-        super(mainFrame, title);
+    public GroupEntry(MainFrame mainFrame, String groupType, Group group) {
+        super(mainFrame, groupType + " erstellen");
         this.group = group;
         setUpMask();
         pack();
     }
 
+    public void setWorkshopProfile() {
+        groupInputMask.workshopProfile();
+    }
+
+    public void setInstrumentalformationProfile() {
+        groupInputMask.instrumentalformationProfile();
+    }
+
+    public void setChorProfile() {
+        groupInputMask.chorProfile();
+    }
+
+    public void setGrundschulungProfile() {
+        groupInputMask.grundschulungProfile();
+    }
+
+    public void setOtherProfile() {
+        groupInputMask.otherProfile();
+    }
+
     @Override
     public void setUpMask() {
-        groupInputMask.removeButtonsAndListeners();
-        groupInputMask.addEntryButtons();
-        groupInputMask.addCancelButtonListener(this);
-        groupInputMask.addSaveButtonListener(this);
         groupInputMask.setGroup(group);
-        groupInputMask.setUpTimeSelectionTable();
+        groupInputMask.setupEntryUI(this);
         add(groupInputMask);
     }
 
-    public abstract void fitInputMaskToGroupProfile();
+ //   public abstract void fitInputMaskToGroupProfile();
 }

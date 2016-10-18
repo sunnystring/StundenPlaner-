@@ -108,6 +108,24 @@ public class StudentInputMask extends JPanel {
         add(BorderLayout.PAGE_END, bottom);
     }
 
+    public void setupEntryUI(DataEntryAndEdit dataEntryAndEdit) {
+        removeButtonsAndListeners();
+        addEntryButtons();
+        addCancelButtonListener(dataEntryAndEdit);
+        addSaveButtonListener(dataEntryAndEdit);
+        setUpTimeSelectionTable();
+    }
+
+    public void setupEditUI(DataEntryAndEdit dataEntryAndEdit) {
+        removeButtonsAndListeners();
+        addEditButtons();
+        addCancelButtonListener(dataEntryAndEdit);
+        addEditSaveButtonListener(dataEntryAndEdit);
+        addDeleteButtonListener(dataEntryAndEdit);
+        setUpTimeSelectionTable();
+        updateUpperEntryFields();
+    }
+
     public void addEntryButtons() {
         bottom.add(cancelButton);
         saveButton.setText("Profil speichern");
@@ -175,7 +193,7 @@ public class StudentInputMask extends JPanel {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-             //   removeButtonsAndListeners();
+                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
@@ -200,7 +218,7 @@ public class StudentInputMask extends JPanel {
                 studentTimes.setValidStudentDays();
                 setStudentData();
                 database.addStudent(student);
-             //   removeButtonsAndListeners();
+                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
@@ -225,7 +243,7 @@ public class StudentInputMask extends JPanel {
                 studentTimes.updateValidStudentDays();
                 setStudentData();
                 database.editStudent(student);
-             //   removeButtonsAndListeners();
+                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
@@ -241,13 +259,13 @@ public class StudentInputMask extends JPanel {
         }
     }
 
-    public void addDeleteButtonListener(StudentEdit studentEdit) {
+    public void addDeleteButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         deleteButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 database.deleteStudent(student);
-              //  removeButtonsAndListeners();
-                studentEdit.dispose();
+                //  removeButtonsAndListeners();
+                dataEntryAndEdit.dispose();
             }
         };
         deleteButton.addActionListener(deleteButtonListener);
