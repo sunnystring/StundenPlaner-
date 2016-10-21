@@ -5,6 +5,9 @@
  */
 package dataEntryUI;
 
+import dataEntryUI.student.StudentInputMask;
+import dataEntryUI.schedule.ScheduleInputMask;
+import dataEntryUI.group.GroupInputMask;
 import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;

@@ -9,6 +9,6 @@ package core;
  *
  * @author mathiaskielholz
  */
-public class Group extends Student {
+public class Group extends Profile {
 
 }

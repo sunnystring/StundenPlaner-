@@ -6,7 +6,7 @@
 package userUtils;
 
 import core.Database;
-import core.Student;
+import core.Profile;
 import core.StudentDay;
 import java.util.ArrayList;
 import java.util.Map;
@@ -47,11 +47,11 @@ public class LectionGapFiller {
             for (int i = 0; i < database.getNumberOfStudents(); i++) {
                 StudentDay studentDay = dayList.get(i);
                 int studentID = database.getStudentID(dayIndex, studentDay);
-                Student student = database.getStudent(studentID);
+                Profile profile = database.getProfile(studentID);
                 LectionData lection = database.getLectionByID(studentID);
-                if (gap.matchesTimeOf(studentDay, student, isGapAdjacentTo(lection, dayIndex))) {
-                    if (student.isAllocated()) {
-                        if (lection != null && lection.getStudentID() == studentID) {
+                if (gap.matchesTimeOf(studentDay, profile, isGapAdjacentTo(lection, dayIndex))) {
+                    if (profile.isAllocated()) {
+                        if (lection != null && lection.getProfileID() == studentID) {
                             lection.setGapFillerMarkEnabled(true);
                         }
                     } else {

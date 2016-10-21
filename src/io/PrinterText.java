@@ -6,6 +6,7 @@
 package io;
 
 import core.Database;
+import core.Profile;
 import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 import static core.ScheduleTimes.DAYS;
@@ -61,8 +62,8 @@ public class PrinterText extends JTextPane {
                         String lectionTime = lectionStart + "-" + lectionEnd;
                         doc.insertString(doc.getLength(), lectionTime,
                                 doc.getStyle("bold"));
-                        Student student = database.getStudent(entry.getValue().getStudentID());
-                        String nameLine = " " + student.getFirstName() + " " + student.getName();
+                        Profile profile = database.getProfile(entry.getValue().getProfileID());
+                        String nameLine = " " + profile.getFirstName() + " " + profile.getName();
                         doc.insertString(doc.getLength(), nameLine + "\n",
                                 doc.getStyle("regular"));
                     }

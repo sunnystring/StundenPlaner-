@@ -14,9 +14,9 @@ import studentListData.StudentListData;
  */
 public interface DatabaseListener {
 
-    public void studentAdded(int numberOfStudents, Student student);
+    public void profileAdded(int numberOfStudents, Profile profile);
 
-    public void studentEdited(Student student);
+    public void profileEdited(Profile profile);
 
-    public void studentDeleted(int numberOfStudents, Student student);
+    public void profileDeleted(int numberOfStudents, Profile profile);
 }

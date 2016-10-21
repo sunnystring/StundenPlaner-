@@ -17,7 +17,7 @@ import utils.Time;
 public class LectionData {
 
     private ArrayList<ScheduleFieldData> lection;
-    private int studentID;
+    private int profileID;
     private int dayIndex;
 
     public LectionData(int dayIndex) {
@@ -27,7 +27,7 @@ public class LectionData {
 
     public void add(ScheduleFieldData field) {
         lection.add(field);
-        studentID = field.getStudentID();
+        profileID = field.getProfileID();
     }
 
     public ArrayList<ScheduleFieldData> getFieldList() {
@@ -43,12 +43,12 @@ public class LectionData {
     }
 
     public void updateStudentID(int deletedStudentID) {
-        if (studentID > deletedStudentID) {
-            studentID--;
+        if (profileID > deletedStudentID) {
+            profileID--;
         }
         for (ScheduleFieldData f : lection) {
-            if (f.getStudentID() > deletedStudentID) {
-                f.decrementStudentID();
+            if (f.getProfileID() > deletedStudentID) {
+                f.decrementProfileID();
             }
         }
     }
@@ -75,8 +75,8 @@ public class LectionData {
         return lection.size();
     }
 
-    public int getStudentID() {
-        return studentID;
+    public int getProfileID() {
+        return profileID;
     }
 
     public int getDayIndex() {

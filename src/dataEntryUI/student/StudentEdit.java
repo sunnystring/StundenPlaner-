@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.student;
 
 import core.Student;
+import dataEntryUI.DataEntryAndEdit;
+import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
 /**
@@ -32,7 +34,7 @@ public class StudentEdit extends DataEntryAndEdit {
 //        studentInputMask.addDeleteButtonListener(this);
         studentInputMask.setStudent(student);
     //    studentInputMask.setUpTimeSelectionTable();
-    //    studentInputMask.updateUpperEntryFields();
+        //    studentInputMask.updateUpperEntryFields();
         studentInputMask.setupEditUI(this);
         add(studentInputMask);
     }

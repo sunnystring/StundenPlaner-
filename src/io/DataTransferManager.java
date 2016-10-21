@@ -11,6 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import core.Database;
+import core.Profile;
 import core.ScheduleTimes;
 import core.Student;
 import java.io.File;
@@ -41,7 +42,7 @@ public class DataTransferManager {
     private Gson gson;
     private ArrayList dataList;
     private ScheduleTimes scheduleTimes;
-    private ArrayList<Student> studentDataList;
+    private ArrayList<Profile> studentDataList;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
 
     public DataTransferManager(Database database) {
@@ -110,7 +111,7 @@ public class DataTransferManager {
         return scheduleTimes;
     }
 
-    public ArrayList<Student> getStudentDataList() {
+    public ArrayList<Profile> getStudentDataList() {
         return studentDataList;
     }
 

@@ -146,11 +146,11 @@ public class DayColumnData {
 
     public void addLection(Time time, LectionData lection) {
         lectionMap.put(time, lection);
-        database.getLectionIDMap().put(lection.getStudentID(), lection);
+        database.getLectionIDMap().put(lection.getProfileID(), lection);
     }
 
     public void removeLection(Time time) {
-        database.getLectionIDMap().remove(lectionMap.get(time).getStudentID());
+        database.getLectionIDMap().remove(lectionMap.get(time).getProfileID());
         lectionMap.remove(time);
     }
 

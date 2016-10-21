@@ -7,8 +7,11 @@ package studentListData;
 
 import core.Database;
 import core.DatabaseListener;
+import core.Group;
+import core.Profile;
 import core.Student;
-import dataEntryUI.StudentEdit;
+import dataEntryUI.group.GroupEdit;
+import dataEntryUI.student.StudentEdit;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -76,70 +79,70 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     public void createStudentRows() {
         for (int i = 0; i < numberOfStudents; i++) {
-            createStudentRow(database.getStudent(i));
+            createStudentRow(database.getProfile(i));
         }
     }
 
     @Override
-    public void studentAdded(int numberOfStudents, Student student) {
+    public void profileAdded(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
-        createStudentRow(student);
-        int row = student.getID();
+        createStudentRow(profile);
+        int row = profile.getID();
         fireTableRowsInserted(row, row);
         studentList.showNumberOfStudents();
         coloredStudentDays.updateIncompatibleStudentDays();
     }
 
     @Override
-    public void studentEdited(Student student) {
-        updateStudentRow(student);
-        int row = student.getID();
+    public void profileEdited(Profile profile) {
+        updateStudentRow(profile);
+        int row = profile.getID();
         fireTableRowsUpdated(row, row);
         coloredStudentDays.updateIncompatibleStudentDays();
 
     }
 
     @Override
-    public void studentDeleted(int numberOfStudents, Student student) {
+    public void profileDeleted(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
-        int deletedStudentID = student.getID();
-        removeStudentRow(deletedStudentID);
-        fireTableRowsDeleted(deletedStudentID, deletedStudentID);
+        int deletedProfileID = profile.getID();
+        removeStudentRow(deletedProfileID);
+        fireTableRowsDeleted(deletedProfileID, deletedProfileID);
         updateStudentIDs();
         studentList.showNumberOfStudents();
         coloredStudentDays.updateIncompatibleStudentDays();
 
     }
 
-    private void createStudentRow(Student student) {
+    private void createStudentRow(Profile profile) {
         studentRow = new StudentFieldData[getColumnCount()];
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
-            studentRow[col].setStudentID(student.getID());
-            studentRow[col].setStudentAllocated(student.isAllocated());
+            studentRow[col].setProfileID(profile.getID());
+            studentRow[col].setStudentAllocated(profile.isAllocated());
             if (col > 0) {
-                studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
+                studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));
                 studentRow[col].setDayIndex(col - 1);
             }
-            setNameAndTimes(col, student);
+            setNameAndTimes(col, profile);
         }
         fieldDataMatrix.add(studentRow);
     }
 
-    private void updateStudentRow(Student student) {
-        studentRow = fieldDataMatrix.get(student.getID());
+    private void updateStudentRow(Profile profile) {
+        studentRow = fieldDataMatrix.get(profile.getID());
         for (int col = 0; col < getColumnCount(); col++) {
             if (col > 0) {
-                studentRow[col].setSingleDay(student.getDaySelectionStateAt(col - 1));
+                studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));
             }
-            setNameAndTimes(col, student);
+            setNameAndTimes(col, profile);
         }
     }
 
     private void updateStudentIDs() {
         for (int i = 0; i < numberOfStudents; i++) {
             for (int j = 0; j < getColumnCount(); j++) {
-                fieldDataMatrix.get(i)[j].setStudentID(i);
+                fieldDataMatrix.get(i)[j].setProfileID(i);
             }
         }
     }
@@ -150,15 +153,15 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     private void updateStudentAllocationState() {
         for (int i = 0; i < numberOfStudents; i++) {
-            database.getStudent(i).setAllocated((getValueAt(i, 0)).isStudentAllocated());
+            database.getProfile(i).setAllocated((getValueAt(i, 0)).isStudentAllocated());
         }
     }
 
-    private void setNameAndTimes(int col, Student student) {
+    private void setNameAndTimes(int col, Profile profile) {
         if (col == 0) {
-            studentRow[col].setNameString(student.getFirstName() + " " + student.getName());
+            studentRow[col].setNameString(profile.getFirstName() + " " + profile.getName());
         } else {
-            studentRow[col].setValidTimeString("<html>" + student.getStudentDay(col - 1) + "<font color=blue>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>");
+            studentRow[col].setValidTimeString("<html>" + profile.getStudentDay(col - 1) + "<font color=blue>" + profile.getStudentDay(col - 1).favorite().toString() + "</font></html>");
         }
     }
 
@@ -215,10 +218,16 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         mainFrame.setDataEntryButtonsEnabled(isStudentListReleased());
                         mainFrame.setFileButtonsEnabled(isStudentListReleased());
                         fireTableDataChanged();
-                    } else if (m.getClickCount() == 2 && isStudentListReleased()) { // Schülerprofil ändern/löschen
-                        JDialog studentEditDialog = new StudentEdit(mainFrame, fieldData.getStudent());
-                        //...groupEdits
-                        studentEditDialog.setVisible(true);
+                    } else if (m.getClickCount() == 2 && isStudentListReleased()) {
+                        Profile profile = fieldData.getProfile();
+                        if (profile instanceof Group) { // Gruppenprofil ändern/löschen
+                            //...groupEdit
+                            JDialog groupEditDialog = new GroupEdit(mainFrame, "", (Group) profile);
+                            groupEditDialog.setVisible(true);
+                        } else { // Schülerprofil ändern/löschen
+                            JDialog studentEditDialog = new StudentEdit(mainFrame, (Student) profile);
+                            studentEditDialog.setVisible(true);
+                        }
                     }
                 }
             }
@@ -229,8 +238,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
                 ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
-                int allocatedRow = fieldData.getStudentID();
-                Student student = fieldData.getStudent();
+                int allocatedRow = fieldData.getProfileID();
+                Profile profile = fieldData.getProfile();
                 if (fieldData.isMoveEnabled()) {
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
@@ -240,14 +249,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         }
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocated(allocatedRow, false);
-                            student.setAllocated(false);
+                            profile.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);
                             mainFrame.setDataEntryButtonsEnabled(true);
                             mainFrame.setFileButtonsEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
                         setRowAllocated(allocatedRow, true);
-                        student.setAllocated(true);
+                        profile.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
                         mainFrame.setDataEntryButtonsEnabled(true);
                         mainFrame.setFileButtonsEnabled(true);
@@ -323,11 +332,11 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     private String getColoredTimeString(boolean isBlocked, int StudentID, int col) {
-        Student student = database.getStudent(StudentID);
+        Profile profile = database.getProfile(StudentID);
         if (isBlocked) {
-            return "<html>" + "<font color=red>" + student.getStudentDay(col - 1) + "<font color=red>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>";
+            return "<html>" + "<font color=red>" + profile.getStudentDay(col - 1) + "<font color=red>" + profile.getStudentDay(col - 1).favorite().toString() + "</font></html>";
         } else {
-            return "<html>" + student.getStudentDay(col - 1) + "<font color=blue>" + student.getStudentDay(col - 1).favorite().toString() + "</font></html>";
+            return "<html>" + profile.getStudentDay(col - 1) + "<font color=blue>" + profile.getStudentDay(col - 1).favorite().toString() + "</font></html>";
         }
     }
 
@@ -335,8 +344,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.scheduleData = scheduleData;
     }
 
-    public Student getStudent(int i) {
-        return database.getStudent(i);
+    public Profile getProfile(int i) {
+        return database.getProfile(i);
     }
 
     public void setStudentListReleased(boolean studentListReleased) {

@@ -68,7 +68,7 @@ public class IncompatibleStudentTimes {
                             int searchStudentID = database.getStudentID(dayIndex, searchDay);
                             StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
                             if (!searchField.isStudentAllocated()) {
-                                int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
+                                int searchLectionLength = database.getProfile(searchStudentID).getLectionLengthInFields();
                                 boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
                                         || searchDay.latestEnd().plusLengthOf(searchLectionLength).greaterEqualsThan(startSearchLection);
                                 if (withinValidBounds) {
@@ -93,7 +93,7 @@ public class IncompatibleStudentTimes {
                 int refStudentID = database.getStudentID(dayIndex, refDay);
                 StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
                 if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
-                    int refLectionLength = database.getStudent(refStudentID).getLectionLengthInFields();
+                    int refLectionLength = database.getProfile(refStudentID).getLectionLengthInFields();
                     int searchIndex = refIndex + 1;
                     while (searchIndex < dayList.size()) {
                         StudentDay searchDay = dayList.get(searchIndex);
@@ -103,7 +103,7 @@ public class IncompatibleStudentTimes {
                             searchDay = dayList.get(searchIndex);
                             searchStudentID = database.getStudentID(dayIndex, searchDay);
                             searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                            int searchLectionLength = database.getStudent(searchStudentID).getLectionLengthInFields();
+                            int searchLectionLength = database.getProfile(searchStudentID).getLectionLengthInFields();
                             boolean incompatible = searchDay.isIncompatibleTo(refDay, refLectionLength, searchLectionLength);
                             boolean unallocatable = incompatible && refField.isSingleDay() && searchField.isSingleDay();
                             if (!refField.isIncompatible()) {

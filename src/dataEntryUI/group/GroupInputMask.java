@@ -3,22 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.group;
 
 import core.Database;
 import core.Group;
+import dataEntryUI.ProfileInputMask;
 import javax.swing.JComboBox;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class GroupInputMask extends StudentInputMask {
+public class GroupInputMask extends ProfileInputMask {
 
     public GroupInputMask(Database database) {
         super(database);
         adjustNameLabels();
-        
     }
 
     public void workshopProfile() {
@@ -63,10 +63,8 @@ public class GroupInputMask extends StudentInputMask {
         firstnameLabel.setText("Name:");
         nameLabel.setText(" Zusatz:");
     }
-   
 
     public void setGroup(Group group) {
-        super.setStudent(group);
+        super.setProfile(group);
     }
-
 }

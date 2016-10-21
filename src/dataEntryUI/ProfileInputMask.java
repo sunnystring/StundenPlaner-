@@ -5,13 +5,13 @@
  */
 package dataEntryUI;
 
+import dataEntryUI.schedule.ScheduleEdit;
 import core.Database;
+import core.Profile;
 import core.ScheduleTimes;
-import core.Student;
 import core.StudentTimes;
 import exceptions.IllegalTimeSlotException;
 import exceptions.OutOfBoundException;
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -35,28 +35,32 @@ import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
 import utils.Dialogs;
 
-public class StudentInputMask extends JPanel {
+/**
+ *
+ * @author mathiaskielholz
+ */
+public abstract class ProfileInputMask extends JPanel {
 
-    private Database database;
-    private Student student;
-    private ScheduleTimes scheduleTimes;
-    private StudentTimes studentTimes;
-    private String firstName, name;
+    protected Database database;
+    protected Profile profile;
+    protected ScheduleTimes scheduleTimes;
+    protected StudentTimes studentTimes;
+    protected String firstName, name;
     protected String lectionLength;
     protected String[] lectionTypes;
     protected JPanel top;
-    private JPanel bottom;
-    private JScrollPane center;
+    protected JPanel bottom;
+    protected JScrollPane center;
     protected JLabel firstnameLabel, nameLabel, lectiontypeLabel;
-    private JLabel footnote;
-    private JTextField firstnameField, nameField;
+    protected JLabel footnote;
+    protected JTextField firstnameField, nameField;
     protected JComboBox lectiontypeSelectionBox;
     protected ActionListener lectiontypeSelectionListener;
-    private TimeSelectionTable timeSelectionTable;
+    protected TimeSelectionTable timeSelectionTable;
     protected JButton cancelButton, saveButton, deleteButton;
     protected ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
 
-    public StudentInputMask(Database database) {
+    public ProfileInputMask(Database database) {
         this.database = database;
         scheduleTimes = database.getScheduleTimes();
         lectionLength = "30";
@@ -217,7 +221,7 @@ public class StudentInputMask extends JPanel {
                 }
                 studentTimes.setValidStudentDays();
                 setStudentData();
-                database.addStudent(student);
+                database.addProfile(profile);
                 //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
@@ -242,7 +246,7 @@ public class StudentInputMask extends JPanel {
                 }
                 studentTimes.updateValidStudentDays();
                 setStudentData();
-                database.editStudent(student);
+                database.editProfile(profile);
                 //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
@@ -263,7 +267,7 @@ public class StudentInputMask extends JPanel {
         deleteButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                database.deleteStudent(student);
+                database.deleteProfile(profile);
                 //  removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
@@ -281,14 +285,14 @@ public class StudentInputMask extends JPanel {
     }
 
     public void setUpTimeSelectionTable() {
-        studentTimes = student.getStudentTimes();
+        studentTimes = profile.getStudentTimes();
         timeSelectionTable.setParameters(studentTimes);
     }
 
     private void setStudentData() {
-        student.setFirstName(firstName);
-        student.setName(name);
-        student.setLectionLengthInMinutes(Integer.parseInt(lectionLength));
+        profile.setFirstName(firstName);
+        profile.setName(name);
+        profile.setLectionLengthInMinutes(Integer.parseInt(lectionLength));
     }
 
     public void clearUpperEntryFields() {
@@ -298,9 +302,9 @@ public class StudentInputMask extends JPanel {
     }
 
     public void updateUpperEntryFields() {
-        firstnameField.setText(student.getFirstName());
-        nameField.setText(student.getName());
-        lectionLength = String.valueOf(student.getLectionLengthInMinutes());
+        firstnameField.setText(profile.getFirstName());
+        nameField.setText(profile.getName());
+        lectionLength = String.valueOf(profile.getLectionLengthInMinutes());
         updateLectiontypeSelectionBox();
     }
 
@@ -324,11 +328,12 @@ public class StudentInputMask extends JPanel {
         }
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     private int getLectionLengthInFields() {
         return Integer.parseInt(lectionLength) / 5;
     }
+
 }

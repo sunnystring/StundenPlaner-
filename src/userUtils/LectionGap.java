@@ -5,7 +5,7 @@
  */
 package userUtils;
 
-import core.Student;
+import core.Profile;
 import core.StudentDay;
 import utils.Time;
 
@@ -38,11 +38,11 @@ public class LectionGap {
         gapLength = 0;
     }
 
-    public boolean matchesTimeOf(StudentDay studentDay, Student student, boolean isAdjacentToLection) {
+    public boolean matchesTimeOf(StudentDay studentDay, Profile profile, boolean isAdjacentToLection) {
         if (studentDay.isEmpty()) {
             return false;
         }
-        int lectionLength = student.getLectionLengthInFields();
+        int lectionLength = profile.getLectionLengthInFields();
         if (gapLength < lectionLength) {
             return false;
         }

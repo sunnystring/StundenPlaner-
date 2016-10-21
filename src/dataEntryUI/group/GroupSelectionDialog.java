@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.group;
 
+import dataEntryUI.group.GroupEntry;
 import core.Group;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

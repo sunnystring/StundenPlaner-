@@ -87,9 +87,9 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                 setText(" " + fieldData.getFieldTime().toString());
             } else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
-                setText(" " + fieldData.getStudent().getFirstName());
+                setText(" " + fieldData.getProfile().getFirstName());
             } else if (fieldData.getNameMark() == ScheduleFieldData.NAME) {
-                setText(" " + fieldData.getStudent().getName());
+                setText(" " + fieldData.getProfile().getName());
             }
             if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.LAST_ROW) {
                 setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
@@ -106,9 +106,9 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                     setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
-                    setText(" " + fieldData.getStudent().getFirstName());
+                    setText(" " + fieldData.getProfile().getFirstName());
                 } else if (row == movedRow + 2) {
-                    setText(" " + fieldData.getStudent().getName());
+                    setText(" " + fieldData.getProfile().getName());
                 }
                 if (row == lectionEnd - 1) {
                     setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
@@ -122,13 +122,13 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
                     setFont(this.getFont().deriveFont(Font.BOLD, size1));
                     if (lectionDiff == lectionLenght - 2 && row == 0) { // noch 2 Fields in 1. Column
-                        setText(" " + fieldData.getStudent().getName());
+                        setText(" " + fieldData.getProfile().getName());
                     } else if (lectionDiff == lectionLenght - 1) { // nur noch Head in 1. Column
                         if (row == 0) {
-                            setText(" " + fieldData.getStudent().getName());
+                            setText(" " + fieldData.getProfile().getName());
                         }
                         if (row == 1) {
-                            setText(" " + fieldData.getStudent().getFirstName());
+                            setText(" " + fieldData.getProfile().getFirstName());
                         }
                     }
                     if (row == lectionDiff - 1) {
@@ -188,7 +188,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
-                    lectionLenght = studentFieldData.getStudent().getLectionLengthInFields();
+                    lectionLenght = studentFieldData.getProfile().getLectionLengthInFields();
                 } else if (studentListData.isStudentListReleased()) { // Student-Selection rückgängig gemacht, aber noch in SelectionState
                     resetLectionColumn();
                 }
@@ -200,7 +200,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
-                    lectionLenght = scheduleFieldData.getStudent().getLectionLengthInFields();
+                    lectionLenght = scheduleFieldData.getProfile().getLectionLengthInFields();
                     lectionEnd = selectedRow + lectionLenght;
                     lectionDiff = lectionEnd - rowCount;
                 }

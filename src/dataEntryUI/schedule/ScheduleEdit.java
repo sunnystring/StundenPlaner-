@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.schedule;
 
+import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
-import scheduleUI.Schedule;
 
 /**
  *
- * Eingabe der Unterrichtstage/-zeiten für die Erstellung des {@link Schedule}
+ * Zeitrahmen des Stundenplans ändern
  */
-public class ScheduleEntry extends DataEntryAndEdit {
+public class ScheduleEdit extends DataEntryAndEdit {
 
-    public ScheduleEntry(MainFrame mainFrame) {
-        super(mainFrame, "Stundenplan erstellen");
+    public ScheduleEdit(MainFrame mainFrame) {
+        super(mainFrame, "Stundenplan ändern");
+        this.mainFrame = mainFrame;
         setUpMask();
         pack();
     }
@@ -24,7 +25,7 @@ public class ScheduleEntry extends DataEntryAndEdit {
     public void setUpMask() {
         scheduleInputMask.removeButtonListeners();
         scheduleInputMask.addCancelButtonListener(this);
-        scheduleInputMask.addSaveButtonListener(this);
+        scheduleInputMask.addEditSaveButtonListener(this);
         add(scheduleInputMask);
     }
 }

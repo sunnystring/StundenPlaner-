@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.group;
 
 import core.Group;
+import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
 /**
@@ -49,6 +50,4 @@ public class GroupEntry extends DataEntryAndEdit {
         groupInputMask.setupEntryUI(this);
         add(groupInputMask);
     }
-
- //   public abstract void fitInputMaskToGroupProfile();
 }

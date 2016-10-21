@@ -7,12 +7,12 @@ package scheduleData;
  */
 import core.Database;
 import core.DatabaseListener;
+import core.Profile;
 import core.ScheduleTimes;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import core.Student;
 import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
 import scheduleUI.TimeTable;
@@ -180,10 +180,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 StudentFieldData fieldData = studentList.getStudentFieldDataAtView(row, col);
                 DayColumnData dayColumn = getDayColumn(fieldData.getDayIndex());
                 if (fieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
-                    Student student = fieldData.getStudent();
+                    Profile profile = fieldData.getProfile();
                     dayColumn.getLectionGapFiller().clear();
                     dayColumn.setValidTimeMarks(fieldData.getStudentDay());
-                    setMoveMode(student);
+                    setMoveMode(profile);
                 } else if (row == fieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
                     dayColumn.resetValidTimeMarks();
                 } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
@@ -198,22 +198,22 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             col = timeTable.columnAtPoint(p);
             if (row >= 0 && col % 2 == 1) { // keine Events aus TimeColumn
                 ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(row, col);
-                Student student = fieldData.getStudent();
+                Profile profile = fieldData.getProfile();
                 int dayIndex = col / 4;
                 LectionGapFiller lectionGapFiller = dayColumnDataList.get(dayIndex).getLectionGapFiller();
                 if (fieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(row, col);
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
                         if (fieldData.getLectionPanelAreaMark() == HEAD) {
-                            eraseLection(student.getLectionLengthInFields());
-                            setAllValidTimeMarks(student);
-                            setMoveMode(student);
+                            eraseLection(profile.getLectionLengthInFields());
+                            setAllValidTimeMarks(profile);
+                            setMoveMode(profile);
                         }
                         if (fieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
-                            eraseLection(student.getLectionLengthInFields());
+                            eraseLection(profile.getLectionLengthInFields());
                         }
                     } else { // in AllocatedMode wechseln
-                        createLection(student.getLectionLengthInFields());
+                        createLection(profile.getLectionLengthInFields());
                         setAllocatedMode();
                     }
                     studentListData.setIncompatibleStudentDays();
@@ -229,8 +229,8 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     /* gesetzte Lections sperren, Sperrzonen setzen, der restliche Schedule einteilbar machen und current Student global setzen*/
-    private void setMoveMode(Student student) {
-        int lectionLength = student.getLectionLengthInFields();
+    private void setMoveMode(Profile profile) {
+        int lectionLength = profile.getLectionLengthInFields();
         int rowCount = timeFrame.getTotalNumberOfFields();
         ScheduleFieldData fieldData;
         for (int studentDayID = 0; studentDayID < numberOfValidDays; studentDayID++) {
@@ -246,7 +246,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else { // Sperrzonen: lectionLength unterhalb Lection und vor Stundenplan-Ende 
                     boolean isAllocatable = !(i < headRow && i > headRow - lectionLength) && (i <= rowCount - lectionLength);
                     fieldData.setMoveEnabled(isAllocatable);
-                    fieldData.setStudentID(student.getID());
+                    fieldData.setProfileID(profile.getID());
                     fieldData.resetPanelAreaMarks();
                 }
             }
@@ -332,10 +332,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayIndex = selectedCol / 4;
     }
 
-    private void setAllValidTimeMarks(Student student) {
+    private void setAllValidTimeMarks(Profile profile) {
         for (int i = 0; i < numberOfValidDays; i++) {
             DayColumnData dayColumn = dayColumnDataList.get(i);
-            dayColumn.setValidTimeMarks(student.getStudentDay(i));
+            dayColumn.setValidTimeMarks(profile.getStudentDay(i));
         }
     }
 
@@ -383,16 +383,16 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     }
 
     @Override
-    public void studentDeleted(int numberOfStudents, Student student) {
-        updateLectionData(student.getID());
+    public void profileDeleted(int numberOfStudents, Profile profile) {
+        updateLectionData(profile.getID());
     }
 
     @Override
-    public void studentAdded(int numberOfStudents, Student student) {
+    public void profileAdded(int numberOfStudents, Profile profile) {
     }
 
     @Override
-    public void studentEdited(Student student) {
+    public void profileEdited(Profile profile) {
     }
 
     @Override

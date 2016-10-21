@@ -23,7 +23,7 @@ import java.util.Map;
 public class Database {
 
     private ScheduleTimes scheduleTimes;
-    private ArrayList<Student> studentDataList;
+    private ArrayList<Profile> studentDataList;
     private ArrayList<DatabaseListener> databaseListeners;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
     private HashMap<Integer, LectionData> lectionIDMap;
@@ -45,30 +45,30 @@ public class Database {
         numberOfStudents = 0;
     }
 
-    public void addStudent(Student student) {
-        student.setID(numberOfStudents);
-        studentDataList.add(student);
+    public void addProfile(Profile profile) {
+        profile.setID(numberOfStudents);
+        studentDataList.add(profile);
         numberOfStudents = studentDataList.size(); // nächster Student
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
-            l.studentAdded(numberOfStudents, student);
+            l.profileAdded(numberOfStudents, profile);
         }
     }
 
-    public void editStudent(Student student) {
+    public void editProfile(Profile profile) {
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
-            l.studentEdited(student);
+            l.profileEdited(profile);
         }
     }
 
-    public void deleteStudent(Student student) {
-        studentDataList.remove(student);
+    public void deleteProfile(Profile profile) {
+        studentDataList.remove(profile);
         numberOfStudents = studentDataList.size(); // = numberOfStudents--
         updateStudentIDs();
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
-            l.studentDeleted(numberOfStudents, student);
+            l.profileDeleted(numberOfStudents, profile);
         }
     }
 
@@ -83,8 +83,8 @@ public class Database {
     }
 
     private void setScheduleTimesRefToStudentTimes() {
-        for (Student student : studentDataList) {
-            student.getStudentTimes().setScheduleTimes(scheduleTimes);
+        for (Profile profile : studentDataList) {
+            profile.getStudentTimes().setScheduleTimes(scheduleTimes);
         }
     }
 
@@ -93,7 +93,7 @@ public class Database {
             for (Map.Entry<Time, LectionData> entry : map.entrySet()) {
                 LectionData lection = entry.getValue();
                 lection.setDatabaseReference(this);// Workaround wegen lectionData -> scheduleFieldData -> transient database
-                lectionIDMap.put(lection.getStudentID(), lection);
+                lectionIDMap.put(lection.getProfileID(), lection);
             }
         }
     }
@@ -128,7 +128,7 @@ public class Database {
             ArrayList<StudentDay> sortedStudentDays = new ArrayList<>();
             HashMap<StudentDay, Integer> studentIDMap = new HashMap<>();
             for (int studentID = 0; studentID < numberOfStudents; studentID++) {
-                StudentDay studentDay = getStudent(studentID).getStudentDay(dayIndex);
+                StudentDay studentDay = getProfile(studentID).getStudentDay(dayIndex);
                 sortedStudentDays.add(studentDay);
                 studentIDMap.put(studentDay, studentID);
             }
@@ -160,7 +160,7 @@ public class Database {
         databaseListeners.add(l);
     }
 
-    public Student getStudent(int ID) {
+    public Profile getProfile(int ID) {
         return studentDataList.get(ID);
     }
 
@@ -168,11 +168,11 @@ public class Database {
         return scheduleTimes;
     }
 
-    public void setStudentDataList(ArrayList<Student> studentDataList) {
+    public void setStudentDataList(ArrayList<Profile> studentDataList) {
         this.studentDataList = studentDataList;
     }
 
-    public ArrayList<Student> getStudentDataList() {
+    public ArrayList<Profile> getStudentDataList() {
         return studentDataList;
     }
 

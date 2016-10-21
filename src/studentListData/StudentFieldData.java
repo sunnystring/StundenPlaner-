@@ -6,7 +6,7 @@
 package studentListData;
 
 import core.Database;
-import core.Student;
+import core.Profile;
 import core.StudentDay;
 import java.awt.Color;
 import studentlistUI.StudentList;
@@ -21,7 +21,7 @@ public class StudentFieldData {
 
     private final Database database;
     private Color fieldColor;
-    private int studentID;
+    private int profileID;
     private int dayIndex;
     private String nameString;
     private String validTimeString;
@@ -60,16 +60,16 @@ public class StudentFieldData {
         return fieldColor;
     }
 
-    public void setStudentID(int studentID) {
-        this.studentID = studentID;
+    public void setProfileID(int profileID) {
+        this.profileID = profileID;
     }
 
-    public int getStudentID() {
-        return studentID;
+    public int getProfileID() {
+        return profileID;
     }
 
-    public Student getStudent() {
-        return database.getStudent(studentID);
+    public Profile getProfile() {
+        return database.getProfile(profileID);
     }
 
     public void setDayIndex(int dayIndex) {
@@ -81,7 +81,7 @@ public class StudentFieldData {
     }
 
     public StudentDay getStudentDay() {
-        return getStudent().getStudentDay(dayIndex);
+        return getProfile().getStudentDay(dayIndex);
     }
 
     public String getNameString() {

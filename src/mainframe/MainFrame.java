@@ -8,9 +8,10 @@ package mainframe;
 import core.Database;
 import core.DatabaseListener;
 import core.Group;
+import core.Profile;
 import core.ScheduleTimes;
 import studentListData.StudentListData;
-import dataEntryUI.StudentInputMask;
+import dataEntryUI.student.StudentInputMask;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -26,12 +27,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import scheduleData.ScheduleData;
 import core.Student;
-import dataEntryUI.GroupInputMask;
-import dataEntryUI.GroupSelectionDialog;
-import dataEntryUI.ScheduleEdit;
-import dataEntryUI.ScheduleEntry;
-import dataEntryUI.ScheduleInputMask;
-import dataEntryUI.StudentEntry;
+import dataEntryUI.group.GroupInputMask;
+import dataEntryUI.group.GroupSelectionDialog;
+import dataEntryUI.schedule.ScheduleEdit;
+import dataEntryUI.schedule.ScheduleEntry;
+import dataEntryUI.schedule.ScheduleInputMask;
+import dataEntryUI.student.StudentEntry;
 import io.DataTransferManager;
 import io.PrinterDialog;
 import java.io.File;
@@ -396,20 +397,20 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     @Override
-    public void studentAdded(int numberOfStudents, Student student) {
+    public void profileAdded(int numberOfStudents, Profile profile) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }
 
     @Override
-    public void studentEdited(Student student) {
+    public void profileEdited(Profile profile) {
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }
 
     @Override
-    public void studentDeleted(int numberOfStudents, Student student) {
+    public void profileDeleted(int numberOfStudents, Profile profile) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();

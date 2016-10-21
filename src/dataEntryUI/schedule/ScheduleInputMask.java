@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package dataEntryUI.schedule;
 
+import dataEntryUI.schedule.ScheduleEntry;
+import dataEntryUI.schedule.ScheduleEdit;
 import core.Database;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
@@ -14,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import core.ScheduleTimes;
+import dataEntryUI.DataEntryAndEdit;
+import dataEntryUI.TimeSelectionTable;
 import exceptions.DayEraseException;
 import exceptions.IllegalLectionEraseException;
 import exceptions.IllegalTimeSlotException;

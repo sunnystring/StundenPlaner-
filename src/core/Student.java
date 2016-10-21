@@ -9,77 +9,77 @@ package core;
  *
  * Schülerprofil
  */
-public class Student {
+public class Student extends Profile {
 
-    private String firstName;
-    private String name;
-    private StudentTimes studentTimes;
-    private int lectionLengthInMinutes;
-    private int studentID;
-    private boolean allocated;
-
-    public Student() {
-        studentTimes = new StudentTimes();
-        allocated = false;
-    }
-
-    public void setStudentTimes(StudentTimes studentTimes) {
-        this.studentTimes = studentTimes;
-    }
-
-    public StudentTimes getStudentTimes() {
-        return studentTimes;
-    }
-
-    public void setID(int studentID) {
-        this.studentID = studentID;
-    }
-
-    public int getID() {
-        return studentID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getLectionLengthInFields() {
-        return lectionLengthInMinutes / 5;
-    }
-
-    public int getLectionLengthInMinutes() {
-        return lectionLengthInMinutes;
-    }
-
-    public void setLectionLengthInMinutes(int lectionLengthInMinutes) {
-        this.lectionLengthInMinutes = lectionLengthInMinutes;
-    }
-
-    public StudentDay getStudentDay(int dayIndex) {
-        return studentTimes.getValidStudentDay(dayIndex);
-    }
-
-    public void setAllocated(boolean lectionAllocated) {
-        this.allocated = lectionAllocated;
-    }
-
-    public boolean isAllocated() {
-        return allocated;
-    }
-
-    public boolean getDaySelectionStateAt(int dayIndex) {
-        return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
-    }
+//    private String firstName;
+//    private String name;
+//    private StudentTimes studentTimes;
+//    private int lectionLengthInMinutes;
+//    private int studentID;
+//    private boolean allocated;
+//
+//    public Student() {
+//        studentTimes = new StudentTimes();
+//        allocated = false;
+//    }
+//
+//    public void setStudentTimes(StudentTimes studentTimes) {
+//        this.studentTimes = studentTimes;
+//    }
+//
+//    public StudentTimes getStudentTimes() {
+//        return studentTimes;
+//    }
+//
+//    public void setID(int studentID) {
+//        this.studentID = studentID;
+//    }
+//
+//    public int getID() {
+//        return studentID;
+//    }
+//
+//    public String getFirstName() {
+//        return firstName;
+//    }
+//
+//    public void setFirstName(String firstName) {
+//        this.firstName = firstName;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public int getLectionLengthInFields() {
+//        return lectionLengthInMinutes / 5;
+//    }
+//
+//    public int getLectionLengthInMinutes() {
+//        return lectionLengthInMinutes;
+//    }
+//
+//    public void setLectionLengthInMinutes(int lectionLengthInMinutes) {
+//        this.lectionLengthInMinutes = lectionLengthInMinutes;
+//    }
+//
+//    public StudentDay getStudentDay(int dayIndex) {
+//        return studentTimes.getValidStudentDay(dayIndex);
+//    }
+//
+//    public void setAllocated(boolean lectionAllocated) {
+//        this.allocated = lectionAllocated;
+//    }
+//
+//    public boolean isAllocated() {
+//        return allocated;
+//    }
+//
+//    public boolean getDaySelectionStateAt(int dayIndex) {
+//        return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
+//    }
 }

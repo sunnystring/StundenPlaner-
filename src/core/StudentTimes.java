@@ -6,7 +6,7 @@
 package core;
 
 import com.google.gson.annotations.Expose;
-import dataEntryUI.StudentInputMask;
+import dataEntryUI.student.StudentInputMask;
 import exceptions.IllegalTimeSlotException;
 import exceptions.OutOfBoundException;
 import java.util.ArrayList;

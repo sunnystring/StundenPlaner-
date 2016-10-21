@@ -59,7 +59,7 @@ public class ColoredStudentDays {
     }
 
     public Color getFieldColorAt(int rowIndex, int dayIndex, boolean isIncompatible, boolean isSingleDay) { // rowIndex = studentID, dayIndex = col-1
-        StudentDay studentDay = database.getStudent(rowIndex).getStudentTimes().getValidStudentDay(dayIndex);
+        StudentDay studentDay = database.getProfile(rowIndex).getStudentTimes().getValidStudentDay(dayIndex);
         Time time = studentDay.earliestStart();
         if (isColored) {
             if (time.isEmpty()) {

@@ -5,7 +5,7 @@
  */
 package core;
 
-import dataEntryUI.ScheduleInputMask;
+import dataEntryUI.schedule.ScheduleInputMask;
 import exceptions.DayEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
@@ -151,14 +151,14 @@ public class ScheduleTimes extends AbstractTableModel {
             boolean thisDayOutOfBounds = false;
             if (!scheduleDay.isEmpty()) {
                 String studentNames = "";
-                for (Student student : database.getStudentDataList()) {
-                    StudentTimes studentTimes = student.getStudentTimes();
+                for (Profile profile : database.getStudentDataList()) {
+                    StudentTimes studentTimes = profile.getStudentTimes();
                     StudentDay studentDay = studentTimes.getMatchingStudentDayOf(scheduleDay);
                     if (studentDay != null && !studentDay.isEmpty()) {
                         boolean outOfValidEnd = studentDay.outOfValidBoundsOf(scheduleDay);
-                        boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, student.getLectionLengthInFields());
+                        boolean outOfTimeFrame = studentDay.outOfTimeFrame(tempTimeFrame, profile.getLectionLengthInFields());
                         if (outOfTimeFrame || outOfValidEnd) {
-                            studentNames += student.getFirstName() + " " + student.getName() + "\n";
+                            studentNames += profile.getFirstName() + " " + profile.getName() + "\n";
                             thisDayOutOfBounds = true;
                         }
                     }
