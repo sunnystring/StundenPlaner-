@@ -13,11 +13,8 @@ import com.google.gson.reflect.TypeToken;
 import core.Database;
 import core.Profile;
 import core.ScheduleTimes;
-import core.Student;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -85,7 +82,7 @@ public class DataTransferManager {
             JsonParser parser = new JsonParser();
             JsonArray array = parser.parse(reader).getAsJsonArray();
             scheduleTimes = gson.fromJson(array.get(0), ScheduleTimes.class);
-            studentDataList = gson.fromJson(array.get(1), new TypeToken<ArrayList<Student>>() {
+            studentDataList = gson.fromJson(array.get(1), new TypeToken<ArrayList<Profile>>() {
             }.getType());
             for (int i = 0; i < DAYS; i++) {
                 TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 2), new TypeToken<TreeMap<Time, LectionData>>() {
@@ -93,7 +90,8 @@ public class DataTransferManager {
                 lectionMaps.add(lectionMap);
             }
         } catch (Exception ex) {
-            Dialogs.showLoadFileErrorMessage();
+          //  Dialogs.showLoadFileErrorMessage();
+            System.out.println(ex.getMessage());
         }
     }
 

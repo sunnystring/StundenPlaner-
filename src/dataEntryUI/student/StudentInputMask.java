@@ -8,7 +8,6 @@ package dataEntryUI.student;
 import core.Database;
 import core.Student;
 import dataEntryUI.ProfileInputMask;
-import dataEntryUI.ProfileInputMask;
 
 public class StudentInputMask extends ProfileInputMask {
 
@@ -275,38 +274,40 @@ public class StudentInputMask extends ProfileInputMask {
 //        nameField.setText("");
 //        lectiontypeSelectionBox.setSelectedIndex(0);
 //    }
-//
-//    public void updateUpperEntryFields() {
+
+    @Override
+    public void updateUpperEntryFields() {
+        super.updateUpperEntryFields();
 //        firstnameField.setText(profile.getFirstName());
 //        nameField.setText(profile.getName());
 //        lectionLength = String.valueOf(profile.getLectionLengthInMinutes());
-//        updateLectiontypeSelectionBox();
-//    }
-//
-//    private void updateLectiontypeSelectionBox() {
-//        switch (lectionLength) {
-//            case "30":
-//                lectiontypeSelectionBox.setSelectedIndex(0);
-//                break;
-//            case "40":
-//                lectiontypeSelectionBox.setSelectedIndex(1);
-//                break;
-//            case "50":
-//                lectiontypeSelectionBox.setSelectedIndex(2);
-//                break;
-//            case "45":
-//                lectiontypeSelectionBox.setSelectedIndex(3);
-//                break;
-//            default:
-//                lectiontypeSelectionBox.setSelectedIndex(0);
-//                break;
-//        }
-//    }
+        updateLectiontypeSelectionBox();
+    }
+
+    private void updateLectiontypeSelectionBox() {
+        switch (lectionLength) {
+            case "30":
+                lectiontypeSelectionBox.setSelectedIndex(0);
+                break;
+            case "40":
+                lectiontypeSelectionBox.setSelectedIndex(1);
+                break;
+            case "50":
+                lectiontypeSelectionBox.setSelectedIndex(2);
+                break;
+            case "45":
+                lectiontypeSelectionBox.setSelectedIndex(3);
+                break;
+            default:
+                lectiontypeSelectionBox.setSelectedIndex(0);
+                break;
+        }
+    }
 //
 //    public void setProfile(Profile profile) {
 //        this.profile = profile;
 //    }
-    
+
     public void setStudent(Student student) {
         super.setProfile(student);
     }

@@ -239,7 +239,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             public void actionPerformed(ActionEvent ae) {
                 Student student = new Student();
                 student.getStudentTimes().setScheduleTimes(scheduleTimes);
-                JDialog studentEntry = new StudentEntry(MainFrame.this, student);
+                StudentEntry studentEntry = new StudentEntry(MainFrame.this, student);
                 studentInputMask.clearUpperEntryFields();
                 studentEntry.setVisible(true);
             }
@@ -249,7 +249,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             public void actionPerformed(ActionEvent e) {
                 Group group = new Group();
                 group.getStudentTimes().setScheduleTimes(scheduleTimes);
-                JDialog groupSelection = new GroupSelectionDialog(MainFrame.this, group);
+                GroupSelectionDialog groupSelection = new GroupSelectionDialog(MainFrame.this, group);
                 groupInputMask.clearUpperEntryFields();
                 groupSelection.setVisible(true);
             }

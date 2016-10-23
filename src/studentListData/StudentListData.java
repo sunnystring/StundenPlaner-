@@ -220,13 +220,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
-                        if (profile instanceof Group) { // Gruppenprofil ändern/löschen
-                            //...groupEdit
-                            JDialog groupEditDialog = new GroupEdit(mainFrame, "", (Group) profile);
-                            groupEditDialog.setVisible(true);
-                        } else { // Schülerprofil ändern/löschen
-                            JDialog studentEditDialog = new StudentEdit(mainFrame, (Student) profile);
+                        if (profile instanceof Student) { // Schülerprofil ändern/löschen
+                            StudentEdit studentEditDialog = new StudentEdit(mainFrame, (Student) profile);
                             studentEditDialog.setVisible(true);
+                        } else if (profile instanceof Group) { // Gruppenprofil ändern/löschen
+                            GroupEdit groupEditDialog = new GroupEdit(mainFrame, (Group) profile);
+                            groupEditDialog.selectProfile();
+                            groupEditDialog.setVisible(true);
+
                         }
                     }
                 }

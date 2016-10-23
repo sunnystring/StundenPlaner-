@@ -11,4 +11,13 @@ package core;
  */
 public class Group extends Profile {
 
+    private String profileName;
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
 }

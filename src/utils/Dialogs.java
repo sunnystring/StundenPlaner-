@@ -65,12 +65,12 @@ public class Dialogs {
     }
 
     public static void showSaveFileErrorMessage() {
-        String msg = "Es ist ein Fehler aufgetreten!\nBitte versuche es nochmals.";
+        String msg = "Fehler beim Speichern der Datei!\nBitte versuche es nochmals.";
         JOptionPane.showMessageDialog(null, msg, "Datei speichern", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showLoadFileErrorMessage() {
-        String msg = "Es ist ein Fehler aufgetreten!\nBitte versuche es nochmals.";
+        String msg = "Fehler beim Laden der Datei!\nBitte versuche es nochmals.";
         JOptionPane.showMessageDialog(null, msg, "Datei laden", JOptionPane.ERROR_MESSAGE);
     }
 

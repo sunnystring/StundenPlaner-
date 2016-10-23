@@ -17,8 +17,8 @@ public class GroupEntry extends DataEntryAndEdit {
 
     private Group group;
 
-    public GroupEntry(MainFrame mainFrame, String groupType, Group group) {
-        super(mainFrame, groupType + " erstellen");
+    public GroupEntry(MainFrame mainFrame, String profileName, Group group) {
+        super(mainFrame, profileName + " erstellen");
         this.group = group;
         setUpMask();
         pack();
@@ -30,10 +30,12 @@ public class GroupEntry extends DataEntryAndEdit {
 
     public void setInstrumentalformationProfile() {
         groupInputMask.instrumentalformationProfile();
+        groupInputMask.addNewLectionTypeEntry();
     }
 
     public void setChorProfile() {
         groupInputMask.chorProfile();
+        groupInputMask.addNewLectionTypeEntry();
     }
 
     public void setGrundschulungProfile() {
@@ -42,6 +44,7 @@ public class GroupEntry extends DataEntryAndEdit {
 
     public void setOtherProfile() {
         groupInputMask.otherProfile();
+        groupInputMask.addNewLectionTypeEntry();
     }
 
     @Override

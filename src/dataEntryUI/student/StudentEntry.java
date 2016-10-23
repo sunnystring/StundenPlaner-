@@ -7,7 +7,6 @@ package dataEntryUI.student;
 
 import core.Student;
 import dataEntryUI.DataEntryAndEdit;
-import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
 /**

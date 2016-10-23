@@ -127,7 +127,7 @@ public abstract class ProfileInputMask extends JPanel {
         addEditSaveButtonListener(dataEntryAndEdit);
         addDeleteButtonListener(dataEntryAndEdit);
         setUpTimeSelectionTable();
-        updateUpperEntryFields();
+        //updateUpperEntryFields();
     }
 
     public void addEntryButtons() {
@@ -305,28 +305,28 @@ public abstract class ProfileInputMask extends JPanel {
         firstnameField.setText(profile.getFirstName());
         nameField.setText(profile.getName());
         lectionLength = String.valueOf(profile.getLectionLengthInMinutes());
-        updateLectiontypeSelectionBox();
+      //  updateLectiontypeSelectionBox();
     }
-
-    private void updateLectiontypeSelectionBox() {
-        switch (lectionLength) {
-            case "30":
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-            case "40":
-                lectiontypeSelectionBox.setSelectedIndex(1);
-                break;
-            case "50":
-                lectiontypeSelectionBox.setSelectedIndex(2);
-                break;
-            case "45":
-                lectiontypeSelectionBox.setSelectedIndex(3);
-                break;
-            default:
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-        }
-    }
+//
+//    private void updateLectiontypeSelectionBox() {
+//        switch (lectionLength) {
+//            case "30":
+//                lectiontypeSelectionBox.setSelectedIndex(0);
+//                break;
+//            case "40":
+//                lectiontypeSelectionBox.setSelectedIndex(1);
+//                break;
+//            case "50":
+//                lectiontypeSelectionBox.setSelectedIndex(2);
+//                break;
+//            case "45":
+//                lectiontypeSelectionBox.setSelectedIndex(3);
+//                break;
+//            default:
+//                lectiontypeSelectionBox.setSelectedIndex(0);
+//                break;
+//        }
+//    }
 
     public void setProfile(Profile profile) {
         this.profile = profile;
