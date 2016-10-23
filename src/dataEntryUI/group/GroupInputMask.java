@@ -6,7 +6,7 @@
 package dataEntryUI.group;
 
 import core.Database;
-import core.Group;
+import core.Profile;
 import dataEntryUI.ProfileInputMask;
 import javax.swing.JComboBox;
 
@@ -38,7 +38,7 @@ public class GroupInputMask extends ProfileInputMask {
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
     }
 
-    public void instrumentalformationProfile(Group group) {
+    public void instrumentalformationProfile(Profile group) {
         instrumentalformationProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -73,7 +73,7 @@ public class GroupInputMask extends ProfileInputMask {
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
     }
 
-    public void chorProfile(Group group) {
+    public void chorProfile(Profile group) {
         chorProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -110,7 +110,7 @@ public class GroupInputMask extends ProfileInputMask {
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
     }
 
-    public void otherProfile(Group group) {
+    public void otherProfile(Profile group) {
         otherProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -144,7 +144,7 @@ public class GroupInputMask extends ProfileInputMask {
         top.add(lectiontypeSelectionBox);
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(Profile group) {
         super.setProfile(group);
     }
 }

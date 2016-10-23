@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI.group;
+package dataEntryUI;
 
 /**
  *
@@ -11,10 +11,11 @@ package dataEntryUI.group;
  */
 public class ProfileNames {
 
-    public static final String KGU = "KGU",
-            WORKSHOP = "Workshop/Semesterkurs",
-            INSTR_FORMATION = "Instrumentalformation",
-            CHOR = "Singschule/Chor",
-            GRUNDSCHULUNG = "Musikalische Grundschulung",
-            ANDERES = "Anderes";
+    public static final String SINGLE = "Einzelunterricht",
+            KGU = "KGU-Profil",
+            WORKSHOP = "Workshop/Semesterkurs-Profil",
+            INSTR_FORMATION = "Instrumentalformation-Profil",
+            CHOR = "Singschule/Chor-Profil",
+            GRUNDSCHULUNG = "Musikalische Grundschulung-Profil",
+            ANDERES = "Anderes Profil";
 }

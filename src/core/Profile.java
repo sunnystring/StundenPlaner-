@@ -5,22 +5,28 @@
  */
 package core;
 
+import dataEntryUI.ProfileNames;
+
 /**
  *
  * @author mathiaskielholz
  */
-public abstract class Profile {
-    
+public class Profile {
+
     protected String firstName;
     protected String name;
     protected StudentTimes studentTimes;
     protected int lectionLengthInMinutes;
     protected int profileID;
     protected boolean allocated;
+    protected String profileName;
+  //  protected boolean singleLectionMode;
 
     public Profile() {
         studentTimes = new StudentTimes();
         allocated = false;
+        profileName = ProfileNames.SINGLE;
+      //  singleLectionMode = true;
     }
 
     public void setStudentTimes(StudentTimes studentTimes) {
@@ -82,5 +88,21 @@ public abstract class Profile {
     public boolean getDaySelectionStateAt(int dayIndex) {
         return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
     }
-    
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+//    public void setProfileMode(boolean profileMode) {
+//        this.singleLectionMode = profileMode;
+//    }
+//
+//    public boolean isSingleLectionMode() {
+//        return singleLectionMode;
+//    }
+
 }

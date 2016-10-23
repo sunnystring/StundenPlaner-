@@ -10,6 +10,7 @@ import core.DatabaseListener;
 import core.Group;
 import core.Profile;
 import core.Student;
+import dataEntryUI.ProfileNames;
 import dataEntryUI.group.GroupEdit;
 import dataEntryUI.student.StudentEdit;
 import java.awt.Point;
@@ -220,11 +221,11 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
-                        if (profile instanceof Student) { // Schülerprofil ändern/löschen
-                            StudentEdit studentEditDialog = new StudentEdit(mainFrame, (Student) profile);
+                        if (profile.getProfileName().equals(ProfileNames.SINGLE)) { // Schülerprofil ändern/löschen
+                            StudentEdit studentEditDialog = new StudentEdit(mainFrame, profile);
                             studentEditDialog.setVisible(true);
-                        } else if (profile instanceof Group) { // Gruppenprofil ändern/löschen
-                            GroupEdit groupEditDialog = new GroupEdit(mainFrame, (Group) profile);
+                        } else { // Gruppenprofil ändern/löschen
+                            GroupEdit groupEditDialog = new GroupEdit(mainFrame, profile);
                             groupEditDialog.selectProfile();
                             groupEditDialog.setVisible(true);
 

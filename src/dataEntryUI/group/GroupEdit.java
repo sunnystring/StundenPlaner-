@@ -5,7 +5,8 @@
  */
 package dataEntryUI.group;
 
-import core.Group;
+import dataEntryUI.ProfileNames;
+import core.Profile;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
@@ -15,10 +16,10 @@ import mainframe.MainFrame;
  */
 public class GroupEdit extends DataEntryAndEdit {
 
-    private Group group;
+    private Profile group;
 
-    public GroupEdit(MainFrame mainFrame, Group group) {
-        super(mainFrame, group.getProfileName()+"-Profil ändern oder löschen");
+    public GroupEdit(MainFrame mainFrame, Profile group) {
+        super(mainFrame, group.getProfileName()+" ändern oder löschen");
         this.group = group;
         setUpMask();
         pack();

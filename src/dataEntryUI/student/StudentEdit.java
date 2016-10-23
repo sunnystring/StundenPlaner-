@@ -5,6 +5,7 @@
  */
 package dataEntryUI.student;
 
+import core.Profile;
 import core.Student;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
@@ -15,9 +16,9 @@ import mainframe.MainFrame;
  */
 public class StudentEdit extends DataEntryAndEdit {
 
-    private Student student;
+    private Profile student;
 
-    public StudentEdit(MainFrame mainFrame, Student student) {
+    public StudentEdit(MainFrame mainFrame, Profile student) {
         super(mainFrame, "Schülerprofil ändern oder löschen");
         this.student = student;
         setUpMask();

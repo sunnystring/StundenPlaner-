@@ -5,7 +5,7 @@
  */
 package dataEntryUI.group;
 
-import dataEntryUI.group.GroupEntry;
+import dataEntryUI.ProfileNames;
 import core.Group;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -6,6 +6,7 @@
 package dataEntryUI.group;
 
 import core.Group;
+import core.Profile;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
@@ -15,9 +16,9 @@ import mainframe.MainFrame;
  */
 public class GroupEntry extends DataEntryAndEdit {
 
-    private Group group;
+    private Profile group;
 
-    public GroupEntry(MainFrame mainFrame, String profileName, Group group) {
+    public GroupEntry(MainFrame mainFrame, String profileName, Profile group) {
         super(mainFrame, profileName + " erstellen");
         this.group = group;
         setUpMask();

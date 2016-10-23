@@ -6,7 +6,7 @@
 package dataEntryUI.student;
 
 import core.Database;
-import core.Student;
+import core.Profile;
 import dataEntryUI.ProfileInputMask;
 
 public class StudentInputMask extends ProfileInputMask {
@@ -308,7 +308,7 @@ public class StudentInputMask extends ProfileInputMask {
 //        this.profile = profile;
 //    }
 
-    public void setStudent(Student student) {
+    public void setStudent(Profile student) {
         super.setProfile(student);
     }
 //
