@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import utils.Time;
-import static scheduleData.ScheduleFieldData.*;
+import static scheduleData.ScheduleFieldConstants.*;
 import studentListData.StudentListData;
 import userUtils.LectionGapFiller;
 
@@ -140,7 +140,7 @@ public class DayColumnData {
 
     public void resetValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldList.get(i).setValidTimeMark(NO_VALUE);
+            fieldList.get(i).setValidTimeMark(UNVALID_VALUE);
         }
     }
 

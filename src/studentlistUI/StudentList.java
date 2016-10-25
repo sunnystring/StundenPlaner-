@@ -50,9 +50,9 @@ public class StudentList extends JTable {
         addMouseListener(timeField);
         addMouseListener(scheduleData);
         setShowGrid(true);
-        setGridColor(Colors.BACKGROUND);
+        setGridColor(Colors.BACKGROUND_COLOR);
         setFillsViewportHeight(true);
-        setBackground(Colors.BACKGROUND);
+        setBackground(Colors.BACKGROUND_COLOR);
         setRowHeight(25);
 
     }

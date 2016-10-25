@@ -49,32 +49,32 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
         setForeground(Color.BLACK);
-        setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
+        setBackground(col == 0 ? Colors.NAME_FIELD_COLOR : studentFieldData.getFieldColor());
+        // nicht einteilbar
+        if (studentFieldData.isUnallocatable()) {
+            setBackground(Colors.RED_DEFAULT);
+        }
         // Mouseover
-        if (studentListData.isStudentListReleased() && row == movedRow) { // studentListData.isStudentListReleased()
+        if (studentListData.isStudentListReleased() && row == movedRow) {
             if (col == 0) {
-                setBackground(Colors.NAME_FIELD_SELECTED);
+                setBackground(Colors.NAME_FIELD_SELECTED_COLOR);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
                 setForeground(Color.WHITE);
             } else {
                 setBackground(Colors.LIGHT_GREEN);
             }
         } else {
-            setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
+            setBackground(col == 0 ? Colors.NAME_FIELD_COLOR : studentFieldData.getFieldColor());
         }
         // Row selected
         if (row == studentFieldData.selectedRowIndex()) {
             if (col == 0) {
-                setBackground(Colors.NAME_FIELD_SELECTED);
+                setBackground(Colors.NAME_FIELD_SELECTED_COLOR);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
                 setForeground(Color.WHITE);
             } else {
                 setBackground(studentFieldData.isFieldSelected() ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
             }
-        }
-        // nicht einteilbar
-        if (studentFieldData.isUnallocatable()) {
-            setBackground(Colors.PURPLE_DEFAULT);
         }
         // LectionGapFiller aktiviert
         if (studentFieldData.isLectionGapFiller()) {

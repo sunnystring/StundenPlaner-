@@ -58,7 +58,7 @@ public class BreakWatcher {
             } else if (lectionFieldsTotal > FOUR_HOURS_BOUND && breakFieldMax < FOUR_HOURS_MIN_BREAK) {
                 schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
             } else {
-                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, dayColumn.getDayName());
+                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD_COLOR, dayColumn.getDayName());
             }
         }
     }

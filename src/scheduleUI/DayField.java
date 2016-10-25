@@ -21,11 +21,11 @@ public class DayField extends JLabel {
 
     public DayField(String text) {
         setText("  " + text);
-        setBackground(Colors.DAY_FIELD);
+        setBackground(Colors.DAY_FIELD_COLOR);
         setForeground(Color.WHITE);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.BACKGROUND));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.BACKGROUND_COLOR));
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }

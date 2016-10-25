@@ -15,14 +15,15 @@ public class Colors {
 
     public static final Color LIGHT_GRAY = new Color(240, 240, 240),
             DARK_GREEN = new Color(0, 204, 0),
+            GROUP_LECTION_GREEN = new Color(150, 204, 0),
             LIGHT_GREEN = new Color(51, 255, 51),
-            DAY_FIELD = new Color(0, 153, 76),
-            DAY_FIELD_SELECTED = new Color(0, 102, 52),
-            NAME_FIELD = new Color(204, 150, 0),
-            NAME_FIELD_SELECTED = new Color(153, 100, 0),
-            FAVORITE = Color.BLUE,
-            UNVALID = Color.ORANGE,
-            BACKGROUND = Color.WHITE,
+            DAY_FIELD_COLOR = new Color(0, 153, 76),
+            DAY_FIELD_SELECTED_COLOR = new Color(0, 102, 52),
+            NAME_FIELD_COLOR = new Color(204, 150, 0),
+            NAME_FIELD_SELECTED_COLOR = new Color(153, 100, 0),
+            FAVORITE_COLOR = Color.BLUE,
+            UNVALID_COLOR = Color.ORANGE,
+            BACKGROUND_COLOR = Color.WHITE,
             BLUE_0 = new Color(204, 229, 255),
             BLUE_DEFAULT = new Color(153, 204, 255),
             BLUE_2 = new Color(80, 153, 255),
@@ -38,7 +39,7 @@ public class Colors {
             RED_2 = new Color(240, 140, 140),
             RED_3 = new Color(230, 80, 80),
             RED_4 = new Color(210, 0, 0),
-            TIMEFIELD_HOUR = new Color(255, 229, 204);
+            TIMEFIELD_HOUR_COLOR = new Color(255, 229, 204);
     private static final Color[] BLUE_TYPES = {BLUE_0, BLUE_DEFAULT, BLUE_2, BLUE_3, BLUE_4};
     private static final Color[] RED_TYPES = {RED_DEFAULT, RED_1, RED_2, RED_3, RED_4};
     private static final Color[] PURPLE_TYPES = {PURPLE_DEFAULT, PURPLE_1, PURPLE_2, PURPLE_3, PURPLE_4};

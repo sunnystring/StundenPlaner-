@@ -30,6 +30,7 @@ public class Database {
     private ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
     private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
     private int numberOfStudents;
+    private int numberOfSingleStudents;
 
     public Database() {
         scheduleTimes = new ScheduleTimes();
@@ -43,12 +44,16 @@ public class Database {
         sortedStudentDayLists = new ArrayList<>();
         studentIDMaps = new ArrayList<>();
         numberOfStudents = 0;
+        numberOfSingleStudents = 0;
     }
 
     public void addProfile(Profile profile) {
         profile.setID(numberOfStudents);
         studentDataList.add(profile);
         numberOfStudents = studentDataList.size(); // nächster Student
+        if (profile.getProfileType() != ProfileTypes.GROUP) {
+            numberOfSingleStudents++;
+        }
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
             l.profileAdded(numberOfStudents, profile);
@@ -65,6 +70,9 @@ public class Database {
     public void deleteProfile(Profile profile) {
         studentDataList.remove(profile);
         numberOfStudents = studentDataList.size(); // = numberOfStudents--
+        if (profile.getProfileType() != ProfileTypes.GROUP) {
+            numberOfSingleStudents--;
+        }
         updateStudentIDs();
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
@@ -100,6 +108,11 @@ public class Database {
 
     private void updateNumberOfStudents() {
         numberOfStudents = studentDataList.size();
+        for (Profile profile : studentDataList) {
+            if (profile.getProfileType() != ProfileTypes.GROUP) {
+                numberOfSingleStudents++;
+            }
+        }
     }
 
     public void adjustStudentDaysToScheduleChange() {
@@ -146,6 +159,10 @@ public class Database {
 
     public int getNumberOfStudents() {
         return numberOfStudents;
+    }
+
+    public String getNumberOfSingleStudents() {
+        return String.valueOf(numberOfSingleStudents);
     }
 
     public ArrayList<StudentDay> getSortedStudentDayListAt(int dayIndex) {

@@ -34,7 +34,7 @@ public class TimeTable extends JTable {
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
         setFillsViewportHeight(true);
-        setBackground(Colors.BACKGROUND);
+        setBackground(Colors.BACKGROUND_COLOR);
         setRowHeight(ScheduleZoom.DEFAULT_HEIGHT);
     }
 

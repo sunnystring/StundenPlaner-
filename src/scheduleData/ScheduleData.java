@@ -20,7 +20,7 @@ import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
 import utils.Time;
-import static scheduleData.ScheduleFieldData.*;
+import static scheduleData.ScheduleFieldConstants.*;
 import userUtils.BreakWatcher;
 import userUtils.LectionGapFiller;
 
@@ -243,10 +243,11 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     if (fieldData.getLectionPanelAreaMark() == HEAD) {
                         headRow = i;
                     }
-                } else { // Sperrzonen: lectionLength unterhalb Lection und vor Stundenplan-Ende 
+                } else { // einteilbare Zone, ausser lectionLength unterhalb Lection und vor Stundenplan-Ende 
                     boolean isAllocatable = !(i < headRow && i > headRow - lectionLength) && (i <= rowCount - lectionLength);
                     fieldData.setMoveEnabled(isAllocatable);
                     fieldData.setProfileID(profile.getID());
+                    fieldData.setLectionProfileType(profile.getProfileType());
                     fieldData.resetPanelAreaMarks();
                 }
             }
@@ -263,7 +264,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     fieldDataMatrix[i][j].setMoveEnabled(false);
                     fieldDataMatrix[i][j].resetPanelAreaMarks();
                 }
-                fieldDataMatrix[i][j].setValidTimeMark(NO_VALUE);
+                fieldDataMatrix[i][j].setValidTimeMark(UNVALID_VALUE);
             }
         }
     }
@@ -274,7 +275,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         ScheduleFieldData field;
         LectionData lection = new LectionData(dayIndex);
         Time startTime = null;
-        int allocatedTimeMark = NO_VALUE;
+        int allocatedTimeMark = UNVALID_VALUE;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
             field = dayColumn.getFieldDataAt(i);
             if (i == dayColumnFieldIndex) {
@@ -343,7 +344,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix[i][j].setMoveEnabled(false);
-                fieldDataMatrix[i][j].setValidTimeMark(NO_VALUE);
+                fieldDataMatrix[i][j].setValidTimeMark(UNVALID_VALUE);
             }
         }
     }
