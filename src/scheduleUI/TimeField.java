@@ -17,8 +17,9 @@ import scheduleData.ScheduleFieldData;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
-import utils.Colors;
+import static utils.Colors.*;
 import static studentListData.StudentListData.NULL_VALUE;
+import static scheduleData.ScheduleFieldConstants.*;
 
 /**
  *
@@ -44,22 +45,22 @@ public class TimeField extends LectionField {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         // Schülerzeiten anzeigen
-        boolean isValidTime = fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_1 || fieldData.getValidTimeMark() == ScheduleFieldData.TIME_INTERVAL_2;
+        boolean isValidTime = fieldData.getValidTimeMark() == TIME_INTERVAL_1 || fieldData.getValidTimeMark() == TIME_INTERVAL_2;
         setText(fieldData.isMinute(row) ? fieldData.getMinute(row) : fieldData.getHour(row));
         setForeground(fieldData.isTeacherTime() ? Color.BLACK : Color.LIGHT_GRAY);
 
-        if (fieldData.getValidTimeMark() == ScheduleFieldData.FAVORITE) {
-            setBackground(Colors.FAVORITE);
+        if (fieldData.getValidTimeMark() == FAVORITE) {
+            setBackground(FAVORITE_COLOR);
         } else if (isValidTime) {
-            setBackground(Colors.LIGHT_GREEN);
+            setBackground(LIGHT_GREEN);
         } else {
-            setBackground(Colors.BACKGROUND);
+            setBackground(BACKGROUND_COLOR);
         }
-        if (!fieldData.isMinute(col) && fieldData.getValidTimeMark() != ScheduleFieldData.FAVORITE) {  // Hour markieren, wenn kein Favorit oder Einzellektion, 
+        if (!fieldData.isMinute(col) && fieldData.getValidTimeMark() != FAVORITE) {  // Hour markieren, wenn kein Favorit oder Einzellektion, 
             if (!fieldData.isMinute(row) && isValidTime) {
-                setBackground(Colors.LIGHT_GREEN);
+                setBackground(LIGHT_GREEN);
             } else {
-                setBackground(Colors.TIMEFIELD_HOUR);
+                setBackground(TIMEFIELD_HOUR_COLOR);
             }
         }
         // Mouseover 

@@ -17,7 +17,7 @@ import scheduleData.ScheduleData;
 import scheduleUI.LectionField;
 import scheduleUI.TimeField;
 import studentListData.StudentFieldData;
-import utils.Colors;
+import static utils.Colors.*;
 
 /**
  *
@@ -50,9 +50,9 @@ public class StudentList extends JTable {
         addMouseListener(timeField);
         addMouseListener(scheduleData);
         setShowGrid(true);
-        setGridColor(Colors.BACKGROUND);
+        setGridColor(BACKGROUND_COLOR);
         setFillsViewportHeight(true);
-        setBackground(Colors.BACKGROUND);
+        setBackground(BACKGROUND_COLOR);
         setRowHeight(25);
 
     }

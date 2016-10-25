@@ -5,8 +5,8 @@
  */
 package dataEntryUI.group;
 
-import dataEntryUI.ProfileNames;
 import core.Profile;
+import core.ProfileTypes;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
@@ -19,7 +19,7 @@ public class GroupEdit extends DataEntryAndEdit {
     private Profile group;
 
     public GroupEdit(MainFrame mainFrame, Profile group) {
-        super(mainFrame, group.getProfileName()+" ändern oder löschen");
+        super(mainFrame, group.getProfileName() + "-Profil ändern oder löschen");
         this.group = group;
         setUpMask();
         pack();
@@ -27,23 +27,23 @@ public class GroupEdit extends DataEntryAndEdit {
 
     public void selectProfile() {
         switch (group.getProfileName()) {
-            case ProfileNames.KGU:
+            case ProfileTypes.KGU_NAME:
                 //....
                 break;
-            case ProfileNames.WORKSHOP:
-                groupInputMask.workshopProfile();
+            case ProfileTypes.WORKSHOP_NAME:
+                groupInputMask.restoreWorkshopProfile();
                 break;
-            case ProfileNames.INSTR_FORMATION:
-                groupInputMask.instrumentalformationProfile(group);
+            case ProfileTypes.INSTR_FORMATION_NAME:
+                groupInputMask.restoreInstrumentalformationProfile(group);
                 break;
-            case ProfileNames.CHOR:
-                groupInputMask.chorProfile(group);
+            case ProfileTypes.CHOR_NAME:
+                groupInputMask.restoreChorProfile(group);
                 break;
-            case ProfileNames.GRUNDSCHULUNG:
-                groupInputMask.grundschulungProfile();
+            case ProfileTypes.GRUNDSCHULUNG_NAME:
+                groupInputMask.restoreGrundschulungProfile();
                 break;
-            case ProfileNames.ANDERES:
-                groupInputMask.otherProfile(group);
+            case ProfileTypes.ANDERES_NAME:
+                groupInputMask.restoreOtherProfile(group);
                 break;
             default:
                 break;
@@ -53,7 +53,8 @@ public class GroupEdit extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        groupInputMask.setGroup(group);
+        group.setProfileType(ProfileTypes.GROUP);
+        groupInputMask.setProfile(group);
         groupInputMask.setupEditUI(this);
         groupInputMask.updateUpperEntryFields();
         add(groupInputMask);

@@ -5,7 +5,8 @@
  */
 package studentlistUI;
 
-import java.awt.Color;
+import static core.ProfileTypes.*;
+import static java.awt.Color.*;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -18,7 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
-import utils.Colors;
+import static utils.Colors.*;
 import static studentListData.StudentListData.NULL_VALUE;
 
 /**
@@ -48,43 +49,49 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         StudentFieldData studentFieldData = (StudentFieldData) value;
         setText(col == 0 ? studentFieldData.getNameString() : studentFieldData.getValidTimeString());
         setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-        setForeground(Color.BLACK);
-        setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
-        // Mouseover
-        if (studentListData.isStudentListReleased() && row == movedRow) { // studentListData.isStudentListReleased()
-            if (col == 0) {
-                setBackground(Colors.NAME_FIELD_SELECTED);
-                setFont(this.getFont().deriveFont(Font.BOLD, 10));
-                setForeground(Color.WHITE);
-            } else {
-                setBackground(Colors.LIGHT_GREEN);
-            }
+        setForeground(BLACK);
+        // Namensfeld
+        if (col == 0) {
+            setBackground(studentFieldData.getLectionProfileType() == GROUP ? NAMEFIELD_GROUP_COLOR : NAMEFIELD_SINGLE_COLOR);
         } else {
-            setBackground(col == 0 ? Colors.NAME_FIELD : studentFieldData.getFieldColor());
+            setBackground(studentFieldData.getFieldColor());
+        }
+        // nicht einteilbar
+        if (studentFieldData.isUnallocatable()) {
+            setBackground(RED_DEFAULT);
+        }
+        // Mouseover
+        if (studentListData.isStudentListReleased() && row == movedRow) {
+            if (col == 0) {
+                setBackground(NAMEFIELD_SELECTED_COLOR);
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setForeground(WHITE);
+            } else {
+                setBackground(LIGHT_GREEN);
+            }
+        } else if(col == 0)
+        {
+            setBackground(studentFieldData.getLectionProfileType() == GROUP ? NAMEFIELD_GROUP_COLOR : NAMEFIELD_SINGLE_COLOR);
         }
         // Row selected
         if (row == studentFieldData.selectedRowIndex()) {
             if (col == 0) {
-                setBackground(Colors.NAME_FIELD_SELECTED);
+                setBackground(NAMEFIELD_SELECTED_COLOR);
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
-                setForeground(Color.WHITE);
+                setForeground(WHITE);
             } else {
-                setBackground(studentFieldData.isFieldSelected() ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
+                setBackground(studentFieldData.isFieldSelected() ? DARK_GREEN : LIGHT_GREEN);
             }
-        }
-        // nicht einteilbar
-        if (studentFieldData.isUnallocatable()) {
-            setBackground(Colors.PURPLE_DEFAULT);
         }
         // LectionGapFiller aktiviert
         if (studentFieldData.isLectionGapFiller()) {
-            setBackground(Colors.LIGHT_GREEN);
+            setBackground(LIGHT_GREEN);
         }
         // eingeteilt
         if (studentFieldData.isStudentAllocated()) {
             setFont(this.getFont().deriveFont(Font.PLAIN, 10));
-            setBackground(Colors.LIGHT_GRAY);
-            setForeground(Color.GRAY);
+            setBackground(LIGHT_GRAY_COLOR);
+            setForeground(GRAY);
         }
         return this;
     }

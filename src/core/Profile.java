@@ -5,8 +5,6 @@
  */
 package core;
 
-import dataEntryUI.ProfileNames;
-
 /**
  *
  * @author mathiaskielholz
@@ -19,14 +17,12 @@ public class Profile {
     protected int lectionLengthInMinutes;
     protected int profileID;
     protected boolean allocated;
+    protected int profileType;
     protected String profileName;
-  //  protected boolean singleLectionMode;
 
     public Profile() {
         studentTimes = new StudentTimes();
         allocated = false;
-        profileName = ProfileNames.SINGLE;
-      //  singleLectionMode = true;
     }
 
     public void setStudentTimes(StudentTimes studentTimes) {
@@ -43,6 +39,22 @@ public class Profile {
 
     public int getID() {
         return profileID;
+    }
+
+    public void setProfileType(int profileType) {
+        this.profileType = profileType;
+    }
+
+    public int getProfileType() {
+        return profileType;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getProfileName() {
+        return profileName;
     }
 
     public String getFirstName() {
@@ -88,21 +100,5 @@ public class Profile {
     public boolean getDaySelectionStateAt(int dayIndex) {
         return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
     }
-
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
-    }
-
-    public String getProfileName() {
-        return profileName;
-    }
-
-//    public void setProfileMode(boolean profileMode) {
-//        this.singleLectionMode = profileMode;
-//    }
-//
-//    public boolean isSingleLectionMode() {
-//        return singleLectionMode;
-//    }
 
 }

@@ -39,9 +39,9 @@ public class TimeSelectionTable extends JTable {
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
                 setText(scheduleTimes.getValueAt(row, col).toString());
                 if (row % 2 == 0) {
-                    setBackground(Colors.BACKGROUND);
+                    setBackground(Colors.BACKGROUND_COLOR);
                 } else {
-                    setBackground(Colors.LIGHT_GRAY);
+                    setBackground(Colors.LIGHT_GRAY_COLOR);
                 }
                 if (isSelected && col > 0) {
                     setBackground(getSelectionBackground());
@@ -59,9 +59,9 @@ public class TimeSelectionTable extends JTable {
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
                 setText(studentTimes.getValueAt(row, col).toString());
                 if (scheduleTimes.isValidDay(row)) {
-                    setBackground(Colors.BACKGROUND);
+                    setBackground(Colors.BACKGROUND_COLOR);
                 } else {
-                    setBackground(Colors.LIGHT_GRAY);
+                    setBackground(Colors.LIGHT_GRAY_COLOR);
                 }
                 if (isSelected && col > 0 && scheduleTimes.isValidDay(row)) {
                     setBackground(getSelectionBackground());

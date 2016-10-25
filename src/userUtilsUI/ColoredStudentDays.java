@@ -13,7 +13,7 @@ import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtils.IncompatibleStudentTimes;
 import userUtils.StudentTimesDistribution;
-import utils.Colors;
+import static utils.Colors.*;
 import utils.Time;
 
 /**
@@ -63,7 +63,7 @@ public class ColoredStudentDays {
         Time time = studentDay.earliestStart();
         if (isColored) {
             if (time.isEmpty()) {
-                return Colors.LIGHT_GRAY;
+                return LIGHT_GRAY_COLOR;
             } else if (isIncompatible) {
                 return timeDistribution.getRed(time, dayIndex);
             } else if (isSingleDay) {
@@ -73,11 +73,11 @@ public class ColoredStudentDays {
             }
         } else {
             if (isIncompatible) {
-                return Colors.RED_DEFAULT;
+                return RED_DEFAULT;
             } else if (isSingleDay) {
-                return Colors.PURPLE_DEFAULT;
+                return PURPLE_DEFAULT;
             } else {
-                return Colors.BLUE_DEFAULT;
+                return BLUE_DEFAULT;
             }
         }
     }

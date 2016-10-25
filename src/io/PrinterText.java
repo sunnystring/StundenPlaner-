@@ -10,7 +10,6 @@ import core.Profile;
 import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 import static core.ScheduleTimes.DAYS;
-import core.Student;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;

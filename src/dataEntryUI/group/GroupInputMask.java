@@ -8,6 +8,8 @@ package dataEntryUI.group;
 import core.Database;
 import core.Profile;
 import dataEntryUI.ProfileInputMask;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 /**
@@ -19,7 +21,7 @@ public class GroupInputMask extends ProfileInputMask {
     public GroupInputMask(Database database) {
         super(database);
         adjustNameLabels();
-
+        createLectionTypeSelectionListener();
     }
 
     private void adjustNameLabels() {
@@ -36,9 +38,33 @@ public class GroupInputMask extends ProfileInputMask {
         removeExistingLectionTypeEntry();
         lectionTypes = new String[]{"45", "60", "90", "105", "120", "180"};
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
+        addNewLectionTypeEntry();
     }
 
-    public void instrumentalformationProfile(Profile group) {
+    public void chorProfile() {
+        removeExistingLectionTypeEntry();
+        lectionTypes = new String[]{"30", "45", "60", "90", "120"};
+        lectiontypeSelectionBox = new JComboBox(lectionTypes);
+        addNewLectionTypeEntry();
+    }
+
+    public void grundschulungProfile() {
+        lectionLength = "45";
+        removeExistingLectionTypeEntry();
+    }
+
+    public void otherProfile() {
+        removeExistingLectionTypeEntry();
+        lectionTypes = new String[]{"45", "60", "75", "90"};
+        lectiontypeSelectionBox = new JComboBox(lectionTypes);
+        addNewLectionTypeEntry();
+    }
+
+    public void restoreWorkshopProfile() {
+        workshopProfile();
+    }
+
+    public void restoreInstrumentalformationProfile(Profile group) {
         instrumentalformationProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -67,13 +93,7 @@ public class GroupInputMask extends ProfileInputMask {
         addNewLectionTypeEntry();
     }
 
-    public void chorProfile() {
-        removeExistingLectionTypeEntry();
-        lectionTypes = new String[]{"30", "45", "60", "90", "120"};
-        lectiontypeSelectionBox = new JComboBox(lectionTypes);
-    }
-
-    public void chorProfile(Profile group) {
+    public void restoreChorProfile(Profile group) {
         chorProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -99,18 +119,11 @@ public class GroupInputMask extends ProfileInputMask {
         addNewLectionTypeEntry();
     }
 
-    public void grundschulungProfile() {
-        lectionLength = "45";
-        removeExistingLectionTypeEntry();
+    public void restoreGrundschulungProfile() {
+        grundschulungProfile();
     }
 
-    public void otherProfile() {
-        removeExistingLectionTypeEntry();
-        lectionTypes = new String[]{"45", "60", "75", "90"};
-        lectiontypeSelectionBox = new JComboBox(lectionTypes);
-    }
-
-    public void otherProfile(Profile group) {
+    public void restoreOtherProfile(Profile group) {
         otherProfile();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
@@ -139,12 +152,19 @@ public class GroupInputMask extends ProfileInputMask {
     }
 
     public void addNewLectionTypeEntry() {
-        addLectiontypeSelectionListener();
+        addLectionTypeSelectionListener();
         top.add(lectiontypeLabel);
         top.add(lectiontypeSelectionBox);
     }
 
-    public void setGroup(Profile group) {
-        super.setProfile(group);
+    @Override
+    public void createLectionTypeSelectionListener() {
+        lectiontypeSelectionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox selectionBox = (JComboBox) e.getSource();
+                lectionLength = (String) selectionBox.getSelectedItem();
+            }
+        };
     }
 }

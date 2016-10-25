@@ -10,7 +10,7 @@ import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
-import utils.Colors;
+import static utils.Colors.*;
 
 /**
  *
@@ -34,7 +34,7 @@ public class TimeTable extends JTable {
         addMouseListener(studentListData);
         addMouseListener(scheduleData);
         setFillsViewportHeight(true);
-        setBackground(Colors.BACKGROUND);
+        setBackground(BACKGROUND_COLOR);
         setRowHeight(ScheduleZoom.DEFAULT_HEIGHT);
     }
 

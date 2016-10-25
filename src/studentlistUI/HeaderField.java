@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
-import utils.Colors;
+import static utils.Colors.*;
 
 /**
  *
@@ -22,10 +22,10 @@ import utils.Colors;
 public class HeaderField extends JLabel implements TableCellRenderer {
 
     public HeaderField() {
-        setForeground(Colors.BACKGROUND);
+        setForeground(BACKGROUND_COLOR);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.LIGHT_GRAY));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, LIGHT_GRAY_COLOR));
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }
@@ -34,7 +34,7 @@ public class HeaderField extends JLabel implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object o, boolean bln, boolean bln1, int row, int col) {
         String msg = (String) o;
         setText(msg);
-        setBackground(col == 0 ? Colors.NAME_FIELD_SELECTED : Colors.DAY_FIELD);
+        setBackground(col == 0 ? NAMEFIELD_SELECTED_COLOR : DAYFIELD_COLOR);
         return this;
     }
 }

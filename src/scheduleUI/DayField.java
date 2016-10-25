@@ -11,7 +11,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import utils.Colors;
+import static utils.Colors.*;
 
 /**
  *
@@ -21,11 +21,11 @@ public class DayField extends JLabel {
 
     public DayField(String text) {
         setText("  " + text);
-        setBackground(Colors.DAY_FIELD);
+        setBackground(DAYFIELD_COLOR);
         setForeground(Color.WHITE);
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Colors.BACKGROUND));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }

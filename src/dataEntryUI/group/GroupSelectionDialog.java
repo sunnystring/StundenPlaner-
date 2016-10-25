@@ -5,8 +5,9 @@
  */
 package dataEntryUI.group;
 
-import dataEntryUI.ProfileNames;
-import core.Group;
+import core.ProfileTypes;
+import core.Profile;
+import dataEntryUI.group.kgu.KGUEntry;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,15 +31,16 @@ import mainframe.MainFrame;
 public class GroupSelectionDialog extends JDialog {
 
     private MainFrame mainFrame;
-    private Group group;
+    private Profile group;
     private GroupEntry selectedEntry;
+    private KGUEntry KGUEntry;
     private String profileName;
     private JPanel selectionField, buttonField;
     private ButtonGroup allSelections;
     private JRadioButton KGUSelection, workshopSelection, instrumentalformationSelection, chorSelection, grundschulungSelection, otherSelection;
     private JButton cancelButton, approveButton;
 
-    public GroupSelectionDialog(MainFrame mainFrame, Group group) {
+    public GroupSelectionDialog(MainFrame mainFrame, Profile group) {
         this.mainFrame = mainFrame;
         this.group = group;
         selectedEntry = null;
@@ -60,12 +62,12 @@ public class GroupSelectionDialog extends JDialog {
         selectionField = new JPanel();
         selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
         selectionField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        KGUSelection = new JRadioButton(ProfileNames.KGU);
-        workshopSelection = new JRadioButton(ProfileNames.WORKSHOP);
-        instrumentalformationSelection = new JRadioButton(ProfileNames.INSTR_FORMATION);
-        chorSelection = new JRadioButton(ProfileNames.CHOR);
-        grundschulungSelection = new JRadioButton(ProfileNames.GRUNDSCHULUNG);
-        otherSelection = new JRadioButton(ProfileNames.ANDERES);
+        KGUSelection = new JRadioButton(ProfileTypes.KGU_NAME);
+        workshopSelection = new JRadioButton(ProfileTypes.WORKSHOP_NAME);
+        instrumentalformationSelection = new JRadioButton(ProfileTypes.INSTR_FORMATION_NAME);
+        chorSelection = new JRadioButton(ProfileTypes.CHOR_NAME);
+        grundschulungSelection = new JRadioButton(ProfileTypes.GRUNDSCHULUNG_NAME);
+        otherSelection = new JRadioButton(ProfileTypes.ANDERES_NAME);
         createButtonGroup();
         buttonField = new JPanel();
         buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
@@ -103,24 +105,22 @@ public class GroupSelectionDialog extends JDialog {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 selectedEntry = null;
-                //..........
+                 KGUEntry = new KGUEntry(mainFrame, group);
             }
         });
         workshopSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // if (e.getStateChange() == ItemEvent.SELECTED) {
-                profileName = ProfileNames.WORKSHOP;
+                profileName = ProfileTypes.WORKSHOP_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setWorkshopProfile();
-                // }
             }
         });
         instrumentalformationSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileNames.INSTR_FORMATION;
+                profileName = ProfileTypes.INSTR_FORMATION_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setInstrumentalformationProfile();
@@ -129,7 +129,7 @@ public class GroupSelectionDialog extends JDialog {
         chorSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileNames.CHOR;
+                profileName = ProfileTypes.CHOR_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setChorProfile();
@@ -138,7 +138,7 @@ public class GroupSelectionDialog extends JDialog {
         grundschulungSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileNames.GRUNDSCHULUNG;
+                profileName = ProfileTypes.GRUNDSCHULUNG_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setGrundschulungProfile();
@@ -147,7 +147,7 @@ public class GroupSelectionDialog extends JDialog {
         otherSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileNames.ANDERES;
+                profileName = ProfileTypes.ANDERES_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + " Profil", group);
                 selectedEntry.setOtherProfile();
@@ -171,6 +171,8 @@ public class GroupSelectionDialog extends JDialog {
                 dispose();
                 if (selectedEntry != null) {
                     selectedEntry.setVisible(true);
+                } else {
+                    KGUEntry.setVisible(true);
                 }
             }
         });

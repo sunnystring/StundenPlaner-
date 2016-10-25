@@ -7,17 +7,14 @@ package studentListData;
 
 import core.Database;
 import core.DatabaseListener;
-import core.Group;
 import core.Profile;
-import core.Student;
-import dataEntryUI.ProfileNames;
+import core.ProfileTypes;
 import dataEntryUI.group.GroupEdit;
 import dataEntryUI.student.StudentEdit;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import javax.swing.JDialog;
 import javax.swing.table.AbstractTableModel;
 import mainframe.MainFrame;
 import scheduleUI.TimeTable;
@@ -25,6 +22,7 @@ import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
+import scheduleData.ScheduleFieldConstants;
 
 /**
  *
@@ -120,6 +118,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
             studentRow[col].setProfileID(profile.getID());
+            studentRow[col].setLectionProfileType(profile.getProfileType());
             studentRow[col].setStudentAllocated(profile.isAllocated());
             if (col > 0) {
                 studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));
@@ -179,7 +178,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public String getColumnName(int col) {
         if (col == 0) {
-            return "  Vorname Name  (" + String.valueOf(numberOfStudents) + ")";
+            return "  Vorname Name  (" + database.getNumberOfSingleStudents() + ")";
         } else {
             return "  " + scheduleData.getDayColumn(col - 1).getDayName();
         }
@@ -221,14 +220,13 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         fireTableDataChanged();
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
-                        if (profile.getProfileName().equals(ProfileNames.SINGLE)) { // Schülerprofil ändern/löschen
-                            StudentEdit studentEditDialog = new StudentEdit(mainFrame, profile);
-                            studentEditDialog.setVisible(true);
-                        } else { // Gruppenprofil ändern/löschen
+                        if (profile.getProfileType() == ProfileTypes.GROUP) { // Gruppenprofil ändern/löschen
                             GroupEdit groupEditDialog = new GroupEdit(mainFrame, profile);
                             groupEditDialog.selectProfile();
                             groupEditDialog.setVisible(true);
-
+                        } else { // Schülerprofil ändern/löschen
+                            StudentEdit studentEditDialog = new StudentEdit(mainFrame, profile);
+                            studentEditDialog.setVisible(true);
                         }
                     }
                 }
@@ -244,12 +242,12 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                 Profile profile = fieldData.getProfile();
                 if (fieldData.isMoveEnabled()) {
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
-                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.HEAD) {
+                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.HEAD) {
                             blockStudentList();
                             mainFrame.setDataEntryButtonsEnabled(false);
                             mainFrame.setFileButtonsEnabled(false);
                         }
-                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocated(allocatedRow, false);
                             profile.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);

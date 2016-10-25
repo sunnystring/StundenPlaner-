@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
-import utils.Colors;
+import static utils.Colors.*;
 
 /**
  *
@@ -32,12 +32,12 @@ public class Schedule extends JPanel {
         this.scheduleData = scheduleData;
         header = new JPanel();
         header.setLayout(new GridLayout(1, 4));
-        header.setBackground(Colors.BACKGROUND);
+        header.setBackground(BACKGROUND_COLOR);
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
         setLayout(new BorderLayout());
-        setBackground(Colors.BACKGROUND);
+        setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
         add(BorderLayout.CENTER, timeTable);
     }

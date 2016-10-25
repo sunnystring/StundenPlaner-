@@ -5,7 +5,8 @@
  */
 package scheduleUI;
 
-import java.awt.Color;
+import core.ProfileTypes;
+import static java.awt.Color.*;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -22,8 +23,9 @@ import studentListData.StudentFieldData;
 import studentListData.StudentListData;
 import studentlistUI.StudentList;
 import userUtilsUI.ScheduleZoom;
-import utils.Colors;
+import static utils.Colors.*;
 import static studentListData.StudentListData.NULL_VALUE;
+import static scheduleData.ScheduleFieldConstants.*;
 
 /**
  *
@@ -71,38 +73,42 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         ScheduleFieldData fieldData = (ScheduleFieldData) value;
         ScheduleFieldData fieldDataAtMovedCoordinates = scheduleData.getValueAt(movedRow, movedCol);
-        setBackground(Colors.BACKGROUND);
+        setBackground(BACKGROUND_COLOR);
         setText("");
         // Allocated Mode
         if (fieldData.isLectionAllocated()) {
-            setBackground(fieldData.getAllocatedTimeMark() != ScheduleFieldData.NO_VALUE ? Colors.DARK_GREEN : Colors.UNVALID);
-            if (fieldData.isLectionGapFiller()) {
-                setBackground(Colors.LIGHT_GREEN);
+            if (fieldData.getAllocatedTimeMark() == UNVALID_VALUE) {
+                setBackground(UNVALID_COLOR);
+            } else {
+                setBackground(fieldData.getLectionProfileType()== ProfileTypes.GROUP ? GROUP_LECTION_GREEN : DARK_GREEN);
             }
-            setForeground(fieldData.getAllocatedTimeMark() == ScheduleFieldData.FAVORITE ? Colors.FAVORITE : Color.BLACK);
-            setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
+            if (fieldData.isLectionGapFiller()) {
+                setBackground(LIGHT_GREEN);
+            }
+            setForeground(fieldData.getAllocatedTimeMark() == FAVORITE ? FAVORITE_COLOR : BLACK);
+            setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, WHITE));
             setFont(this.getFont().deriveFont(Font.BOLD, size1));
             if (fieldData.isHead()) {
-                setForeground(Color.GRAY);
+                setForeground(GRAY);
                 setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                 setText(" " + fieldData.getFieldTime().toString());
-            } else if (fieldData.getNameMark() == ScheduleFieldData.FIRST_NAME) {
+            } else if (fieldData.getNameMark() == FIRST_NAME) {
                 setText(" " + fieldData.getProfile().getFirstName());
-            } else if (fieldData.getNameMark() == ScheduleFieldData.NAME) {
+            } else if (fieldData.getNameMark() == NAME) {
                 setText(" " + fieldData.getProfile().getName());
             }
-            if (fieldData.getLectionPanelAreaMark() == ScheduleFieldData.LAST_ROW) {
-                setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
+            if (fieldData.getLectionPanelAreaMark() == LAST_ROW) {
+                setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, WHITE));
             }
         } // Move Mode
         else if (fieldDataAtMovedCoordinates.isMoveEnabled() && !fieldDataAtMovedCoordinates.isLectionAllocated() && movedRow >= 0) { // ausserhalb JTable movedRow = -1
             if (col == movedCol && row >= movedRow && row < lectionEnd) {
-                setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.UNVALID);
-                setForeground(Color.WHITE);
-                setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
+                setBackground(fieldDataAtMovedCoordinates.isValidTime() ? LIGHT_GREEN : UNVALID_COLOR);
+                setForeground(WHITE);
+                setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, WHITE));
                 setFont(this.getFont().deriveFont(Font.BOLD, size1));
                 if (row == movedRow) {
-                    setForeground(Color.GRAY);
+                    setForeground(GRAY);
                     setFont(this.getFont().deriveFont(Font.PLAIN, size2));
                     setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
@@ -111,15 +117,15 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setText(" " + fieldData.getProfile().getName());
                 }
                 if (row == lectionEnd - 1) {
-                    setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
+                    setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, WHITE));
                 }
             }
             // Übertrag auf 2. LectionColumn (Head bleibt in 1. Column stehen)
             if (lectionDiff > 0) {
                 if (col == movedCol + 2 && row >= 0 && row < lectionDiff) {
-                    setBackground(fieldDataAtMovedCoordinates.isValidTime() ? Colors.LIGHT_GREEN : Colors.UNVALID);
-                    setForeground(Color.WHITE);
-                    setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, Color.WHITE));
+                    setBackground(fieldDataAtMovedCoordinates.isValidTime() ? LIGHT_GREEN : UNVALID_COLOR);
+                    setForeground(WHITE);
+                    setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, WHITE));
                     setFont(this.getFont().deriveFont(Font.BOLD, size1));
                     if (lectionDiff == lectionLenght - 2 && row == 0) { // noch 2 Fields in 1. Column
                         setText(" " + fieldData.getProfile().getName());
@@ -132,7 +138,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                         }
                     }
                     if (row == lectionDiff - 1) {
-                        setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, Color.WHITE));
+                        setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, WHITE));
                     }
                 }
             }

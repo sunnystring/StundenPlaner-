@@ -13,7 +13,7 @@ import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import scheduleUI.DayField;
 import scheduleUI.Schedule;
-import utils.Colors;
+import static utils.Colors.*;
 import utils.Time;
 
 /**
@@ -54,11 +54,11 @@ public class BreakWatcher {
                 }
             }
             if (lectionFieldsTotal > SIX_HOURS_BOUND && breakFieldMax < SIX_HOURS_MIN_BREAK) {
-                schedule.showBreakRequired(dayIndex, Colors.RED_4, "30 Minuten Pause einplanen!");
+                schedule.showBreakRequired(dayIndex, RED_4, "30 Minuten Pause einplanen!");
             } else if (lectionFieldsTotal > FOUR_HOURS_BOUND && breakFieldMax < FOUR_HOURS_MIN_BREAK) {
-                schedule.showBreakRequired(dayIndex, Colors.RED_2, "15 Minuten Pause einplanen!");
+                schedule.showBreakRequired(dayIndex, RED_2, "15 Minuten Pause einplanen!");
             } else {
-                schedule.showBreakRequired(dayIndex, Colors.DAY_FIELD, dayColumn.getDayName());
+                schedule.showBreakRequired(dayIndex, DAYFIELD_COLOR, dayColumn.getDayName());
             }
         }
     }

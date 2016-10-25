@@ -8,6 +8,7 @@ package scheduleData;
 import core.Database;
 import core.Profile;
 import scheduleUI.TimeTable;
+import static scheduleData.ScheduleFieldConstants.*;
 import utils.Time;
 
 /**
@@ -17,12 +18,9 @@ import utils.Time;
  */
 public class ScheduleFieldData {
 
-    public static final int TIME_INTERVAL_1 = 1, TIME_INTERVAL_2 = 2, FAVORITE = 3;
-    public static final int HEAD = 4, CENTER = 5, SECOND_LAST_ROW = 6, LAST_ROW = 7;
-    public static final int FIRST_NAME = 7, NAME = 8;
-    public static final int NO_VALUE = -1;
     private transient Database database;
     private int profileID;
+    private int lectionProfileType;
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
@@ -43,13 +41,13 @@ public class ScheduleFieldData {
     }
 
     public void resetPanelAreaMarks() {
-        nameMark = NO_VALUE;
-        lectionPanelAreaMark = NO_VALUE;
+        nameMark = UNVALID_VALUE;
+        lectionPanelAreaMark = UNVALID_VALUE;
     }
 
     public void resetTimeMarks() {
-        validTimeMark = NO_VALUE;
-        allocatedTimeMark = NO_VALUE;
+        validTimeMark = UNVALID_VALUE;
+        allocatedTimeMark = UNVALID_VALUE;
     }
 
     public void decrementProfileID() {
@@ -66,6 +64,14 @@ public class ScheduleFieldData {
 
     public Profile getProfile() {
         return database.getProfile(profileID);
+    }
+
+    public void setLectionProfileType(int lectionProfileType) {
+        this.lectionProfileType = lectionProfileType;
+    }
+
+    public int getLectionProfileType() {
+        return lectionProfileType;
     }
 
     public void setFieldTime(Time fieldTime) {
@@ -93,7 +99,7 @@ public class ScheduleFieldData {
     }
 
     public boolean isValidTime() {
-        return getValidTimeMark() != NO_VALUE;
+        return getValidTimeMark() != UNVALID_VALUE;
     }
 
     public void setAllocatedTimeMark(int allocatedTimeMark) {

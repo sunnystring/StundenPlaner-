@@ -41,36 +41,33 @@ import utils.Dialogs;
  */
 public abstract class ProfileInputMask extends JPanel {
 
-    protected Database database;
+    private Database database;
     protected Profile profile;
-    protected ScheduleTimes scheduleTimes;
-    protected StudentTimes studentTimes;
-    protected String firstName, name;
+    private ScheduleTimes scheduleTimes;
+    private StudentTimes studentTimes;
+    private String firstName, name;
     protected String lectionLength;
     protected String[] lectionTypes;
     protected JPanel top;
-    protected JPanel bottom;
-    protected JScrollPane center;
+    private JPanel bottom;
+    private JScrollPane center;
     protected JLabel firstnameLabel, nameLabel, lectiontypeLabel;
-    protected JLabel footnote;
-    protected JTextField firstnameField, nameField;
+    private JLabel footnote;
+    private JTextField firstnameField, nameField;
     protected JComboBox lectiontypeSelectionBox;
     protected ActionListener lectiontypeSelectionListener;
-    protected TimeSelectionTable timeSelectionTable;
-    protected JButton cancelButton, saveButton, deleteButton;
-    protected ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
+    private TimeSelectionTable timeSelectionTable;
+    private JButton cancelButton, saveButton, deleteButton;
+    private ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
 
     public ProfileInputMask(Database database) {
         this.database = database;
         scheduleTimes = database.getScheduleTimes();
-        lectionLength = "30";
-        lectionTypes = new String[]{"30", "40", "50", "KGU"};
+        lectionTypes = new String[]{"30", "40", "50", "KGU"}; // = default
         setLayout(new BorderLayout());
         createWidgets();
         addWidgets();
         addTextFieldListeners();
-        createLectiontypeSelectionListener();
-        addLectiontypeSelectionListener();
     }
 
     private void createWidgets() {
@@ -118,6 +115,7 @@ public abstract class ProfileInputMask extends JPanel {
         addCancelButtonListener(dataEntryAndEdit);
         addSaveButtonListener(dataEntryAndEdit);
         setUpTimeSelectionTable();
+        addLectionTypeSelectionListener();
     }
 
     public void setupEditUI(DataEntryAndEdit dataEntryAndEdit) {
@@ -127,10 +125,10 @@ public abstract class ProfileInputMask extends JPanel {
         addEditSaveButtonListener(dataEntryAndEdit);
         addDeleteButtonListener(dataEntryAndEdit);
         setUpTimeSelectionTable();
-        //updateUpperEntryFields();
+        addLectionTypeSelectionListener();
     }
 
-    public void addEntryButtons() {
+    private void addEntryButtons() {
         bottom.add(cancelButton);
         saveButton.setText("Profil speichern");
         bottom.add(saveButton);
@@ -173,38 +171,17 @@ public abstract class ProfileInputMask extends JPanel {
         });
     }
 
-    public void createLectiontypeSelectionListener() {
-        lectiontypeSelectionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox selectionBox = (JComboBox) e.getSource();
-                lectionLength = (String) selectionBox.getSelectedItem();
-//                if ("KGU".equals(type)) {
-//                    lectionLength = "45";
-//                } else 
-                // {
-                //      lectionLength = type;
-                //  }
-            }
-        };
-    }
-
-    public void addLectiontypeSelectionListener() {
-        lectiontypeSelectionBox.addActionListener(lectiontypeSelectionListener);
-    }
-
-    public void addCancelButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+    private void addCancelButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         cancelButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
         cancelButton.addActionListener(cancelButtonListener);
     }
 
-    public void addSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+    private void addSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
@@ -220,16 +197,15 @@ public abstract class ProfileInputMask extends JPanel {
                     return;
                 }
                 studentTimes.setValidStudentDays();
-                setStudentData();
+                setProfileData();
                 database.addProfile(profile);
-                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
         saveButton.addActionListener(saveButtonListener);
     }
 
-    public void addEditSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+    private void addEditSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
@@ -245,9 +221,8 @@ public abstract class ProfileInputMask extends JPanel {
                     return;
                 }
                 studentTimes.updateValidStudentDays();
-                setStudentData();
+                setProfileData();
                 database.editProfile(profile);
-                //   removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
@@ -263,19 +238,18 @@ public abstract class ProfileInputMask extends JPanel {
         }
     }
 
-    public void addDeleteButtonListener(DataEntryAndEdit dataEntryAndEdit) {
+    private void addDeleteButtonListener(DataEntryAndEdit dataEntryAndEdit) {
         deleteButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 database.deleteProfile(profile);
-                //  removeButtonsAndListeners();
                 dataEntryAndEdit.dispose();
             }
         };
         deleteButton.addActionListener(deleteButtonListener);
     }
 
-    protected void removeButtonsAndListeners() {
+    private void removeButtonsAndListeners() {
         cancelButton.removeActionListener(cancelButtonListener);
         saveButton.removeActionListener(saveButtonListener);
         deleteButton.removeActionListener(deleteButtonListener);
@@ -289,10 +263,14 @@ public abstract class ProfileInputMask extends JPanel {
         timeSelectionTable.setParameters(studentTimes);
     }
 
-    private void setStudentData() {
+    private void setProfileData() {
         profile.setFirstName(firstName);
         profile.setName(name);
         profile.setLectionLengthInMinutes(Integer.parseInt(lectionLength));
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public void clearUpperEntryFields() {
@@ -305,35 +283,14 @@ public abstract class ProfileInputMask extends JPanel {
         firstnameField.setText(profile.getFirstName());
         nameField.setText(profile.getName());
         lectionLength = String.valueOf(profile.getLectionLengthInMinutes());
-      //  updateLectiontypeSelectionBox();
-    }
-//
-//    private void updateLectiontypeSelectionBox() {
-//        switch (lectionLength) {
-//            case "30":
-//                lectiontypeSelectionBox.setSelectedIndex(0);
-//                break;
-//            case "40":
-//                lectiontypeSelectionBox.setSelectedIndex(1);
-//                break;
-//            case "50":
-//                lectiontypeSelectionBox.setSelectedIndex(2);
-//                break;
-//            case "45":
-//                lectiontypeSelectionBox.setSelectedIndex(3);
-//                break;
-//            default:
-//                lectiontypeSelectionBox.setSelectedIndex(0);
-//                break;
-//        }
-//    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
     }
 
     private int getLectionLengthInFields() {
         return Integer.parseInt(lectionLength) / 5;
     }
 
+    public void addLectionTypeSelectionListener() {
+        lectiontypeSelectionBox.addActionListener(lectiontypeSelectionListener);
+    }
+    public abstract void createLectionTypeSelectionListener();
 }

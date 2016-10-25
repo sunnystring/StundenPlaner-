@@ -6,7 +6,6 @@
 package dataEntryUI.student;
 
 import core.Profile;
-import core.Student;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
@@ -27,8 +26,9 @@ public class StudentEntry extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        studentInputMask.setStudent(student);
+        studentInputMask.setProfile(student); // setProfile
         studentInputMask.setupEntryUI(this);
+        studentInputMask.clearUpperEntryFields();
         add(studentInputMask);
     }
 }

@@ -5,8 +5,8 @@
  */
 package dataEntryUI.group;
 
-import core.Group;
 import core.Profile;
+import core.ProfileTypes;
 import dataEntryUI.DataEntryAndEdit;
 import mainframe.MainFrame;
 
@@ -31,12 +31,10 @@ public class GroupEntry extends DataEntryAndEdit {
 
     public void setInstrumentalformationProfile() {
         groupInputMask.instrumentalformationProfile();
-        groupInputMask.addNewLectionTypeEntry();
     }
 
     public void setChorProfile() {
         groupInputMask.chorProfile();
-        groupInputMask.addNewLectionTypeEntry();
     }
 
     public void setGrundschulungProfile() {
@@ -45,13 +43,14 @@ public class GroupEntry extends DataEntryAndEdit {
 
     public void setOtherProfile() {
         groupInputMask.otherProfile();
-        groupInputMask.addNewLectionTypeEntry();
     }
 
     @Override
     public void setUpMask() {
-        groupInputMask.setGroup(group);
+        group.setProfileType(ProfileTypes.GROUP);
+        groupInputMask.setProfile(group);
         groupInputMask.setupEntryUI(this);
+        groupInputMask.clearUpperEntryFields();
         add(groupInputMask);
     }
 }

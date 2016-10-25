@@ -7,7 +7,6 @@ package mainframe;
 
 import core.Database;
 import core.DatabaseListener;
-import core.Group;
 import core.Profile;
 import core.ScheduleTimes;
 import studentListData.StudentListData;
@@ -26,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import scheduleData.ScheduleData;
-import core.Student;
 import dataEntryUI.group.GroupInputMask;
 import dataEntryUI.group.GroupSelectionDialog;
 import dataEntryUI.schedule.ScheduleEdit;
@@ -237,20 +235,18 @@ public class MainFrame extends JFrame implements DatabaseListener {
         studentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Student student = new Student();
+                Profile student = new Profile();
                 student.getStudentTimes().setScheduleTimes(scheduleTimes);
                 StudentEntry studentEntry = new StudentEntry(MainFrame.this, student);
-                studentInputMask.clearUpperEntryFields();
                 studentEntry.setVisible(true);
             }
         });
         groupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Group group = new Group();
+                Profile group = new Profile();
                 group.getStudentTimes().setScheduleTimes(scheduleTimes);
                 GroupSelectionDialog groupSelection = new GroupSelectionDialog(MainFrame.this, group);
-                groupInputMask.clearUpperEntryFields();
                 groupSelection.setVisible(true);
             }
         });
@@ -394,6 +390,10 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public StudentListData getStudentListData() {
         return studentListData;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
     @Override

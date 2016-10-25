@@ -22,6 +22,7 @@ public class StudentFieldData {
     private final Database database;
     private Color fieldColor;
     private int profileID;
+    private int lectionProfileType;
     private int dayIndex;
     private String nameString;
     private String validTimeString;
@@ -66,6 +67,14 @@ public class StudentFieldData {
 
     public int getProfileID() {
         return profileID;
+    }
+
+    public void setLectionProfileType(int lectionProfileType) {
+        this.lectionProfileType = lectionProfileType;
+    }
+
+    public int getLectionProfileType() {
+        return lectionProfileType;
     }
 
     public Profile getProfile() {
