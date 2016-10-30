@@ -88,7 +88,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     public void profileAdded(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
         createStudentRow(profile);
-        int row = profile.getID();
+        int row = profile.getProfileID();
         fireTableRowsInserted(row, row);
         studentList.showNumberOfStudents();
         coloredStudentDays.updateIncompatibleStudentDays();
@@ -97,7 +97,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void profileEdited(Profile profile) {
         updateStudentRow(profile);
-        int row = profile.getID();
+        int row = profile.getProfileID();
         fireTableRowsUpdated(row, row);
         coloredStudentDays.updateIncompatibleStudentDays();
 
@@ -106,7 +106,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void profileDeleted(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
-        int deletedProfileID = profile.getID();
+        int deletedProfileID = profile.getProfileID();
         removeStudentRow(deletedProfileID);
         fireTableRowsDeleted(deletedProfileID, deletedProfileID);
         updateStudentIDs();
@@ -119,7 +119,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         studentRow = new StudentFieldData[getColumnCount()];
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
-            studentRow[col].setProfileID(profile.getID());
+            studentRow[col].setProfileID(profile.getProfileID());
             studentRow[col].setLectionProfileType(profile.getProfileType());
             studentRow[col].setStudentAllocated(profile.isAllocated());
             if (col > 0) {
@@ -132,7 +132,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     private void updateStudentRow(Profile profile) {
-        studentRow = fieldDataMatrix.get(profile.getID());
+        studentRow = fieldDataMatrix.get(profile.getProfileID());
         for (int col = 0; col < getColumnCount(); col++) {
             if (col > 0) {
                 studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));

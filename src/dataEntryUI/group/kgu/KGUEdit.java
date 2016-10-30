@@ -24,6 +24,7 @@ public class KGUEdit extends KGUInputMask {
 
     @Override
     public void setupUI() {
+        updateEditData();
         createEditWidgets();
         addEditButtonListeners();
         addEditWidgets();

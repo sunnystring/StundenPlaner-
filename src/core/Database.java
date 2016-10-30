@@ -48,7 +48,7 @@ public class Database {
     }
 
     public void addProfile(Profile profile) {
-        profile.setID(numberOfStudents);
+        profile.setProfileID(numberOfStudents);
         studentDataList.add(profile);
         numberOfStudents = studentDataList.size(); // nächster Student
         if (profile.getProfileType() != ProfileTypes.GROUP) {
@@ -153,7 +153,7 @@ public class Database {
 
     public void updateStudentIDs() {
         for (int i = 0; i < numberOfStudents; i++) {
-            studentDataList.get(i).setID(i);
+            studentDataList.get(i).setProfileID(i);
         }
     }
 

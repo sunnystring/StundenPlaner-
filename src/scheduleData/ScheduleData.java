@@ -246,7 +246,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else { // einteilbare Zone, ausser lectionLength unterhalb Lection und vor Stundenplan-Ende 
                     boolean isAllocatable = !(i < headRow && i > headRow - lectionLength) && (i <= rowCount - lectionLength);
                     fieldData.setMoveEnabled(isAllocatable);
-                    fieldData.setProfileID(profile.getID());
+                    fieldData.setProfileID(profile.getProfileID());
                     fieldData.setLectionProfileType(profile.getProfileType());
                     fieldData.resetPanelAreaMarks();
                 }
@@ -385,7 +385,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     @Override
     public void profileDeleted(int numberOfStudents, Profile profile) {
-        updateLectionData(profile.getID());
+        updateLectionData(profile.getProfileID());
     }
 
     @Override

@@ -25,7 +25,7 @@ public class KGUEntry extends KGUInputMask {
     @Override
     public void setupUI() {
         createEntryWidgets();
-        createSelectionField();
+        createEntrySelectionField();
         addEntryButtonListeners();
         addEntryWidgets();
     }

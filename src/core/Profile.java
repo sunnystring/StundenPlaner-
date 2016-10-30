@@ -5,23 +5,27 @@
  */
 package core;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author mathiaskielholz
  */
 public class Profile {
 
-    protected String firstName;
-    protected String name;
-    protected StudentTimes studentTimes;
-    protected int lectionLengthInMinutes;
-    protected int profileID;
-    protected boolean allocated;
-    protected int profileType;
-    protected String profileName;
+    private String firstName;
+    private String name;
+    private StudentTimes studentTimes;
+    private int lectionLengthInMinutes;
+    private int profileID;
+    private boolean allocated;
+    private int profileType;
+    private String profileName;
+    private ArrayList<Integer> KGUMemberIDs;
 
     public Profile() {
         studentTimes = new StudentTimes();
+        KGUMemberIDs = new ArrayList<>();
         allocated = false;
     }
 
@@ -33,11 +37,11 @@ public class Profile {
         return studentTimes;
     }
 
-    public void setID(int profileID) {
+    public void setProfileID(int profileID) {
         this.profileID = profileID;
     }
 
-    public int getID() {
+    public int getProfileID() {
         return profileID;
     }
 
@@ -99,6 +103,14 @@ public class Profile {
 
     public boolean getDaySelectionStateAt(int dayIndex) {
         return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
+    }
+
+    public void setKGUMemberID(int KGUMemberID) {
+        KGUMemberIDs.add(KGUMemberID);
+    }
+
+    public ArrayList<Integer> getKGUMemberIDs() {
+        return KGUMemberIDs;
     }
 
 }
