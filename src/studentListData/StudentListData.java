@@ -42,6 +42,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ColoredStudentDays coloredStudentDays;
     private int numberOfDays;
     private int numberOfStudents;
+    //  private int numberOfSingleStudents;
     private boolean studentListReleased;
     public static final int NULL_VALUE = -1;
 
