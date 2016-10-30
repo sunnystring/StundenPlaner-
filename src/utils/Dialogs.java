@@ -32,7 +32,6 @@ public class Dialogs {
 //        JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
 //                + "Nur 30 oder 40 Minuten möglich!\n", "Schülerliste", JOptionPane.ERROR_MESSAGE);
 //    }
-
     public static void showTimeInputFormatError() {
         JOptionPane.showMessageDialog(null, "Ungültiges Zeitformat:\n"
                 + "Zeit zwischen 10.00 und 23.55 eingeben\n"
@@ -74,8 +73,9 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, msg, "Datei laden", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showUnspecificErrorMessage() {
-        String msg = "Es ist ein unbekannter Fehler aufgetreten!\nVorgang bitte wiederholen.";
-        JOptionPane.showMessageDialog(null, msg, "?", JOptionPane.ERROR_MESSAGE);
+    public static void showUnspecificErrorMessage(String msg) {
+        String text = "Es ist ein unbekannter Fehler aufgetreten!\n"
+                + msg + "\n" + "Vorgang bitte wiederholen, Programm neu laden oder neu starten.";
+        JOptionPane.showMessageDialog(null, text, "???", JOptionPane.ERROR_MESSAGE);
     }
 }

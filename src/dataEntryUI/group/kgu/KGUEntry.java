@@ -6,7 +6,6 @@
 package dataEntryUI.group.kgu;
 
 import core.Profile;
-import dataEntryUI.KGUInputMask;
 import core.ProfileTypes;
 import mainframe.MainFrame;
 
@@ -16,9 +15,19 @@ import mainframe.MainFrame;
  */
 public class KGUEntry extends KGUInputMask {
 
-    public KGUEntry(MainFrame mainFrame, Profile group) {
+    public KGUEntry(MainFrame mainFrame, Profile group, String title) {
         super(mainFrame, group);
-        setTitle(ProfileTypes.KGU_NAME + "n-Profil erstellen");
+        setTitle(ProfileTypes.KGU_NAME + title);
+        setupUI();
+        pack();
+    }
+
+    @Override
+    public void setupUI() {
+        createEntryWidgets();
+        createSelectionField();
+        addEntryButtonListeners();
+        addEntryWidgets();
     }
 
 }

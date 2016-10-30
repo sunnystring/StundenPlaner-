@@ -6,17 +6,27 @@
 package dataEntryUI.group.kgu;
 
 import core.Profile;
-import dataEntryUI.KGUInputMask;
+import core.ProfileTypes;
 import mainframe.MainFrame;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class KGUEdit extends KGUInputMask{
+public class KGUEdit extends KGUInputMask {
 
     public KGUEdit(MainFrame mainFrame, Profile group) {
         super(mainFrame, group);
+        setTitle(ProfileTypes.KGU_NAME + "n-Profil ändern oder auflösen");
+        setupUI();
+        pack();
     }
-    
+
+    @Override
+    public void setupUI() {
+        createEditWidgets();
+        addEditButtonListeners();
+        addEditWidgets();
+    }
+
 }

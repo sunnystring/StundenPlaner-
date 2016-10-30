@@ -10,6 +10,8 @@ import core.DatabaseListener;
 import core.Profile;
 import core.ProfileTypes;
 import dataEntryUI.group.GroupEdit;
+import dataEntryUI.group.kgu.KGUEdit;
+import dataEntryUI.group.kgu.KGUInputMask;
 import dataEntryUI.student.StudentEdit;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -221,9 +223,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     } else if (m.getClickCount() == 2 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
                         if (profile.getProfileType() == ProfileTypes.GROUP) { // Gruppenprofil ändern/löschen
-                            GroupEdit groupEditDialog = new GroupEdit(mainFrame, profile);
-                            groupEditDialog.selectProfile();
-                            groupEditDialog.setVisible(true);
+                            if (profile.getProfileName().equals(ProfileTypes.KGU_NAME)) { // KGU
+                                KGUEdit kguEdit = new KGUEdit(mainFrame, profile);
+                                kguEdit.setVisible(true);
+                            } else { // andere Gruppen
+                                GroupEdit groupEditDialog = new GroupEdit(mainFrame, profile);
+                                groupEditDialog.selectProfile();
+                                groupEditDialog.setVisible(true);
+                            }
                         } else { // Schülerprofil ändern/löschen
                             StudentEdit studentEditDialog = new StudentEdit(mainFrame, profile);
                             studentEditDialog.setVisible(true);

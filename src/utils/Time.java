@@ -7,6 +7,7 @@ package utils;
 
 import core.ScheduleDay;
 import core.StudentDay;
+import exceptions.OutOfBoundException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -122,7 +123,7 @@ public class Time implements Cloneable, Comparable<Time> {
         if (this.minute > 55) {
             this.hour++;
             if (this.hour > 24 || this.hour == 24 && this.minute > 0) {
-                throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+                throw new OutOfBoundException(" Berechnung übersteigt Grenze 24.00h");
             }
             this.minute = 0;
         }
@@ -161,7 +162,7 @@ public class Time implements Cloneable, Comparable<Time> {
             time.minute = time.minute - 60;
         }
         if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
-            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+            throw new OutOfBoundException(" Berechnung übersteigt Grenze 24.00h");
         }
         return time;
     }
@@ -176,7 +177,7 @@ public class Time implements Cloneable, Comparable<Time> {
             time.minute = time.minute - 60;
         }
         if (time.hour > 24 || time.hour == 24 && time.minute > 0) {
-            throw new IllegalArgumentException(" Ergebnis übersteigt Grenze 24.00");
+            throw new OutOfBoundException(" Berechnung übersteigt Grenze 24.00h");
         }
         return time;
     }
