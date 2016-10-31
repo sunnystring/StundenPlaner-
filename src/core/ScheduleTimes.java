@@ -269,6 +269,30 @@ public class ScheduleTimes extends AbstractTableModel {
         return index;
     }
 
+//    public int getAbsoluteDayIndexOf(String weekdayName) {
+//        int index = -1;
+//       for (int i = 0; i < DAYS; i++) {
+//            if (WEEKDAY_NAMES[i].equals(weekdayName)) {
+//                index = i;
+//                break;
+//            }
+//        }
+//        return index;
+//    }
+//    
+
+    public ArrayList<Integer> getValidDaysAsAbsoluteIndizes() {
+        ArrayList<Integer> absoluteIndizes = new ArrayList<>();
+        for (int i = 0; i < DAYS; i++) {
+            for (ScheduleDay scheduleDay : validScheduleDayList) {
+                if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
+                    absoluteIndizes.add(i);
+                }
+            }
+        }
+        return absoluteIndizes;
+    }
+
     public Integer getSharedDayIndexOf(int newDayIndex) {
         return sharedDayIndicesMap.get(newDayIndex);
     }

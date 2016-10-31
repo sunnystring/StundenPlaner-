@@ -52,9 +52,9 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setForeground(BLACK);
         // Namensfeld
         if (col == 0) {
-            setBackground(studentFieldData.getLectionProfileType() == GROUP ? NAMEFIELD_GROUP_COLOR : NAMEFIELD_SINGLE_COLOR);
+            setNameFieldBackground(studentFieldData.getLectionProfileType());
         } else {
-            setBackground(studentFieldData.getFieldColor());
+            setBackground(studentFieldData.getLectionProfileType() == KGU_MEMBER ? NAMEFIELD_KGU_MEMBER_COLOR : studentFieldData.getFieldColor());
         }
         // nicht einteilbar
         if (studentFieldData.isUnallocatable()) {
@@ -67,11 +67,10 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setFont(this.getFont().deriveFont(Font.BOLD, 10));
                 setForeground(WHITE);
             } else {
-                setBackground(LIGHT_GREEN);
+                setMovedBackground(studentFieldData.getLectionProfileType());
             }
-        } else if(col == 0)
-        {
-            setBackground(studentFieldData.getLectionProfileType() == GROUP ? NAMEFIELD_GROUP_COLOR : NAMEFIELD_SINGLE_COLOR);
+        } else if (col == 0) {
+            setNameFieldBackground(studentFieldData.getLectionProfileType());
         }
         // Row selected
         if (row == studentFieldData.selectedRowIndex()) {
@@ -84,16 +83,36 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             }
         }
         // LectionGapFiller aktiviert
-        if (studentFieldData.isLectionGapFiller()) {
+        if (studentFieldData.isLectionGapFillerEnabled() && studentFieldData.getLectionProfileType() != KGU_MEMBER) {
             setBackground(LIGHT_GREEN);
         }
         // eingeteilt
-        if (studentFieldData.isStudentAllocated()) {
+        if (studentFieldData.isProfileAllocated()) {
             setFont(this.getFont().deriveFont(Font.PLAIN, 10));
             setBackground(LIGHT_GRAY_COLOR);
             setForeground(GRAY);
         }
         return this;
+    }
+
+    private void setMovedBackground(int profileType) {
+        setBackground(profileType == KGU_MEMBER ? NAMEFIELD_KGU_MEMBER_COLOR : LIGHT_GREEN);
+    }
+
+    private void setNameFieldBackground(int profileType) {
+        switch (profileType) {
+            case GROUP:
+                setBackground(NAMEFIELD_GROUP_COLOR);
+                break;
+            case SINGLE_LECTION:
+                setBackground(NAMEFIELD_SINGLE_COLOR);
+                break;
+            case KGU_MEMBER:
+                setBackground(NAMEFIELD_KGU_MEMBER_COLOR);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

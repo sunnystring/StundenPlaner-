@@ -7,7 +7,7 @@ package core;
 
 import scheduleData.ScheduleTimeFrame;
 import utils.Time;
-import static core.StudentTimes.COLUMNS;
+
 import java.util.ArrayList;
 import scheduleData.DayColumnData;
 
@@ -17,9 +17,9 @@ import scheduleData.DayColumnData;
  */
 public class StudentDay implements Comparable<StudentDay> {
 
-    public static final int SLOTS = COLUMNS - 1;
+    public static final int SLOTS = 5;
     private String dayName = "";
-    private final Time[] timeSlots;
+    private Time[] timeSlots;
     private boolean isEmpty;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
     private Time earliestStart, latestStart, earliestEnd, latestEnd; // Timebounds
@@ -232,6 +232,12 @@ public class StudentDay implements Comparable<StudentDay> {
         return 0;
     }
 
+    public void resetAllTimes() {
+        for (int i = 0; i < SLOTS; i++) {
+            timeSlots[i].reset();
+        }
+    }
+
     public boolean isEmpty() {
         return isEmpty;
     }
@@ -247,6 +253,29 @@ public class StudentDay implements Comparable<StudentDay> {
     public Time getTimeAt(int i) {
         return timeSlots[i];
     }
+
+    public void setStart1(Time time) {
+        timeSlots[0] = time;
+    }
+
+    public void setEnd1(Time time) {
+        timeSlots[1] = time;
+    }
+//
+//    public void setStart2(Time time) {
+//        timeSlots[2] = time;
+//    }
+//
+//    public void setEnd2(Time time) {
+//        timeSlots[3] = time;
+//    }
+//
+    public void setFavorite(Time time) {
+        timeSlots[4] = time;
+    }
+//    public void updateTimeSlots(Time[] slots) {
+//        timeSlots = slots;
+//    }
 
     public Time start1() {
         return timeSlots[0];

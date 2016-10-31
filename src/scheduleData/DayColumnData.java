@@ -118,6 +118,12 @@ public class DayColumnData {
         return (hasAllocatedLections() && (absoluteStart.greaterThan(lectionMap.firstKey()) || absoluteEnd.lessEqualsThan(endOfLastLection)));
     }
 
+    public void setValidTimeMarks(StudentDay day) {
+        for (int i = 0; i < totalNumberOfFields; i++) {
+            setValidTimeMark(day, i);
+        }
+    }
+
     public void setValidTimeMark(StudentDay day, int listIndex) {
         ScheduleFieldData field = fieldList.get(listIndex);
         Time listTime = field.getFieldTime();
@@ -132,15 +138,9 @@ public class DayColumnData {
         }
     }
 
-    public void setValidTimeMarks(StudentDay day) {
-        for (int i = 0; i < totalNumberOfFields; i++) {
-            setValidTimeMark(day, i);
-        }
-    }
-
     public void resetValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
-            fieldList.get(i).setValidTimeMark(UNVALID_VALUE);
+            fieldList.get(i).setValidTimeMark(UNVALID);
         }
     }
 

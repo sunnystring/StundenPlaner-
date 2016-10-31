@@ -62,7 +62,7 @@ public class PrinterText extends JTextPane {
                         doc.insertString(doc.getLength(), lectionTime,
                                 doc.getStyle("bold"));
                         Profile profile = database.getProfile(entry.getValue().getProfileID());
-                        String nameLine = " " + profile.getFirstName() + " " + profile.getName();
+                        String nameLine = " " + profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName();
                         doc.insertString(doc.getLength(), nameLine + "\n",
                                 doc.getStyle("regular"));
                     }

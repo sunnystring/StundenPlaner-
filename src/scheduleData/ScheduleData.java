@@ -264,7 +264,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     fieldDataMatrix[i][j].setMoveEnabled(false);
                     fieldDataMatrix[i][j].resetPanelAreaMarks();
                 }
-                fieldDataMatrix[i][j].setValidTimeMark(UNVALID_VALUE);
+                fieldDataMatrix[i][j].setValidTimeMark(UNVALID);
             }
         }
     }
@@ -275,7 +275,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         ScheduleFieldData field;
         LectionData lection = new LectionData(dayIndex);
         Time startTime = null;
-        int allocatedTimeMark = UNVALID_VALUE;
+        int allocatedTimeMark = UNVALID;
         for (int i = dayColumnFieldIndex; i < lectionEnd; i++) {
             field = dayColumn.getFieldDataAt(i);
             if (i == dayColumnFieldIndex) {
@@ -289,6 +289,8 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     field.setNameMark(FIRST_NAME);
                 } else if (i == dayColumnFieldIndex + 2) {
                     field.setNameMark(NAME);
+                } else if (i == dayColumnFieldIndex + 3) {
+                    field.setNameMark(THIRD_NAME);
                 }
             }
             if (i == lectionEnd - 2) {
@@ -333,10 +335,17 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayIndex = selectedCol / 4;
     }
 
-    private void setAllValidTimeMarks(Profile profile) {
+    public void setAllValidTimeMarks(Profile profile) {
         for (int i = 0; i < numberOfValidDays; i++) {
             DayColumnData dayColumn = dayColumnDataList.get(i);
             dayColumn.setValidTimeMarks(profile.getStudentDay(i));
+        }
+    }
+
+    public void clearAllTimeMarks() {
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnData dayColumn = dayColumnDataList.get(i);
+            dayColumn.resetValidTimeMarks();
         }
     }
 
@@ -344,7 +353,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix[i][j].setMoveEnabled(false);
-                fieldDataMatrix[i][j].setValidTimeMark(UNVALID_VALUE);
+                fieldDataMatrix[i][j].setValidTimeMark(UNVALID);
             }
         }
     }

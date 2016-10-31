@@ -24,8 +24,8 @@ public class Dialogs {
                 + "Anfangszeit leer oder grösser als Schlusszeit", "Schülerliste", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showNoInputError() {
-        JOptionPane.showMessageDialog(null, "Keine Zeiteingabe gemacht!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
+    public static void showNoInputError(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "Ungültige Zeiten", JOptionPane.ERROR_MESSAGE);
     }
 
 //    public static void showLectionFormatError() {
@@ -77,5 +77,10 @@ public class Dialogs {
         String text = "Es ist ein unbekannter Fehler aufgetreten!\n"
                 + msg + "\n" + "Vorgang bitte wiederholen, Programm neu laden oder neu starten.";
         JOptionPane.showMessageDialog(null, text, "???", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void illegalNumberOfMembersErrorMessage() {
+        String msg = "Es müssen 2 oder 3 SchülerInnen ausgewählt werden!";
+        JOptionPane.showMessageDialog(null, msg, "Unzulässige Auswahl", JOptionPane.ERROR_MESSAGE);
     }
 }

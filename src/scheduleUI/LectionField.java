@@ -77,7 +77,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
         setText("");
         // Allocated Mode
         if (fieldData.isLectionAllocated()) {
-            if (fieldData.getAllocatedTimeMark() == UNVALID_VALUE) {
+            if (fieldData.getAllocatedTimeMark() == UNVALID) {
                 setBackground(UNVALID_COLOR);
             } else {
                 setBackground(fieldData.getLectionProfileType()== ProfileTypes.GROUP ? GROUP_LECTION_GREEN : DARK_GREEN);
@@ -96,6 +96,8 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setText(" " + fieldData.getProfile().getFirstName());
             } else if (fieldData.getNameMark() == NAME) {
                 setText(" " + fieldData.getProfile().getName());
+            }else if (fieldData.getNameMark() == THIRD_NAME) {
+                setText(" " + fieldData.getProfile().getThirdName());
             }
             if (fieldData.getLectionPanelAreaMark() == LAST_ROW) {
                 setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, WHITE));
@@ -115,6 +117,9 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setText(" " + fieldData.getProfile().getFirstName());
                 } else if (row == movedRow + 2) {
                     setText(" " + fieldData.getProfile().getName());
+                }
+                else if (row == movedRow + 3) {
+                    setText(" " + fieldData.getProfile().getThirdName());
                 }
                 if (row == lectionEnd - 1) {
                     setBorder(BorderFactory.createMatteBorder(0, 1, 1, 2, WHITE));

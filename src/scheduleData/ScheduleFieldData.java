@@ -24,7 +24,6 @@ public class ScheduleFieldData {
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
-    private int lectionProfileType;
     private boolean teacherTime;
     private boolean lectionAllocated;
     private boolean moveEnabled;
@@ -42,13 +41,13 @@ public class ScheduleFieldData {
     }
 
     public void resetPanelAreaMarks() {
-        nameMark = UNVALID_VALUE;
-        lectionPanelAreaMark = UNVALID_VALUE;
+        nameMark = UNVALID;
+        lectionPanelAreaMark = UNVALID;
     }
 
     public void resetTimeMarks() {
-        validTimeMark = UNVALID_VALUE;
-        allocatedTimeMark = UNVALID_VALUE;
+        validTimeMark = UNVALID;
+        allocatedTimeMark = UNVALID;
     }
 
     public void decrementProfileID() {
@@ -100,7 +99,7 @@ public class ScheduleFieldData {
     }
 
     public boolean isValidTime() {
-        return getValidTimeMark() != UNVALID_VALUE;
+        return getValidTimeMark() != UNVALID;
     }
 
     public void setAllocatedTimeMark(int allocatedTimeMark) {
@@ -109,14 +108,6 @@ public class ScheduleFieldData {
 
     public int getAllocatedTimeMark() {
         return allocatedTimeMark;
-    }
-
-    public void setLectionProfileType(int lectionProfileType) {
-        this.lectionProfileType = lectionProfileType;
-    }
-
-    public int getLectionProfileType() {
-        return lectionProfileType;
     }
 
     public boolean isMinute(int index) {

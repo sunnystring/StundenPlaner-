@@ -5,7 +5,6 @@
  */
 package core;
 
-import com.google.gson.annotations.Expose;
 import dataEntryUI.student.StudentInputMask;
 import exceptions.IllegalTimeSlotException;
 import exceptions.OutOfBoundException;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import scheduleData.ScheduleTimeFrame;
 import static core.ScheduleTimes.*;
+
 import utils.Time;
 
 /**
@@ -22,7 +22,7 @@ import utils.Time;
  */
 public class StudentTimes extends AbstractTableModel {
 
-    public static final int COLUMNS = 6;
+    public static final int COLUMNS = StudentDay.SLOTS + 1;
     private static final String[] COLUMN_LABELS = {" ", "von", "bis*", "von", "bis*", "Wunschzeit*"};
     private ScheduleTimes scheduleTimes;
     private final StudentDay[] daySelectionList;
@@ -142,6 +142,11 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
+    public void updateValidStudentDays() {
+        validStudentDayList.clear();
+        setValidStudentDays();
+    }
+
     public void setValidStudentDays() {
         numberOfSelectedDays = 0;
         for (int i = 0; i < DAYS; i++) {
@@ -157,11 +162,6 @@ public class StudentTimes extends AbstractTableModel {
         }
     }
 
-    public void updateValidStudentDays() {
-        validStudentDayList.clear();
-        setValidStudentDays();
-    }
-
     public StudentDay getMatchingStudentDayOf(ScheduleDay scheduleDay) {
         StudentDay matchingDay = null;
         for (StudentDay studentDay : validStudentDayList) {
@@ -172,8 +172,23 @@ public class StudentTimes extends AbstractTableModel {
         return matchingDay;
     }
 
+//    public ArrayList<StudentDay> getDaySelectionListAt() {
+//        ArrayList<StudentDay> studentDays = new ArrayList<>();
+//        for (Integer i : scheduleTimes.getValidDaysAsAbsoluteIndizes()) {
+//            studentDays.add(daySelectionList[i ]);
+//        }
+//        return studentDays;
+//    }
     public StudentDay getValidStudentDay(int i) {
         return validStudentDayList.get(i);
+    }
+
+    public StudentDay getDaySelectionListAt(int i) {
+        return daySelectionList[i];
+    }
+
+    public ArrayList<StudentDay> getValidStudentDayList() {
+        return validStudentDayList;
     }
 
     public void setValidStudentDayList(ArrayList<StudentDay> validStudentDayList) {

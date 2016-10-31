@@ -9,9 +9,9 @@ import core.Database;
 import core.DatabaseListener;
 import core.Profile;
 import core.ProfileTypes;
+import static core.ProfileTypes.*;
 import dataEntryUI.group.GroupEdit;
 import dataEntryUI.group.kgu.KGUEdit;
-import dataEntryUI.group.kgu.KGUInputMask;
 import dataEntryUI.student.StudentEdit;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -42,7 +42,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ColoredStudentDays coloredStudentDays;
     private int numberOfDays;
     private int numberOfStudents;
-    //  private int numberOfSingleStudents;
     private boolean studentListReleased;
     public static final int NULL_VALUE = -1;
 
@@ -79,7 +78,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         setStudentListReleased(true);
     }
 
-    public void createStudentRows() {
+    private void createStudentRows() {
         for (int i = 0; i < numberOfStudents; i++) {
             createStudentRow(database.getProfile(i));
         }
@@ -89,8 +88,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     public void profileAdded(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
         createStudentRow(profile);
-        int row = profile.getProfileID();
-        fireTableRowsInserted(row, row);
+        updateKGUMembersAllocationState();
         studentList.showNumberOfStudents();
         coloredStudentDays.updateIncompatibleStudentDays();
     }
@@ -98,10 +96,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void profileEdited(Profile profile) {
         updateStudentRow(profile);
-        int row = profile.getProfileID();
-        fireTableRowsUpdated(row, row);
+        updateKGUMembersAllocationState();
         coloredStudentDays.updateIncompatibleStudentDays();
-
     }
 
     @Override
@@ -109,11 +105,10 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.numberOfStudents = numberOfStudents;
         int deletedProfileID = profile.getProfileID();
         removeStudentRow(deletedProfileID);
-        fireTableRowsDeleted(deletedProfileID, deletedProfileID);
+        updateKGUMembersAllocationState();
         updateStudentIDs();
         studentList.showNumberOfStudents();
         coloredStudentDays.updateIncompatibleStudentDays();
-
     }
 
     private void createStudentRow(Profile profile) {
@@ -122,7 +117,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             studentRow[col] = new StudentFieldData(database);
             studentRow[col].setProfileID(profile.getProfileID());
             studentRow[col].setLectionProfileType(profile.getProfileType());
-            studentRow[col].setStudentAllocated(profile.isAllocated());
+            studentRow[col].setProfileAllocated(profile.isAllocated());
             if (col > 0) {
                 studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));
                 studentRow[col].setDayIndex(col - 1);
@@ -135,6 +130,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private void updateStudentRow(Profile profile) {
         studentRow = fieldDataMatrix.get(profile.getProfileID());
         for (int col = 0; col < getColumnCount(); col++) {
+            studentRow[col].setLectionProfileType(profile.getProfileType());
             if (col > 0) {
                 studentRow[col].setSingleDay(profile.getDaySelectionStateAt(col - 1));
             }
@@ -154,15 +150,24 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         fieldDataMatrix.remove(row);
     }
 
+    private void updateKGUMembersAllocationState() {
+        for (int i = 0; i < numberOfStudents; i++) {
+            Profile profile = database.getProfile(i);
+            if (profile.getProfileType() == ProfileTypes.KGU_MEMBER) {
+                setRowAllocationState(profile.getProfileID(), profile.isAllocated());
+            }
+        }
+    }
+
     private void updateStudentAllocationState() {
         for (int i = 0; i < numberOfStudents; i++) {
-            database.getProfile(i).setAllocated((getValueAt(i, 0)).isStudentAllocated());
+            database.getProfile(i).setAllocated((getValueAt(i, 0)).isProfileAllocated());
         }
     }
 
     private void setNameAndTimes(int col, Profile profile) {
         if (col == 0) {
-            studentRow[col].setNameString(profile.getFirstName() + " " + profile.getName());
+            studentRow[col].setNameString(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
         } else {
             studentRow[col].setValidTimeString("<html>" + profile.getStudentDay(col - 1) + "<font color=blue>" + profile.getStudentDay(col - 1).favorite().toString() + "</font></html>");
         }
@@ -206,10 +211,10 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             selectedCol = studentList.columnAtPoint(p);
             if (selectedRow >= 0) { //  ausserhalb JTable: selectedRow = -1 
                 StudentFieldData fieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
-                if (!fieldData.isStudentAllocated()) {
-                    if (selectedCol > 0) { // NameField nicht ansprechbar
+                if (!fieldData.isProfileAllocated()) {
+                    if (selectedCol > 0 && fieldData.getLectionProfileType() != KGU_MEMBER) { // NameField nicht ansprechbar
                         if (isStudentListReleased()) { // 1. StudentDay selektieren
-                            setSelectedRow(selectedRow);
+                            setRowSelected(selectedRow);
                             fieldData.switchSelectionState();
                             blockStudentList();
                         } else if (selectedRow == fieldData.selectedRowIndex()) { // weitere Selections bzw. Selections rückgängig machen
@@ -221,10 +226,10 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         mainFrame.setDataEntryButtonsEnabled(isStudentListReleased());
                         mainFrame.setFileButtonsEnabled(isStudentListReleased());
                         fireTableDataChanged();
-                    } else if (m.getClickCount() == 2 && isStudentListReleased()) {
+                    } else if (selectedCol == 0 && m.getClickCount() == 2 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
-                        if (profile.getProfileType() == ProfileTypes.GROUP) { // Gruppenprofil ändern/löschen
-                            if (profile.getProfileName().equals(ProfileTypes.KGU_NAME)) { // KGU
+                        if (profile.getProfileType() == GROUP) { // Gruppenprofil ändern/löschen
+                            if (profile.getProfileName().equals(KGU_NAME)) { // KGU
                                 KGUEdit kguEdit = new KGUEdit(mainFrame, profile);
                                 kguEdit.setVisible(true);
                             } else { // andere Gruppen
@@ -256,14 +261,16 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                             mainFrame.setFileButtonsEnabled(false);
                         }
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
-                            setRowAllocated(allocatedRow, false);
+                            setRowAllocationState(allocatedRow, false);
+                            studentListReleased = true;
                             profile.setAllocated(false);
                             releaseStudentListAtModelCoordinates(allocatedRow);
                             mainFrame.setDataEntryButtonsEnabled(true);
                             mainFrame.setFileButtonsEnabled(true);
                         }
                     } else {  // in AllocatedMode wechseln
-                        setRowAllocated(allocatedRow, true);
+                        setRowAllocationState(allocatedRow, true);
+                        studentListReleased = false;
                         profile.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
                         mainFrame.setDataEntryButtonsEnabled(true);
@@ -284,16 +291,15 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         return true;
     }
 
-    private void setSelectedRow(int row) {
+    private void setRowSelected(int row) {
         for (int j = 0; j < getColumnCount(); j++) {
             studentList.getStudentFieldDataAtView(row, j).setSelectedRowIndex(row);
         }
     }
 
-    private void setRowAllocated(int allocatedRow, boolean state) {
-        studentListReleased = !state;
+    private void setRowAllocationState(int allocatedRow, boolean state) {
         for (int j = 0; j < getColumnCount(); j++) {
-            fieldDataMatrix.get(allocatedRow)[j].setStudentAllocated(state);
+            fieldDataMatrix.get(allocatedRow)[j].setProfileAllocated(state);
         }
     }
 

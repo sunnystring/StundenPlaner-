@@ -5,8 +5,6 @@
  */
 package dataEntryUI.schedule;
 
-import dataEntryUI.schedule.ScheduleEntry;
-import dataEntryUI.schedule.ScheduleEdit;
 import core.Database;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
@@ -100,7 +98,7 @@ public class ScheduleInputMask extends JPanel {
                 try {
                     scheduleTimes.checkTimeSlots();
                 } catch (NoEntryException ex) {
-                    Dialogs.showNoInputError();
+                    Dialogs.showNoInputError("Leerer Stundenplan eingeben!");
                     return;
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showScheduleTimeSlotError();
@@ -127,7 +125,7 @@ public class ScheduleInputMask extends JPanel {
                     scheduleData.checkIfLectionsWithinTimeFrame();
                     scheduleTimes.validateDayEntry();
                 } catch (NoEntryException ex) {
-                    Dialogs.showNoInputError();
+                    Dialogs.showNoInputError("Leerer Stundenplan eingeben!");
                     scheduleTimes.returnToExistingSelection();
                     return;
                 } catch (IllegalTimeSlotException ex) {
