@@ -36,6 +36,7 @@ public class GroupInputMask extends ProfileInputMask {
 
     public void instrumentalformationProfile() {
         removeExistingLectionTypeEntry();
+        lectionLength = "45";
         lectionTypes = new String[]{"45", "60", "90", "105", "120", "180"};
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         addNewLectionTypeEntry();
@@ -43,6 +44,7 @@ public class GroupInputMask extends ProfileInputMask {
 
     public void chorProfile() {
         removeExistingLectionTypeEntry();
+        lectionLength = "30";
         lectionTypes = new String[]{"30", "45", "60", "90", "120"};
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         addNewLectionTypeEntry();
@@ -55,6 +57,7 @@ public class GroupInputMask extends ProfileInputMask {
 
     public void otherProfile() {
         removeExistingLectionTypeEntry();
+        lectionLength = "45";
         lectionTypes = new String[]{"45", "60", "75", "90"};
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         addNewLectionTypeEntry();

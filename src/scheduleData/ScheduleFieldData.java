@@ -24,7 +24,6 @@ public class ScheduleFieldData {
     private Time fieldTime;
     private int validTimeMark;
     private int allocatedTimeMark;
-    private int lectionProfileType;
     private boolean teacherTime;
     private boolean lectionAllocated;
     private boolean moveEnabled;
@@ -109,14 +108,6 @@ public class ScheduleFieldData {
 
     public int getAllocatedTimeMark() {
         return allocatedTimeMark;
-    }
-
-    public void setLectionProfileType(int lectionProfileType) {
-        this.lectionProfileType = lectionProfileType;
-    }
-
-    public int getLectionProfileType() {
-        return lectionProfileType;
     }
 
     public boolean isMinute(int index) {

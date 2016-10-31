@@ -67,7 +67,7 @@ public class IncompatibleStudentTimes {
                         if (!searchDay.isEmpty()) {
                             int searchStudentID = database.getStudentID(dayIndex, searchDay);
                             StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                            if (!searchField.isStudentAllocated()) {
+                            if (!searchField.isProfileAllocated()) {
                                 int searchLectionLength = database.getProfile(searchStudentID).getLectionLengthInFields();
                                 boolean withinValidBounds = searchDay.earliestStart().lessEqualsThan(endSearchLection)
                                         || searchDay.latestEnd().plusLengthOf(searchLectionLength).greaterEqualsThan(startSearchLection);
@@ -92,14 +92,14 @@ public class IncompatibleStudentTimes {
                 StudentDay refDay = dayList.get(refIndex);
                 int refStudentID = database.getStudentID(dayIndex, refDay);
                 StudentFieldData refField = studentListData.getValueAt(refStudentID, dayIndex + 1);
-                if (!refDay.isEmpty() && !refField.isStudentAllocated()) {
+                if (!refDay.isEmpty() && !refField.isProfileAllocated()) {
                     int refLectionLength = database.getProfile(refStudentID).getLectionLengthInFields();
                     int searchIndex = refIndex + 1;
                     while (searchIndex < dayList.size()) {
                         StudentDay searchDay = dayList.get(searchIndex);
                         int searchStudentID = database.getStudentID(dayIndex, searchDay);
                         StudentFieldData searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);
-                        if (!searchField.isStudentAllocated() && searchDay.isWithin(refDay, refLectionLength)) {
+                        if (!searchField.isProfileAllocated() && searchDay.isWithin(refDay, refLectionLength)) {
                             searchDay = dayList.get(searchIndex);
                             searchStudentID = database.getStudentID(dayIndex, searchDay);
                             searchField = studentListData.getValueAt(searchStudentID, dayIndex + 1);

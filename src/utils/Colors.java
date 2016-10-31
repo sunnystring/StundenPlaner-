@@ -21,6 +21,7 @@ public class Colors {
             DAYFIELD_SELECTED_COLOR = new Color(0, 102, 52),
             NAMEFIELD_SINGLE_COLOR = new Color(204, 120, 0),
             NAMEFIELD_GROUP_COLOR = new Color(204, 150, 0),
+            NAMEFIELD_KGU_MEMBER_COLOR = Color.ORANGE,
             NAMEFIELD_SELECTED_COLOR = new Color(153, 100, 0),
             FAVORITE_COLOR = Color.BLUE,
             UNVALID_COLOR = Color.ORANGE,

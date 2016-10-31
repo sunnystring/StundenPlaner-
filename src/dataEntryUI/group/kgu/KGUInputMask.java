@@ -32,7 +32,7 @@ import utils.Colors;
  * @author mathiaskielholz
  */
 public abstract class KGUInputMask extends JDialog {
-    
+
     private Database database;
     private MainFrame mainFrame;
     private Profile kgu;
@@ -44,140 +44,139 @@ public abstract class KGUInputMask extends JDialog {
     private JRadioButton studentSelection;
     private JButton cancelButton, approveButton, deleteButton;
     private ActionListener approveButtonListener;
-    
+
     public KGUInputMask(MainFrame mainFrame, Profile kgu) {
         this.database = mainFrame.getDatabase();
         this.mainFrame = mainFrame;
         this.kgu = kgu;
         studentSelectionList = new ArrayList<>();
+        getStudents();
         allocatedMemberList = new ArrayList<>();
-        getKGUStudents();
         setModal(true);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
         setMinimumSize(new Dimension(300, 100));
         setLayout(new BorderLayout());
     }
-    
-    private void getKGUStudents() {
+
+    private void getStudents() {
         ArrayList<Profile> studentDataList = database.getStudentDataList();
         for (Profile profile : studentDataList) {
-            if (profile.getProfileType() == ProfileTypes.KGU_MEMBER) {
+            if (profile.getProfileType() == ProfileTypes.KGU_MEMBER && !profile.isAllocated()) {
                 studentSelectionList.add(profile);
             }
         }
     }
-    
+
+    // Entry
     public void createEntryWidgets() {
         textlabel = new JLabel("SchülerInnen auswählen:");
         textlabel.setHorizontalAlignment(SwingConstants.LEADING);
         textlabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         approveButton = new JButton("Profil speichern");
+        approveButton.setEnabled(studentSelectionList.size() > 1);
         createOtherWidgets();
     }
-    
-    public void createEntrySelectionField() {
+
+    public void createEntrySelection() {
         selectionField.add(textlabel);
         for (Profile profile : studentSelectionList) {
-            if (!profile.isAllocated()) {
-                createStudentSelection(profile);
-            }
+            studentSelection = new JRadioButton();
+            studentSelection.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
+            studentSelection.setText(profile.getFirstName() + " " + profile.getName());
+            selectionField.add(studentSelection);
+            studentSelection.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        allocatedMemberList.add(profile);
+                    } else {
+                        allocatedMemberList.remove(profile);
+                    }
+                }
+            });
         }
     }
-    
-    private void createStudentSelection(Profile profile) {
-        studentSelection = new JRadioButton();
-        studentSelection.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
-        studentSelection.setText(profile.getFirstName() + " " + profile.getName());
-        selectionField.add(studentSelection);
-        studentSelection.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                kgu.setKGUMemberID(profile.getProfileID());
-                allocatedMemberList.add(profile);
-            }
-        });
-    }
-    
+
     public void addEntryWidgets() {
-        addEntryButtons();
-        add(BorderLayout.CENTER, selectionField);
-        add(BorderLayout.PAGE_END, buttonField);
-        
-    }
-    
-    private void addEntryButtons() {
         buttonField.add(Box.createHorizontalGlue());
         buttonField.add(cancelButton);
         buttonField.add(approveButton);
+        add(BorderLayout.CENTER, selectionField);
+        add(BorderLayout.PAGE_END, buttonField);
+
     }
-    
+
     public void addEntryButtonListeners() {
         addCancelButtonListener();
         approveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setMembersAllocationState(true);
-                setProfileData();
-                database.addProfile(kgu);
+                if (numberOfMembersAllowed()) {
+                    setLectionLength();
+                    setProfileData();
+                    database.addProfile(kgu);
+                }
                 dispose();
             }
         };
         approveButton.addActionListener(approveButtonListener);
     }
-    
-    public void updateEditData() {
-        setAllocatedMemberList();
-        setMembersAllocationState(false);
+
+    private void setLectionLength() {
+        if (allocatedMemberList.size() == 2) {
+            lectionLength = 45;
+        }
+        if (allocatedMemberList.size() == 3) {
+            lectionLength = 60;
+        }
     }
-    
+
+    // Edit
+    public void updateEditData() {
+        getMembers();
+    }
+
+    private void getMembers() {
+        for (Integer memberID : kgu.getKGUMemberIDs()) {
+            allocatedMemberList.add(database.getProfile(memberID));
+        }
+    }
+
     public void createEditWidgets() {
         createOtherWidgets();
         selectionField.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         approveButton = new JButton("Profil ändern");
         deleteButton = new JButton("Profil auflösen");
     }
-    
+
     public void addEditWidgets() {
-      //  setAllocatedMemberList();
-        addStudentNameLabels();
-        addEditButtons();
-        add(BorderLayout.CENTER, selectionField);
-        add(BorderLayout.PAGE_END, buttonField);
-        //   }
-    }
-    
-    private void setAllocatedMemberList() {
-        for (Integer memberID : kgu.getKGUMemberIDs()) {
-            allocatedMemberList.add(database.getProfile(memberID));
-        }
-    }
-    
-    private void addStudentNameLabels() {
-        textlabel = new JLabel();
-        textlabel.setText(allocatedMemberList.get(0).getFirstName() + " " + allocatedMemberList.get(0).getName());
-        textlabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
-        selectionField.add(textlabel);
-        textlabel = new JLabel();
-        textlabel.setText(allocatedMemberList.get(1).getFirstName() + " " + allocatedMemberList.get(1).getName());
-        textlabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
-        selectionField.add(textlabel);
-    }
-    
-    private void addEditButtons() {
+        addEditStudentNameLabels();
         buttonField.add(Box.createHorizontalGlue());
         buttonField.add(cancelButton);
         buttonField.add(approveButton);
         buttonField.add(deleteButton);
+        add(BorderLayout.CENTER, selectionField);
+        add(BorderLayout.PAGE_END, buttonField);
     }
-    
+
+    private void addEditStudentNameLabels() {
+        for (int i = 0; i < allocatedMemberList.size(); i++) {
+            textlabel = new JLabel();
+            textlabel.setText(allocatedMemberList.get(i).getFirstName() + " " + allocatedMemberList.get(0).getName());
+            textlabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
+            selectionField.add(textlabel);
+        }
+    }
+
     public void addEditButtonListeners() {
         addCancelButtonListener();
         approveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setMembersAllocated(false); // Edit-KGU-Members freischalten
                 KGUEntry secondEntry = new KGUEntry(mainFrame, kgu, "n-Profil ändern");
-                secondEntry.updateUIForSecondEntry(KGUInputMask.this);
+                secondEntry.updateSecondEntryUI(KGUInputMask.this);
                 secondEntry.setVisible(true);
             }
         };
@@ -185,30 +184,36 @@ public abstract class KGUInputMask extends JDialog {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setMembersAllocated(false); // Edit-KGU-Members freischalten
                 database.deleteProfile(kgu);
-                setMembersAllocationState(false);
                 dispose();
             }
         });
     }
-    
-    public void updateUIForSecondEntry(KGUInputMask editMask) {
+
+    public void updateSecondEntryUI(KGUInputMask editMask) {
         textlabel.setText("Auswahl ändern:");
         approveButton.setText("Änderung speichern");
         approveButton.removeActionListener(approveButtonListener);
         approveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setMembersAllocationState(true);
-                setProfileData();
-                database.editProfile(kgu);
-                dispose();
+                if (numberOfMembersAllowed()) {
+                    removeMemberIDs();
+                    setProfileData();
+                    database.editProfile(kgu);
+                }
                 editMask.dispose();
+                dispose();
             }
         };
         approveButton.addActionListener(approveButtonListener);
     }
-    
+
+    private boolean numberOfMembersAllowed() {
+        return allocatedMemberList.size() >= 2 && allocatedMemberList.size() <= 3;
+    }
+
     private void createOtherWidgets() {
         selectionField = new JPanel();
         selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
@@ -218,27 +223,7 @@ public abstract class KGUInputMask extends JDialog {
         buttonField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         cancelButton = new JButton("Abbrechen");
     }
-    
-    private void setMembersAllocationState(boolean state) {
-        for (Profile profile : allocatedMemberList) {
-            profile.setAllocated(state);
-        }
-    }
-    
-    private void setProfileData() {
-        lectionLength = 45;
-        kgu.getStudentTimes().setValidStudentDays();
-        kgu.setProfileType(ProfileTypes.GROUP);
-        kgu.setProfileName(ProfileTypes.KGU_NAME);
-        kgu.setLectionLengthInMinutes(lectionLength);
-        setStudentNames();
-    }
-    
-    private void setStudentNames() {
-        kgu.setFirstName(allocatedMemberList.get(0).getFirstName() + " " + allocatedMemberList.get(0).getName());
-        kgu.setName(allocatedMemberList.get(1).getFirstName() + " " + allocatedMemberList.get(1).getName());
-    }
-    
+
     private void addCancelButtonListener() {
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -247,10 +232,44 @@ public abstract class KGUInputMask extends JDialog {
             }
         });
     }
-    
+
+    private void setProfileData() {
+        setMembersAllocated(true);
+        setMemberIDs();
+        kgu.getStudentTimes().setValidStudentDays();
+        kgu.setProfileType(ProfileTypes.GROUP);
+        kgu.setProfileName(ProfileTypes.KGU_NAME);
+        kgu.setLectionLengthInMinutes(lectionLength);
+        setStudentNames();
+    }
+
+    private void setMembersAllocated(boolean state) {
+        for (Profile member : allocatedMemberList) {
+            member.setAllocated(state);
+        }
+    }
+
+    private void setMemberIDs() {
+        for (Profile member : allocatedMemberList) {
+            kgu.addKGUMemberID(member.getProfileID());
+        }
+    }
+
+    private void removeMemberIDs() {
+        kgu.getKGUMemberIDs().clear();
+    }
+
+    private void setStudentNames() {
+        kgu.setFirstName(allocatedMemberList.get(0).getFirstName() + " " + allocatedMemberList.get(0).getName());
+        kgu.setName(allocatedMemberList.get(1).getFirstName() + " " + allocatedMemberList.get(1).getName());
+        if (allocatedMemberList.size() == 3) {
+            kgu.setThirdName(allocatedMemberList.get(2).getFirstName() + " " + allocatedMemberList.get(2).getName());
+        }
+    }
+
     public void setProfile(Profile group) {
         this.kgu = group;
     }
-    
+
     public abstract void setupUI();
 }

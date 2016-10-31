@@ -15,6 +15,7 @@ public class Profile {
 
     private String firstName;
     private String name;
+    private String thirdName;
     private StudentTimes studentTimes;
     private int lectionLengthInMinutes;
     private int profileID;
@@ -26,6 +27,9 @@ public class Profile {
     public Profile() {
         studentTimes = new StudentTimes();
         KGUMemberIDs = new ArrayList<>();
+        firstName = "";
+        name = "";
+        thirdName = "";
         allocated = false;
     }
 
@@ -77,6 +81,14 @@ public class Profile {
         this.name = name;
     }
 
+    public String getThirdName() {
+        return thirdName;
+    }
+
+    public void setThirdName(String thirdName) {
+        this.thirdName = thirdName;
+    }
+
     public int getLectionLengthInFields() {
         return lectionLengthInMinutes / 5;
     }
@@ -105,7 +117,7 @@ public class Profile {
         return !studentTimes.getValidStudentDay(dayIndex).isEmpty() && studentTimes.getNumberOfSelectedDays() == 1;
     }
 
-    public void setKGUMemberID(int KGUMemberID) {
+    public void addKGUMemberID(int KGUMemberID) {
         KGUMemberIDs.add(KGUMemberID);
     }
 

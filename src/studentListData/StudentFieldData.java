@@ -27,7 +27,7 @@ public class StudentFieldData {
     private String nameString;
     private String validTimeString;
     private boolean fieldSelected;
-    private boolean studentAllocated;
+    private boolean profileAllocated;
     private boolean incompatible;
     private boolean blocked;
     private boolean unallocatable;
@@ -45,7 +45,7 @@ public class StudentFieldData {
         fieldSelected = false;
         selectedRowIndex = NULL_VALUE;
         dayIndex = dayIndex = NULL_VALUE;
-        studentAllocated = false;
+        profileAllocated = false;
         incompatible = false;
         blocked = false;
         unallocatable = false;
@@ -121,12 +121,12 @@ public class StudentFieldData {
         fieldSelected = !fieldSelected;
     }
 
-    public boolean isStudentAllocated() {
-        return studentAllocated;
+    public boolean isProfileAllocated() {
+        return profileAllocated;
     }
 
-    public void setStudentAllocated(boolean studentAllocated) {
-        this.studentAllocated = studentAllocated;
+    public void setProfileAllocated(boolean profileAllocated) {
+        this.profileAllocated = profileAllocated;
     }
 
     public void setSelectedRowIndex(int selectedRowIndex) {

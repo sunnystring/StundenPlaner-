@@ -5,8 +5,6 @@
  */
 package dataEntryUI.schedule;
 
-import dataEntryUI.schedule.ScheduleEntry;
-import dataEntryUI.schedule.ScheduleEdit;
 import core.Database;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;

@@ -290,6 +290,9 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else if (i == dayColumnFieldIndex + 2) {
                     field.setNameMark(NAME);
                 }
+                else if (i == dayColumnFieldIndex + 3) {
+                    field.setNameMark(THIRD_NAME);
+                }
             }
             if (i == lectionEnd - 2) {
                 field.setLectionPanelAreaMark(SECOND_LAST_ROW);
