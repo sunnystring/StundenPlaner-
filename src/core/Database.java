@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import scheduleData.LectionData;
 import utils.Time;
 import static core.ScheduleTimes.DAYS;
-import io.DataTransferManager;
+import io.FileIO;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,10 +80,10 @@ public class Database {
         }
     }
 
-    public void updateAfterFileEntry(ScheduleTimes scheduleTimes, DataTransferManager dataTransferManager) {
+    public void updateAfterFileEntry(ScheduleTimes scheduleTimes, FileIO fileIO) {
         this.scheduleTimes = scheduleTimes;
-        setStudentDataList(dataTransferManager.getStudentDataList());
-        setLectionMaps(dataTransferManager.getLectionMaps());
+        setStudentDataList(fileIO.getStudentDataList());
+        setLectionMaps(fileIO.getLectionMaps());
         updateLections();
         updateNumberOfStudents();
         setScheduleTimesRefToStudentTimes();

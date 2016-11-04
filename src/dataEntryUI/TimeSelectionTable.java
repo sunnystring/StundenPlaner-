@@ -21,9 +21,12 @@ import utils.Colors;
 public class TimeSelectionTable extends JTable {
 
     private ScheduleTimes scheduleTimes;
+    private StudentTimes studentTimes;
+    private boolean KGUselected;
 
     public TimeSelectionTable(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
+        KGUselected = false;
         setModel(scheduleTimes);
         setRowHeight(25);
         setShowGrid(true);
@@ -32,7 +35,7 @@ public class TimeSelectionTable extends JTable {
         changeSelection(0, 1, false, false); // Fokus auf 1. editierbare Zelle 
     }
 
-    public void setParameters() {
+    public void setupScheduleInputMask() {
         setColumnParameters();
         setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
             @Override
@@ -51,24 +54,32 @@ public class TimeSelectionTable extends JTable {
         });
     }
 
-    public void setParameters(StudentTimes studentTimes) {
+    public void setupStudentInputMask(StudentTimes studentTimes) {
+        this.studentTimes = studentTimes;
         setModel(studentTimes);  // Model von ScheduleEntryMask überschreiben
         setColumnParameters();
         setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
+                boolean isValidTimeslot2 =!(KGUselected && (col == 3 || col == 4));
                 setText(studentTimes.getValueAt(row, col).toString());
-                if (scheduleTimes.isValidDay(row)) {
+                if (scheduleTimes.isValidDay(row) && isValidTimeslot2) {
                     setBackground(Colors.BACKGROUND_COLOR);
                 } else {
                     setBackground(Colors.LIGHT_GRAY_COLOR);
                 }
-                if (isSelected && col > 0 && scheduleTimes.isValidDay(row)) {
+                if (isSelected && col > 0 && isValidTimeslot2) {
                     setBackground(getSelectionBackground());
                 }
                 return this;
             }
         });
+    }
+
+    public void setKGUMaskSelected(boolean state) {
+        KGUselected = state;
+        studentTimes.setKGUselected(state);
+        studentTimes.fireTableDataChanged();
     }
 
     private void setColumnParameters() {
@@ -89,7 +100,4 @@ public class TimeSelectionTable extends JTable {
         }
     }
 
-//    public void setScheduleTimes(ScheduleTimes scheduleTimes) {
-//        this.scheduleTimes = scheduleTimes;
-//    }
 }

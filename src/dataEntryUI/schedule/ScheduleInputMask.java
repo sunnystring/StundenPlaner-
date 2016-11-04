@@ -56,7 +56,7 @@ public class ScheduleInputMask extends JPanel {
 
     private void createWidgets() {
         selectionTable = new TimeSelectionTable(scheduleTimes);
-        selectionTable.setParameters();
+        selectionTable.setupScheduleInputMask();
         center = new JScrollPane(selectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bottom = new JPanel();
@@ -98,7 +98,7 @@ public class ScheduleInputMask extends JPanel {
                 try {
                     scheduleTimes.checkTimeSlots();
                 } catch (NoEntryException ex) {
-                    Dialogs.showNoInputError("Leerer Stundenplan eingeben!");
+                    scheduleEntry.dispose();
                     return;
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showScheduleTimeSlotError();
@@ -106,8 +106,6 @@ public class ScheduleInputMask extends JPanel {
                 }
                 scheduleTimes.setValidScheduleDays();
                 mainFrame.showStundenPlanerAfterScheduleEntry();
-                // cancelButton.removeActionListener(cancelButtonListener);
-                //  saveButton.removeActionListener(saveButtonListener);
                 scheduleEntry.dispose();
             }
         };
@@ -125,7 +123,7 @@ public class ScheduleInputMask extends JPanel {
                     scheduleData.checkIfLectionsWithinTimeFrame();
                     scheduleTimes.validateDayEntry();
                 } catch (NoEntryException ex) {
-                    Dialogs.showNoInputError("Leerer Stundenplan eingeben!");
+                    Dialogs.showNoInputError("Leerer Stundenplan eingegeben!");
                     scheduleTimes.returnToExistingSelection();
                     return;
                 } catch (IllegalTimeSlotException ex) {
@@ -148,8 +146,6 @@ public class ScheduleInputMask extends JPanel {
                     }
                 }
                 mainFrame.showStundenPlanerAfterScheduleEdit();
-               // cancelButton.removeActionListener(cancelButtonListener);
-                //   saveButton.removeActionListener(editButtonListener);
                 scheduleEdit.dispose();
             }
         };

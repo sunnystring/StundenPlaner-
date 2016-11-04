@@ -31,7 +31,7 @@ import dataEntryUI.schedule.ScheduleEdit;
 import dataEntryUI.schedule.ScheduleEntry;
 import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.student.StudentEntry;
-import io.DataTransferManager;
+import io.FileIO;
 import io.PrinterDialog;
 import java.io.File;
 import javax.swing.JButton;
@@ -61,13 +61,13 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private StudentInputMask studentInputMask;
     private GroupInputMask groupInputMask;
     private JPanel toolBar;
-    private ScheduleButton openButton, saveButton, printButton, exitButton, scheduleButton,
+    private ScheduleButton openButton, saveButton, printButton, exitButton, attendanceListButton, scheduleButton,
             studentButton, groupButton, zoomButton, coloredStudentTimesButton, infoButton;
     private boolean buttonState;
     private JSplitPane splitPane;
     private JScrollPane leftScroll, rightScroll;
     private JFileChooser fileChooser;
-    private DataTransferManager dataTransferManager;
+    private FileIO fileIO;
 
     public MainFrame() {
         setTitle("StundenPlaner");
@@ -78,7 +78,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleTimes = database.getScheduleTimes();
         studentListData = new StudentListData(database, this);
         scheduleData = new ScheduleData(database, studentListData);
-        dataTransferManager = new DataTransferManager(database);
+        fileIO = new FileIO(database);
         createWidgets();
         addWidgets();
         setScheduleDataParameters();
@@ -96,12 +96,14 @@ public class MainFrame extends JFrame implements DatabaseListener {
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.LINE_AXIS));
         toolBar.setPreferredSize(new Dimension(0, 32));
         toolBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 4));
+        exitButton = new ScheduleButton("exit.png", "StundenPlaner beenden");
         openButton = new ScheduleButton("openFile.png", "Bestehender Stundenplan öffnen");
         saveButton = new ScheduleButton("disk.png", "Stundenplan und Schülerdaten speichern");
         saveButton.setEnabled(false);
         printButton = new ScheduleButton("printer.png", "Stundenplan drucken");
         printButton.setEnabled(false);
-        exitButton = new ScheduleButton("exit.png", "StundenPlaner beenden");
+        attendanceListButton = new ScheduleButton("attendanceList.png", "Unterrichtskontrolle öffnen");
+        attendanceListButton.setEnabled(false);
         scheduleButton = new ScheduleButton("schedule.png", "Stundenplan erstellen oder ändern");
         studentButton = new ScheduleButton("boy.png", "Schülerprofil erstellen");
         groupButton = new ScheduleButton("group.png", "Gruppenprofile erstellen");
@@ -131,18 +133,19 @@ public class MainFrame extends JFrame implements DatabaseListener {
         splitPane.setRightComponent(rightScroll);
         add(BorderLayout.CENTER, splitPane);
         add(BorderLayout.PAGE_START, toolBar);
-        toolBar.add(infoButton);
+        toolBar.add(exitButton);
         toolBar.add(openButton);
         toolBar.add(saveButton);
         toolBar.add(printButton);
-        toolBar.add(exitButton);
         toolBar.add(Box.createHorizontalGlue());
+        toolBar.add(attendanceListButton);
         toolBar.add(scheduleButton);
         toolBar.add(studentButton);
         toolBar.add(groupButton);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(zoomButton);
         toolBar.add(coloredStudentTimesButton);
+        toolBar.add(infoButton);
     }
 
     private void setScheduleDataParameters() {
@@ -162,7 +165,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 if (f.isDirectory()) {
                     return true;
                 }
-                return dataTransferManager.isValidExtension(f);
+                return fileIO.isValidExtension(f);
             }
 
             @Override
@@ -176,21 +179,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
         database.addDatabaseListener(studentListData);
         database.addDatabaseListener(scheduleData);
         database.addDatabaseListener(this);
-        infoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialog infoFrame = new JDialog(MainFrame.this);
-                JScrollPane pane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
-                infoFrame.setMinimumSize(new Dimension(1400, 700));
-                infoFrame.add(pane);
-                infoFrame.setVisible(true);
-            }
-        });
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    dataTransferManager.save(fileChooser.getSelectedFile());
+                    fileIO.save(fileChooser.getSelectedFile());
                 }
             }
         });
@@ -198,7 +191,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    dataTransferManager.load(fileChooser.getSelectedFile());
+                    fileIO.load(fileChooser.getSelectedFile());
                     updateDataAfterFileEntry();
                     updateWidgetsAfterFileEntry();
                     showStundenPlaner();
@@ -215,7 +208,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    dataTransferManager.save(fileChooser.getSelectedFile());
+                    fileIO.save(fileChooser.getSelectedFile());
                 }
                 System.exit(0);
             }
@@ -263,12 +256,22 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 studentListData.showStudentDaysColored(buttonState);
             }
         });
+        infoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog infoFrame = new JDialog(MainFrame.this);
+                JScrollPane pane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
+                infoFrame.setMinimumSize(new Dimension(1400, 700));
+                infoFrame.add(pane);
+                infoFrame.setVisible(true);
+            }
+        });
     }
 
     private void updateDataAfterFileEntry() {
-        scheduleTimes = dataTransferManager.getScheduleTimes();
+        scheduleTimes = fileIO.getScheduleTimes();
         scheduleTimes.updateValidDays();
-        database.updateAfterFileEntry(scheduleTimes, dataTransferManager);
+        database.updateAfterFileEntry(scheduleTimes, fileIO);
         scheduleData.setScheduleTimes(scheduleTimes);
         studentListData.setNumberOfStudents(database.getNumberOfStudents());
     }
@@ -281,6 +284,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         coloredStudentTimesButton.setEnabled(true);
         printButton.setEnabled(true);
         saveButton.setEnabled(true);
+        attendanceListButton.setEnabled(true);
     }
 
     private void showStundenPlaner() {
@@ -342,10 +346,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     public void setFileButtonsEnabled(boolean state) {
+        exitButton.setEnabled(state);
         saveButton.setEnabled(state);
         openButton.setEnabled(state);
         printButton.setEnabled(state);
-        exitButton.setEnabled(state);
+        attendanceListButton.setEnabled(state);
     }
 
     public void setScheduleButtonEnabled(boolean state) {
@@ -399,6 +404,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
     @Override
     public void profileAdded(int numberOfStudents, Profile profile) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
+        attendanceListButton.setEnabled(numberOfStudents > 0);
+
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }
@@ -412,6 +419,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     @Override
     public void profileDeleted(int numberOfStudents, Profile profile) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
+        attendanceListButton.setEnabled(numberOfStudents > 0);
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }

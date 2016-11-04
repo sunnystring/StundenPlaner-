@@ -28,8 +28,10 @@ public class StudentTimes extends AbstractTableModel {
     private final StudentDay[] daySelectionList;
     private ArrayList<StudentDay> validStudentDayList;
     private int numberOfSelectedDays;
+    private boolean KGUselected;
 
     public StudentTimes() {
+        KGUselected = false;
         daySelectionList = new StudentDay[DAYS];
         for (int i = 0; i < DAYS; i++) {
             daySelectionList[i] = new StudentDay();
@@ -61,7 +63,7 @@ public class StudentTimes extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        return col > 0 && scheduleTimes.isValidDay(row);
+        return col > 0 && scheduleTimes.isValidDay(row)&& !(KGUselected && (col == 3 || col == 4));
     }
 
     @Override
@@ -172,13 +174,6 @@ public class StudentTimes extends AbstractTableModel {
         return matchingDay;
     }
 
-//    public ArrayList<StudentDay> getDaySelectionListAt() {
-//        ArrayList<StudentDay> studentDays = new ArrayList<>();
-//        for (Integer i : scheduleTimes.getValidDaysAsAbsoluteIndizes()) {
-//            studentDays.add(daySelectionList[i ]);
-//        }
-//        return studentDays;
-//    }
     public StudentDay getValidStudentDay(int i) {
         return validStudentDayList.get(i);
     }
@@ -202,4 +197,13 @@ public class StudentTimes extends AbstractTableModel {
     public void setScheduleTimes(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
     }
+
+    public boolean isKGUselected() {
+        return KGUselected;
+    }
+
+    public void setKGUselected(boolean KGUselected) {
+        this.KGUselected = KGUselected;
+    }
+    
 }

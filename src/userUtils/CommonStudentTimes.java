@@ -50,7 +50,8 @@ public class CommonStudentTimes {
                             start = memberStart.clone();
                         }
                     } else {
-                        clearAll();
+                        start.reset();
+                        end.reset();
                     }
                     // neues Ende bestimmen
                     if (memberEnd.greaterEqualsThan(start)) {
@@ -58,7 +59,8 @@ public class CommonStudentTimes {
                             end = memberEnd.clone();
                         }
                     } else {
-                        clearAll();
+                        start.reset();
+                        end.reset();
                     }
                 } else {
                     clearAll();

@@ -31,7 +31,7 @@ import utils.Dialogs;
  *
  * Speichern und Laden der Schüler- und Lection-Daten über JSON
  */
-public class DataTransferManager {
+public class FileIO {
 
     private Database database;
     public static final String VALID_EXTENSION = "stdpl";
@@ -42,7 +42,7 @@ public class DataTransferManager {
     private ArrayList<Profile> studentDataList;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
 
-    public DataTransferManager(Database database) {
+    public FileIO(Database database) {
         this.database = database;
         initGson();
         dataList = new ArrayList();

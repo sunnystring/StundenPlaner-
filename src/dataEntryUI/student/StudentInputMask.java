@@ -51,10 +51,13 @@ public class StudentInputMask extends ProfileInputMask {
                     profile.setProfileType(ProfileTypes.KGU_MEMBER);
                     profile.setProfileName(ProfileTypes.KGU_NAME);
                     lectionLength = "45";
+                    timeSelectionTable.setKGUMaskSelected(true);
                 } else {
                     profile.setProfileType(ProfileTypes.SINGLE_LECTION);
                     profile.setProfileName(ProfileTypes.SINGLE_LECTION_NAME);
                     lectionLength = itemType;
+                    timeSelectionTable.setKGUMaskSelected(false);
+                    
                 }
             }
         };

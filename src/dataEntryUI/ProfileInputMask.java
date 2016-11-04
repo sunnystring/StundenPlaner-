@@ -56,7 +56,7 @@ public abstract class ProfileInputMask extends JPanel {
     private JTextField firstnameField, nameField;
     protected JComboBox lectiontypeSelectionBox;
     protected ActionListener lectiontypeSelectionListener;
-    private TimeSelectionTable timeSelectionTable;
+    protected TimeSelectionTable timeSelectionTable;
     private JButton cancelButton, saveButton, deleteButton;
     private ActionListener cancelButtonListener, saveButtonListener, deleteButtonListener;
 
@@ -260,7 +260,7 @@ public abstract class ProfileInputMask extends JPanel {
 
     public void setUpTimeSelectionTable() {
         studentTimes = profile.getStudentTimes();
-        timeSelectionTable.setParameters(studentTimes);
+        timeSelectionTable.setupStudentInputMask(studentTimes);
     }
 
     private void setProfileData() {
