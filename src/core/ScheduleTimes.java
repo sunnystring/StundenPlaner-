@@ -23,7 +23,7 @@ import scheduleData.ScheduleTimeFrame;
 public class ScheduleTimes extends AbstractTableModel {
 
     public static final int COLUMNS = 3;
-    private static final String[] COLUMN_LABELS = {" ", "von", "bis"};
+    private static final String[] COLUMN_LABELS = {" ", "von", "bis*"};
     public static final String[] WEEKDAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
     public static final int DAYS = WEEKDAY_NAMES.length;
     @SuppressWarnings("FieldMayBeFinal")

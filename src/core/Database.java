@@ -45,6 +45,7 @@ public class Database {
         studentIDMaps = new ArrayList<>();
         numberOfStudents = 0;
         numberOfSingleStudents = 0;
+
     }
 
     public void addProfile(Profile profile) {
@@ -108,6 +109,7 @@ public class Database {
 
     private void updateNumberOfStudents() {
         numberOfStudents = studentDataList.size();
+        numberOfSingleStudents = 0;
         for (Profile profile : studentDataList) {
             if (profile.getProfileType() != ProfileTypes.GROUP) {
                 numberOfSingleStudents++;
@@ -163,6 +165,10 @@ public class Database {
 
     public String getNumberOfSingleStudents() {
         return String.valueOf(numberOfSingleStudents);
+    }
+
+    public void setNumberOfSingleStudents(int numberOfSingleStudents) {
+        this.numberOfSingleStudents = numberOfSingleStudents;
     }
 
     public ArrayList<StudentDay> getSortedStudentDayListAt(int dayIndex) {

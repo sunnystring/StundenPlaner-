@@ -21,8 +21,11 @@ import exceptions.IllegalLectionEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
 import exceptions.OutOfBoundException;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import mainframe.MainFrame;
 import scheduleData.ScheduleData;
@@ -39,8 +42,9 @@ public class ScheduleInputMask extends JPanel {
     private final ScheduleData scheduleData;
     private ScheduleTimes scheduleTimes;
     private JScrollPane center;
-    private JPanel bottom;
+    private JPanel bottom, footnoteField;
     private TimeSelectionTable selectionTable;
+    private JLabel footnote;
     private JButton cancelButton, saveButton;
     private ActionListener cancelButtonListener, saveButtonListener, editButtonListener;
 
@@ -62,6 +66,9 @@ public class ScheduleInputMask extends JPanel {
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        footnote = new JLabel("*in 10-Minuten-Auflösung: 17.15, 19.55 sind z.B. nicht möglich!");
+        footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
+        footnote.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         cancelButton = new JButton("Abbrechen");
         saveButton = new JButton("Speichern");
     }
@@ -70,7 +77,8 @@ public class ScheduleInputMask extends JPanel {
         bottom.add(Box.createHorizontalGlue());
         bottom.add(cancelButton);
         bottom.add(saveButton);
-        add(BorderLayout.CENTER, center);
+        add(BorderLayout.PAGE_START, center);
+        add(BorderLayout.CENTER, footnote);
         add(BorderLayout.PAGE_END, bottom);
     }
 
@@ -79,7 +87,6 @@ public class ScheduleInputMask extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 scheduleTimes.returnToExistingSelection();
-                //  cancelButton.removeActionListener(cancelButtonListener);
                 if (dataEntryAndEdit instanceof ScheduleEntry) {
                     saveButton.removeActionListener(saveButtonListener);
                 } else if (dataEntryAndEdit instanceof ScheduleEdit) {

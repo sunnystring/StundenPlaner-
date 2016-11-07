@@ -9,6 +9,7 @@ import core.Profile;
 import core.StudentDay;
 import java.util.ArrayList;
 import utils.Time;
+import static utils.Time.ABSOLUTE_END;
 
 /**
  *
@@ -22,7 +23,7 @@ public class CommonStudentTimes {
     public CommonStudentTimes(ArrayList<StudentDay> selectableStudentDays) {
         this.selectableStudentDays = selectableStudentDays;
         start = new Time();
-        end = new Time("23.55");
+        end = new Time(ABSOLUTE_END);
         favorite = new Time();
     }
 
@@ -41,7 +42,9 @@ public class CommonStudentTimes {
                         // memberFavorit prüfen
                         boolean whithinThisBounds = memberFavorite.greaterEqualsThan(start) && memberFavorite.lessEqualsThan(end);
                         if (whithinThisBounds) {
-                            favorite = memberFavorite.clone();   // memberFavorite priorisiert this.favorite, falls 2 Favoriten
+                            if (!memberFavorite.isEmpty()) { // Spezialfall: start = end = memberFavorite = 0 und favorite > 0
+                                favorite = memberFavorite.clone();   // memberFavorite priorisiert this.favorite, falls 2 Favoriten
+                            }
                         }
                     }
                     // neuer Start bestimmen

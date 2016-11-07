@@ -33,17 +33,21 @@ import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.student.StudentEntry;
 import io.FileIO;
 import io.PrinterDialog;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import scheduleUI.Schedule;
 import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
 import utils.Icons;
 import static userUtilsUI.ColoredStudentDays.DEFAULT_COLORS;
+import utils.Dialogs;
 
 /**
  *
@@ -176,41 +180,39 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     private void addListeners() {
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeStundenPlaner();
+            }
+        });
         database.addDatabaseListener(studentListData);
         database.addDatabaseListener(scheduleData);
         database.addDatabaseListener(this);
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    fileIO.save(fileChooser.getSelectedFile());
-                }
+                saveFile();
             }
         });
         openButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    fileIO.load(fileChooser.getSelectedFile());
-                    updateDataAfterFileEntry();
-                    updateWidgetsAfterFileEntry();
-                    showStundenPlaner();
-                }
+                openFile();
             }
         });
         printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PrinterDialog printerDialog = new PrinterDialog(MainFrame.this, database);
+                printerDialog.setVisible(true);
             }
         });
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-                    fileIO.save(fileChooser.getSelectedFile());
-                }
-                System.exit(0);
+                closeStundenPlaner();
             }
         });
         scheduleButton.addActionListener(new ActionListener() {
@@ -266,6 +268,40 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 infoFrame.setVisible(true);
             }
         });
+    }
+
+    private void openFile() {
+        if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+            fileIO.load(fileChooser.getSelectedFile());
+            updateDataAfterFileEntry();
+            updateWidgetsAfterFileEntry();
+            showStundenPlaner();
+        }
+    }
+
+    private void saveFile() {
+        if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+            fileIO.save(fileChooser.getSelectedFile());
+        }
+    }
+
+    private void closeStundenPlaner() {
+        int option = Dialogs.showSaveOptionMessage();
+        File file = fileChooser.getSelectedFile();
+        if (option == JOptionPane.YES_OPTION) {
+            if (file != null) {
+                fileIO.save(file);
+                System.exit(0);
+            } else if (scheduleTimes.getNumberOfValidDays() > 0) {
+                saveFile();
+                System.exit(0);
+            } else {
+                System.exit(0);
+            }
+        }
+        if (option == JOptionPane.NO_OPTION) {
+            System.exit(0);
+        }
     }
 
     private void updateDataAfterFileEntry() {

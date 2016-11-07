@@ -19,7 +19,7 @@ public class TimeStringEditor extends DefaultCellEditor {
 
     private JTextField textField;
     private InputVerifier iV = new InputVerifier() {
-        private static final String INPUT_FORMAT = "([1][0-9]|[2][0-3])?([.][0-5][05]?)?";
+        private static final String INPUT_FORMAT = "([0]?[7-9]|[1][0-9]|[2][0-3])?([.][0-5][05]?)?";
 
         @Override
         public boolean verify(JComponent input) {

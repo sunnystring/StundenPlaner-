@@ -151,7 +151,7 @@ public abstract class KGUInputMask extends JDialog {
                     try {
                         setProfileData();
                     } catch (NoEntryException ex) {
-                        Dialogs.showNoInputError("Es darf kein leeres KGU-Profil\nerstellt werden!");
+                        Dialogs.showNoInputError("Es kann kein leeres KGU-Profil erstellt werden!");
                         return;
                     }
                     database.addProfile(kgu);

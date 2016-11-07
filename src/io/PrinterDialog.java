@@ -40,7 +40,6 @@ public class PrinterDialog extends JDialog {
         setLocationRelativeTo(mainFrame);
         createAndAddWidgets();
         addListeners();
-        setVisible(true);
         pack();
     }
 

@@ -10,6 +10,7 @@ import utils.Time;
 
 import java.util.ArrayList;
 import scheduleData.DayColumnData;
+import static utils.Time.ABSOLUTE_END;
 
 /**
  *
@@ -70,8 +71,8 @@ public class StudentDay implements Comparable<StudentDay> {
     }
 
     private void setEarliestStartAndEnd() {
-        earliestStart = new Time("23.55");
-        earliestEnd = new Time("23.55");
+        earliestStart = new Time(ABSOLUTE_END);
+        earliestEnd = new Time(ABSOLUTE_END);
         for (int i = 0; i < SLOTS; i++) {
             if (!timeSlots[i].isEmpty()) {
                 if (i != 1 && i != 3) {
@@ -153,7 +154,7 @@ public class StudentDay implements Comparable<StudentDay> {
 
     public boolean outOfValidBoundsOf(ScheduleDay scheduleDay) {
         Time validScheduleStart = new Time();
-        Time validScheduleEnd = new Time("23.55");
+        Time validScheduleEnd = new Time(ABSOLUTE_END);
         if (scheduleDay != null) {
             validScheduleStart = scheduleDay.getValidStart();
             validScheduleEnd = scheduleDay.getValidEnd();
@@ -261,21 +262,10 @@ public class StudentDay implements Comparable<StudentDay> {
     public void setEnd1(Time time) {
         timeSlots[1] = time;
     }
-//
-//    public void setStart2(Time time) {
-//        timeSlots[2] = time;
-//    }
-//
-//    public void setEnd2(Time time) {
-//        timeSlots[3] = time;
-//    }
-//
+
     public void setFavorite(Time time) {
         timeSlots[4] = time;
     }
-//    public void updateTimeSlots(Time[] slots) {
-//        timeSlots = slots;
-//    }
 
     public Time start1() {
         return timeSlots[0];

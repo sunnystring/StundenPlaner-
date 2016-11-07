@@ -16,7 +16,7 @@ public class Dialogs {
     public static void showScheduleTimeSlotError() {
         JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
                 + "Beginn und Schluss passen nicht zusammen\n"
-                + "oder die Zeit wurde nicht im Format hh.m0 eingeben!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
+                + "oder die Schlusszeit wurde im Format hh.m5 eingeben!", "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void showStudentTimeSlotError() {
@@ -28,13 +28,9 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, msg, "Ungültige Zeiten", JOptionPane.ERROR_MESSAGE);
     }
 
-//    public static void showLectionFormatError() {
-//        JOptionPane.showMessageDialog(null, "Lektionslänge oder Zeitformat ungültig:\n"
-//                + "Nur 30 oder 40 Minuten möglich!\n", "Schülerliste", JOptionPane.ERROR_MESSAGE);
-//    }
     public static void showTimeInputFormatError() {
         JOptionPane.showMessageDialog(null, "Ungültiges Zeitformat:\n"
-                + "Zeit zwischen 10.00 und 23.55 eingeben\n"
+                + "Zeit zwischen 7 und 23.50 (im Format hh.m0 eingeben)\n"
                 + "oder Feld löschen!", "Zeiteingabe", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -82,5 +78,12 @@ public class Dialogs {
     public static void illegalNumberOfMembersErrorMessage() {
         String msg = "Es müssen 2 oder 3 SchülerInnen ausgewählt werden!";
         JOptionPane.showMessageDialog(null, msg, "Unzulässige Auswahl", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static int showSaveOptionMessage() {
+        String msg = "Änderungen von Schülerdaten und Stundenplan speichern?";
+        Object[] options = {"Speichern", "Nicht speichern"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
+        return JOptionPane.showOptionDialog(null, msg, "StundenPlaner beenden",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }
 }

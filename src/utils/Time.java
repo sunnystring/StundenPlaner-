@@ -27,6 +27,7 @@ public class Time implements Cloneable, Comparable<Time> {
     private static DecimalFormatSymbols symbols;
     private static DecimalFormat outputFormat;
     public static final boolean ROUND_UP = true, ROUND_DOWN = false;
+    public static final String ABSOLUTE_END = "23.55";
 
     {
         symbols = new DecimalFormatSymbols(Locale.US);
@@ -49,20 +50,20 @@ public class Time implements Cloneable, Comparable<Time> {
     }
 
     private void checkAndExtractTimeComponents(String timeString) {
-        double time = 0.0;
+        double timeAsDouble = 0.0;
         try {
-            time = Double.parseDouble(timeString);
+            timeAsDouble = Double.parseDouble(timeString);
         } catch (NumberFormatException e) {
             this.hour = 0;
             this.minute = 0;
             this.timeString = "";
         }
         this.timeString = timeString;
-        hour = (int) time;
-        time = time - hour;
-        time = Math.floor(time * 100 + 0.5) / 100; // Rundungsfehler eliminieren, 2 Kommastellen
-        time = time * 100;
-        minute = (int) time;
+        hour = (int) timeAsDouble;
+        timeAsDouble = timeAsDouble - hour;
+        timeAsDouble = Math.floor(timeAsDouble * 100 + 0.5) / 100; // Rundungsfehler eliminieren, 2 Kommastellen
+        timeAsDouble = timeAsDouble * 100;
+        minute = (int) timeAsDouble;
     }
 
     public void setTime(String timeString) {
