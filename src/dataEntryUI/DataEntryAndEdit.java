@@ -8,7 +8,6 @@ package dataEntryUI;
 import dataEntryUI.student.StudentInputMask;
 import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.group.GroupInputMask;
-import java.awt.Dimension;
 import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
@@ -35,7 +34,7 @@ public abstract class DataEntryAndEdit extends JDialog {
         groupInputMask = mainFrame.getGroupInputMask();
         setTitle(title);
         setModal(true);
-        setMinimumSize(new Dimension(300, 100));
+        setMinimumSize(DataEntryUIConstants.DEFAULT_ENTRY_DIMENSION);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
     }

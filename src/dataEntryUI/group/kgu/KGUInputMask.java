@@ -5,14 +5,14 @@
  */
 package dataEntryUI.group.kgu;
 
-import userUtils.CommonStudentTimes;
 import core.ProfileTypes;
 import core.Database;
 import core.Profile;
 import core.StudentDay;
+import static dataEntryUI.DataEntryUIConstants.*;
 import exceptions.NoEntryException;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,15 +21,18 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import mainframe.MainFrame;
 import scheduleData.ScheduleData;
 import utils.Colors;
+import static utils.Colors.*;
 import utils.Dialogs;
 
 /**
@@ -43,28 +46,40 @@ public abstract class KGUInputMask extends JDialog {
     private ScheduleData scheduleData;
     private Profile kgu;
     private int lectionLength;
-    private ArrayList<Profile> studentSelectionList;
-    private ArrayList<Profile> allocatedMemberList;
-    private JPanel selectionField, buttonField;
-    private JLabel textlabel;
-    private JRadioButton studentSelection;
+    private JPanel selectionField;
+    private JScrollPane scrollField;
+    private JPanel buttonField;
+    private JLabel textLabel1, textLabel2, textLabel3;
+    private ButtonGroup groupButtonSelection;
     private JButton cancelButton, approveButton, deleteButton;
+    private Color defaultBackground;
+    private ArrayList<JPanel> groupPanels;
+    private ArrayList<JRadioButton> studentSelections;
     private ActionListener approveButtonListener;
+    private ArrayList<Profile> kguMembers;
+    private ArrayList<Profile> allocatedMembers;
     private ArrayList<Integer> selectableDayIndizes;
+    private ArrayList<ArrayList<KGUTimes>> fullyAllocatableGroups;
+    private ArrayList<ArrayList<KGUTimes>> partlyAllocatableGroups;
 
     public KGUInputMask(MainFrame mainFrame, Profile kgu) {
         this.database = mainFrame.getDatabase();
         this.mainFrame = mainFrame;
         scheduleData = mainFrame.getScheduleData();
         this.kgu = kgu;
-        studentSelectionList = new ArrayList<>();
+        kguMembers = new ArrayList<>();
         getStudents();
-        allocatedMemberList = new ArrayList<>();
+        allocatedMembers = new ArrayList<>();
         selectableDayIndizes = database.getScheduleTimes().getValidDaysAsAbsoluteIndizes();
+        groupPanels = new ArrayList<>();
+        defaultBackground = getBackground();
+        studentSelections = new ArrayList<>();
+        fullyAllocatableGroups = new ArrayList<>();
+        partlyAllocatableGroups = new ArrayList<>();
+        setLocation((int) (mainFrame.getSize().getWidth() / 2), 120);
+        setPreferredSize(KGU_DIMENSION);
         setModal(true);
-        setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
-        setResizable(false);
-        setMinimumSize(new Dimension(300, 100));
+        setResizable(true);
         setLayout(new BorderLayout());
     }
 
@@ -72,37 +87,119 @@ public abstract class KGUInputMask extends JDialog {
         ArrayList<Profile> studentDataList = database.getStudentDataList();
         for (Profile profile : studentDataList) {
             if (profile.getProfileType() == ProfileTypes.KGU_MEMBER && !profile.isAllocated()) {
-                studentSelectionList.add(profile);
+                kguMembers.add(profile);
             }
         }
     }
 
-    // Entry
-    public void createEntryWidgets() {
-        textlabel = new JLabel("SchülerInnen auswählen:");
-        textlabel.setHorizontalAlignment(SwingConstants.LEADING);
-        textlabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        approveButton = new JButton("Profil speichern");
-        approveButton.setEnabled(studentSelectionList.size() > 1);
-        createOtherWidgets();
+    private void createWidgets() {
+        selectionField = new JPanel();
+        selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
+        selectionField.setBorder(DEFAULT_BORDER);
+        scrollField = new JScrollPane(selectionField);
+        groupButtonSelection = new ButtonGroup();
+        buttonField = new JPanel();
+        buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
+        buttonField.setBorder(DEFAULT_BORDER);
+        cancelButton = new JButton("Abbrechen");
     }
 
-    public void createEntrySelection() {
-        selectionField.add(textlabel);
-        for (Profile member : studentSelectionList) {
-            studentSelection = new JRadioButton();
-            studentSelection.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
+    // Entry
+    public void createEntryWidgets() {
+        textLabel1 = new TextLabel("Vollständig einteilbare Gruppen auswählen:");
+        textLabel2 = new TextLabel("Nicht vollständig einteilbare Gruppen auswählen:");
+        textLabel3 = new TextLabel("Mitglieder anzeigen und Gruppe selbst zusammenstellen:");
+        approveButton = new JButton("Profile speichern");
+        approveButton.setEnabled(kguMembers.size() > 1);
+        createWidgets();
+    }
+
+    public void createGroupSelection() {
+        getAllocatableGroups();
+        if (fullyAllocatableGroups.size() > 0) {
+            createSelection(textLabel1, VERY_LIGHT_GREEN, VERY_DARK_GREEN);
+        }
+        if (partlyAllocatableGroups.size() > 0) {
+            createSelection(textLabel2, BLUE_0, BLUE_4);
+        }
+    }
+
+    private void getAllocatableGroups() {
+        CommonStudentTimes commonTimes;
+        for (Integer dayIndex : selectableDayIndizes) {
+            commonTimes = new CommonStudentTimes(kguMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
+            commonTimes.findAllocatableGroups(dayIndex);
+            fullyAllocatableGroups.addAll(commonTimes.getFullyAllocatableGroups());
+            partlyAllocatableGroups.addAll(commonTimes.getPartlyAllocatableGroups());
+        }
+    }
+
+    private void createSelection(JLabel textLabel, Color panelColor, Color textColor) {
+        selectionField.add(textLabel);
+        // dummy
+        for (int i = 0; i < 5; i++) {
+            JPanel groupPanel = new JPanel();
+            groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.PAGE_AXIS));
+            groupPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 120));
+            for (int j = 0; j < 2; j++) {
+                JRadioButton radioButton = new JRadioButton("Marlon Guerra Valentino Demarco Ranadanthan Ravinhindhram");
+                radioButton.setForeground(textColor);
+                radioButton.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (e.getStateChange() == ItemEvent.SELECTED) {
+                            groupPanel.setBackground(panelColor);
+                            clearStudentSelections();
+                        } else {
+                            clearGroupSelectionPanels();
+                        }
+                    }
+                });
+                groupButtonSelection.add(radioButton);
+                groupPanel.add(radioButton);
+            }
+            selectionField.add(groupPanel);
+            groupPanels.add(groupPanel);
+        }
+        // dummy end
+    }
+
+    private void clearStudentSelections() {
+        for (JRadioButton b : studentSelections) {
+            b.setSelected(false);
+        }
+    }
+
+    private void clearGroupSelections() {
+        groupButtonSelection.clearSelection();
+        clearGroupSelectionPanels();
+    }
+
+    private void clearGroupSelectionPanels() {
+        for (JPanel p : groupPanels) {
+            p.setBackground(defaultBackground);
+        }
+    }
+
+    public void createStudentSelection() {
+        selectionField.add(textLabel3);
+        for (Profile member : kguMembers) {
+            JRadioButton studentSelection = new JRadioButton();
+            studentSelection.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
+            studentSelection.setForeground(NAMEFIELD_SELECTED_COLOR);
             studentSelection.setText(member.getFirstName() + " " + member.getName());
             selectionField.add(studentSelection);
+            studentSelections.add(studentSelection);
             studentSelection.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
-                        allocatedMemberList.add(member);
-                        findCommonTimesAndSetProfile();
+                        clearGroupSelections();
+                        allocatedMembers.add(member);
+                        getCommonTimesAndSetProfile();
                     } else {
-                        allocatedMemberList.remove(member);
-                        findCommonTimesAndSetProfile();
+                        allocatedMembers.remove(member);
+                        getCommonTimesAndSetProfile();
                     }
                     kgu.getStudentTimes().updateValidStudentDays();
                     showCommonTimes();
@@ -111,17 +208,12 @@ public abstract class KGUInputMask extends JDialog {
         }
     }
 
-    private void findCommonTimesAndSetProfile() {
+    private void getCommonTimesAndSetProfile() {
         CommonStudentTimes commonTimes;
         for (Integer dayIndex : selectableDayIndizes) {
-            ArrayList<StudentDay> selectableDays = new ArrayList<>();
-            for (Profile member : allocatedMemberList) { // gleiche Tage aller member in ein Gefäss (= selectableStudentDays)
-                StudentDay studentDay = member.getStudentTimes().getDaySelectionListAt(dayIndex);
-                selectableDays.add(studentDay);
-            }
-            commonTimes = new CommonStudentTimes(selectableDays); // selectableStudentDays in ein Gefäss (=commonTimes)
-            commonTimes.findBounds();
-            commonTimes.updateStudentDayOf(kgu, dayIndex);
+            commonTimes = new CommonStudentTimes(allocatedMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
+            commonTimes.findSelectedMemberBoundsAt(dayIndex);
+            commonTimes.setStudentDayDataToProfile(kgu, dayIndex); // neue Zeiten usw. in KGU-Profil setzen
         }
     }
 
@@ -135,7 +227,7 @@ public abstract class KGUInputMask extends JDialog {
         buttonField.add(Box.createHorizontalGlue());
         buttonField.add(cancelButton);
         buttonField.add(approveButton);
-        add(BorderLayout.CENTER, selectionField);
+        add(BorderLayout.CENTER, scrollField);
         add(BorderLayout.PAGE_END, buttonField);
     }
 
@@ -145,7 +237,7 @@ public abstract class KGUInputMask extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!legalNumberOfMembers()) {
-                    Dialogs.illegalNumberOfMembersErrorMessage();
+                    Dialogs.showIllegalKGUEntryErrorMessage();
                 } else {
                     setLectionLength();
                     try {
@@ -164,10 +256,10 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void setLectionLength() {
-        if (allocatedMemberList.size() == 2) {
+        if (allocatedMembers.size() == 2) {
             lectionLength = 45;
         }
-        if (allocatedMemberList.size() == 3) {
+        if (allocatedMembers.size() == 3) {
             lectionLength = 60;
         }
     }
@@ -179,12 +271,13 @@ public abstract class KGUInputMask extends JDialog {
 
     private void getMembers() {
         for (Integer memberID : kgu.getKGUMemberIDs()) {
-            allocatedMemberList.add(database.getProfile(memberID));
+            allocatedMembers.add(database.getProfile(memberID));
         }
     }
 
     public void createEditWidgets() {
-        createOtherWidgets();
+        setPreferredSize(DEFAULT_ENTRY_DIMENSION);
+        createWidgets();
         selectionField.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         approveButton = new JButton("Profil ändern");
         deleteButton = new JButton("Profil auflösen");
@@ -201,11 +294,11 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void addEditStudentNameLabels() {
-        for (int i = 0; i < allocatedMemberList.size(); i++) {
-            textlabel = new JLabel();
-            textlabel.setText(allocatedMemberList.get(i).getFirstName() + " " + allocatedMemberList.get(0).getName());
-            textlabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
-            selectionField.add(textlabel);
+        for (int i = 0; i < allocatedMembers.size(); i++) {
+            textLabel3 = new JLabel();
+            textLabel3.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(0).getName());
+            textLabel3.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
+            selectionField.add(textLabel3);
         }
     }
 
@@ -232,14 +325,14 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     public void updateSecondEntryUI(KGUInputMask editMask) {
-        textlabel.setText("Auswahl ändern:");
+        textLabel3.setText("Auswahl ändern:");
         approveButton.setText("Änderung speichern");
         approveButton.removeActionListener(approveButtonListener);
         approveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!legalNumberOfMembers()) {
-                    Dialogs.illegalNumberOfMembersErrorMessage();
+                    Dialogs.showIllegalKGUEntryErrorMessage();
                 } else {
                     removeMemberIDs();
                     removeMemberNames();
@@ -256,17 +349,7 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private boolean legalNumberOfMembers() {
-        return allocatedMemberList.size() >= 2 && allocatedMemberList.size() <= 3;
-    }
-
-    private void createOtherWidgets() {
-        selectionField = new JPanel();
-        selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
-        selectionField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        buttonField = new JPanel();
-        buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
-        buttonField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        cancelButton = new JButton("Abbrechen");
+        return allocatedMembers.size() >= 2 && allocatedMembers.size() <= 3;
     }
 
     private void addCancelButtonListener() {
@@ -307,13 +390,13 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void setMembersAllocated(boolean state) {
-        for (Profile member : allocatedMemberList) {
+        for (Profile member : allocatedMembers) {
             member.setAllocated(state);
         }
     }
 
     private void setMemberIDs() {
-        for (Profile member : allocatedMemberList) {
+        for (Profile member : allocatedMembers) {
             kgu.addKGUMemberID(member.getProfileID());
         }
     }
@@ -329,10 +412,10 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void setStudentNames() {
-        kgu.setFirstName(allocatedMemberList.get(0).getFirstName() + " " + allocatedMemberList.get(0).getName());
-        kgu.setName(allocatedMemberList.get(1).getFirstName() + " " + allocatedMemberList.get(1).getName());
-        if (allocatedMemberList.size() == 3) {
-            kgu.setThirdName(allocatedMemberList.get(2).getFirstName() + " " + allocatedMemberList.get(2).getName());
+        kgu.setFirstName(allocatedMembers.get(0).getFirstName() + " " + allocatedMembers.get(0).getName());
+        kgu.setName(allocatedMembers.get(1).getFirstName() + " " + allocatedMembers.get(1).getName());
+        if (allocatedMembers.size() == 3) {
+            kgu.setThirdName(allocatedMembers.get(2).getFirstName() + " " + allocatedMembers.get(2).getName());
         }
     }
 
@@ -340,90 +423,14 @@ public abstract class KGUInputMask extends JDialog {
         this.kgu = group;
     }
 
-//    private void findBounds(Profile member) {
-//        initCommonTimeMarks();
-//        StudentTimes studentTimes = member.getStudentTimes();
-//        for (int i = 0; i < studentTimes.getNumberOfSelectedDays(); i++) {
-//            StudentDay studentDay = studentTimes.getValidStudentDay(i);
-//            findNewTimeBounds(studentDay.start1(), studentDay.end1());
-//            findNewTimeBounds(studentDay.start2(), studentDay.end2());
-//            findNewFavorite(studentDay.favorite());
-//        }
-//    }
-//
-//    private void initCommonTimeMarks() {
-//        start1 = new Time();
-//        end1 = new Time("23.55");
-//        start2 = new Time();
-//        end2 = new Time("23.55");
-//        favorite = new Time();
-//    }
-//
-//    private void findNewTimeBounds(Time memberStart, Time memberEnd) {
-//        // Intervall_1
-//        if (start1.lessEqualsThan(memberEnd)) { // Member-Intervall überlappt Vergleichs-Intervall unten
-//            end1 = memberEnd;
-//            if (start1.lessEqualsThan(memberStart)) { // Member-Intervall liegt innerhalb Vergleichs-Intervall
-//                start1 = memberStart;
-//            }
-//        } else if (start1.lessEqualsThan(memberStart)) { // Member-Intervall überlappt Vergleichs-Intervall oben
-//            start1 = memberStart;
-//            if (end1.greaterEqualsThan(memberEnd)) { // Member-Intervall liegt innerhalb Vergleichs-Intervall
-//                end1 = memberEnd;
-//            }
-//        } else if (start1.greaterThan(memberEnd)) { // Member-Intervall liegt vollständig unterhalb Vergleichs-Intervall
-//            start1.reset();
-//        } else if (end1.lessThan(memberStart)) { // Member-Intervall liegt vollständig oberhalb Vergleichs-Intervall
-//            end1.reset();
-//        }
-//        // Intervall_2
-//        if (start2.lessEqualsThan(memberEnd)) {
-//            end2 = memberEnd;
-//            if (start2.lessEqualsThan(memberStart)) {
-//                start2 = memberStart;
-//            }
-//        } else if (start2.lessEqualsThan(memberStart)) {
-//            start2 = memberStart;
-//            if (end2.greaterEqualsThan(memberEnd)) {
-//                end2 = memberEnd;
-//            }
-//        } else if (start2.greaterThan(memberEnd)) {
-//            start2.reset();
-//        } else if (end2.lessThan(memberStart)) {
-//            end2.reset();
-//        }
-//        // Vergleichs-Favorite liegt ausserhalb Member-Intervall
-//        if(favorite.lessThan(memberStart)|| favorite.greaterThan(memberEnd))
-//            favorite.reset();
-//    }
-//
-//    private void findNewFavorite(Time memberFavorite) {
-//        boolean whithin1 = memberFavorite.greaterEqualsThan(start1) && memberFavorite.lessEqualsThan(end1);
-//        boolean whithin2 = memberFavorite.greaterEqualsThan(start2) && memberFavorite.lessEqualsThan(end2);
-//        if (whithin1 || whithin2 || memberFavorite.equals(favorite)) {
-//            favorite = memberFavorite;
-//        } else {
-//            favorite.reset();
-//        }
-//    }
-//
-//    private void updateStudentDayOf() {
-//        Time[] timeSlots = new Time[StudentDay.SLOTS];
-//        timeSlots[0] = start1;
-//        timeSlots[1] = end1;
-//        timeSlots[2] = start2;
-//        timeSlots[3] = end2;
-//        timeSlots[4] = favorite;
-//        StudentTimes studentTimes = kgu.getStudentTimes();
-//        for (int i = 0; i < studentTimes.getNumberOfSelectedDays(); i++) {
-//            StudentDay studentDay = studentTimes.getValidStudentDay(i);
-//            studentDay.updateTimeSlots(timeSlots);
-//            studentDay.setSelectionState();
-//            studentDay.setSingleSlots();
-//            studentDay.setTimeBounds();
-//        }
-//        studentTimes.updateValidStudentDays();
-//    }
-//
     public abstract void setupUI();
+
+    private class TextLabel extends JLabel {
+
+        public TextLabel(String text) {
+            setText(text);
+            setHorizontalAlignment(SwingConstants.LEADING);
+            setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        }
+    }
 }

@@ -6,6 +6,7 @@
 package dataEntryUI.schedule;
 
 import dataEntryUI.DataEntryAndEdit;
+import dataEntryUI.DataEntryUIConstants;
 import mainframe.MainFrame;
 import scheduleUI.Schedule;
 
@@ -17,6 +18,7 @@ public class ScheduleEntry extends DataEntryAndEdit {
 
     public ScheduleEntry(MainFrame mainFrame) {
         super(mainFrame, "Stundenplan erstellen");
+        setMinimumSize(DataEntryUIConstants.SCHEDULE_DIMENSION);
         setUpMask();
         pack();
     }

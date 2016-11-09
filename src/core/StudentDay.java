@@ -222,17 +222,6 @@ public class StudentDay implements Comparable<StudentDay> {
         return isBlocked;
     }
 
-    @Override
-    public int compareTo(StudentDay d) {
-        if (earliestStart.greaterThan(d.earliestStart())) {
-            return 1;
-        }
-        if (earliestStart.lessThan(d.earliestStart())) {
-            return -1;
-        }
-        return 0;
-    }
-
     public void resetAllTimes() {
         for (int i = 0; i < SLOTS; i++) {
             timeSlots[i].reset();
@@ -305,6 +294,17 @@ public class StudentDay implements Comparable<StudentDay> {
 
     public ArrayList<ValidTimes> getValidTimes() {
         return validTimes;
+    }
+
+    @Override
+    public int compareTo(StudentDay d) {
+        if (earliestStart.greaterThan(d.earliestStart())) {
+            return 1;
+        }
+        if (earliestStart.lessThan(d.earliestStart())) {
+            return -1;
+        }
+        return 0;
     }
 
     @Override

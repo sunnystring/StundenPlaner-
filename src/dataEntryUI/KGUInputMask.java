@@ -44,7 +44,7 @@ public abstract class KGUInputMask extends JDialog {
         setModal(true);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
-        setMinimumSize(new Dimension(300, 100));
+        setMinimumSize(DataEntryUIConstants.KGU_DIMENSION);
         setLayout(new BorderLayout());
         createWidgets();
         addWidgets();
