@@ -75,13 +75,13 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, text, "???", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void illegalNumberOfMembersErrorMessage() {
-        String msg = "Es müssen 2 oder 3 SchülerInnen ausgewählt werden!";
+    public static void showIllegalKGUEntryErrorMessage() {
+        String msg = "Es muss eine Gruppe ausgewählt oder eine Auswahl\nvon 2 oder 3 Mitgliedern gemacht werden!";
         JOptionPane.showMessageDialog(null, msg, "Unzulässige Auswahl", JOptionPane.ERROR_MESSAGE);
     }
 
     public static int showSaveOptionMessage() {
-        String msg = "Änderungen von Schülerdaten und Stundenplan speichern?";
+        String msg = "Änderungen der Schülerdaten und des Stundenplan speichern?";
         Object[] options = {"Speichern", "Nicht speichern"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
         return JOptionPane.showOptionDialog(null, msg, "StundenPlaner beenden",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

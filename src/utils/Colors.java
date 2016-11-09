@@ -15,8 +15,10 @@ public class Colors {
 
     public static final Color LIGHT_GRAY_COLOR = new Color(240, 240, 240),
             DARK_GREEN = new Color(0, 204, 0),
+            VERY_DARK_GREEN = new Color(0, 140, 0),
             GROUP_LECTION_GREEN = new Color(150, 204, 0),
             LIGHT_GREEN = new Color(51, 255, 51),
+            VERY_LIGHT_GREEN = new Color(204, 255, 204),
             DAYFIELD_COLOR = new Color(0, 153, 76),
             DAYFIELD_SELECTED_COLOR = new Color(0, 102, 52),
             NAMEFIELD_SINGLE_COLOR = new Color(204, 120, 0),

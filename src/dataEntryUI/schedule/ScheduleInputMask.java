@@ -21,7 +21,6 @@ import exceptions.IllegalLectionEraseException;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NoEntryException;
 import exceptions.OutOfBoundException;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,7 +41,7 @@ public class ScheduleInputMask extends JPanel {
     private final ScheduleData scheduleData;
     private ScheduleTimes scheduleTimes;
     private JScrollPane center;
-    private JPanel bottom, footnoteField;
+    private JPanel bottom;
     private TimeSelectionTable selectionTable;
     private JLabel footnote;
     private JButton cancelButton, saveButton;
@@ -66,7 +65,7 @@ public class ScheduleInputMask extends JPanel {
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        footnote = new JLabel("*in 10-Minuten-Auflösung: 17.15, 19.55 sind z.B. nicht möglich!");
+        footnote = new JLabel("* 10-Minuten-Auflösung: 17.15, 19.55 sind z.B. nicht möglich!");
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
         footnote.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         cancelButton = new JButton("Abbrechen");

@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package userUtils;
+package dataEntryUI.group.kgu;
 
 import core.Profile;
 import core.StudentDay;
 import java.util.ArrayList;
+import java.util.List;
 import utils.Time;
 import static utils.Time.ABSOLUTE_END;
 
@@ -17,19 +18,66 @@ import static utils.Time.ABSOLUTE_END;
  */
 public class CommonStudentTimes {
 
-    private ArrayList<StudentDay> selectableStudentDays;
     private Time start, end, favorite;
+    private List selectableStudentDays;
+    private ArrayList<KGU> allocatableGroups;
+    ArrayList<Profile> memberList;
 
-    public CommonStudentTimes(ArrayList<StudentDay> selectableStudentDays) {
-        this.selectableStudentDays = selectableStudentDays;
+    public CommonStudentTimes(ArrayList<Profile> memberList) {
+        this.memberList = memberList;
+        //    this.selectableStudentDays = selectableStudentDays;
         start = new Time();
         end = new Time(ABSOLUTE_END);
         favorite = new Time();
     }
 
-    public void findBounds() {
-        if (!selectableStudentDays.isEmpty()) {
-            for (StudentDay studentDay : selectableStudentDays) {
+    public void findAllocatableGroups(int dayIndex) {
+        getMemberStudentDaysAt(dayIndex);
+        //  findTwoMemberGroups();
+        //  findThreeMemberGroups();
+    }
+
+    private void findTwoMemberGroups() {
+        for (int i = 0; i < selectableStudentDays.size() - 1; i++) {
+            for (int j = i + 1; j < selectableStudentDays.size(); j++) {
+                findBounds(selectableStudentDays.subList(i, j));
+                if (!this.isEmpty()) {
+                    allocatableGroups.add(new KGU(this));
+                }
+            }
+        }
+    }
+
+    private void findThreeMemberGroups() {
+        for (int i = 0; i < selectableStudentDays.size() - 2; i++) {
+            for (int j = i + 1; j < selectableStudentDays.size() - 1; j++) {
+                for (int k = j + 1; k < selectableStudentDays.size(); k++) {
+                    findBounds(selectableStudentDays.subList(i, k));
+                }
+            }
+        }
+    }
+
+    public void findSelectedMemberBoundsAt(int dayIndex) {
+        getMemberStudentDaysAt(dayIndex);
+        findBounds(selectableStudentDays);
+    }
+
+    private void getMemberStudentDaysAt(int dayIndex) {
+        ArrayList<StudentDay> selectableDays = new ArrayList<>();
+        selectableDays = new ArrayList<>();
+        for (Profile member : memberList) { // gleiche Tage aller member in ein Gefäss (=selectableStudentDays)
+            StudentDay studentDay = member.getStudentTimes().getDaySelectionListAt(dayIndex);
+            selectableDays.add(studentDay);
+        }
+        selectableStudentDays = selectableDays;
+    }
+
+  
+
+    private void findBounds(List<StudentDay> selectableDays) {
+        if (!selectableDays.isEmpty()) {
+            for (StudentDay studentDay : selectableDays) {
                 if (!studentDay.isEmpty()) {
                     Time memberStart = studentDay.start1(), memberEnd = studentDay.end1(), memberFavorite = studentDay.favorite();
                     // Favorit prüfen
@@ -74,13 +122,7 @@ public class CommonStudentTimes {
         }
     }
 
-    private void clearAll() {
-        start.reset();
-        end.reset();
-        favorite.reset();
-    }
-
-    public void updateStudentDayOf(Profile kgu, int dayIndex) {
+    public void setStudentDayDataToProfile(Profile kgu, int dayIndex) {
         StudentDay studentDay = kgu.getStudentTimes().getDaySelectionListAt(dayIndex);
         studentDay.setStart1(start);
         studentDay.setEnd1(end);
@@ -88,5 +130,27 @@ public class CommonStudentTimes {
         studentDay.setSelectionState();
         studentDay.setSingleSlots();
         studentDay.setTimeBounds();
+    }
+
+    private void clearAll() {
+        start.reset();
+        end.reset();
+        favorite.reset();
+    }
+
+    public boolean isEmpty() {
+        return start.isEmpty() && favorite.isEmpty() && (end.isEmpty() || end.equals(ABSOLUTE_END));
+    }
+
+    public Time start() {
+        return start;
+    }
+
+    public Time end() {
+        return end;
+    }
+
+    public Time favorite() {
+        return favorite;
     }
 }
