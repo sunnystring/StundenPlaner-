@@ -217,6 +217,16 @@ public abstract class KGUInputMask extends JDialog {
         }
     }
 
+//    private ArrayList<StudentDay> setSelectableStudentDay(ArrayList<Profile> memberList, int dayIndex) {
+//        ArrayList<StudentDay> selectableDays = new ArrayList<>();
+//        selectableDays = new ArrayList<>();
+//        for (Profile member : memberList) { // gleiche Tage aller member in ein Gefäss (=selectableStudentDays)
+//            StudentDay studentDay = member.getStudentTimes().getDaySelectionListAt(dayIndex);
+//            selectableDays.add(studentDay);
+//        }
+//        return selectableDays;
+//    }
+
     private void showCommonTimes() {
         scheduleData.clearAllTimeMarks();
         scheduleData.setAllValidTimeMarks(kgu);
