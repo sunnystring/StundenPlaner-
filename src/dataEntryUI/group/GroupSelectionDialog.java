@@ -7,7 +7,7 @@ package dataEntryUI.group;
 
 import core.ProfileTypes;
 import core.Profile;
-import static dataEntryUI.DataEntryUIConstants.*;
+import static utils.GUIConstants.*;
 import dataEntryUI.group.kgu.KGUEntry;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

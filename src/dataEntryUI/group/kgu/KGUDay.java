@@ -12,14 +12,18 @@ import utils.Time;
  *
  * @author mathiaskielholz
  */
-public class KGUTimes {
+public class KGUDay {
 
     private Time start, end, favorite;
-    private int memberID;
-    private ArrayList<Integer> commonMemberIDs;
+    private int memberID; // bevor als mergedTimes-Objekt benutzt
+    private ArrayList<Integer> memberIDs;
 
-    public KGUTimes() {
-        commonMemberIDs = new ArrayList<>();
+    public KGUDay() {
+        memberIDs = new ArrayList<>();
+    }
+
+    public boolean hasCommonMembers(KGUDay kGUDay) {
+        return true;
     }
 
     public Time start() {
@@ -46,17 +50,17 @@ public class KGUTimes {
         return start.isEmpty() && favorite.isEmpty() && end.isEmpty();
     }
 
-    public void setTimes(Time start, Time end, Time favorite) {
+    public void setTime(Time start, Time end, Time favorite) {
         this.start = start;
         this.end = end;
         this.favorite = favorite;
     }
 
-    public void addCommonMemberID(Integer id) {
-        commonMemberIDs.add(id);
+    public void addMemberID(Integer id) {
+        memberIDs.add(id);
     }
 
-    public ArrayList<Integer> getCommonMemberIDs() {
-        return commonMemberIDs;
+    public ArrayList<Integer> getMemberIDs() {
+        return memberIDs;
     }
 }

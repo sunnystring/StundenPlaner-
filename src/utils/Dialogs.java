@@ -81,7 +81,7 @@ public class Dialogs {
     }
 
     public static int showSaveOptionMessage() {
-        String msg = "Änderungen der Schülerdaten und des Stundenplan speichern?";
+        String msg = "Änderungen der Schülerdaten und des Stundenplans speichern?";
         Object[] options = {"Speichern", "Nicht speichern"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
         return JOptionPane.showOptionDialog(null, msg, "StundenPlaner beenden",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

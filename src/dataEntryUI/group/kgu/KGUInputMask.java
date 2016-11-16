@@ -9,7 +9,7 @@ import core.ProfileTypes;
 import core.Database;
 import core.Profile;
 import core.StudentDay;
-import static dataEntryUI.DataEntryUIConstants.*;
+import static utils.GUIConstants.*;
 import exceptions.NoEntryException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -59,8 +59,9 @@ public abstract class KGUInputMask extends JDialog {
     private ArrayList<Profile> kguMembers;
     private ArrayList<Profile> allocatedMembers;
     private ArrayList<Integer> selectableDayIndizes;
-    private ArrayList<ArrayList<KGUTimes>> fullyAllocatableGroups;
-    private ArrayList<ArrayList<KGUTimes>> partlyAllocatableGroups;
+    private ArrayList<ArrayList<KGUDay>> fullyAllocatableGroups;
+    private ArrayList<ArrayList<KGUDay>> partlyAllocatableGroups;
+    private ArrayList<KGUBundle> KGUBundles;
 
     public KGUInputMask(MainFrame mainFrame, Profile kgu) {
         this.database = mainFrame.getDatabase();
@@ -76,6 +77,7 @@ public abstract class KGUInputMask extends JDialog {
         studentSelections = new ArrayList<>();
         fullyAllocatableGroups = new ArrayList<>();
         partlyAllocatableGroups = new ArrayList<>();
+        KGUBundles = new ArrayList<>();
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 120);
         setPreferredSize(KGU_DIMENSION);
         setModal(true);
@@ -125,12 +127,13 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void getAllocatableGroups() {
-        CommonStudentTimes commonTimes;
+        CommonTimes commonTimes;
         for (Integer dayIndex : selectableDayIndizes) {
-            commonTimes = new CommonStudentTimes(kguMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
+            commonTimes = new CommonTimes(kguMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
             commonTimes.findAllocatableGroups(dayIndex);
-            fullyAllocatableGroups.addAll(commonTimes.getFullyAllocatableGroups());
-            partlyAllocatableGroups.addAll(commonTimes.getPartlyAllocatableGroups());
+           // KGUBundles.addAll(commonTimes.createKGUBundles());
+           // fullyAllocatableGroups.addAll(commonTimes.getFullyAllocatableGroups()); // To Do
+            // partlyAllocatableGroups.addAll(commonTimes.getPartlyAllocatableGroups()); // To Do
         }
     }
 
@@ -209,23 +212,13 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     private void getCommonTimesAndSetProfile() {
-        CommonStudentTimes commonTimes;
+        CommonTimes commonTimes;
         for (Integer dayIndex : selectableDayIndizes) {
-            commonTimes = new CommonStudentTimes(allocatedMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
+            commonTimes = new CommonTimes(allocatedMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
             commonTimes.findSelectedMemberBoundsAt(dayIndex);
             commonTimes.setStudentDayDataToProfile(kgu, dayIndex); // neue Zeiten usw. in KGU-Profil setzen
         }
     }
-
-//    private ArrayList<StudentDay> setSelectableStudentDay(ArrayList<Profile> memberList, int dayIndex) {
-//        ArrayList<StudentDay> selectableDays = new ArrayList<>();
-//        selectableDays = new ArrayList<>();
-//        for (Profile member : memberList) { // gleiche Tage aller member in ein Gefäss (=selectableStudentDays)
-//            StudentDay studentDay = member.getStudentTimes().getDaySelectionListAt(dayIndex);
-//            selectableDays.add(studentDay);
-//        }
-//        return selectableDays;
-//    }
 
     private void showCommonTimes() {
         scheduleData.clearAllTimeMarks();

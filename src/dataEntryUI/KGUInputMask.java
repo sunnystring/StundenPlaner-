@@ -5,6 +5,7 @@
  */
 package dataEntryUI;
 
+import utils.GUIConstants;
 import  core.ProfileTypes;
 import core.Database;
 import core.Profile;
@@ -44,7 +45,7 @@ public abstract class KGUInputMask extends JDialog {
         setModal(true);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
-        setMinimumSize(DataEntryUIConstants.KGU_DIMENSION);
+        setMinimumSize(GUIConstants.KGU_DIMENSION);
         setLayout(new BorderLayout());
         createWidgets();
         addWidgets();

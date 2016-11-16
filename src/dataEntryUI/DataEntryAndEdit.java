@@ -5,6 +5,7 @@
  */
 package dataEntryUI;
 
+import utils.GUIConstants;
 import dataEntryUI.student.StudentInputMask;
 import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.group.GroupInputMask;
@@ -34,7 +35,7 @@ public abstract class DataEntryAndEdit extends JDialog {
         groupInputMask = mainFrame.getGroupInputMask();
         setTitle(title);
         setModal(true);
-        setMinimumSize(DataEntryUIConstants.DEFAULT_ENTRY_DIMENSION);
+        setMinimumSize(GUIConstants.DEFAULT_ENTRY_DIMENSION);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
     }

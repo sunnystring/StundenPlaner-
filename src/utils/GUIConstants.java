@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI;
+package utils;
 
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
@@ -13,7 +13,7 @@ import javax.swing.border.Border;
  *
  * @author mathiaskielholz
  */
-public class DataEntryUIConstants {
+public class GUIConstants {
 
     public static final Dimension KGU_DIMENSION = new Dimension(400, 400);
     public static final Dimension DEFAULT_ENTRY_DIMENSION = new Dimension(400, 200);
