@@ -9,6 +9,6 @@ package userUtilsUI.lessonCompanion;
  *
  * @author mathiaskielholz
  */
-public class DayView {
+public class DayView  extends LessonCompanionDialog{
     
 }

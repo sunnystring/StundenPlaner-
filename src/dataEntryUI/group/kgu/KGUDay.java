@@ -15,7 +15,7 @@ import utils.Time;
 public class KGUDay {
 
     private Time start, end, favorite;
-    private int memberID; // bevor als mergedTimes-Objekt benutzt
+    // private int memberID; // bevor als mergedTimes-Objekt benutzt
     private ArrayList<Integer> memberIDs;
 
     public KGUDay() {
@@ -38,14 +38,13 @@ public class KGUDay {
         return favorite;
     }
 
-    public void setMemberID(int memberID) {
-        this.memberID = memberID;
-    }
-
-    public int getMemberID() {
-        return memberID;
-    }
-
+//    public void setMemberID(int memberID) {
+//        this.memberID = memberID;
+//    }
+//
+//    public int getMemberID() {
+//        return memberID;
+//    }
     public boolean isEmpty() {
         return start.isEmpty() && favorite.isEmpty() && end.isEmpty();
     }
@@ -58,6 +57,10 @@ public class KGUDay {
 
     public void addMemberID(Integer id) {
         memberIDs.add(id);
+    }
+
+    public void setMemberIDs(ArrayList<Integer> memberIDs) {
+        this.memberIDs = memberIDs;
     }
 
     public ArrayList<Integer> getMemberIDs() {

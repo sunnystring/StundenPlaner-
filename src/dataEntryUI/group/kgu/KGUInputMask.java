@@ -49,19 +49,20 @@ public abstract class KGUInputMask extends JDialog {
     private JPanel selectionField;
     private JScrollPane scrollField;
     private JPanel buttonField;
-    private JLabel textLabel1, textLabel2, textLabel3;
-    private ButtonGroup groupButtonSelection;
+    private JLabel textLabel;
+//  private JLabel textLabel1, textLabel2;
+//  private ButtonGroup groupButtonSelection;
     private JButton cancelButton, approveButton, deleteButton;
-    private Color defaultBackground;
-    private ArrayList<JPanel> groupPanels;
+//  private Color defaultBackground;
+//  private ArrayList<JPanel> groupPanels;
     private ArrayList<JRadioButton> studentSelections;
     private ActionListener approveButtonListener;
     private ArrayList<Profile> kguMembers;
     private ArrayList<Profile> allocatedMembers;
     private ArrayList<Integer> selectableDayIndizes;
-    private ArrayList<ArrayList<KGUDay>> fullyAllocatableGroups;
-    private ArrayList<ArrayList<KGUDay>> partlyAllocatableGroups;
-    private ArrayList<KGUBundle> KGUBundles;
+//  private ArrayList<ArrayList<KGUDay>> fullyAllocatableGroups;
+//  private ArrayList<ArrayList<KGUDay>> partlyAllocatableGroups;
+//  private ArrayList<KGUBundle> KGUBundles;
 
     public KGUInputMask(MainFrame mainFrame, Profile kgu) {
         this.database = mainFrame.getDatabase();
@@ -72,13 +73,13 @@ public abstract class KGUInputMask extends JDialog {
         getStudents();
         allocatedMembers = new ArrayList<>();
         selectableDayIndizes = database.getScheduleTimes().getValidDaysAsAbsoluteIndizes();
-        groupPanels = new ArrayList<>();
-        defaultBackground = getBackground();
+//      groupPanels = new ArrayList<>();
+//      defaultBackground = getBackground();
         studentSelections = new ArrayList<>();
-        fullyAllocatableGroups = new ArrayList<>();
-        partlyAllocatableGroups = new ArrayList<>();
-        KGUBundles = new ArrayList<>();
-        setLocation((int) (mainFrame.getSize().getWidth() / 2), 120);
+//      fullyAllocatableGroups = new ArrayList<>();
+//      partlyAllocatableGroups = new ArrayList<>();
+//      KGUBundles = new ArrayList<>();
+        setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setPreferredSize(KGU_DIMENSION);
         setModal(true);
         setResizable(true);
@@ -99,7 +100,7 @@ public abstract class KGUInputMask extends JDialog {
         selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
         selectionField.setBorder(DEFAULT_BORDER);
         scrollField = new JScrollPane(selectionField);
-        groupButtonSelection = new ButtonGroup();
+//      groupButtonSelection = new ButtonGroup();
         buttonField = new JPanel();
         buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
         buttonField.setBorder(DEFAULT_BORDER);
@@ -108,84 +109,16 @@ public abstract class KGUInputMask extends JDialog {
 
     // Entry
     public void createEntryWidgets() {
-        textLabel1 = new TextLabel("Vollständig einteilbare Gruppen auswählen:");
-        textLabel2 = new TextLabel("Nicht vollständig einteilbare Gruppen auswählen:");
-        textLabel3 = new TextLabel("Mitglieder anzeigen und Gruppe selbst zusammenstellen:");
+//      textLabel1 = new TextLabel("Vollständig einteilbare Gruppen auswählen:");
+//      textLabel2 = new TextLabel("Nicht vollständig einteilbare Gruppen auswählen:");
+        textLabel = new TextLabel("Mitglieder anzeigen und Gruppe selbst zusammenstellen:");
         approveButton = new JButton("Profile speichern");
         approveButton.setEnabled(kguMembers.size() > 1);
         createWidgets();
     }
 
-    public void createGroupSelection() {
-        getAllocatableGroups();
-        if (fullyAllocatableGroups.size() > 0) {
-            createSelection(textLabel1, VERY_LIGHT_GREEN, VERY_DARK_GREEN);
-        }
-        if (partlyAllocatableGroups.size() > 0) {
-            createSelection(textLabel2, BLUE_0, BLUE_4);
-        }
-    }
-
-    private void getAllocatableGroups() {
-        CommonTimes commonTimes;
-        for (Integer dayIndex : selectableDayIndizes) {
-            commonTimes = new CommonTimes(kguMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
-            commonTimes.findAllocatableGroups(dayIndex);
-           // KGUBundles.addAll(commonTimes.createKGUBundles());
-           // fullyAllocatableGroups.addAll(commonTimes.getFullyAllocatableGroups()); // To Do
-            // partlyAllocatableGroups.addAll(commonTimes.getPartlyAllocatableGroups()); // To Do
-        }
-    }
-
-    private void createSelection(JLabel textLabel, Color panelColor, Color textColor) {
-        selectionField.add(textLabel);
-        // dummy
-        for (int i = 0; i < 5; i++) {
-            JPanel groupPanel = new JPanel();
-            groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.PAGE_AXIS));
-            groupPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 120));
-            for (int j = 0; j < 2; j++) {
-                JRadioButton radioButton = new JRadioButton("Marlon Guerra Valentino Demarco Ranadanthan Ravinhindhram");
-                radioButton.setForeground(textColor);
-                radioButton.addItemListener(new ItemListener() {
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange() == ItemEvent.SELECTED) {
-                            groupPanel.setBackground(panelColor);
-                            clearStudentSelections();
-                        } else {
-                            clearGroupSelectionPanels();
-                        }
-                    }
-                });
-                groupButtonSelection.add(radioButton);
-                groupPanel.add(radioButton);
-            }
-            selectionField.add(groupPanel);
-            groupPanels.add(groupPanel);
-        }
-        // dummy end
-    }
-
-    private void clearStudentSelections() {
-        for (JRadioButton b : studentSelections) {
-            b.setSelected(false);
-        }
-    }
-
-    private void clearGroupSelections() {
-        groupButtonSelection.clearSelection();
-        clearGroupSelectionPanels();
-    }
-
-    private void clearGroupSelectionPanels() {
-        for (JPanel p : groupPanels) {
-            p.setBackground(defaultBackground);
-        }
-    }
-
     public void createStudentSelection() {
-        selectionField.add(textLabel3);
+        selectionField.add(textLabel);
         for (Profile member : kguMembers) {
             JRadioButton studentSelection = new JRadioButton();
             studentSelection.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
@@ -197,7 +130,7 @@ public abstract class KGUInputMask extends JDialog {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
-                        clearGroupSelections();
+                        // clearGroupSelections();
                         allocatedMembers.add(member);
                         getCommonTimesAndSetProfile();
                     } else {
@@ -216,7 +149,7 @@ public abstract class KGUInputMask extends JDialog {
         for (Integer dayIndex : selectableDayIndizes) {
             commonTimes = new CommonTimes(allocatedMembers); // selectableStudentDays in ein Gefäss (=commonTimes)
             commonTimes.findSelectedMemberBoundsAt(dayIndex);
-            commonTimes.setStudentDayDataToProfile(kgu, dayIndex); // neue Zeiten usw. in KGU-Profil setzen
+            commonTimes.setStudentDayData(kgu, dayIndex); // neue Zeiten usw. in KGU-Profil setzen
         }
     }
 
@@ -298,10 +231,10 @@ public abstract class KGUInputMask extends JDialog {
 
     private void addEditStudentNameLabels() {
         for (int i = 0; i < allocatedMembers.size(); i++) {
-            textLabel3 = new JLabel();
-            textLabel3.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(0).getName());
-            textLabel3.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
-            selectionField.add(textLabel3);
+            textLabel = new JLabel();
+            textLabel.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(0).getName());
+            textLabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
+            selectionField.add(textLabel);
         }
     }
 
@@ -328,7 +261,7 @@ public abstract class KGUInputMask extends JDialog {
     }
 
     public void updateSecondEntryUI(KGUInputMask editMask) {
-        textLabel3.setText("Auswahl ändern:");
+        textLabel.setText("Auswahl ändern:");
         approveButton.setText("Änderung speichern");
         approveButton.removeActionListener(approveButtonListener);
         approveButtonListener = new ActionListener() {
@@ -340,7 +273,12 @@ public abstract class KGUInputMask extends JDialog {
                     removeMemberIDs();
                     removeMemberNames();
                     setLectionLength();
-                    setProfileData();
+                    try {
+                        setProfileData();
+                    } catch (NoEntryException ex) {
+                        Dialogs.showNoInputError("Es kann kein leeres KGU-Profil erstellt werden!");
+                        return;
+                    }
                     database.editProfile(kgu);
                     clearSchedule();
                     editMask.dispose();
@@ -436,4 +374,72 @@ public abstract class KGUInputMask extends JDialog {
             setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         }
     }
+
+// -----------------------------not working-----------------------------------------
+//    public void createGroupSelection() {
+//        getAllocatableGroups();
+//        if (fullyAllocatableGroups.size() > 0) {
+//            createSelection(textLabel1, VERY_LIGHT_GREEN, VERY_DARK_GREEN);
+//        }
+//        if (partlyAllocatableGroups.size() > 0) {
+//            createSelection(textLabel2, BLUE_0, BLUE_4);
+//        }
+//    }
+//
+//    private void getAllocatableGroups() {
+//        CommonTimes commonTimes;
+//        for (Integer dayIndex : selectableDayIndizes) {
+//            commonTimes = new CommonTimes(kguMembers);
+//            commonTimes.getKGUBundles(dayIndex); // not working....
+//          
+//        }
+//    }
+//
+//    private void createSelection(JLabel textLabel, Color panelColor, Color textColor) {
+//        selectionField.add(textLabel);
+//        // dummy
+//        for (int i = 0; i < 5; i++) {
+//            JPanel groupPanel = new JPanel();
+//            groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.PAGE_AXIS));
+//            groupPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 120));
+//            for (int j = 0; j < 2; j++) {
+//                JRadioButton radioButton = new JRadioButton("Marlon Guerra Valentino Demarco Ranadanthan Ravinhindhram");
+//                radioButton.setForeground(textColor);
+//                radioButton.addItemListener(new ItemListener() {
+//                    @Override
+//                    public void itemStateChanged(ItemEvent e) {
+//                        if (e.getStateChange() == ItemEvent.SELECTED) {
+//                            groupPanel.setBackground(panelColor);
+//                            clearStudentSelections();
+//                        } else {
+//                            clearGroupSelectionPanels();
+//                        }
+//                    }
+//                });
+//                groupButtonSelection.add(radioButton);
+//                groupPanel.add(radioButton);
+//            }
+//            selectionField.add(groupPanel);
+//            groupPanels.add(groupPanel);
+//        }
+//        // dummy end
+//    }
+//
+//    private void clearStudentSelections() {
+//        for (JRadioButton b : studentSelections) {
+//            b.setSelected(false);
+//        }
+//    }
+//
+//    private void clearGroupSelections() {
+//        groupButtonSelection.clearSelection();
+//        clearGroupSelectionPanels();
+//    }
+//
+//    private void clearGroupSelectionPanels() {
+//        for (JPanel p : groupPanels) {
+//            p.setBackground(defaultBackground);
+//        }
+//    }
+//-------------------------------------------------------------------------
 }

@@ -5,10 +5,17 @@
  */
 package userUtils.lessonCompanion;
 
+import userUtilsUI.lessonCompanion.LessonCompanionDialog;
+
 /**
  *
  * @author mathiaskielholz
  */
-public class StudentJournal {
-    
+public class StudentJournal extends LessonCompanionDialog {
+
+    public StudentJournal(String name) {
+        setTitle(name);
+    }
+
+  
 }
