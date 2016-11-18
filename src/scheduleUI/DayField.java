@@ -26,7 +26,9 @@ public class DayField extends JLabel {
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
+        setToolTipText("Klick: Journal und Unterrichtskontrolle dieses Tages anzeigen");
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }
+
 }

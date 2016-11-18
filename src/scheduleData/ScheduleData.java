@@ -23,6 +23,7 @@ import utils.Time;
 import static scheduleData.ScheduleFieldConstants.*;
 import userUtils.BreakWatcher;
 import userUtils.LectionGapFiller;
+import userUtils.lessonCompanion.StudentJournal;
 
 /**
  *
@@ -42,6 +43,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private int numberOfValidDays;
     private int dayIndex;
     private int dayColumnFieldIndex;
+    private StudentJournal studentJournal;
 
     public ScheduleData(Database database, StudentListData studentListData) {
         this.database = database;
@@ -50,6 +52,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
+        studentJournal = new StudentJournal(""); // init, damit kein Nullpointer
         numberOfValidDays = 0;
         dayIndex = -1;
         dayColumnFieldIndex = -1;
@@ -209,9 +212,15 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
                         }
-                        if (fieldData.getLectionPanelAreaMark() == CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (fieldData.getLectionPanelAreaMark() == NAME_ROWS && m.getClickCount() == 2) { // Einteilung rückgängig
                             eraseLection(profile.getLectionLengthInFields());
                         }
+                        if (fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS) {
+                            studentJournal.dispose();
+                            studentJournal = new StudentJournal(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
+                            studentJournal.setVisible(true);
+                        }
+
                     } else { // in AllocatedMode wechseln
                         createLection(profile.getLectionLengthInFields());
                         setAllocatedMode();
@@ -284,20 +293,19 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 startTime = field.getFieldTime();
             }
             if (i > dayColumnFieldIndex && i < lectionEnd - 2) {
-                field.setLectionPanelAreaMark(CENTER);
                 if (i == dayColumnFieldIndex + 1) {
+                    field.setLectionPanelAreaMark(NAME_ROWS);
                     field.setNameMark(FIRST_NAME);
                 } else if (i == dayColumnFieldIndex + 2) {
+                    field.setLectionPanelAreaMark(NAME_ROWS);
                     field.setNameMark(NAME);
                 } else if (i == dayColumnFieldIndex + 3) {
-                    field.setNameMark(THIRD_NAME);
-                }
-                else if (i == dayColumnFieldIndex + 3) {
+                    field.setLectionPanelAreaMark(NAME_ROWS);
                     field.setNameMark(THIRD_NAME);
                 }
             }
-            if (i == lectionEnd - 2) {
-                field.setLectionPanelAreaMark(SECOND_LAST_ROW);
+            if (i > dayColumnFieldIndex + 2 && i < lectionEnd - 1) {
+                field.setLectionPanelAreaMark(JOURNAL_ROWS);
             }
             if (i == lectionEnd - 1) {
                 field.setLectionPanelAreaMark(LAST_ROW);

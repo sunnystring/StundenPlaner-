@@ -106,7 +106,7 @@ public class GroupSelectionDialog extends JDialog {
         kguSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                kguEntry = new KGUEntry(mainFrame, group, "n-Profile erstellen");
+                kguEntry = new KGUEntry(mainFrame, group, "n-Profil erstellen");
                 selectedEntry = null;
             }
         });

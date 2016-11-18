@@ -24,13 +24,13 @@ import utils.Time;
  *
  * Bearbeitbare Druckansicht des Stundenplans
  */
-public class PrinterText extends JTextPane {
+public class PrinterTextPane extends JTextPane {
 
     public final Database database;
     private ArrayList<String[]> text;
     private StyledDocument doc;
 
-    public PrinterText(Database database) {
+    public PrinterTextPane(Database database) {
         this.database = database;
         doc = getStyledDocument();
         text = new ArrayList<>();

@@ -260,7 +260,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                             mainFrame.setDataEntryButtonsEnabled(false);
                             mainFrame.setFileButtonsEnabled(false);
                         }
-                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.CENTER && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.NAME_ROWS && m.getClickCount() == 2) { // Einteilung rückgängig
                             setRowAllocationState(allocatedRow, false);
                             studentListReleased = true;
                             profile.setAllocated(false);

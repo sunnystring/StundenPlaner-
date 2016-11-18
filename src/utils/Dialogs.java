@@ -76,7 +76,7 @@ public class Dialogs {
     }
 
     public static void showIllegalKGUEntryErrorMessage() {
-        String msg = "Es muss eine Gruppe ausgewählt oder eine Auswahl\nvon 2 oder 3 Mitgliedern gemacht werden!";
+        String msg = "Es muss eine Gruppe aus 2 oder 3 Mitgliedern gemacht werden!";
         JOptionPane.showMessageDialog(null, msg, "Unzulässige Auswahl", JOptionPane.ERROR_MESSAGE);
     }
 

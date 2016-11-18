@@ -11,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import mainframe.MainFrame;
+import static utils.GUIConstants.*;
 
 /**
  *
@@ -27,12 +27,12 @@ import mainframe.MainFrame;
  */
 public class PrinterDialog extends JDialog {
 
-    private PrinterText textPane;
+    private PrinterTextPane textPane;
     JButton cancelButton, printButton;
 
     public PrinterDialog(MainFrame mainFrame, Database database) {
         super(mainFrame);
-        textPane = new PrinterText(database);
+        textPane = new PrinterTextPane(database);
         setTitle("Druckansicht");
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(350, 500));
@@ -45,10 +45,11 @@ public class PrinterDialog extends JDialog {
 
     private void createAndAddWidgets() {
         JComponent center = new JScrollPane(textPane);
+        center.setBorder(VERY_LIGHT_BORDER);
         center.setMinimumSize(textPane.getPreferredSize());
         JPanel bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
-        bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        bottom.setBorder(LIGHT_BORDER);
         cancelButton = new JButton("Abbrechen");
         printButton = new JButton("Drucken");
         bottom.add(Box.createHorizontalGlue());

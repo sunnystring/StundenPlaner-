@@ -441,7 +441,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
     public void profileAdded(int numberOfStudents, Profile profile) {
         coloredStudentTimesButton.setEnabled(numberOfStudents > 0);
         attendanceListButton.setEnabled(numberOfStudents > 0);
-
         studentListData.showStudentDaysColored(DEFAULT_COLORS);
         resetColoredStudentTimesButtonState();
     }

@@ -8,11 +8,14 @@ package scheduleUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
+import userUtilsUI.lessonCompanion.DayView;
 import static utils.Colors.*;
 
 /**
@@ -27,6 +30,8 @@ public class Schedule extends JPanel {
     private final TimeTable timeTable;
     private final ScheduleZoom scheduleZoom;
     private ArrayList<DayField> headerFieldList;
+    private MouseAdapter headerListener;
+    private DayView dayView;
 
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -36,6 +41,7 @@ public class Schedule extends JPanel {
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
+        dayView = new DayView(""); // init, damit kein Nullpointer
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
@@ -45,6 +51,7 @@ public class Schedule extends JPanel {
     public void createHeader() {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            addHeaderListener(dayField);
             headerFieldList.add(dayField);
             header.add(dayField);
         }
@@ -54,10 +61,25 @@ public class Schedule extends JPanel {
         removeHeader();
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            dayField.removeMouseListener(headerListener);
+            addHeaderListener(dayField);
             headerFieldList.add(dayField);
             header.add(dayField);
             scheduleData.getBreakWatcher().check(i);
         }
+    }
+
+    private void addHeaderListener(DayField dayField) {
+        headerListener = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                dayView.dispose();
+                dayView = new DayView(((DayField) e.getSource()).getText());
+                dayView.setVisible(true);
+
+            }
+        };
+        dayField.addMouseListener(headerListener);
     }
 
     public void fireNextScheduleSize() {
