@@ -24,7 +24,7 @@ import static utils.Colors.*;
  * {@link DayField}
  */
 public class Schedule extends JPanel {
-
+    
     private final ScheduleData scheduleData;
     private JPanel header;
     private final TimeTable timeTable;
@@ -32,7 +32,7 @@ public class Schedule extends JPanel {
     private ArrayList<DayField> headerFieldList;
     private MouseAdapter headerListener;
     private DayView dayView;
-
+    
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
         header = new JPanel();
@@ -47,7 +47,7 @@ public class Schedule extends JPanel {
         add(BorderLayout.NORTH, header);
         add(BorderLayout.CENTER, timeTable);
     }
-
+    
     public void createHeader() {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             DayField dayField = new DayField(scheduleData.getDayNameAt(i));
@@ -56,7 +56,7 @@ public class Schedule extends JPanel {
             header.add(dayField);
         }
     }
-
+    
     public void updateHeader() {
         removeHeader();
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
@@ -68,7 +68,7 @@ public class Schedule extends JPanel {
             scheduleData.getBreakWatcher().check(i);
         }
     }
-
+    
     private void addHeaderListener(DayField dayField) {
         headerListener = new MouseAdapter() {
             @Override
@@ -76,12 +76,14 @@ public class Schedule extends JPanel {
                 dayView.dispose();
                 dayView = new DayView(((DayField) e.getSource()).getText());
                 dayView.setVisible(true);
-
+                for (DayField d: headerFieldList) {
+                    d.setDayView(dayView);
+                }
             }
         };
         dayField.addMouseListener(headerListener);
     }
-
+    
     public void fireNextScheduleSize() {
         scheduleZoom.setNextSize();
         timeTable.getLectionField().setFontSize1(scheduleZoom.getFontSize1());
@@ -89,19 +91,24 @@ public class Schedule extends JPanel {
         timeTable.setRowHeight(scheduleZoom.getRowHeight());
         scheduleData.fireTableDataChanged();
     }
-
+    
     public void removeHeader() {
         headerFieldList.clear();
         header.removeAll();
     }
-
+    
     public void showBreakRequired(int dayIndex, Color col, String msg) {
         DayField dayField = headerFieldList.get(dayIndex);
         dayField.setBackground(col);
         dayField.setText("  " + msg);
     }
-
+    
     public TimeTable getTimeTable() {
         return timeTable;
     }
+    
+    public ArrayList<DayField> getHeaderFieldList() {
+        return headerFieldList;
+    }
+    
 }

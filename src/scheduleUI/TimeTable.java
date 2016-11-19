@@ -9,7 +9,6 @@ import javax.swing.JTable;
 import scheduleData.ScheduleData;
 import scheduleData.ScheduleFieldData;
 import studentListData.StudentListData;
-import userUtilsUI.ScheduleZoom;
 import static utils.Colors.*;
 
 /**
@@ -35,7 +34,6 @@ public class TimeTable extends JTable {
         addMouseListener(scheduleData);
         setFillsViewportHeight(true);
         setBackground(BACKGROUND_COLOR);
-        setRowHeight(ScheduleZoom.DEFAULT_HEIGHT);
     }
 
     public void update() {

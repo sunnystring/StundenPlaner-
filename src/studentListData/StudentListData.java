@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import mainframe.MainFrame;
 import scheduleUI.TimeTable;
@@ -244,8 +245,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     }
                 }
             }
+            scheduleData.getStudentJournal().dispose();
         }
-        if (m.getSource() instanceof TimeTable) {
+       else if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
@@ -260,7 +262,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                             mainFrame.setDataEntryButtonsEnabled(false);
                             mainFrame.setFileButtonsEnabled(false);
                         }
-                        if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.NAME_ROWS && m.getClickCount() == 2) { // Einteilung rückgängig
+                        if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
                             setRowAllocationState(allocatedRow, false);
                             studentListReleased = true;
                             profile.setAllocated(false);

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
@@ -194,8 +196,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 }
                 fireTableDataChanged();
             }
-        }
-        if (m.getSource() instanceof TimeTable) {
+        } else if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
             row = timeTable.rowAtPoint(p);
             col = timeTable.columnAtPoint(p);
@@ -206,19 +207,21 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 LectionGapFiller lectionGapFiller = dayColumnDataList.get(dayIndex).getLectionGapFiller();
                 if (fieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(row, col);
-                    if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
-                        if (fieldData.getLectionPanelAreaMark() == HEAD) {
+                    if (fieldData.isLectionAllocated()) {
+                        if (SwingUtilities.isLeftMouseButton(m) && (fieldData.getLectionPanelAreaMark() == HEAD
+                                || fieldData.getLectionPanelAreaMark() == NAME_ROWS)) { // in MoveMode wechseln
                             eraseLection(profile.getLectionLengthInFields());
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
+                            studentJournal.dispose();
                         }
-                        if (fieldData.getLectionPanelAreaMark() == NAME_ROWS && m.getClickCount() == 2) { // Einteilung rückgängig
-                            eraseLection(profile.getLectionLengthInFields());
-                        }
-                        if (fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS) {
+                        if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS) {
                             studentJournal.dispose();
                             studentJournal = new StudentJournal(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
                             studentJournal.setVisible(true);
+                        }
+                        if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
+                            eraseLection(profile.getLectionLengthInFields());
                         }
 
                     } else { // in AllocatedMode wechseln
@@ -230,10 +233,13 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     breakWatcher.check(dayIndex);
                 } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
+                    studentJournal.dispose();
                 }
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
+        } else {
+            studentJournal.dispose();
         }
     }
 
@@ -397,6 +403,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     public BreakWatcher getBreakWatcher() {
         return breakWatcher;
+    }
+
+    public StudentJournal getStudentJournal() {
+        return studentJournal;
     }
 
     public void setScheduleTimes(ScheduleTimes scheduleTimes) {
