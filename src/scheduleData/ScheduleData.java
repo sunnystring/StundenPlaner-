@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
+import javax.swing.JDialog;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
@@ -204,6 +205,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 Profile profile = fieldData.getProfile();
                 int dayIndex = col / 4;
                 LectionGapFiller lectionGapFiller = dayColumnDataList.get(dayIndex).getLectionGapFiller();
+                StudentJournal journal = null;
                 if (fieldData.isMoveEnabled()) {
                     convertTableToDayColumnCoordinates(row, col);
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
