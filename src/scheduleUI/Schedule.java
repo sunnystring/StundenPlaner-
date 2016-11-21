@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
-import userUtilsUI.lessonCompanion.DayView;
+import userUtilsUI.lessonCompanion.JournalDayView;
 import static utils.Colors.*;
 
 /**
@@ -31,7 +31,7 @@ public class Schedule extends JPanel {
     private final ScheduleZoom scheduleZoom;
     private ArrayList<DayField> headerFieldList;
     private MouseAdapter headerListener;
-    private DayView dayView;
+    private JournalDayView dayView;
     
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
@@ -41,7 +41,7 @@ public class Schedule extends JPanel {
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
-        dayView = new DayView(""); // init, damit kein Nullpointer
+        dayView = new JournalDayView(""); // init, damit kein Nullpointer
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
@@ -74,7 +74,7 @@ public class Schedule extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 dayView.dispose();
-                dayView = new DayView(((DayField) e.getSource()).getText());
+                dayView = new JournalDayView(((DayField) e.getSource()).getText());
                 dayView.setVisible(true);
                 for (DayField d: headerFieldList) {
                     d.setDayView(dayView);

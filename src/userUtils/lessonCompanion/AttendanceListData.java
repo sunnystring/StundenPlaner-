@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package userUtilsUI.lessonCompanion;
-
-import javax.swing.JTextPane;
+package userUtils.lessonCompanion;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class JournalTextPane extends JTextPane{
+public class AttendanceListData {
     
 }

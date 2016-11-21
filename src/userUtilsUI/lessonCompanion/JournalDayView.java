@@ -7,6 +7,8 @@ package userUtilsUI.lessonCompanion;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,12 +21,15 @@ import static utils.GUIConstants.*;
  *
  * @author mathiaskielholz
  */
-public class DayView extends LessonCompanionDialog {
+public class JournalDayView extends LessonCompanionDialog {
 
     private JTextPane dayViewTextPane;
 
-    public DayView(String title) {
+    public JournalDayView(String title) {
         setTitle(title);
+        Point location = MouseInfo.getPointerInfo().getLocation();
+        location.setLocation(location.getX(), location.getY() + 20.0);
+        setLocation(location);
         setMinimumSize(new Dimension(250, 600));
         createAndAddWidgets();
         setResizable(false);
@@ -40,13 +45,13 @@ public class DayView extends LessonCompanionDialog {
         centerField = new JScrollPane(dayViewTextPane);
         centerField.setMinimumSize(dayViewTextPane.getPreferredSize());
         centerField.setBorder(VERY_LIGHT_BORDER);
-       // attendanceListButton = new JButton("E");
+        // attendanceListButton = new JButton("E");
         // attendanceListButton.setForeground(Color.BLUE);
         // attendanceListButton.setFont(attendanceListButton.getFont().deriveFont(Font.BOLD, 25));
         // attendanceListButton.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
         //  attendanceListButton.setToolTipText("Absenzen-Status: E=entschuldigt, U=unentschuldigt, L=Lehrerabsenz/Feiertage");
         cancelButton = new JButton("Schliessen");
-       // cancelButton.setToolTipText("Journal-Eintrag löschen");
+        // cancelButton.setToolTipText("Journal-Eintrag löschen");
         //saveButton = new JButton("Speichern");
         // saveButton.setToolTipText("Absenzen-Status und Journal speichern");
         //  bottomField.add(attendanceListButton);

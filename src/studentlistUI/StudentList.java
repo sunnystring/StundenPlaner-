@@ -54,7 +54,6 @@ public class StudentList extends JTable {
         setFillsViewportHeight(true);
         setBackground(BACKGROUND_COLOR);
         setRowHeight(25);
-
     }
 
     private void addRowSorter() {
@@ -72,7 +71,7 @@ public class StudentList extends JTable {
     }
 
     public void setup() {
-        createDefaultColumnsFromModel(); 
+        createDefaultColumnsFromModel();
         addRowSorter();
         studentField.setColumnCount(studentListData.getColumnCount());
         studentField.resetRowIndices();

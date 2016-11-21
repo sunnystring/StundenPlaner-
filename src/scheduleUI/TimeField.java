@@ -116,9 +116,13 @@ public class TimeField extends LectionField {
             selectedRow = timeTable.rowAtPoint(p);
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
-                ScheduleFieldData scheduleFieldData =  scheduleData.getValueAt(selectedRow, selectedCol);
+                ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     lectionLenght = scheduleFieldData.getProfile().getLectionLengthInFields();
+                }
+                if (scheduleFieldData.getLectionPanelAreaMark() == NAME_ROW) {
+                    movedRow = movedRow - 1;
+                    lectionEnd = lectionEnd - 1;
                 }
             }
         }

@@ -9,6 +9,6 @@ package userUtils.lessonCompanion;
  *
  * @author mathiaskielholz
  */
-public class AttendanceList {
+public class JournalData {
     
 }

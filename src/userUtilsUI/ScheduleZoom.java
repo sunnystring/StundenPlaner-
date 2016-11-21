@@ -14,11 +14,11 @@ import scheduleUI.TimeTable;
  */
 public class ScheduleZoom {
 
-    public static final int DEFAULT_HEIGHT = 14;
+    public static final int DEFAULT_HEIGHT = 16;
     private static final int HEIGHT_DIFF = 4;
     private static final int UPPER_HEIGHT = DEFAULT_HEIGHT + HEIGHT_DIFF;
     private static final int LOWER_HEIGHT = DEFAULT_HEIGHT - HEIGHT_DIFF;
-    public static final float DEFAULT_SIZE_1 = (float) 10, DEFAULT_SIZE_2 = (float) 8;
+    public static final float DEFAULT_SIZE_1 = (float) 10, DEFAULT_SIZE_2 = (float) 10;
     private static final float INC1 = (float) 0.3, INC2 = (float) 0.2;
     private static final float UPPER_SIZE_1 = DEFAULT_SIZE_1 + HEIGHT_DIFF * INC1;
     private static final float UPPER_SIZE_2 = DEFAULT_SIZE_2 + HEIGHT_DIFF * INC2;
