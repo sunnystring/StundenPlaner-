@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
-import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
@@ -25,7 +24,7 @@ import utils.Time;
 import static scheduleData.ScheduleFieldConstants.*;
 import userUtils.BreakWatcher;
 import userUtils.LectionGapFiller;
-import userUtils.lessonCompanion.StudentJournal;
+import lessonCompanionUI.JournalEntry;
 
 /**
  *
@@ -45,7 +44,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private int numberOfValidDays;
     private int dayIndex;
     private int dayColumnFieldIndex;
-    private StudentJournal studentJournal;
+    private JournalEntry studentJournal;
 
     public ScheduleData(Database database, StudentListData studentListData) {
         this.database = database;
@@ -54,7 +53,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
-        studentJournal = new StudentJournal(""); // init, damit kein Nullpointer
+        studentJournal = new JournalEntry(""); // init, damit kein Nullpointer
         numberOfValidDays = 0;
         dayIndex = -1;
         dayColumnFieldIndex = -1;
@@ -209,7 +208,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     convertTableToDayColumnCoordinates(row, col);
                     if (fieldData.isLectionAllocated()) {
                         if (SwingUtilities.isLeftMouseButton(m) && (fieldData.getLectionPanelAreaMark() == HEAD
-                                || fieldData.getLectionPanelAreaMark() == NAME_ROWS)) { // in MoveMode wechseln
+                                || fieldData.getLectionPanelAreaMark() == NAME_ROW)) { // in MoveMode wechseln
                             eraseLection(profile.getLectionLengthInFields());
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
@@ -217,7 +216,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         }
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS) {
                             studentJournal.dispose();
-                            studentJournal = new StudentJournal(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
+                            studentJournal = new JournalEntry(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
                             studentJournal.setVisible(true);
                         }
                         if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
@@ -300,13 +299,11 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             }
             if (i > dayColumnFieldIndex && i < lectionEnd - 2) {
                 if (i == dayColumnFieldIndex + 1) {
-                    field.setLectionPanelAreaMark(NAME_ROWS);
+                    field.setLectionPanelAreaMark(NAME_ROW);
                     field.setNameMark(FIRST_NAME);
                 } else if (i == dayColumnFieldIndex + 2) {
-                    field.setLectionPanelAreaMark(NAME_ROWS);
                     field.setNameMark(NAME);
                 } else if (i == dayColumnFieldIndex + 3) {
-                    field.setLectionPanelAreaMark(NAME_ROWS);
                     field.setNameMark(THIRD_NAME);
                 }
             }
@@ -405,7 +402,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return breakWatcher;
     }
 
-    public StudentJournal getStudentJournal() {
+    public JournalEntry getStudentJournal() {
         return studentJournal;
     }
 

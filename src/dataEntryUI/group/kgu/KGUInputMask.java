@@ -62,7 +62,8 @@ public abstract class KGUInputMask extends JDialog {
 //  private ArrayList<ArrayList<KGUDay>> partlyAllocatableGroups;
 //  private ArrayList<KGUBundle> KGUBundles;
 
-    public KGUInputMask(MainFrame mainFrame, Profile kgu) {
+    public KGUInputMask(MainFrame mainFrame, Profile kgu, String title) {
+        setTitle(title);
         this.database = mainFrame.getDatabase();
         this.mainFrame = mainFrame;
         scheduleData = mainFrame.getScheduleData();

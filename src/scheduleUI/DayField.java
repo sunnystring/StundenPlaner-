@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import userUtilsUI.lessonCompanion.DayView;
+import lessonCompanionUI.JournalDayView;
 import static utils.Colors.*;
 
 /**
@@ -22,7 +22,7 @@ import static utils.Colors.*;
  */
 public class DayField extends JLabel implements MouseListener {
 
-    private DayView dayView;
+    private JournalDayView dayView;
 
     public DayField(String text) {
         setText("  " + text);
@@ -32,12 +32,12 @@ public class DayField extends JLabel implements MouseListener {
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
-        setToolTipText("Klick: Journal und Unterrichtskontrolle dieses Tages anzeigen");
+        setToolTipText("Klick: Journal-Einträge aller SchülerInnen dieses Tages anzeigen");
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }
 
-    public void setDayView(DayView dayView) {
+    public void setDayView(JournalDayView dayView) {
         this.dayView = dayView;
     }
 

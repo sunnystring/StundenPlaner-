@@ -16,8 +16,7 @@ import mainframe.MainFrame;
 public class KGUEdit extends KGUInputMask {
 
     public KGUEdit(MainFrame mainFrame, Profile group) {
-        super(mainFrame, group);
-        setTitle(ProfileTypes.KGU_NAME + "n-Profil ändern oder auflösen");
+        super(mainFrame, group, ProfileTypes.KGU_NAME + "n-Profil ändern oder auflösen");
         setupUI();
         pack();
     }

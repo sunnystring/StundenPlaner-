@@ -80,7 +80,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.getAllocatedTimeMark() == UNVALID) {
                 setBackground(UNVALID_COLOR);
             } else {
-                setBackground(fieldData.getLectionProfileType()== ProfileTypes.GROUP ? GROUP_LECTION_GREEN : DARK_GREEN);
+                setBackground(fieldData.getLectionProfileType() == ProfileTypes.GROUP ? GROUP_LECTION_GREEN : DARK_GREEN);
             }
             if (fieldData.isLectionGapFiller()) {
                 setBackground(LIGHT_GREEN);
@@ -90,13 +90,13 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             setFont(this.getFont().deriveFont(Font.BOLD, size1));
             if (fieldData.isHead()) {
                 setForeground(GRAY);
-                setFont(this.getFont().deriveFont(Font.PLAIN, size2));
+                setFont(this.getFont().deriveFont(Font.BOLD, size2));
                 setText(" " + fieldData.getFieldTime().toString());
             } else if (fieldData.getNameMark() == FIRST_NAME) {
                 setText(" " + fieldData.getProfile().getFirstName());
             } else if (fieldData.getNameMark() == NAME) {
                 setText(" " + fieldData.getProfile().getName());
-            }else if (fieldData.getNameMark() == THIRD_NAME) {
+            } else if (fieldData.getNameMark() == THIRD_NAME) {
                 setText(" " + fieldData.getProfile().getThirdName());
             }
             if (fieldData.getLectionPanelAreaMark() == LAST_ROW) {
@@ -111,14 +111,13 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setFont(this.getFont().deriveFont(Font.BOLD, size1));
                 if (row == movedRow) {
                     setForeground(GRAY);
-                    setFont(this.getFont().deriveFont(Font.PLAIN, size2));
+                    setFont(this.getFont().deriveFont(Font.BOLD, size2));
                     setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
                     setText(" " + fieldData.getProfile().getFirstName());
                 } else if (row == movedRow + 2) {
                     setText(" " + fieldData.getProfile().getName());
-                }
-                else if (row == movedRow + 3) {
+                } else if (row == movedRow + 3) {
                     setText(" " + fieldData.getProfile().getThirdName());
                 }
                 if (row == lectionEnd - 1) {
@@ -132,14 +131,26 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                     setForeground(WHITE);
                     setBorder(BorderFactory.createMatteBorder(0, 1, 0, 2, WHITE));
                     setFont(this.getFont().deriveFont(Font.BOLD, size1));
-                    if (lectionDiff == lectionLenght - 2 && row == 0) { // noch 2 Fields in 1. Column
-                        setText(" " + fieldData.getProfile().getName());
-                    } else if (lectionDiff == lectionLenght - 1) { // nur noch Head in 1. Column
+                    if (lectionDiff == lectionLenght - 3) { // noch 3 Fields in 1. Column
+                        if (row == 0) {
+                            setText(" " + fieldData.getProfile().getThirdName());
+                        }
+                    } else if (lectionDiff == lectionLenght - 2) { // noch 2 Fields in 1. Column
                         if (row == 0) {
                             setText(" " + fieldData.getProfile().getName());
                         }
                         if (row == 1) {
+                            setText(" " + fieldData.getProfile().getThirdName());
+                        }
+                    } else if (lectionDiff == lectionLenght - 1) { // nur noch Head in 1. Column
+                        if (row == 0) {
                             setText(" " + fieldData.getProfile().getFirstName());
+                        }
+                        if (row == 1) {
+                            setText(" " + fieldData.getProfile().getName());
+                        }
+                        if (row == 2) {
+                            setText(" " + fieldData.getProfile().getThirdName());
                         }
                     }
                     if (row == lectionDiff - 1) {
@@ -210,10 +221,15 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
+               
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     lectionLenght = scheduleFieldData.getProfile().getLectionLengthInFields();
                     lectionEnd = selectedRow + lectionLenght;
                     lectionDiff = lectionEnd - rowCount;
+                }
+                 if (scheduleFieldData.getLectionPanelAreaMark() == NAME_ROW) {
+                    movedRow = movedRow - 1;
+                    lectionEnd = lectionEnd-1;
                 }
             }
         }

@@ -16,8 +16,7 @@ import mainframe.MainFrame;
 public class KGUEntry extends KGUInputMask {
 
     public KGUEntry(MainFrame mainFrame, Profile group, String title) {
-        super(mainFrame, group);
-        setTitle(ProfileTypes.KGU_NAME + title);
+        super(mainFrame, group, ProfileTypes.KGU_NAME + title);
         setupUI();
         pack();
     }
@@ -25,7 +24,7 @@ public class KGUEntry extends KGUInputMask {
     @Override
     public void setupUI() {
         createEntryWidgets();
-     // createGroupSelection();
+        // createGroupSelection();
         createStudentSelection();
         addEntryButtonListeners();
         addEntryWidgets();
