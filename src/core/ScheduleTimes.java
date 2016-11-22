@@ -30,6 +30,8 @@ public class ScheduleTimes extends AbstractTableModel {
     private ScheduleDay[] daySelectionList;
     private ArrayList<ScheduleDay> validScheduleDayList;
     private HashMap<Integer, Integer> sharedDayIndicesMap;
+    private ArrayList<Integer> validDayAbsoluteIndices;
+    private ArrayList<Integer> unvalidDaysAbsoluteIndices;
     private int numberOfValidDays;
 
     public ScheduleTimes() {
@@ -40,6 +42,8 @@ public class ScheduleTimes extends AbstractTableModel {
         }
         validScheduleDayList = new ArrayList<>();
         sharedDayIndicesMap = new HashMap<>();
+        validDayAbsoluteIndices = new ArrayList<>();
+        unvalidDaysAbsoluteIndices = new ArrayList<>();
         numberOfValidDays = 0;
     }
 
@@ -192,6 +196,7 @@ public class ScheduleTimes extends AbstractTableModel {
             }
         }
         numberOfValidDays = validScheduleDayList.size();
+        createAbsoluteDayIndices();
     }
 
     public void updateValidDays() {
@@ -269,28 +274,40 @@ public class ScheduleTimes extends AbstractTableModel {
         return index;
     }
 
-//    public int getAbsoluteDayIndexOf(String weekdayName) {
-//        int index = -1;
-//       for (int i = 0; i < DAYS; i++) {
-//            if (WEEKDAY_NAMES[i].equals(weekdayName)) {
-//                index = i;
-//                break;
-//            }
-//        }
-//        return index;
-//    }
-//    
-
-    public ArrayList<Integer> getValidDaysAsAbsoluteIndizes() {
-        ArrayList<Integer> absoluteIndizes = new ArrayList<>();
+    public int getAbsoluteDayIndexOf(String weekdayName) {
+        int index = -1;
         for (int i = 0; i < DAYS; i++) {
+            if (WEEKDAY_NAMES[i].equals(weekdayName)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    private void createAbsoluteDayIndices() {
+        validDayAbsoluteIndices.clear();
+        unvalidDaysAbsoluteIndices.clear();
+        ArrayList<Integer> allIndices = new ArrayList<>();
+        for (int i = 0; i < DAYS; i++) {
+            allIndices.add(i);
             for (ScheduleDay scheduleDay : validScheduleDayList) {
                 if (WEEKDAY_NAMES[i].equals(scheduleDay.getDayName())) {
-                    absoluteIndizes.add(i);
+                    validDayAbsoluteIndices.add(i);
+                    break;
                 }
             }
         }
-        return absoluteIndizes;
+        allIndices.removeAll(validDayAbsoluteIndices);
+        unvalidDaysAbsoluteIndices.addAll(allIndices);
+    }
+
+    public ArrayList<Integer> getValidDaysAsAbsoluteIndizes() {
+        return validDayAbsoluteIndices;
+    }
+
+    public ArrayList<Integer> getUnvalidDaysAsAbsoluteIndizes() {
+        return unvalidDaysAbsoluteIndices;
     }
 
     public Integer getSharedDayIndexOf(int newDayIndex) {

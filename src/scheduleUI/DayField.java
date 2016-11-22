@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import lessonCompanionUI.JournalDayView;
+import studentJournal.JournalDayView;
 import static utils.Colors.*;
 
 /**
@@ -23,10 +23,10 @@ import static utils.Colors.*;
 public class DayField extends JLabel implements MouseListener {
 
     private JournalDayView dayView;
+    private int dayIndex;
 
     public DayField(String text) {
         setText("  " + text);
-        this.dayView = dayView;
         setBackground(DAYFIELD_COLOR);
         setForeground(Color.WHITE);
         setHorizontalAlignment(SwingConstants.LEADING);
@@ -41,10 +41,18 @@ public class DayField extends JLabel implements MouseListener {
         this.dayView = dayView;
     }
 
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
+    }
+
+    public int getDayIndex() {
+        return dayIndex;
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (dayView != null) {
-            dayView.dispose();
+            dayView.setVisible(false);
         }
     }
 

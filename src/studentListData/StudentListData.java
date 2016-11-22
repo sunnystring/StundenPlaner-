@@ -104,7 +104,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public void profileDeleted(int numberOfStudents, Profile profile) {
         this.numberOfStudents = numberOfStudents;
-        int deletedProfileID = profile.getProfileID();
+        int deletedProfileID = profile.getID();
         removeStudentRow(deletedProfileID);
         updateKGUMembersAllocationState();
         updateStudentIDs();
@@ -116,7 +116,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         studentRow = new StudentFieldData[getColumnCount()];
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
-            studentRow[col].setProfileID(profile.getProfileID());
+            studentRow[col].setProfileID(profile.getID());
             studentRow[col].setLectionProfileType(profile.getProfileType());
             studentRow[col].setProfileAllocated(profile.isAllocated());
             if (col > 0) {
@@ -129,7 +129,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     private void updateStudentRow(Profile profile) {
-        studentRow = fieldDataMatrix.get(profile.getProfileID());
+        studentRow = fieldDataMatrix.get(profile.getID());
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col].setLectionProfileType(profile.getProfileType());
             if (col > 0) {
@@ -155,7 +155,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         for (int i = 0; i < numberOfStudents; i++) {
             Profile profile = database.getProfile(i);
             if (profile.getProfileType() == ProfileTypes.KGU_MEMBER) {
-                setRowAllocationState(profile.getProfileID(), profile.isAllocated());
+                setRowAllocationState(profile.getID(), profile.isAllocated());
             }
         }
     }
@@ -245,7 +245,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     }
                 }
             }
-            scheduleData.getStudentJournal().dispose();
+            scheduleData.getJournalEntry().dispose();
         }
        else if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();

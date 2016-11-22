@@ -337,7 +337,7 @@ public abstract class KGUInputMask extends JDialog {
 
     private void setMemberIDs() {
         for (Profile member : allocatedMembers) {
-            kgu.addKGUMemberID(member.getProfileID());
+            kgu.addKGUMemberID(member.getID());
         }
     }
 

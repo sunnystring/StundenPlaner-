@@ -63,7 +63,7 @@ public class StudentTimes extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        return col > 0 && scheduleTimes.isValidDay(row)&& !(KGUselected && (col == 3 || col == 4));
+        return col > 0 && scheduleTimes.isValidDay(row) && !(KGUselected && (col == 3 || col == 4));
     }
 
     @Override
@@ -174,6 +174,12 @@ public class StudentTimes extends AbstractTableModel {
         return matchingDay;
     }
 
+    public void cleanDaySelectionList(ArrayList<Integer> unvalidDaysAbsoluteIndizes) {
+        for (Integer unvalidDayIndex : unvalidDaysAbsoluteIndizes) {
+            daySelectionList[unvalidDayIndex].resetAllTimes();
+        }
+    }
+
     public StudentDay getValidStudentDay(int i) {
         return validStudentDayList.get(i);
     }
@@ -205,5 +211,5 @@ public class StudentTimes extends AbstractTableModel {
     public void setKGUselected(boolean KGUselected) {
         this.KGUselected = KGUselected;
     }
-    
+
 }

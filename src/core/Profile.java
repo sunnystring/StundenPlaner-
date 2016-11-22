@@ -18,7 +18,7 @@ public class Profile {
     private String thirdName;
     private StudentTimes studentTimes;
     private int lectionLengthInMinutes;
-    private int profileID;
+    private int ID;
     private boolean allocated;
     private int profileType;
     private String profileName;
@@ -41,12 +41,12 @@ public class Profile {
         return studentTimes;
     }
 
-    public void setProfileID(int profileID) {
-        this.profileID = profileID;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public int getProfileID() {
-        return profileID;
+    public int getID() {
+        return ID;
     }
 
     public void setProfileType(int profileType) {
