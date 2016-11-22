@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
-import lessonCompanionUI.JournalDayView;
+import studentJournal.JournalDayView;
 import static utils.Colors.*;
 
 /**
@@ -24,15 +24,15 @@ import static utils.Colors.*;
  * {@link DayField}
  */
 public class Schedule extends JPanel {
-    
+
     private final ScheduleData scheduleData;
     private JPanel header;
     private final TimeTable timeTable;
     private final ScheduleZoom scheduleZoom;
     private ArrayList<DayField> headerFieldList;
     private MouseAdapter headerListener;
-    private JournalDayView dayView;
-    
+    private JournalDayView journalDayView;
+
     public Schedule(ScheduleData scheduleData, StudentListData studentListData) {
         this.scheduleData = scheduleData;
         header = new JPanel();
@@ -41,13 +41,13 @@ public class Schedule extends JPanel {
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
-        dayView = new JournalDayView(""); // init, damit kein Nullpointer
+        journalDayView = new JournalDayView();
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
         add(BorderLayout.CENTER, timeTable);
     }
-    
+
     public void createHeader() {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
             DayField dayField = new DayField(scheduleData.getDayNameAt(i));
@@ -56,7 +56,7 @@ public class Schedule extends JPanel {
             header.add(dayField);
         }
     }
-    
+
     public void updateHeader() {
         removeHeader();
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
@@ -68,22 +68,24 @@ public class Schedule extends JPanel {
             scheduleData.getBreakWatcher().check(i);
         }
     }
-    
+
     private void addHeaderListener(DayField dayField) {
         headerListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                dayView.dispose();
-                dayView = new JournalDayView(((DayField) e.getSource()).getText());
-                dayView.setVisible(true);
-                for (DayField d: headerFieldList) {
-                    d.setDayView(dayView);
+                journalDayView.dispose();
+                journalDayView.setTitle(((DayField) e.getSource()).getText());
+                journalDayView.setDialogLocation();
+                //.......
+                journalDayView.setVisible(true);
+                for (DayField d : headerFieldList) {
+                    d.setDayView(journalDayView);
                 }
             }
         };
         dayField.addMouseListener(headerListener);
     }
-    
+
     public void fireNextScheduleSize() {
         scheduleZoom.setNextSize();
         timeTable.getLectionField().setFontSize1(scheduleZoom.getFontSize1());
@@ -91,24 +93,24 @@ public class Schedule extends JPanel {
         timeTable.setRowHeight(scheduleZoom.getRowHeight());
         scheduleData.fireTableDataChanged();
     }
-    
+
     public void removeHeader() {
         headerFieldList.clear();
         header.removeAll();
     }
-    
+
     public void showBreakRequired(int dayIndex, Color col, String msg) {
         DayField dayField = headerFieldList.get(dayIndex);
         dayField.setBackground(col);
         dayField.setText("  " + msg);
     }
-    
+
     public TimeTable getTimeTable() {
         return timeTable;
     }
-    
+
     public ArrayList<DayField> getHeaderFieldList() {
         return headerFieldList;
     }
-    
+
 }

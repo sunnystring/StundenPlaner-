@@ -69,15 +69,35 @@ public class Database {
     }
 
     public void deleteProfile(Profile profile) {
+        updateProfileIDs(profile.getProfileID());
         studentDataList.remove(profile);
         numberOfStudents = studentDataList.size(); // = numberOfStudents--
         if (profile.getProfileType() != ProfileTypes.GROUP) {
             numberOfSingleStudents--;
         }
-        updateStudentIDs();
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
             l.profileDeleted(numberOfStudents, profile);
+        }
+    }
+
+    private void updateProfileIDs(int idOfDeletedProfile) {
+        for (int i = 0; i < numberOfStudents; i++) {
+            if (i > idOfDeletedProfile) {
+                Profile profile = studentDataList.get(i);
+                profile.setProfileID(i - 1);
+                if (profile.getProfileType() == ProfileTypes.GROUP) {
+                    ArrayList<Integer> kguMemberIDs = profile.getKGUMemberIDs();
+                    if (kguMemberIDs.size() > 0) {
+                        for (int j = 0; j < kguMemberIDs.size(); j++) {
+                            int memberID = kguMemberIDs.get(j);
+                            if (memberID > idOfDeletedProfile) {
+                                kguMemberIDs.set(j, memberID - 1);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -86,7 +106,7 @@ public class Database {
         setStudentDataList(fileIO.getStudentDataList());
         setLectionMaps(fileIO.getLectionMaps());
         updateLections();
-        updateNumberOfStudents();
+        updateNumberOfSingleStudents();
         setScheduleTimesRefToStudentTimes();
         updateUserUtilsCollections();
     }
@@ -107,7 +127,7 @@ public class Database {
         }
     }
 
-    private void updateNumberOfStudents() {
+    private void updateNumberOfSingleStudents() {
         numberOfStudents = studentDataList.size();
         numberOfSingleStudents = 0;
         for (Profile profile : studentDataList) {
@@ -150,12 +170,6 @@ public class Database {
             Collections.sort(sortedStudentDays);
             sortedStudentDayLists.add(sortedStudentDays);
             studentIDMaps.add(studentIDMap);
-        }
-    }
-
-    public void updateStudentIDs() {
-        for (int i = 0; i < numberOfStudents; i++) {
-            studentDataList.get(i).setProfileID(i);
         }
     }
 

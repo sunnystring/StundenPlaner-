@@ -24,7 +24,7 @@ import utils.Time;
 import static scheduleData.ScheduleFieldConstants.*;
 import userUtils.BreakWatcher;
 import userUtils.LectionGapFiller;
-import lessonCompanionUI.JournalEntry;
+import studentJournal.JournalEntry;
 
 /**
  *
@@ -44,7 +44,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private int numberOfValidDays;
     private int dayIndex;
     private int dayColumnFieldIndex;
-    private JournalEntry studentJournal;
+    private JournalEntry journalEntry;
 
     public ScheduleData(Database database, StudentListData studentListData) {
         this.database = database;
@@ -53,7 +53,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
-        studentJournal = new JournalEntry(""); // init, damit kein Nullpointer
+        journalEntry = new JournalEntry();
         numberOfValidDays = 0;
         dayIndex = -1;
         dayColumnFieldIndex = -1;
@@ -212,12 +212,14 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             eraseLection(profile.getLectionLengthInFields());
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
-                            studentJournal.dispose();
+                            journalEntry.setVisible(false);
                         }
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS) {
-                            studentJournal.dispose();
-                            studentJournal = new JournalEntry(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
-                            studentJournal.setVisible(true);
+                            journalEntry.setVisible(false);
+                            journalEntry.setTitle(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
+                            journalEntry.setDialogLocation();
+                            //.......
+                            journalEntry.setVisible(true);
                         }
                         if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
                             eraseLection(profile.getLectionLengthInFields());
@@ -232,13 +234,13 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     breakWatcher.check(dayIndex);
                 } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
-                    studentJournal.dispose();
+                    journalEntry.setVisible(false);
                 }
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
         } else {
-            studentJournal.dispose();
+          journalEntry.setVisible(false);
         }
     }
 
@@ -402,8 +404,8 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return breakWatcher;
     }
 
-    public JournalEntry getStudentJournal() {
-        return studentJournal;
+    public JournalEntry getJournalEntry() {
+        return journalEntry;
     }
 
     public void setScheduleTimes(ScheduleTimes scheduleTimes) {

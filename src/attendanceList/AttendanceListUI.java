@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lessonCompanionUI;
+package attendanceList;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class AttendanceList {
+public class AttendanceListUI {
     
 }

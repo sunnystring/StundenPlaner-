@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lessonCompanionData;
+package studentJournal;
+
+import javax.swing.JTextArea;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class JournalData {
+public class JournalText{
     
 }

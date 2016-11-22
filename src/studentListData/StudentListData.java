@@ -245,7 +245,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     }
                 }
             }
-            scheduleData.getStudentJournal().dispose();
+            scheduleData.getJournalEntry().setVisible(false);;
         }
        else if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();

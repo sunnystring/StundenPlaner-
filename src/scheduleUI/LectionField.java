@@ -90,7 +90,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             setFont(this.getFont().deriveFont(Font.BOLD, size1));
             if (fieldData.isHead()) {
                 setForeground(GRAY);
-                setFont(this.getFont().deriveFont(Font.BOLD, size2));
+                setFont(this.getFont().deriveFont(Font.BOLD, size1));
                 setText(" " + fieldData.getFieldTime().toString());
             } else if (fieldData.getNameMark() == FIRST_NAME) {
                 setText(" " + fieldData.getProfile().getFirstName());
@@ -111,7 +111,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
                 setFont(this.getFont().deriveFont(Font.BOLD, size1));
                 if (row == movedRow) {
                     setForeground(GRAY);
-                    setFont(this.getFont().deriveFont(Font.BOLD, size2));
+                    setFont(this.getFont().deriveFont(Font.BOLD, size1));
                     setText(" " + fieldData.getFieldTime().toString());
                 } else if (row == movedRow + 1) {
                     setText(" " + fieldData.getProfile().getFirstName());
