@@ -34,7 +34,7 @@ public class JournalEntry extends JDialog {
     private String text;
     private JScrollPane centerField;
     private JPanel bottomField;
-    private JButton eraseButton, saveButton;
+    private JButton closeButton, eraseButton, saveButton;
     private JTextArea displayArea;
 
     public JournalEntry(Database database) {
@@ -42,6 +42,7 @@ public class JournalEntry extends JDialog {
         setMinimumSize(new Dimension(250, 250));
         createAndAddWidgets();
         addButtonListeners();
+        displayArea.requestFocusInWindow();
         setResizable(false);
         clearText();
         pack();
@@ -55,8 +56,10 @@ public class JournalEntry extends JDialog {
         centerField = new JScrollPane(displayArea);
         centerField.setMinimumSize(displayArea.getPreferredSize());
         centerField.setBorder(BorderFactory.createEmptyBorder(1, 3, 0, 3));
+        closeButton = new JButton("Schliessen");
         eraseButton = new JButton("Löschen");
         saveButton = new JButton("Speichern");
+        bottomField.add(closeButton);
         bottomField.add(Box.createHorizontalGlue());
         bottomField.add(eraseButton);
         bottomField.add(saveButton);
@@ -65,17 +68,24 @@ public class JournalEntry extends JDialog {
     }
 
     private void addButtonListeners() {
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         eraseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clearText();
+                displayArea.requestFocusInWindow();
             }
         });
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 text = displayArea.getText();
-                database.putJournalText(profile.getID(), text);
+                database.setJournalText(profile.getID(), text);
                 dispose();
             }
         });
@@ -83,7 +93,6 @@ public class JournalEntry extends JDialog {
 
     public void showTextOf(Profile profile) {
         this.profile = profile;
-        displayArea.requestFocusInWindow(); 
         setDialogLocation();
         setTitle(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
         text = database.getJournalText(profile.getID());

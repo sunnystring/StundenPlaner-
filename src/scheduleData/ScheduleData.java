@@ -233,13 +233,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     breakWatcher.check(dayIndex);
                 } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
-                    journalEntry.dispose();
                 }
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
         } else {
-            journalEntry.dispose();
+                    journalEntry.dispose();
         }
     }
 
@@ -440,3 +439,4 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     public void mouseExited(MouseEvent m) {
     }
 }
+           

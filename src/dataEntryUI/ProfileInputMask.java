@@ -264,15 +264,6 @@ public abstract class ProfileInputMask extends JPanel {
     }
 
     private void setProfileData() {
-//        char[] nameString;
-//        nameString = firstName.toCharArray();
-//        for (int i = 0; i < nameString.length; i++) {
-//          {
-//              if(nameString[i]=='ä')
-//              nameString[i] ='\u00E4';
-//            }
-//        }
-//       
         profile.setFirstName(firstName);
         profile.setName(name);
         profile.setLectionLengthInMinutes(Integer.parseInt(lectionLength));

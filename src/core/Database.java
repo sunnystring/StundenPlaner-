@@ -24,7 +24,7 @@ public class Database {
 
     private ScheduleTimes scheduleTimes;
     private ArrayList<Profile> studentDataList;
-    private HashMap<Integer, String> studentJournals;
+    private ArrayList<String> studentJournals;
     private ArrayList<DatabaseListener> databaseListeners;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
     private HashMap<Integer, LectionData> lectionIDMap;
@@ -36,7 +36,7 @@ public class Database {
     public Database() {
         scheduleTimes = new ScheduleTimes();
         studentDataList = new ArrayList<>();
-        studentJournals = new HashMap<>();
+        studentJournals = new ArrayList<>();
         databaseListeners = new ArrayList<>();
         lectionMaps = new ArrayList<>();
         for (int i = 0; i < DAYS; i++) {
@@ -53,7 +53,7 @@ public class Database {
     public void addProfile(Profile profile) {
         profile.setID(numberOfStudents);
         studentDataList.add(profile);
-        studentJournals.put(profile.getID(), new String(""));
+        studentJournals.add(numberOfStudents, new String(""));
         numberOfStudents = studentDataList.size(); // nächster Student
         if (profile.getProfileType() != ProfileTypes.GROUP) {
             numberOfSingleStudents++;
@@ -72,9 +72,9 @@ public class Database {
     }
 
     public void deleteProfile(Profile profile) {
+        studentJournals.remove(profile.getID());
         updateProfileIDs(profile.getID());
         studentDataList.remove(profile);
-        studentJournals.remove(profile.getID());
         numberOfStudents = studentDataList.size(); // = numberOfStudents--
         if (profile.getProfileType() != ProfileTypes.GROUP) {
             numberOfSingleStudents--;
@@ -254,7 +254,7 @@ public class Database {
         return studentJournals.get(id);
     }
 
-    public void putJournalText(int id, String text) {
-        studentJournals.put(id, text);
+    public void setJournalText(int id, String text) {
+        studentJournals.set(id, text);
     }
 }

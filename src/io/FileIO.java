@@ -68,7 +68,7 @@ public class FileIO {
         if (!path.toLowerCase().endsWith(suffix)) {
             file = new File(path + suffix);
         }
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF8"))) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file),Charset.forName("UTF8"))) {
             String json = gson.toJson(dataList);
             writer.write(json);
         } catch (Exception ex) {
@@ -90,7 +90,7 @@ public class FileIO {
                 lectionMaps.add(lectionMap);
             }
         } catch (Exception ex) {
-            //  Dialogs.showLoadFileErrorMessage();
+          //  Dialogs.showLoadFileErrorMessage();
             System.out.println(ex.getMessage());
         }
     }

@@ -167,6 +167,10 @@ public class DayColumnData {
         return fieldList;
     }
 
+    public TreeMap<Time, LectionData> getLectionMap() {
+        return lectionMap;
+    }
+
     public ScheduleFieldData getFieldDataAt(int i) {
         return fieldList.get(i);
     }

@@ -10,7 +10,6 @@ import core.Profile;
 import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 import static core.ScheduleTimes.DAYS;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.text.BadLocationException;
@@ -27,22 +26,20 @@ import utils.Time;
 public class PrinterTextPane extends JTextPane {
 
     public final Database database;
-    private ArrayList<String[]> text;
     private StyledDocument doc;
 
     public PrinterTextPane(Database database) {
         this.database = database;
         doc = getStyledDocument();
-        text = new ArrayList<>();
         initStyle();
         createText();
     }
 
     private void initStyle() {
-        Style def = StyleContext.getDefaultStyleContext().
+        Style defaultStyle = StyleContext.getDefaultStyleContext().
                 getStyle(StyleContext.DEFAULT_STYLE);
-        StyleConstants.setFontFamily(def, "SansSerif");
-        Style regular = doc.addStyle("regular", def);
+        StyleConstants.setFontFamily(defaultStyle, "SansSerif");
+        Style regular = doc.addStyle("regular", defaultStyle);
         Style bold = doc.addStyle("bold", regular);
         StyleConstants.setBold(bold, true);
     }
