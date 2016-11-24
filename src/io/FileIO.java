@@ -22,7 +22,10 @@ import java.util.TreeMap;
 import scheduleData.LectionData;
 import utils.Time;
 import static core.ScheduleTimes.DAYS;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import utils.Dialogs;
@@ -68,7 +71,7 @@ public class FileIO {
         if (!path.toLowerCase().endsWith(suffix)) {
             file = new File(path + suffix);
         }
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF8"))) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"))) {
             String json = gson.toJson(dataList);
             writer.write(json);
         } catch (Exception ex) {
@@ -78,7 +81,7 @@ public class FileIO {
 
     public void load(File file) {
         lectionMaps.clear();
-        try (Reader reader = new FileReader(file)) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF8"))) {
             JsonParser parser = new JsonParser();
             JsonArray array = parser.parse(reader).getAsJsonArray();
             scheduleTimes = gson.fromJson(array.get(0), ScheduleTimes.class);

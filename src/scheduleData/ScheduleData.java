@@ -439,4 +439,4 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     public void mouseExited(MouseEvent m) {
     }
 }
-            journalEntry.dispose();
+
