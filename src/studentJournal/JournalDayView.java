@@ -66,7 +66,6 @@ public class JournalDayView extends JDialog {
         document.addStyle("journal", defaultStyle);
         Style nameStyle = document.addStyle("name", defaultStyle);
         StyleConstants.setForeground(nameStyle, Colors.NAMEFIELD_SINGLE_COLOR);
-       // StyleConstants.setBold(nameStyle, true);
     }
 
     private void createAndAddWidgets() {
@@ -93,22 +92,21 @@ public class JournalDayView extends JDialog {
 
     public void showStudentJournals(DayField dayField) {
         textPane.setText("");
-        nameString = "";
-        journal = "";
         setTitle(dayField.getText());
         setDialogLocation();
         DayColumnData dayColumn = scheduleData.getDayColumn(dayField.getDayIndex());
         for (LectionData lectionData : dayColumn.getLectionMap().values()) {
             int profileID = lectionData.getProfileID();
             Profile profile = database.getProfile(profileID);
-            nameString = profile.getFirstName() +" "+ profile.getName() +" "+ profile.getThirdName() + "\n";
-            journal = database.getJournalText(profileID) + "\n\n";
-            try {
-                document.insertString(document.getLength(), nameString, document.getStyle("name"));
-                document.insertString(document.getLength(), journal, document.getStyle("journal"));
-
-            } catch (BadLocationException e) {
-                e.printStackTrace();
+            nameString = profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName() + "\n";
+            journal = database.getJournalText(profileID) ;
+            if (!journal.isEmpty()) {
+                try {
+                    document.insertString(document.getLength(), nameString, document.getStyle("name"));
+                    document.insertString(document.getLength(), journal+ "\n\n", document.getStyle("journal"));
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

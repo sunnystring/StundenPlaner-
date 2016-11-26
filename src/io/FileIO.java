@@ -41,12 +41,14 @@ public class FileIO {
     private ScheduleTimes scheduleTimes;
     private ArrayList<Profile> studentDataList;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
+    private ArrayList<String> studentJournals;
 
     public FileIO(Database database) {
         this.database = database;
         initGson();
         dataList = new ArrayList();
         lectionMaps = new ArrayList<>();
+        studentJournals = new ArrayList<>();
     }
 
     private void initGson() {
@@ -60,6 +62,7 @@ public class FileIO {
         dataList.clear();
         dataList.add(database.getScheduleTimes());
         dataList.add(database.getStudentDataList());
+        dataList.add(database.getStudentJournals());
         for (TreeMap<Time, LectionData> lectionMap : database.getLectionMaps()) {
             dataList.add(lectionMap);
         }
@@ -68,7 +71,7 @@ public class FileIO {
         if (!path.toLowerCase().endsWith(suffix)) {
             file = new File(path + suffix);
         }
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file),Charset.forName("UTF8"))) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF8"))) {
             String json = gson.toJson(dataList);
             writer.write(json);
         } catch (Exception ex) {
@@ -84,13 +87,15 @@ public class FileIO {
             scheduleTimes = gson.fromJson(array.get(0), ScheduleTimes.class);
             studentDataList = gson.fromJson(array.get(1), new TypeToken<ArrayList<Profile>>() {
             }.getType());
+            studentJournals = gson.fromJson(array.get(2), new TypeToken<ArrayList<String>>() {
+            }.getType());
             for (int i = 0; i < DAYS; i++) {
-                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 2), new TypeToken<TreeMap<Time, LectionData>>() {
+                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 3), new TypeToken<TreeMap<Time, LectionData>>() {
                 }.getType());
                 lectionMaps.add(lectionMap);
             }
         } catch (Exception ex) {
-          //  Dialogs.showLoadFileErrorMessage();
+            Dialogs.showLoadFileErrorMessage();
             System.out.println(ex.getMessage());
         }
     }
@@ -115,5 +120,9 @@ public class FileIO {
 
     public ArrayList<TreeMap<Time, LectionData>> getLectionMaps() {
         return lectionMaps;
+    }
+
+    public ArrayList<String> getStudentJournals() {
+        return studentJournals;
     }
 }

@@ -109,6 +109,7 @@ public class Database {
         this.scheduleTimes = scheduleTimes;
         setStudentDataList(fileIO.getStudentDataList());
         setLectionMaps(fileIO.getLectionMaps());
+        setStudentJournals(fileIO.getStudentJournals());
         updateLections();
         updateNumberOfSingleStudents();
         setScheduleTimesRefToStudentTimes();
@@ -256,5 +257,13 @@ public class Database {
 
     public void setJournalText(int id, String text) {
         studentJournals.set(id, text);
+    }
+
+    public ArrayList<String> getStudentJournals() {
+        return studentJournals;
+    }
+
+    public void setStudentJournals(ArrayList<String> studentJournals) {
+        this.studentJournals = studentJournals;
     }
 }
