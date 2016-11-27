@@ -138,7 +138,7 @@ public class DayColumnData {
         }
     }
 
-    public void resetValidTimeMarks() {
+    public void clearValidTimeMarks() {
         for (int i = 0; i < totalNumberOfFields; i++) {
             fieldList.get(i).setValidTimeMark(UNVALID);
         }

@@ -180,24 +180,39 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             StudentList studentList = (StudentList) m.getSource();
             row = studentList.rowAtPoint(p);
             col = studentList.columnAtPoint(p);
-            if (row >= 0 && col > 0) { //  ausserhalb JTable: selectedRow = -1, NameField nicht ansprechbar
-                StudentFieldData fieldData = studentList.getStudentFieldDataAtView(row, col);
-                DayColumnData dayColumn = getDayColumn(fieldData.getDayIndex());
-                if (fieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
-                    Profile profile = fieldData.getProfile();
-                    dayColumn.getLectionGapFiller().clear();
-                    dayColumn.setValidTimeMarks(fieldData.getStudentDay());
-                    setMoveMode(profile);
-                } else if (row == fieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
-                    dayColumn.resetValidTimeMarks();
-                } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
-                    setAllocatedMode();
+            if (SwingUtilities.isLeftMouseButton(m) && row >= 0) { //  ausserhalb JTable: selectedRow = -1
+                StudentFieldData fieldData;
+                Profile profile;
+                if (col > 0) {
+                    fieldData = studentList.getStudentFieldDataAtView(row, col);
+                    DayColumnData dayColumn = getDayColumn(fieldData.getDayIndex());
+                    if (fieldData.isFieldSelected()) {  // 1. StudentDay selektiert 
+                        profile = fieldData.getProfile();
+                        dayColumn.getLectionGapFiller().clear();
+                        dayColumn.setValidTimeMarks(fieldData.getStudentDay());
+                        setMoveMode(profile);
+                    } else if (row == fieldData.selectedRowIndex()) { // weitere StudentDay-Selections, bzw. rückgängig machen
+                        dayColumn.clearValidTimeMarks();
+                    } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
+                        setAllocatedMode();
+                    }
+                } else if (col == 0) {
+                    fieldData = studentList.getStudentFieldDataAtView(row, col);
+                    if (fieldData.isFieldSelected()) {  // alle StudentDays selektiert 
+                        profile = fieldData.getProfile();
+                        clearLectionGapFillers();
+                        setAllValidTimeMarks(profile);
+                        setMoveMode(profile);
+                    } else if (row == fieldData.selectedRowIndex()) { // alle StudentDay-Selections rückgängig machen
+                        clearAllTimeMarks();
+                    } else if (studentListData.isStudentListReleased()) { // alle Selections gelöscht
+                        setAllocatedMode();
+                    }
                 }
                 fireTableDataChanged();
             }
         } else if (m.getSource() instanceof TimeTable) {
-            TimeTable timeTable = (TimeTable) m.getSource(); 
-         
+            TimeTable timeTable = (TimeTable) m.getSource();
             row = timeTable.rowAtPoint(p);
             col = timeTable.columnAtPoint(p);
             if (row >= 0 && col % 2 == 1) { // keine Events aus TimeColumn
@@ -238,7 +253,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 studentListData.fireTableDataChanged();
             }
         } else {
-                    journalEntry.dispose();
+            journalEntry.dispose();
         }
     }
 
@@ -349,6 +364,13 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         dayIndex = selectedCol / 4;
     }
 
+    private void clearLectionGapFillers() {
+        for (int i = 0; i < numberOfValidDays; i++) {
+            DayColumnData dayColumn = dayColumnDataList.get(i);
+            dayColumn.getLectionGapFiller().clear();
+        }
+    }
+
     public void setAllValidTimeMarks(Profile profile) {
         for (int i = 0; i < numberOfValidDays; i++) {
             DayColumnData dayColumn = dayColumnDataList.get(i);
@@ -359,7 +381,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     public void clearAllTimeMarks() {
         for (int i = 0; i < numberOfValidDays; i++) {
             DayColumnData dayColumn = dayColumnDataList.get(i);
-            dayColumn.resetValidTimeMarks();
+            dayColumn.clearValidTimeMarks();
         }
     }
 
@@ -439,4 +461,3 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     public void mouseExited(MouseEvent m) {
     }
 }
-           
