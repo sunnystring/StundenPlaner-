@@ -13,14 +13,17 @@ public class ProfileTypes {
 
     public static final int SINGLE_LECTION = 0,
             KGU_MEMBER = 1,
-            GROUP = 2;
+            SDG_MEMBER = 2,
+            GROUP = 3,
+            SDG = 4;
 
-    public static final String SINGLE_LECTION_NAME = "Einzelunterricht", 
+    public static final String SINGLE_LECTION_NAME = "Einzelunterricht",
             KGU_NAME = "Kleingruppe",
             WORKSHOP_NAME = "Workshop/Semesterkurs",
             INSTR_FORMATION_NAME = "Instrumentalformation",
             CHOR_NAME = "Singschule/Chor",
             GRUNDSCHULUNG_NAME = "Musikalische Grundschulung",
-            ANDERES_NAME = "Anderes";
+            ANDERES_NAME = "Anderes",
+            SDG_NAME = "Selbstdefinierte Gruppe";
 
 }

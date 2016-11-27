@@ -52,9 +52,13 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
         setForeground(BLACK);
         // Namensfeld
         if (col == 0) {
-            setNameFieldBackground(studentFieldData.getLectionProfileType());
+            selectNameFieldBackground(studentFieldData.getLectionProfileType());
+        } else if (studentFieldData.getLectionProfileType() == KGU_MEMBER) {
+            setBackground(KGU_MEMBER_COLOR);
+        } else if (studentFieldData.getLectionProfileType() == SDG_MEMBER) {
+            setBackground(SDG_MEMBER_COLOR);
         } else {
-            setBackground(studentFieldData.getLectionProfileType() == KGU_MEMBER ? NAMEFIELD_KGU_MEMBER_COLOR : studentFieldData.getFieldColor());
+            setBackground(studentFieldData.getFieldColor());
         }
         // nicht einteilbar
         if (studentFieldData.isUnallocatable()) {
@@ -70,7 +74,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setMovedBackground(studentFieldData.getLectionProfileType());
             }
         } else if (col == 0) {
-            setNameFieldBackground(studentFieldData.getLectionProfileType());
+            selectNameFieldBackground(studentFieldData.getLectionProfileType());
         }
         // Row selected
         if (row == studentFieldData.selectedRowIndex()) {
@@ -83,7 +87,8 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             }
         }
         // LectionGapFiller aktiviert
-        if (studentFieldData.isLectionGapFillerEnabled() && studentFieldData.getLectionProfileType() != KGU_MEMBER) {
+        if (studentFieldData.isLectionGapFillerEnabled() && studentFieldData.getLectionProfileType() != KGU_MEMBER
+                && studentFieldData.getLectionProfileType() != SDG_MEMBER) {
             setBackground(LIGHT_GREEN);
         }
         // eingeteilt
@@ -96,10 +101,16 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
     }
 
     private void setMovedBackground(int profileType) {
-        setBackground(profileType == KGU_MEMBER ? NAMEFIELD_KGU_MEMBER_COLOR : LIGHT_GREEN);
+        if (profileType == KGU_MEMBER) {
+            setBackground(KGU_MEMBER_COLOR);
+        } else if (profileType == SDG_MEMBER) {
+            setBackground(SDG_MEMBER_COLOR);
+        } else {
+            setBackground(LIGHT_GREEN);
+        }
     }
 
-    private void setNameFieldBackground(int profileType) {
+    private void selectNameFieldBackground(int profileType) {
         switch (profileType) {
             case GROUP:
                 setBackground(NAMEFIELD_GROUP_COLOR);
@@ -108,7 +119,10 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
                 setBackground(NAMEFIELD_SINGLE_COLOR);
                 break;
             case KGU_MEMBER:
-                setBackground(NAMEFIELD_KGU_MEMBER_COLOR);
+                setBackground(KGU_MEMBER_COLOR);
+                break;
+            case SDG_MEMBER:
+                setBackground(SDG_MEMBER_COLOR);
                 break;
             default:
                 break;

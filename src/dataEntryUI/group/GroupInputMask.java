@@ -25,6 +25,7 @@ public class GroupInputMask extends ProfileInputMask {
     }
 
     private void adjustNameLabels() {
+        lectiontypeLabel.setText("  Lektionsdauer:");
         firstnameLabel.setText("Name:");
         nameLabel.setText(" Zusatz:");
     }
@@ -165,8 +166,7 @@ public class GroupInputMask extends ProfileInputMask {
         lectiontypeSelectionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox selectionBox = (JComboBox) e.getSource();
-                lectionLength = (String) selectionBox.getSelectedItem();
+                lectionLength = (String) lectiontypeSelectionBox.getSelectedItem();
             }
         };
     }

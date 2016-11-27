@@ -63,7 +63,7 @@ public abstract class ProfileInputMask extends JPanel {
     public ProfileInputMask(Database database) {
         this.database = database;
         scheduleTimes = database.getScheduleTimes();
-        lectionTypes = new String[]{"30", "40", "50", "KGU"}; // = default
+        lectionTypes = new String[]{"30", "40", "50", "KGU", "SDG"}; // = default
         setLayout(new BorderLayout());
         createWidgets();
         addWidgets();
@@ -193,7 +193,7 @@ public abstract class ProfileInputMask extends JPanel {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
+                    correctInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
                     return;
                 }
                 studentTimes.setValidStudentDays();
@@ -217,7 +217,7 @@ public abstract class ProfileInputMask extends JPanel {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    showAndCorrectInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
+                    correctInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
                     return;
                 }
                 studentTimes.updateValidStudentDays();
@@ -229,8 +229,8 @@ public abstract class ProfileInputMask extends JPanel {
         saveButton.addActionListener(saveButtonListener);
     }
 
-    private void showAndCorrectInvalidEntryTimes(String msg, MainFrame mainFrame) {
-        int choice = Dialogs.showStudentTimesOutOfBoundOptionMessage(msg);
+    private void correctInvalidEntryTimes(String msg, MainFrame mainFrame) {
+        int choice = Dialogs.showStudentTimesOutOfBoundOptionMessage("Einteilbare Zeit am\n" + msg);
         if (choice == JOptionPane.YES_OPTION) // Stundenplan anpassen, falls NO_OPTION Schülerzeit anpassen
         {
             JDialog scheduleEdit = new ScheduleEdit(mainFrame);

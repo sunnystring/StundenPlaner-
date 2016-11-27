@@ -5,10 +5,12 @@
  */
 package dataEntryUI.group;
 
-import core.ProfileTypes;
+import dataEntryUI.group.profiles.GroupEntry;
+import static core.ProfileTypes.*;
 import core.Profile;
 import static utils.GUIConstants.*;
 import dataEntryUI.group.kgu.KGUEntry;
+import dataEntryUI.group.sdg.SDGEntry;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,10 +35,12 @@ public class GroupSelectionDialog extends JDialog {
     private Profile group;
     private GroupEntry selectedEntry;
     private KGUEntry kguEntry;
+    private SDGEntry sdgEntry;
     private String profileName;
     private JPanel selectionField, buttonField;
     private ButtonGroup allSelections;
-    private JRadioButton kguSelection, workshopSelection, instrumentalformationSelection, chorSelection, grundschulungSelection, otherSelection;
+    private JRadioButton kguSelection, workshopSelection, instrumentalformationSelection,
+            chorSelection, grundschulungSelection, selfDefinedGroupSelection, otherSelection;
     private JButton cancelButton, approveButton;
 
     public GroupSelectionDialog(MainFrame mainFrame, Profile group) {
@@ -44,6 +48,7 @@ public class GroupSelectionDialog extends JDialog {
         this.group = group;
         selectedEntry = null;
         kguEntry = null;
+        sdgEntry = null;
         setTitle("Gruppenprofil auswählen");
         setModal(true);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
@@ -62,12 +67,13 @@ public class GroupSelectionDialog extends JDialog {
         selectionField = new JPanel();
         selectionField.setLayout(new BoxLayout(selectionField, BoxLayout.PAGE_AXIS));
         selectionField.setBorder(DEFAULT_BORDER);
-        kguSelection = new JRadioButton(ProfileTypes.KGU_NAME);
-        workshopSelection = new JRadioButton(ProfileTypes.WORKSHOP_NAME);
-        instrumentalformationSelection = new JRadioButton(ProfileTypes.INSTR_FORMATION_NAME);
-        chorSelection = new JRadioButton(ProfileTypes.CHOR_NAME);
-        grundschulungSelection = new JRadioButton(ProfileTypes.GRUNDSCHULUNG_NAME);
-        otherSelection = new JRadioButton(ProfileTypes.ANDERES_NAME);
+        kguSelection = new JRadioButton(KGU_NAME);
+        workshopSelection = new JRadioButton(WORKSHOP_NAME);
+        instrumentalformationSelection = new JRadioButton(INSTR_FORMATION_NAME);
+        chorSelection = new JRadioButton(CHOR_NAME);
+        grundschulungSelection = new JRadioButton(GRUNDSCHULUNG_NAME);
+        otherSelection = new JRadioButton(ANDERES_NAME);
+        selfDefinedGroupSelection = new JRadioButton(SDG_NAME);
         createButtonGroup();
         buttonField = new JPanel();
         buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
@@ -84,6 +90,7 @@ public class GroupSelectionDialog extends JDialog {
         allSelections.add(chorSelection);
         allSelections.add(grundschulungSelection);
         allSelections.add(otherSelection);
+        allSelections.add(selfDefinedGroupSelection);
     }
 
     private void addWidgets() {
@@ -93,6 +100,7 @@ public class GroupSelectionDialog extends JDialog {
         selectionField.add(chorSelection);
         selectionField.add(grundschulungSelection);
         selectionField.add(otherSelection);
+        selectionField.add(selfDefinedGroupSelection);
         buttonField.add(Box.createHorizontalGlue());
         buttonField.add(cancelButton);
         buttonField.add(approveButton);
@@ -106,55 +114,69 @@ public class GroupSelectionDialog extends JDialog {
             public void itemStateChanged(ItemEvent e) {
                 kguEntry = new KGUEntry(mainFrame, group, "n-Profil erstellen");
                 selectedEntry = null;
+                sdgEntry = null;
             }
         });
         workshopSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileTypes.WORKSHOP_NAME;
+                profileName = WORKSHOP_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setWorkshopProfile();
                 kguEntry = null;
+                sdgEntry = null;
             }
         });
         instrumentalformationSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileTypes.INSTR_FORMATION_NAME;
+                profileName = INSTR_FORMATION_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setInstrumentalformationProfile();
                 kguEntry = null;
+                sdgEntry = null;
             }
         });
         chorSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileTypes.CHOR_NAME;
+                profileName = CHOR_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setChorProfile();
                 kguEntry = null;
+                sdgEntry = null;
             }
         });
         grundschulungSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileTypes.GRUNDSCHULUNG_NAME;
+                profileName = GRUNDSCHULUNG_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + "-Profil", group);
                 selectedEntry.setGrundschulungProfile();
                 kguEntry = null;
+                sdgEntry = null;
             }
         });
         otherSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                profileName = ProfileTypes.ANDERES_NAME;
+                profileName = ANDERES_NAME;
                 group.setProfileName(profileName);
                 selectedEntry = new GroupEntry(mainFrame, profileName + " Profil", group);
                 selectedEntry.setOtherProfile();
+                kguEntry = null;
+                sdgEntry = null;
+            }
+        });
+        selfDefinedGroupSelection.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                sdgEntry = new SDGEntry(mainFrame, group, "Selbstdefiniertes Gruppen-Profil erstellen");
+                selectedEntry = null;
                 kguEntry = null;
             }
         });
@@ -176,9 +198,10 @@ public class GroupSelectionDialog extends JDialog {
                 dispose();
                 if (selectedEntry != null) {
                     selectedEntry.setVisible(true);
-                }
-                if (kguEntry != null) {
+                } else if (kguEntry != null) {
                     kguEntry.setVisible(true);
+                } else if (sdgEntry != null) {
+                    sdgEntry.setVisible(true);
                 }
             }
         });

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI.group.kgu;
+package dataEntryUI.group.sdg;
 
-import dataEntryUI.group.SelectableMemberGroupInputMask;
 import core.Profile;
 import core.ProfileTypes;
+import dataEntryUI.group.SelectableMemberGroupInputMask;
 import java.util.ArrayList;
 import mainframe.MainFrame;
 
@@ -15,10 +15,10 @@ import mainframe.MainFrame;
  *
  * @author mathiaskielholz
  */
-public class KGUEntry extends SelectableMemberGroupInputMask {
+public class SDGEntry extends SelectableMemberGroupInputMask {
 
-    public KGUEntry(MainFrame mainFrame, Profile group, String title) {
-        super(mainFrame, group, ProfileTypes.KGU_NAME + title);
+    public SDGEntry(MainFrame mainFrame, Profile group, String title) {
+        super(mainFrame, group, title);
         getSelectableStudents();
         setupUI();
         pack();
@@ -28,8 +28,9 @@ public class KGUEntry extends SelectableMemberGroupInputMask {
     public void setupUI() {
         createEntryWidgets();
         createStudentSelection();
+        createAndAddLectionTypeSelection();
         addEntryWidgets();
-        addEntryButtonListeners(ProfileTypes.KGU_NAME);
+        addEntryButtonListeners(ProfileTypes.SDG_NAME);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class KGUEntry extends SelectableMemberGroupInputMask {
         ArrayList<Profile> studentDataList = database.getStudentDataList();
         for (Profile profile : studentDataList) {
             if (!profile.isAllocated()) {
-                if (profile.getProfileType() == ProfileTypes.KGU_MEMBER) {
+                if (profile.getProfileType() == ProfileTypes.SDG_MEMBER) {
                     selectableStudents.add(profile);
                 }
             }

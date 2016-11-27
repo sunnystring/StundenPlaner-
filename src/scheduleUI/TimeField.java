@@ -102,7 +102,7 @@ public class TimeField extends LectionField {
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
-            if (selectedRow >= 0 && selectedCol > 0) {
+            if (selectedRow >= 0 && selectedCol >= 0) {
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) {
                     resetTimeColumn();

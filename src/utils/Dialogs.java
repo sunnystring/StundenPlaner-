@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
  */
 public class Dialogs {
 
+    public static final String NO_INPUT_MESSAGE = "Es kann kein leeres Profil erstellt werden!";
+
     public static void showScheduleTimeSlotError() {
         JOptionPane.showMessageDialog(null, "Ungültige Zeiteingabe:\n"
                 + "Beginn und Schluss passen nicht zusammen\n"
@@ -46,10 +48,10 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, msg, "Stundenplan", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static int showStudentTimesOutOfBoundOptionMessage(String errorLog) {
-        String msg = "Die Zeiteingabe liegt ausserhalb des Stundenplans!\n\nEinteilbare Zeit am\n" + errorLog;
+    public static int showStudentTimesOutOfBoundOptionMessage(String msg) {
+        msg = "Die Schülerzeiten liegen ausserhalb des Stundenplans!\n\n"+ msg;
         Object[] options = {"Stundenplan anpassen", "Schülerzeit anpassen"};
-        return JOptionPane.showOptionDialog(null, msg, "Schülerdaten",
+        return JOptionPane.showOptionDialog(null, msg, "Zeiteingabe",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     }
 
@@ -75,14 +77,9 @@ public class Dialogs {
         JOptionPane.showMessageDialog(null, text, "???", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showIllegalKGUEntryErrorMessage() {
-        String msg = "Es muss eine Gruppe aus 2 oder 3 Mitgliedern gemacht werden!";
-        JOptionPane.showMessageDialog(null, msg, "Unzulässige Auswahl", JOptionPane.ERROR_MESSAGE);
-    }
-
     public static int showSaveOptionMessage() {
         String msg = "Änderungen der Schülerdaten und des Stundenplans speichern?";
-        Object[] options = {"Speichern", "Nicht speichern","Abbrechen"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
+        Object[] options = {"Speichern", "Nicht speichern", "Abbrechen"}; // Löschen = 0 = YES_OPTION, Abbrechen = 1 = NO_OPTION;
         return JOptionPane.showOptionDialog(null, msg, "StundenPlaner beenden",
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }

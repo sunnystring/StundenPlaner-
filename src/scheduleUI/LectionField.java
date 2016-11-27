@@ -5,7 +5,7 @@
  */
 package scheduleUI;
 
-import core.ProfileTypes;
+import static core.ProfileTypes.*;
 import static java.awt.Color.*;
 import java.awt.Component;
 import java.awt.Font;
@@ -80,7 +80,13 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.getAllocatedTimeMark() == UNVALID) {
                 setBackground(UNVALID_COLOR);
             } else {
-                setBackground(fieldData.getLectionProfileType() == ProfileTypes.GROUP ? GROUP_LECTION_GREEN : DARK_GREEN);
+                if (fieldData.getLectionProfileType() == GROUP) {
+                    setBackground(GROUP_COLOR);
+                } else if (fieldData.getLectionProfileType() == SDG) {
+                    setBackground(SDG_GROUP_COLOR);
+                } else {
+                    setBackground(DARK_GREEN);
+                }
             }
             if (fieldData.isLectionGapFiller()) {
                 setBackground(LIGHT_GREEN);
@@ -206,7 +212,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedRow = studentList.rowAtPoint(p);
             selectedCol = studentList.columnAtPoint(p);
             StudentListData studentListData = (StudentListData) studentList.getModel();
-            if (selectedRow >= 0 && selectedCol > 0) {
+            if (selectedRow >= 0 && selectedCol >= 0) {
                 StudentFieldData studentFieldData = studentList.getStudentFieldDataAtView(selectedRow, selectedCol);
                 if (studentFieldData.isFieldSelected()) { // StudentDay selektiert 
                     resetLectionColumn();
@@ -221,15 +227,15 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             selectedCol = timeTable.columnAtPoint(p);
             if (selectedRow >= 0) {
                 ScheduleFieldData scheduleFieldData = scheduleData.getValueAt(selectedRow, selectedCol);
-               
+
                 if (selectedCol % 2 == 1 && scheduleFieldData.isMoveEnabled()) {
                     lectionLenght = scheduleFieldData.getProfile().getLectionLengthInFields();
                     lectionEnd = selectedRow + lectionLenght;
                     lectionDiff = lectionEnd - rowCount;
                 }
-                 if (scheduleFieldData.getLectionPanelAreaMark() == NAME_ROW) {
+                if (scheduleFieldData.getLectionPanelAreaMark() == NAME_ROW) {
                     movedRow = movedRow - 1;
-                    lectionEnd = lectionEnd-1;
+                    lectionEnd = lectionEnd - 1;
                 }
             }
         }

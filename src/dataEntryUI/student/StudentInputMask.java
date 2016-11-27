@@ -10,7 +10,6 @@ import dataEntryUI.ProfileInputMask;
 import core.ProfileTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
 
 public class StudentInputMask extends ProfileInputMask {
 
@@ -34,10 +33,12 @@ public class StudentInputMask extends ProfileInputMask {
             case "45": // = KGU
                 lectiontypeSelectionBox.setSelectedIndex(3);
                 break;
+            case "0": // = SDG
+                lectiontypeSelectionBox.setSelectedIndex(4);
+                break;
             default:
                 break;
         }
-
     }
 
     @Override
@@ -45,19 +46,22 @@ public class StudentInputMask extends ProfileInputMask {
         lectiontypeSelectionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox selectionBox = (JComboBox) e.getSource();
-                String itemType = (String) selectionBox.getSelectedItem();
+                String itemType = (String) lectiontypeSelectionBox.getSelectedItem();
                 if (itemType.equals("KGU")) {
                     profile.setProfileType(ProfileTypes.KGU_MEMBER);
                     profile.setProfileName(ProfileTypes.KGU_NAME);
                     lectionLength = "45";
-                    timeSelectionTable.setKGUMaskSelected(true);
+                    timeSelectionTable.adjustTimeSlotsToKGUEntry(true);
+                } else if (itemType.equals("SDG")) {
+                    profile.setProfileType(ProfileTypes.SDG_MEMBER);
+                    profile.setProfileName(ProfileTypes.SDG_NAME);
+                    lectionLength = "0";
+                    timeSelectionTable.adjustTimeSlotsToKGUEntry(true);
                 } else {
                     profile.setProfileType(ProfileTypes.SINGLE_LECTION);
                     profile.setProfileName(ProfileTypes.SINGLE_LECTION_NAME);
                     lectionLength = itemType;
-                    timeSelectionTable.setKGUMaskSelected(false);
-                    
+                    timeSelectionTable.adjustTimeSlotsToKGUEntry(false);
                 }
             }
         };

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI.group.kgu;
+package dataEntryUI.group;
 
 import core.Profile;
 import core.StudentDay;

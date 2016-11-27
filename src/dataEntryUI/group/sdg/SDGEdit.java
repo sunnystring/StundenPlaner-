@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataEntryUI.group.kgu;
+package dataEntryUI.group.sdg;
 
-import dataEntryUI.group.SelectableMemberGroupInputMask;
 import core.Profile;
 import core.ProfileTypes;
+import dataEntryUI.group.SelectableMemberGroupInputMask;
 import mainframe.MainFrame;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class KGUEdit extends SelectableMemberGroupInputMask {
+public class SDGEdit extends SelectableMemberGroupInputMask {
 
-    public KGUEdit(MainFrame mainFrame, Profile kgu) {
-        super(mainFrame, kgu, ProfileTypes.KGU_NAME + "n-Profil ändern oder auflösen");
+    public SDGEdit(MainFrame mainFrame, Profile sdg) {
+        super(mainFrame, sdg, "Selbstdefiniertes Gruppenprofil ändern oder auflösen");
         setupUI();
         pack();
     }
@@ -27,8 +27,7 @@ public class KGUEdit extends SelectableMemberGroupInputMask {
         updateEditData();
         createEditWidgets();
         addEditWidgets();
-        addEditButtonListeners(ProfileTypes.KGU_NAME);
-
+        addEditButtonListeners(ProfileTypes.SDG_NAME);
     }
 
     @Override

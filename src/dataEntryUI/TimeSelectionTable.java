@@ -76,7 +76,7 @@ public class TimeSelectionTable extends JTable {
         });
     }
 
-    public void setKGUMaskSelected(boolean state) {
+    public void adjustTimeSlotsToKGUEntry(boolean state) {
         KGUselected = state;
         studentTimes.setKGUselected(state);
         studentTimes.fireTableDataChanged();
