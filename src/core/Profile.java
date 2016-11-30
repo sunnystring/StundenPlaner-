@@ -121,7 +121,7 @@ public class Profile {
         KGUMemberIDs.add(KGUMemberID);
     }
 
-    public ArrayList<Integer> getKGUMemberIDs() {
+    public ArrayList<Integer> getMemberIDs() {
         return KGUMemberIDs;
     }
 

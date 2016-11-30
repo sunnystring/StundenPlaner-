@@ -77,7 +77,7 @@ public class StudentList extends JTable {
         studentField.resetRowIndices();
     }
 
-    public void showNumberOfStudents() {
+    public void showNumberOfProfiles() {
         JTableHeader header = getTableHeader();
         header.getColumnModel().getColumn(0).setHeaderValue(getColumnName(0));
         header.repaint();

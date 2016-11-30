@@ -91,7 +91,7 @@ public class Database {
                 Profile profile = studentDataList.get(i);
                 profile.setID(i - 1);
                 if (profile.getProfileType() == ProfileTypes.GROUP) {
-                    ArrayList<Integer> kguMemberIDs = profile.getKGUMemberIDs();
+                    ArrayList<Integer> kguMemberIDs = profile.getMemberIDs();
                     if (kguMemberIDs.size() > 0) {
                         for (int j = 0; j < kguMemberIDs.size(); j++) {
                             int memberID = kguMemberIDs.get(j);

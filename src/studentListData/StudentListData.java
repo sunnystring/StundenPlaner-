@@ -42,7 +42,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private ArrayList<StudentFieldData[]> fieldDataMatrix;
     private ColoredStudentDays coloredStudentDays;
     private int numberOfDays;
-    private int numberOfStudents;
+    private int numberOfProfiles;
     private boolean studentListReleased;
     public static final int NULL_VALUE = -1;
 
@@ -50,7 +50,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         this.database = database;
         this.mainFrame = mainFrame;
         numberOfDays = 0;
-        numberOfStudents = 0;
+        numberOfProfiles = 0;
         studentListReleased = true;
         fieldDataMatrix = new ArrayList<>();
         coloredStudentDays = new ColoredStudentDays(database, this);
@@ -64,55 +64,55 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     public void updateAfterFileEntry() {
         fieldDataMatrix.clear();
         init();
-        createStudentRows();
+        createProfileRows();
         setIncompatibleStudentDays();
         setStudentListReleased(true);
     }
 
     public void updateAfterScheduleEdit() {
         numberOfDays = database.getNumberOfDays();
-        updateStudentAllocationState();
+        updateProfileAllocationState();
         fieldDataMatrix.clear();
-        createStudentRows();
+        createProfileRows();
         coloredStudentDays.update();
         setIncompatibleStudentDays();
         setStudentListReleased(true);
     }
 
-    private void createStudentRows() {
-        for (int i = 0; i < numberOfStudents; i++) {
-            createStudentRow(database.getProfile(i));
+    private void createProfileRows() {
+        for (int i = 0; i < numberOfProfiles; i++) {
+            createProfileRow(database.getProfile(i));
         }
     }
 
     @Override
     public void profileAdded(int numberOfStudents, Profile profile) {
-        this.numberOfStudents = numberOfStudents;
-        createStudentRow(profile);
-        updateSelectableMembersAllocationState();
-        studentList.showNumberOfStudents();
+        this.numberOfProfiles = numberOfStudents;
+        createProfileRow(profile);
+        updateMembersAllocationState();
+        studentList.showNumberOfProfiles();
         coloredStudentDays.updateIncompatibleStudentDays();
     }
 
     @Override
     public void profileEdited(Profile profile) {
-        updateStudentRow(profile);
-        updateSelectableMembersAllocationState();
+        updateProfileRow(profile);
+        updateMembersAllocationState();
         coloredStudentDays.updateIncompatibleStudentDays();
     }
 
     @Override
     public void profileDeleted(int numberOfStudents, Profile profile) {
-        this.numberOfStudents = numberOfStudents;
+        this.numberOfProfiles = numberOfStudents;
         int deletedProfileID = profile.getID();
-        removeStudentRow(deletedProfileID);
-        updateSelectableMembersAllocationState();
-        updateStudentIDs();
-        studentList.showNumberOfStudents();
+        removeProfileRow(deletedProfileID);
+        updateMembersAllocationState();
+        updateProfileIDs();
+        studentList.showNumberOfProfiles();
         coloredStudentDays.updateIncompatibleStudentDays();
     }
 
-    private void createStudentRow(Profile profile) {
+    private void createProfileRow(Profile profile) {
         studentRow = new StudentFieldData[getColumnCount()];
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col] = new StudentFieldData(database);
@@ -128,7 +128,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         fieldDataMatrix.add(studentRow);
     }
 
-    private void updateStudentRow(Profile profile) {
+    private void updateProfileRow(Profile profile) {
         studentRow = fieldDataMatrix.get(profile.getID());
         for (int col = 0; col < getColumnCount(); col++) {
             studentRow[col].setLectionProfileType(profile.getProfileType());
@@ -139,20 +139,20 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
     }
 
-    private void updateStudentIDs() {
-        for (int i = 0; i < numberOfStudents; i++) {
+    private void updateProfileIDs() {
+        for (int i = 0; i < numberOfProfiles; i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 fieldDataMatrix.get(i)[j].setProfileID(i);
             }
         }
     }
 
-    private void removeStudentRow(int row) {
+    private void removeProfileRow(int row) {
         fieldDataMatrix.remove(row);
     }
 
-    private void updateSelectableMembersAllocationState() {
-        for (int i = 0; i < numberOfStudents; i++) {
+    private void updateMembersAllocationState() {
+        for (int i = 0; i < numberOfProfiles; i++) {
             Profile profile = database.getProfile(i);
             if (profile.getProfileType() == KGU_MEMBER || profile.getProfileType() == SDG_MEMBER) {
                 setRowAllocated(profile.getID(), profile.isAllocated());
@@ -160,8 +160,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         }
     }
 
-    private void updateStudentAllocationState() {
-        for (int i = 0; i < numberOfStudents; i++) {
+    private void updateProfileAllocationState() {
+        for (int i = 0; i < numberOfProfiles; i++) {
             database.getProfile(i).setAllocated((getValueAt(i, 0)).isProfileAllocated());
         }
     }
@@ -176,7 +176,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
 
     @Override
     public int getRowCount() {
-        return numberOfStudents;
+        return numberOfProfiles;
     }
 
     @Override
@@ -432,8 +432,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
         return coloredStudentDays;
     }
 
-    public void setNumberOfStudents(int numberOfStudents) {
-        this.numberOfStudents = numberOfStudents;
+    public void setNumberOfProfiles(int numberOfProfiles) {
+        this.numberOfProfiles = numberOfProfiles;
     }
 
     @Override

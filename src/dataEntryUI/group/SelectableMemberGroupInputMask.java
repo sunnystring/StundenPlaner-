@@ -65,6 +65,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     private ArrayList<Integer> selectableDayIndizes;
 
     public SelectableMemberGroupInputMask(MainFrame mainFrame, Profile group, String title) {
+        super(mainFrame);   
         setTitle(title);
         this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();
@@ -78,7 +79,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setPreferredSize(KGU_DIMENSION);
         setModal(true);
-        setResizable(true);
+        setResizable(false);
         setLayout(new BorderLayout());
     }
 
@@ -224,7 +225,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     }
 
     private void restoreMembers() {
-        for (Integer memberID : group.getKGUMemberIDs()) {
+        for (Integer memberID : group.getMemberIDs()) {
             allocatedMembers.add(database.getProfile(memberID));
         }
     }
@@ -386,7 +387,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     }
 
     private void removeMemberIDs() {
-        group.getKGUMemberIDs().clear();
+        group.getMemberIDs().clear();
     }
 
     private void removeMemberNames() {

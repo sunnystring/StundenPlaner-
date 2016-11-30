@@ -5,6 +5,7 @@
  */
 package mainframe;
 
+import attendanceList.AttendanceListUI;
 import core.Database;
 import core.DatabaseListener;
 import core.Profile;
@@ -50,6 +51,7 @@ import userUtilsUI.ColoredStudentDays;
 import utils.Icons;
 import static userUtilsUI.ColoredStudentDays.DEFAULT_COLORS;
 import utils.Dialogs;
+import utils.GUIConstants;
 
 /**
  *
@@ -75,6 +77,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private JFileChooser fileChooser;
     private FileIO fileIO;
     private ArrayList<ScheduleButton> scheduleButtons;
+  //  private AttendanceListUI attendanceList;
 
     public MainFrame() {
         setTitle("StundenPlaner");
@@ -116,8 +119,10 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleInputMask = new ScheduleInputMask(database, this);
         studentInputMask = new StudentInputMask(database);
         groupInputMask = new GroupInputMask(database);
+      //  attendanceList = new AttendanceListUI(this);
         fileChooser = new JFileChooser();
         createButtons();
+
     }
 
     private void createButtons() {
@@ -218,6 +223,12 @@ public class MainFrame extends JFrame implements DatabaseListener {
         database.addDatabaseListener(studentListData);
         database.addDatabaseListener(scheduleData);
         database.addDatabaseListener(this);
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeStundenPlaner();
+            }
+        });
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -237,10 +248,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 printerDialog.setVisible(true);
             }
         });
-        exitButton.addActionListener(new ActionListener() {
+        attendanceListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                closeStundenPlaner();
+                JDialog attendanceList = new AttendanceListUI(MainFrame.this);
+                attendanceList.setVisible(true);
             }
         });
         scheduleButton.addActionListener(new ActionListener() {
@@ -291,7 +303,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             public void actionPerformed(ActionEvent e) {
                 JDialog infoFrame = new JDialog(MainFrame.this);
                 JScrollPane pane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
-                infoFrame.setMinimumSize(new Dimension(1400, 700));
+                infoFrame.setMinimumSize(GUIConstants.BIG_DIALOG_DIMENSION);
                 infoFrame.add(pane);
                 infoFrame.setVisible(true);
             }
@@ -337,7 +349,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleTimes.updateValidDays();
         database.updateAfterFileEntry(scheduleTimes, fileIO);
         scheduleData.setScheduleTimes(scheduleTimes);
-        studentListData.setNumberOfStudents(database.getNumberOfStudents());
+        studentListData.setNumberOfProfiles(database.getNumberOfStudents());
     }
 
     private void updateWidgetsAfterFileEntry() {
