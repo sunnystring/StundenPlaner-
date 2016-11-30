@@ -252,14 +252,14 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                             if (profile.getProfileName().equals(KGU_NAME)) { // KGU
                                 KGUEdit kguEdit = new KGUEdit(mainFrame, profile);
                                 kguEdit.setVisible(true);
-                            } else if (profile.getProfileName().equals(SDG_NAME)) { // Selbstdef. Gruppe
-                                SDGEdit sdgEdit = new SDGEdit(mainFrame, profile);
-                                sdgEdit.setVisible(true);
                             } else { // andere Gruppen
                                 GroupEdit groupEditDialog = new GroupEdit(mainFrame, profile);
                                 groupEditDialog.selectProfile();
                                 groupEditDialog.setVisible(true);
                             }
+                        } else if (profile.getProfileType() == SDG) { // Selbstdef. Gruppe
+                            SDGEdit sdgEdit = new SDGEdit(mainFrame, profile);
+                            sdgEdit.setVisible(true);
                         } else { // Schülerprofil ändern/löschen
                             StudentEdit studentEditDialog = new StudentEdit(mainFrame, profile);
                             studentEditDialog.setVisible(true);

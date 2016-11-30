@@ -124,6 +124,9 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
             case SDG_MEMBER:
                 setBackground(SDG_MEMBER_COLOR);
                 break;
+                case SDG:
+                setBackground(NAMEFIELD_GROUP_COLOR);
+                break;
             default:
                 break;
         }
