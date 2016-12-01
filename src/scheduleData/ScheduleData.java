@@ -211,6 +211,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 }
                 fireTableDataChanged();
             }
+            journalEntry.setVisible(false);
         } else if (m.getSource() instanceof TimeTable) {
             TimeTable timeTable = (TimeTable) m.getSource();
             row = timeTable.rowAtPoint(p);
@@ -228,15 +229,15 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             eraseLection(profile.getLectionLengthInFields());
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
-                            journalEntry.dispose();
+                          //  journalEntry.setVisible(false);
                         }
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS
-                                || fieldData.getLectionPanelAreaMark() == LAST_ROW) {
+                                || fieldData.getLectionPanelAreaMark() == LAST_ROW) { // JournalEntry öffnen
                             journalEntry.dispose();
-                            journalEntry = new JournalEntry(database);
                             journalEntry.showTextOf(profile);
                             journalEntry.setVisible(true);
-                        }
+                            return;
+                        } 
                         if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
                             eraseLection(profile.getLectionLengthInFields());
                         }
@@ -250,11 +251,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
                 }
+                    journalEntry.setVisible(false);
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
         } else {
-            journalEntry.dispose();
+            journalEntry.setVisible(false);
         }
     }
 

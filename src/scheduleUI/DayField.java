@@ -32,7 +32,6 @@ public class DayField extends JLabel implements MouseListener {
         setHorizontalAlignment(SwingConstants.LEADING);
         setFont(this.getFont().deriveFont(Font.BOLD + Font.PLAIN, 10));
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
-      //  setToolTipText("Klick: Journal-Einträge aller SchülerInnen dieses Tages anzeigen");
         setPreferredSize(new Dimension(0, 25));
         setOpaque(true);
     }

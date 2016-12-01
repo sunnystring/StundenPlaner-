@@ -40,6 +40,10 @@ public abstract class DataEntryAndEdit extends JDialog {
         setResizable(false);
     }
 
+    public int getLocationXCoordinate() {
+        return (int) (mainFrame.getSize().getWidth() / 2) - (int) (this.getSize().getWidth() / 2);
+    }
+
     public MainFrame getMainFrame() {
         return mainFrame;
     }

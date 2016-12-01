@@ -26,7 +26,6 @@ import static utils.Colors.*;
  */
 public class Schedule extends JPanel {
 
-    private Database database;
     private ScheduleData scheduleData;
     private JPanel header;
     private final TimeTable timeTable;
@@ -36,7 +35,6 @@ public class Schedule extends JPanel {
     private JournalDayView journalDayView;
 
     public Schedule(Database database, ScheduleData scheduleData, StudentListData studentListData) {
-        this.database = database;
         this.scheduleData = scheduleData;
         header = new JPanel();
         header.setLayout(new GridLayout(1, 4));

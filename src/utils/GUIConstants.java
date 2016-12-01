@@ -17,7 +17,7 @@ public class GUIConstants {
 
     public static final Dimension KGU_DIMENSION = new Dimension(400, 300);
     public static final Dimension DEFAULT_ENTRY_DIMENSION = new Dimension(400, 200);
-    public static final Dimension SCHEDULE_DIMENSION = new Dimension(200, 200);
+    public static final Dimension SCHEDULE_DIMENSION = new Dimension(250, 200);
     public static final Dimension BIG_DIALOG_DIMENSION = new Dimension(1400, 700);
     public static final Dimension ATTENDANCELIST_DIMENSION = new Dimension(700, 500);
     public static final Border DEFAULT_BORDER = BorderFactory.createEmptyBorder(10, 10, 10, 10);

@@ -21,6 +21,7 @@ public class ScheduleEntry extends DataEntryAndEdit {
         setMinimumSize(GUIConstants.SCHEDULE_DIMENSION);
         setUpMask();
         pack();
+        setLocation(getLocationXCoordinate(), 200);
     }
 
     @Override

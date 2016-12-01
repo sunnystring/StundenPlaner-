@@ -26,7 +26,7 @@ public class StudentEntry extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        studentInputMask.setProfile(student); 
+        studentInputMask.setProfile(student);
         studentInputMask.setupEntryUI(this);
         studentInputMask.clearUpperEntryFields();
         add(studentInputMask);

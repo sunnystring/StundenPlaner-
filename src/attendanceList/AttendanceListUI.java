@@ -23,32 +23,32 @@ import static utils.GUIConstants.*;
  * @author mathiaskielholz
  */
 public class AttendanceListUI extends JDialog {
-
+    
+    private MainFrame mainFrame;
     private AttendanceListData attendanceListData;
     private JTable attendanceTable;
     private JScrollPane centerField;
     private JPanel buttonField;
     private JButton deleteAllButton, closeButton, editWeekButton, createWeekButton;
-
+    
     public AttendanceListUI(MainFrame mainFrame) {
         super(mainFrame);
+        this.mainFrame = mainFrame;
         attendanceListData = new AttendanceListData(mainFrame.getDatabase());
         setTitle("Unterrichtskontrolle");
         setModal(true);
-      //  setMinimumSize(ATTENDANCELIST_DIMENSION);
-        setLocation(120, 120);
+        setMinimumSize(ATTENDANCELIST_DIMENSION);
         setResizable(true);
         setLayout(new BorderLayout());
         createWidgets();
         addWidgets();
         addListeners();
         pack();
+        setLocation(getLocationXCoordinate(), 120);
     }
-
+    
     private void createWidgets() {
-        attendanceTable = new JTable(attendanceListData);
-        attendanceTable.setPreferredScrollableViewportSize(attendanceTable.getPreferredSize());
-        attendanceTable.setFillsViewportHeight(true);
+        createAttendanceTable();
         centerField = new JScrollPane(attendanceTable);
         buttonField = new JPanel();
         buttonField.setLayout(new BoxLayout(buttonField, BoxLayout.LINE_AXIS));
@@ -58,7 +58,16 @@ public class AttendanceListUI extends JDialog {
         editWeekButton = new JButton("Woche bearbeiten");
         createWeekButton = new JButton("Neue Woche erstellen");
     }
-
+    
+    private void createAttendanceTable() {
+        AttendanceField attendanceField = new AttendanceField(); 
+        attendanceTable = new JTable(attendanceListData);
+        attendanceTable.setPreferredScrollableViewportSize(attendanceTable.getPreferredSize());
+        attendanceTable.setFillsViewportHeight(true);
+        attendanceTable.addMouseListener(attendanceField);
+        attendanceTable.setDefaultRenderer(AttendanceField.class, attendanceField);
+    }
+    
     private void addWidgets() {
         add(BorderLayout.CENTER, centerField);
         buttonField.add(deleteAllButton);
@@ -68,7 +77,7 @@ public class AttendanceListUI extends JDialog {
         buttonField.add(createWeekButton);
         add(BorderLayout.PAGE_END, buttonField);
     }
-
+    
     private void addListeners() {
         deleteAllButton.addActionListener(new ActionListener() {
             @Override
@@ -78,7 +87,7 @@ public class AttendanceListUI extends JDialog {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               dispose();
+                dispose();
             }
         });
         editWeekButton.addActionListener(new ActionListener() {
@@ -91,6 +100,9 @@ public class AttendanceListUI extends JDialog {
             public void actionPerformed(ActionEvent e) {
             }
         });
-
+    }
+    
+    private int getLocationXCoordinate() {
+        return (int) (mainFrame.getSize().getWidth() / 2) - (int) (this.getSize().getWidth() / 2);
     }
 }

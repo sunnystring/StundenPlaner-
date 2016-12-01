@@ -65,7 +65,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     private ArrayList<Integer> selectableDayIndizes;
 
     public SelectableMemberGroupInputMask(MainFrame mainFrame, Profile group, String title) {
-        super(mainFrame);   
+        super(mainFrame);
         setTitle(title);
         this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();

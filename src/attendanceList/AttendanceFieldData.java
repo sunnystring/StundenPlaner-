@@ -15,6 +15,12 @@ public class AttendanceFieldData {
     private int studentID;
     private int weekID;
 
+    public AttendanceFieldData() {
+        absenceType = 0;
+    }
+    
+    
+
     public void setAbsenceType(int absenceType) {
         this.absenceType = absenceType;
     }
