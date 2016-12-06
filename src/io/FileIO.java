@@ -14,7 +14,6 @@ import core.Database;
 import core.Profile;
 import core.ScheduleTimes;
 import java.io.File;
-import java.io.FileReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import utils.Dialogs;
 
 /**
@@ -45,6 +45,8 @@ public class FileIO {
     private ArrayList<Profile> studentDataList;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
     private ArrayList<String> studentJournals;
+    private ArrayList<ArrayList<Integer>> attendanceFieldLists;
+    private ArrayList<String> weekNames;
 
     public FileIO(Database database) {
         this.database = database;
@@ -52,6 +54,8 @@ public class FileIO {
         dataList = new ArrayList();
         lectionMaps = new ArrayList<>();
         studentJournals = new ArrayList<>();
+        attendanceFieldLists = new ArrayList<>();
+        weekNames = new ArrayList<>();
     }
 
     private void initGson() {
@@ -66,6 +70,8 @@ public class FileIO {
         dataList.add(database.getScheduleTimes());
         dataList.add(database.getStudentDataList());
         dataList.add(database.getStudentJournals());
+        dataList.add(database.getAbsenceLists());
+        dataList.add(database.getWeekNames());
         for (TreeMap<Time, LectionData> lectionMap : database.getLectionMaps()) {
             dataList.add(lectionMap);
         }
@@ -84,7 +90,7 @@ public class FileIO {
 
     public void load(File file) {
         lectionMaps.clear();
-        try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF8"))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"))) {
             JsonParser parser = new JsonParser();
             JsonArray array = parser.parse(reader).getAsJsonArray();
             scheduleTimes = gson.fromJson(array.get(0), ScheduleTimes.class);
@@ -92,14 +98,17 @@ public class FileIO {
             }.getType());
             studentJournals = gson.fromJson(array.get(2), new TypeToken<ArrayList<String>>() {
             }.getType());
+            attendanceFieldLists = gson.fromJson(array.get(3), new TypeToken<ArrayList<ArrayList<Integer>>>() {
+            }.getType());
+            weekNames = gson.fromJson(array.get(4), new TypeToken<ArrayList<String>>() {
+            }.getType());
             for (int i = 0; i < DAYS; i++) {
-                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 3), new TypeToken<TreeMap<Time, LectionData>>() {
+                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 5), new TypeToken<TreeMap<Time, LectionData>>() {
                 }.getType());
                 lectionMaps.add(lectionMap);
             }
         } catch (Exception ex) {
             Dialogs.showLoadFileErrorMessage();
-            System.out.println(ex.getMessage());
         }
     }
 
@@ -127,5 +136,13 @@ public class FileIO {
 
     public ArrayList<String> getStudentJournals() {
         return studentJournals;
+    }
+
+    public ArrayList<ArrayList<Integer>> getAttendanceFieldLists() {
+        return attendanceFieldLists;
+    }
+
+    public ArrayList<String> getWeekNames() {
+        return weekNames;
     }
 }

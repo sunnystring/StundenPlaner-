@@ -58,7 +58,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     private JPanel buttonField;
     private JLabel textLabel, lectiontypeLabel;
     private JButton cancelButton, approveButton, deleteButton;
-    private ArrayList<JRadioButton> studentSelections;
+    private ArrayList<JRadioButton> studentSelection;
     private ActionListener approveButtonListener;
     protected ArrayList<Profile> selectableStudents;
     protected ArrayList<Profile> allocatedMembers;
@@ -75,7 +75,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
         selectableStudents = new ArrayList<>();
         allocatedMembers = new ArrayList<>();
         selectableDayIndizes = database.getScheduleTimes().getValidDaysAsAbsoluteIndizes();
-        studentSelections = new ArrayList<>();
+        studentSelection = new ArrayList<>();
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setPreferredSize(KGU_DIMENSION);
         setModal(true);
@@ -107,13 +107,13 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     public void createStudentSelection() {
         selectionArea.add(textLabel);
         for (Profile student : selectableStudents) {
-            JRadioButton studentSelection = new JRadioButton();
-            studentSelection.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
-            studentSelection.setForeground(NAMEFIELD_SELECTED_COLOR);
-            studentSelection.setText(student.getFirstName() + " " + student.getName());
-            selectionArea.add(studentSelection);
-            studentSelections.add(studentSelection);
-            studentSelection.addItemListener(new ItemListener() {
+            JRadioButton selectionButton = new JRadioButton();
+            selectionButton.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
+            selectionButton.setForeground(NAMEFIELD_SELECTED_COLOR);
+            selectionButton.setText(student.getFirstName() + " " + student.getName());
+            selectionArea.add(selectionButton);
+            studentSelection.add(selectionButton);
+            selectionButton.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -251,7 +251,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     private void addEditStudentNameLabels() {
         for (int i = 0; i < allocatedMembers.size(); i++) {
             textLabel = new JLabel();
-            textLabel.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(0).getName());
+            textLabel.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(i).getName());
             textLabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
             selectionArea.add(textLabel);
         }
@@ -347,7 +347,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
         if (profileName.equals(SDG_NAME)) {
             group.setProfileType(SDG);
         } else if (profileName.equals(KGU_NAME)) {
-            group.setProfileType(GROUP);
+            group.setProfileType(REGULAR_GROUP);
         }
         group.setProfileName(profileName);
         group.setLectionLengthInMinutes(lectionLength);

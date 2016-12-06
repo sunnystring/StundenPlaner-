@@ -26,7 +26,6 @@ import static utils.Colors.*;
 public class StudentList extends JTable {
 
     private StudentField studentField;
-    private HeaderField headerField;
     private final StudentListData studentListData;
     private final ScheduleData scheduleData;
     private LectionField lectionField;
@@ -35,10 +34,9 @@ public class StudentList extends JTable {
     public StudentList(StudentListData studentListData, TimeTable timeTable) {
         this.studentListData = studentListData;
         setModel(studentListData);
-        headerField = new HeaderField();
+        HeaderField headerField = new HeaderField();
         getTableHeader().setDefaultRenderer(headerField);
         getTableHeader().setVisible(false);
-        getTableHeader().setDefaultRenderer(headerField);
         scheduleData = (ScheduleData) timeTable.getModel();
         studentField = new StudentField(this, studentListData);
         setDefaultRenderer(StudentFieldData.class, studentField);

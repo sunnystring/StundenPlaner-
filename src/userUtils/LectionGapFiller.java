@@ -44,7 +44,7 @@ public class LectionGapFiller {
         clearAllMarks();
         if (locateGap(selectedTime, dayIndex)) {
             ArrayList<StudentDay> dayList = database.getSortedStudentDayListAt(dayIndex);
-            for (int i = 0; i < database.getNumberOfStudents(); i++) {
+            for (int i = 0; i < database.getNumberOfProfiles(); i++) {
                 StudentDay studentDay = dayList.get(i);
                 int studentID = database.getStudentID(dayIndex, studentDay);
                 Profile profile = database.getProfile(studentID);
@@ -71,11 +71,11 @@ public class LectionGapFiller {
     }
 
     private void clearAllMarks() {
-        for (int dayIndex = 0; dayIndex < database.getNumberOfDays(); dayIndex++) {
+        for (int dayIndex = 0; dayIndex < database.getNumberOfValidDays(); dayIndex++) {
             for (Map.Entry<Time, LectionData> entry : database.getLectionMapAt(dayIndex).entrySet()) {
                 entry.getValue().setGapFillerMarkEnabled(false);
             }
-            for (int studentID = 0; studentID < database.getNumberOfStudents(); studentID++) {
+            for (int studentID = 0; studentID < database.getNumberOfProfiles(); studentID++) {
                 studentListData.getValueAt(studentID, dayIndex + 1).setLectionGapFiller(false);
             }
         }

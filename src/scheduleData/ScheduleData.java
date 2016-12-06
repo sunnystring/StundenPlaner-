@@ -16,6 +16,7 @@ import javax.swing.table.AbstractTableModel;
 import exceptions.IllegalLectionEraseException;
 import java.awt.Point;
 import javax.swing.SwingUtilities;
+import mainframe.MainFrame;
 import scheduleUI.TimeTable;
 import studentListData.StudentFieldData;
 import studentListData.StudentListData;
@@ -35,6 +36,7 @@ import studentJournal.JournalEntry;
 public class ScheduleData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
     private Database database;
+    private MainFrame mainFrame;
     private ScheduleTimes scheduleTimes;
     private StudentListData studentListData;
     private ArrayList<DayColumnData> dayColumnDataList;
@@ -46,14 +48,15 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private int dayColumnFieldIndex;
     private JournalEntry journalEntry;
 
-    public ScheduleData(Database database, StudentListData studentListData) {
-        this.database = database;
-        this.scheduleTimes = database.getScheduleTimes();
-        this.studentListData = studentListData;
+    public ScheduleData(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+        database = mainFrame.getDatabase();
+        scheduleTimes = database.getScheduleTimes();
+        studentListData = mainFrame.getStudentListData();
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
-        journalEntry = new JournalEntry(database);
+        journalEntry = new JournalEntry(mainFrame);
         numberOfValidDays = 0;
         dayIndex = -1;
         dayColumnFieldIndex = -1;
@@ -229,7 +232,6 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             eraseLection(profile.getLectionLengthInFields());
                             setAllValidTimeMarks(profile);
                             setMoveMode(profile);
-                          //  journalEntry.setVisible(false);
                         }
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS
                                 || fieldData.getLectionPanelAreaMark() == LAST_ROW) { // JournalEntry öffnen
@@ -237,7 +239,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             journalEntry.showTextOf(profile);
                             journalEntry.setVisible(true);
                             return;
-                        } 
+                        }
                         if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
                             eraseLection(profile.getLectionLengthInFields());
                         }
@@ -251,10 +253,11 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                 } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
                 }
-                    journalEntry.setVisible(false);
+                journalEntry.setVisible(false);
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
+            journalEntry.setVisible(false);
         } else {
             journalEntry.setVisible(false);
         }

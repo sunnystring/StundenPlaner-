@@ -5,6 +5,7 @@
  */
 package mainframe;
 
+import attendanceList.AttendanceListData;
 import attendanceList.AttendanceListUI;
 import core.Database;
 import core.DatabaseListener;
@@ -77,7 +78,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private JFileChooser fileChooser;
     private FileIO fileIO;
     private ArrayList<ScheduleButton> scheduleButtons;
-  //  private AttendanceListUI attendanceList;
+    private AttendanceListData attendanceListData;
+    private AttendanceListUI attendanceListUI;
 
     public MainFrame() {
         setTitle("StundenPlaner");
@@ -86,8 +88,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
         scheduleTimes = database.getScheduleTimes();
-        studentListData = new StudentListData(database, this);
-        scheduleData = new ScheduleData(database, studentListData);
+        studentListData = new StudentListData(this);
+        scheduleData = new ScheduleData(this);
         fileIO = new FileIO(database);
         scheduleButtons = new ArrayList<>();
         createWidgets();
@@ -95,6 +97,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         setScheduleDataParameters();
         setStudentListDataParameters();
         initFileChooser();
+        initAttendanceList();
         addListeners();
         setStudentButtonsEnabled(false);
         buttonState = false;
@@ -110,7 +113,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.75);
-        schedule = new Schedule(database, scheduleData, studentListData);
+        schedule = new Schedule(this);
         leftScroll = new JScrollPane(schedule);
         leftScroll.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         studentList = new StudentList(studentListData, schedule.getTimeTable());
@@ -119,10 +122,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleInputMask = new ScheduleInputMask(database, this);
         studentInputMask = new StudentInputMask(database);
         groupInputMask = new GroupInputMask(database);
-      //  attendanceList = new AttendanceListUI(this);
         fileChooser = new JFileChooser();
         createButtons();
-
     }
 
     private void createButtons() {
@@ -212,6 +213,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
         });
     }
 
+    private void initAttendanceList() {
+        attendanceListData = new AttendanceListData(database);
+        attendanceListUI = new AttendanceListUI(this);
+    }
+
     private void addListeners() {
         addWindowListener(new WindowAdapter() {
 
@@ -251,8 +257,11 @@ public class MainFrame extends JFrame implements DatabaseListener {
         attendanceListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog attendanceList = new AttendanceListUI(MainFrame.this);
-                attendanceList.setVisible(true);
+                attendanceListData.update();
+                attendanceListUI.updateTable();
+                attendanceListData.fireTableDataChanged();
+                attendanceListUI.setLocation();
+                attendanceListUI.setVisible(true);
             }
         });
         scheduleButton.addActionListener(new ActionListener() {
@@ -349,7 +358,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         scheduleTimes.updateValidDays();
         database.updateAfterFileEntry(scheduleTimes, fileIO);
         scheduleData.setScheduleTimes(scheduleTimes);
-        studentListData.setNumberOfProfiles(database.getNumberOfStudents());
+        studentListData.setNumberOfProfiles(database.getNumberOfProfiles());
     }
 
     private void updateWidgetsAfterFileEntry() {
@@ -489,6 +498,14 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public AttendanceListData getAttendanceListData() {
+        return attendanceListData;
+    }
+
+    public AttendanceListUI getAttendanceListUI() {
+        return attendanceListUI;
     }
 
     @Override

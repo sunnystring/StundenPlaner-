@@ -5,42 +5,106 @@
  */
 package attendanceList;
 
+import static java.awt.Color.*;
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
+import static utils.Colors.*;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class AttendanceField extends JLabel implements MouseListener, TableCellRenderer {
+public class AttendanceField extends JLabel implements MouseMotionListener, TableCellRenderer {
 
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private AttendanceTable attendanceTable;
+    private int movedRow, movedCol, tempRow, tempCol;
+
+    public AttendanceField(AttendanceTable attendanceTable) {
+        this.attendanceTable = attendanceTable;
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setOpaque(true);
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        AttendanceFieldData field = (AttendanceFieldData) value;
+        setHorizontalAlignment(SwingConstants.LEADING);
+        setFont(this.getFont().deriveFont(Font.PLAIN, 10));
+        setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0));
+        // Namensfeld
+        if (col == 0) {
+            setText(field.getNameString());
+            if (row == movedRow) {
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+                setBackground(NAMEFIELD_SELECTED_COLOR);
+                setForeground(BACKGROUND_COLOR);
+            } else {
+                setBackground(NAMEFIELD_SINGLE_COLOR);
+                setForeground(BLACK);
+            }
+        }
+        // Absenzenfelder
+        if (col > 0) {
+            int absenceType = field.getAbsenceType();
+            setText(AbsenceTypes.getCharacterOf(absenceType));
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setFont(this.getFont().deriveFont(Font.BOLD, 20));
+            setBackground(field.isDayMarked() ? VERY_LIGHT_GREEN : LIGHT_GRAY_COLOR);
+            setForeground(AbsenceTypes.getColorOf(absenceType));
+            if (row == movedRow && col == movedCol) {
+                setBackground(BACKGROUND_COLOR);
+            }
+        }
+        return this;
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseMoved(MouseEvent e) {
+        Point point = e.getPoint();
+        movedRow = attendanceTable.rowAtPoint(point);
+        movedCol = attendanceTable.columnAtPoint(point);
+        if (movedRow >= 0) {
+            if (movedRow != tempRow || movedCol != tempCol) {
+                paintNameFields(movedRow < tempRow);
+                tempRow = movedRow;
+                tempCol = movedCol;
+            }
+        } else { // ausserhalb Table (unten)
+            attendanceTable.repaint();
+        }
+
+    }
+
+    private void paintNameFields(boolean moveUp) {
+        if (moveUp) {
+            for (int i = 0; i < attendanceTable.getRowCount(); i++) {
+                for (int j = 0; j < attendanceTable.getColumnCount(); j++) {
+                    attendanceTable.repaint(attendanceTable.getCellRect(movedRow + i, j, false));
+                }
+            }
+        } else {
+            for (int i = 0; i < attendanceTable.getRowCount(); i++) {
+                for (int j = 0; j < attendanceTable.getColumnCount(); j++) {
+                    attendanceTable.repaint(attendanceTable.getCellRect(movedRow - i, j, false));
+                }
+            }
+        }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    public void init() {
+        movedRow = 0;
+        movedCol = attendanceTable.getModel().getColumnCount() - 1;
     }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
 }

@@ -34,8 +34,8 @@ import scheduleData.ScheduleFieldConstants;
  */
 public class StudentListData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
-    private final Database database;
-    private final MainFrame mainFrame;
+    private  Database database;
+    private MainFrame mainFrame;
     private StudentList studentList;
     private ScheduleData scheduleData;
     private StudentFieldData[] studentRow;
@@ -46,8 +46,8 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     private boolean studentListReleased;
     public static final int NULL_VALUE = -1;
 
-    public StudentListData(Database database, MainFrame mainFrame) {
-        this.database = database;
+    public StudentListData(MainFrame mainFrame) {
+        database = mainFrame.getDatabase();
         this.mainFrame = mainFrame;
         numberOfDays = 0;
         numberOfProfiles = 0;
@@ -57,7 +57,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     public void init() {
-        numberOfDays = database.getNumberOfDays();
+        numberOfDays = database.getNumberOfValidDays();
         coloredStudentDays.init(scheduleData);
     }
 
@@ -70,7 +70,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     }
 
     public void updateAfterScheduleEdit() {
-        numberOfDays = database.getNumberOfDays();
+        numberOfDays = database.getNumberOfValidDays();
         updateProfileAllocationState();
         fieldDataMatrix.clear();
         createProfileRows();
@@ -187,7 +187,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
     @Override
     public String getColumnName(int col) {
         if (col == 0) {
-            return "  Vorname Name  (" + database.getNumberOfSingleStudents() + ")";
+            return "  Vorname Name  (" + database.getNumberOfStudentsAsString() + ")";
         } else {
             return "  " + scheduleData.getDayColumn(col - 1).getDayName();
         }
@@ -248,7 +248,7 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                         fireTableDataChanged();
                     } else if (SwingUtilities.isRightMouseButton(m) && selectedCol == 0 && isStudentListReleased()) {
                         Profile profile = fieldData.getProfile();
-                        if (profile.getProfileType() == GROUP) { // Gruppenprofil ändern/löschen
+                        if (profile.getProfileType() == REGULAR_GROUP) { // Gruppenprofil ändern/löschen
                             if (profile.getProfileName().equals(KGU_NAME)) { // KGU
                                 KGUEdit kguEdit = new KGUEdit(mainFrame, profile);
                                 kguEdit.setVisible(true);

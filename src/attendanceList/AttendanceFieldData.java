@@ -12,14 +12,37 @@ package attendanceList;
 public class AttendanceFieldData {
 
     private int absenceType;
-    private int studentID;
-    private int weekID;
+    private int profileID;
+    private String nameString;
+    private boolean dayMarked;
 
     public AttendanceFieldData() {
-        absenceType = 0;
+        absenceType = AbsenceTypes.EMPTY_LESSON;
     }
-    
-    
+
+    public void setNextAbsenceType() {
+        if (absenceType < AbsenceTypes.EMPTY_LESSON) {
+            absenceType++;
+        } else {
+            absenceType = 0;
+        }
+    }
+
+    public void setProfileID(int profileID) {
+        this.profileID = profileID;
+    }
+
+    public int getProfileID() {
+        return profileID;
+    }
+
+    public void setNameString(String nameString) {
+        this.nameString = nameString;
+    }
+
+    public String getNameString() {
+        return nameString;
+    }
 
     public void setAbsenceType(int absenceType) {
         this.absenceType = absenceType;
@@ -27,6 +50,14 @@ public class AttendanceFieldData {
 
     public int getAbsenceType() {
         return absenceType;
+    }
+
+    public void setDayMarked(boolean dayMarked) {
+        this.dayMarked = dayMarked;
+    }
+
+    public boolean isDayMarked() {
+        return dayMarked;
     }
 
 }
