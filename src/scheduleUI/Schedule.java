@@ -5,7 +5,6 @@
  */
 package scheduleUI;
 
-import core.Database;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -13,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import mainframe.MainFrame;
 import scheduleData.ScheduleData;
 import studentListData.StudentListData;
 import userUtilsUI.ScheduleZoom;
@@ -34,15 +34,16 @@ public class Schedule extends JPanel {
     private MouseAdapter headerListener;
     private JournalDayView journalDayView;
 
-    public Schedule(Database database, ScheduleData scheduleData, StudentListData studentListData) {
-        this.scheduleData = scheduleData;
+    public Schedule(MainFrame mainFrame) {
+        scheduleData = mainFrame.getScheduleData();
+        StudentListData studentListData = mainFrame.getStudentListData();
         header = new JPanel();
         header.setLayout(new GridLayout(1, 4));
         header.setBackground(BACKGROUND_COLOR);
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
-        journalDayView = new JournalDayView(database, scheduleData);
+        journalDayView = new JournalDayView(mainFrame);
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
@@ -78,8 +79,9 @@ public class Schedule extends JPanel {
         headerListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                DayField dayField = (DayField) e.getSource();
                 journalDayView.dispose();
-                journalDayView.showStudentJournals((DayField) e.getSource());
+                journalDayView.showStudentJournals(dayField.getDayIndex());
                 journalDayView.setVisible(true);
             }
         };

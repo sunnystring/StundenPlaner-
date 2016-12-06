@@ -53,7 +53,7 @@ public class GroupEdit extends DataEntryAndEdit {
 
     @Override
     public void setUpMask() {
-        group.setProfileType(ProfileTypes.GROUP);
+        group.setProfileType(ProfileTypes.REGULAR_GROUP);
         groupInputMask.setProfile(group);
         groupInputMask.setupEditUI(this);
         groupInputMask.updateUpperEntryFields();

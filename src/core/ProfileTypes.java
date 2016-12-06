@@ -14,7 +14,7 @@ public class ProfileTypes {
     public static final int SINGLE_LECTION = 0,
             KGU_MEMBER = 1,
             SDG_MEMBER = 2,
-            GROUP = 3,
+            REGULAR_GROUP = 3,
             SDG = 4;
 
     public static final String SINGLE_LECTION_NAME = "Einzelunterricht",

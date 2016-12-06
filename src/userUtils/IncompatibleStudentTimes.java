@@ -45,7 +45,7 @@ public class IncompatibleStudentTimes {
     }
 
     private void resetStudentFieldsAt(int dayIndex) {
-        for (int i = 0; i < database.getNumberOfStudents(); i++) {
+        for (int i = 0; i < database.getNumberOfProfiles(); i++) {
             StudentFieldData studentFieldData = studentListData.getValueAt(i, dayIndex + 1);
             studentFieldData.setIncompatible(false);
             studentFieldData.setBlocked(false);

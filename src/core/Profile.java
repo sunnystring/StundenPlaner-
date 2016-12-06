@@ -6,6 +6,7 @@
 package core;
 
 import java.util.ArrayList;
+import static core.ProfileTypes.*;
 
 /**
  *
@@ -111,6 +112,14 @@ public class Profile {
 
     public boolean isAllocated() {
         return allocated;
+    }
+
+    public boolean isStudent() {
+        return profileType != REGULAR_GROUP && profileType != SDG;
+    }
+
+    public boolean isSelectableMemberGroup() {
+        return profileName.equals(KGU_NAME) || profileName.equals(SDG_NAME);
     }
 
     public boolean getDaySelectionStateAt(int dayIndex) {

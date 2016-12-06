@@ -112,7 +112,7 @@ public class StudentField extends JLabel implements MouseMotionListener, TableCe
 
     private void selectNameFieldBackground(int profileType) {
         switch (profileType) {
-            case GROUP:
+            case REGULAR_GROUP:
                 setBackground(NAMEFIELD_GROUP_COLOR);
                 break;
             case SINGLE_LECTION:

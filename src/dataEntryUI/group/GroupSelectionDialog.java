@@ -44,6 +44,7 @@ public class GroupSelectionDialog extends JDialog {
     private JButton cancelButton, approveButton;
 
     public GroupSelectionDialog(MainFrame mainFrame, Profile group) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
         this.group = group;
         selectedEntry = null;

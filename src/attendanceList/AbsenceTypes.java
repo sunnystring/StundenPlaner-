@@ -11,7 +11,8 @@ package attendanceList;
  */
 public class AbsenceTypes {
 
-    public static final int STUDENT_REPORTED = 1,
+    public static final int VALID_LESSON = 0,
+            STUDENT_REPORTED = 1,
             STUDENT_UNREPORTED = 2,
             TEACHER = 3,
             OFFICIAL = 4;

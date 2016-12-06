@@ -5,6 +5,7 @@
  */
 package core;
 
+import attendanceList.AbsenceTypes;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import scheduleData.LectionData;
@@ -24,43 +25,49 @@ public class Database {
 
     private ScheduleTimes scheduleTimes;
     private ArrayList<Profile> studentDataList;
-    private ArrayList<String> studentJournals;
     private ArrayList<DatabaseListener> databaseListeners;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
     private HashMap<Integer, LectionData> lectionIDMap;
     private ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
     private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
+    private ArrayList<String> studentJournals;
+    private HashMap<Integer, ArrayList<Integer>> attendanceFieldLists;
+    private int numberOfProfiles;
     private int numberOfStudents;
-    private int numberOfSingleStudents;
 
     public Database() {
         scheduleTimes = new ScheduleTimes();
         studentDataList = new ArrayList<>();
-        studentJournals = new ArrayList<>();
         databaseListeners = new ArrayList<>();
         lectionMaps = new ArrayList<>();
-        for (int i = 0; i < DAYS; i++) {
-            lectionMaps.add(new TreeMap<>());
-        }
+        initLectionMaps();
         lectionIDMap = new HashMap<>();
         sortedStudentDayLists = new ArrayList<>();
         studentIDMaps = new ArrayList<>();
+        studentJournals = new ArrayList<>();
+        attendanceFieldLists = new HashMap<>();
+        numberOfProfiles = 0;
         numberOfStudents = 0;
-        numberOfSingleStudents = 0;
+    }
 
+    private void initLectionMaps() {
+        for (int i = 0; i < DAYS; i++) {
+            lectionMaps.add(new TreeMap<>());
+        }
     }
 
     public void addProfile(Profile profile) {
-        profile.setID(numberOfStudents);
+        profile.setID(numberOfProfiles);
         studentDataList.add(profile);
-        studentJournals.add(numberOfStudents, new String(""));
-        numberOfStudents = studentDataList.size(); // nächster Student
-        if (profile.getProfileType() != ProfileTypes.GROUP) {
-            numberOfSingleStudents++;
+        studentJournals.add(numberOfProfiles, new String(""));
+        numberOfProfiles = studentDataList.size(); // nächster Student
+        if (profile.isStudent()) {
+            numberOfStudents++;
+            addAttendanceFieldList(profile.getID());
         }
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
-            l.profileAdded(numberOfStudents, profile);
+            l.profileAdded(numberOfProfiles, profile);
         }
     }
 
@@ -75,22 +82,23 @@ public class Database {
         studentJournals.remove(profile.getID());
         updateProfileIDs(profile.getID());
         studentDataList.remove(profile);
-        numberOfStudents = studentDataList.size(); // = numberOfStudents--
-        if (profile.getProfileType() != ProfileTypes.GROUP) {
-            numberOfSingleStudents--;
+        numberOfProfiles = studentDataList.size(); // = numberOfProfiles--
+        if (profile.isStudent()) {
+            numberOfStudents--;
+            removeAttendanceFieldList(profile.getID());
         }
         updateUserUtilsCollections();
         for (DatabaseListener l : databaseListeners) {
-            l.profileDeleted(numberOfStudents, profile);
+            l.profileDeleted(numberOfProfiles, profile);
         }
     }
 
     private void updateProfileIDs(int idOfDeletedProfile) {
-        for (int i = 0; i < numberOfStudents; i++) {
+        for (int i = 0; i < numberOfProfiles; i++) {
             if (i > idOfDeletedProfile) {
                 Profile profile = studentDataList.get(i);
                 profile.setID(i - 1);
-                if (profile.getProfileType() == ProfileTypes.GROUP) {
+                if (profile.getProfileType() == ProfileTypes.REGULAR_GROUP) {
                     ArrayList<Integer> kguMemberIDs = profile.getMemberIDs();
                     if (kguMemberIDs.size() > 0) {
                         for (int j = 0; j < kguMemberIDs.size(); j++) {
@@ -105,11 +113,24 @@ public class Database {
         }
     }
 
+    private void addAttendanceFieldList(int studentID) {
+        ArrayList<Integer> fieldList = new ArrayList<>();
+        for (int i = 0; i < getNumberOfWeeks(); i++) {
+            fieldList.add(AbsenceTypes.VALID_LESSON);
+        }
+        attendanceFieldLists.put(studentID, fieldList);
+    }
+
+    private void removeAttendanceFieldList(int studentID) {
+        attendanceFieldLists.remove(studentID);
+    }
+
     public void updateAfterFileEntry(ScheduleTimes scheduleTimes, FileIO fileIO) {
         this.scheduleTimes = scheduleTimes;
         setStudentDataList(fileIO.getStudentDataList());
         setLectionMaps(fileIO.getLectionMaps());
         setStudentJournals(fileIO.getStudentJournals());
+        setAttendanceFieldLists(fileIO.getAttendanceFieldLists());
         updateLections();
         updateNumberOfSingleStudents();
         setScheduleTimesRefToStudentTimes();
@@ -133,17 +154,17 @@ public class Database {
     }
 
     private void updateNumberOfSingleStudents() {
-        numberOfStudents = studentDataList.size();
-        numberOfSingleStudents = 0;
+        numberOfProfiles = studentDataList.size();
+        numberOfStudents = 0;
         for (Profile profile : studentDataList) {
-            if (profile.getProfileType() != ProfileTypes.GROUP) {
-                numberOfSingleStudents++;
+            if (profile.isStudent()) {
+                numberOfStudents++;
             }
         }
     }
 
     public void adjustStudentDaysToScheduleChange() {
-        for (int i = 0; i < numberOfStudents; i++) {
+        for (int i = 0; i < numberOfProfiles; i++) {
             StudentTimes studentTimes = studentDataList.get(i).getStudentTimes();
             ArrayList<StudentDay> tempStudentDayList = new ArrayList<>();
             for (int j = 0; j < scheduleTimes.getNumberOfValidDays(); j++) {
@@ -168,7 +189,7 @@ public class Database {
         for (int dayIndex = 0; dayIndex < scheduleTimes.getNumberOfValidDays(); dayIndex++) {
             ArrayList<StudentDay> sortedStudentDays = new ArrayList<>();
             HashMap<StudentDay, Integer> studentIDMap = new HashMap<>();
-            for (int studentID = 0; studentID < numberOfStudents; studentID++) {
+            for (int studentID = 0; studentID < numberOfProfiles; studentID++) {
                 StudentDay studentDay = getProfile(studentID).getStudentDay(dayIndex);
                 sortedStudentDays.add(studentDay);
                 studentIDMap.put(studentDay, studentID);
@@ -179,16 +200,16 @@ public class Database {
         }
     }
 
+    public int getNumberOfProfiles() {
+        return numberOfProfiles;
+    }
+
     public int getNumberOfStudents() {
         return numberOfStudents;
     }
 
-    public String getNumberOfSingleStudents() {
-        return String.valueOf(numberOfSingleStudents);
-    }
-
-    public void setNumberOfSingleStudents(int numberOfSingleStudents) {
-        this.numberOfSingleStudents = numberOfSingleStudents;
+    public String getNumberOfStudentsAsString() {
+        return String.valueOf(numberOfStudents);
     }
 
     public ArrayList<StudentDay> getSortedStudentDayListAt(int dayIndex) {
@@ -265,5 +286,21 @@ public class Database {
 
     public void setStudentJournals(ArrayList<String> studentJournals) {
         this.studentJournals = studentJournals;
+    }
+
+    public ArrayList<Integer> getAttendanceFieldsAt(int studentID) {
+        return attendanceFieldLists.get(studentID);
+    }
+
+    public void setAttendanceFieldLists(HashMap<Integer, ArrayList<Integer>> attendanceFieldLists) {
+        this.attendanceFieldLists = attendanceFieldLists;
+    }
+
+    public HashMap<Integer, ArrayList<Integer>> getAttendanceFieldLists() {
+        return attendanceFieldLists;
+    }
+
+    public int getNumberOfWeeks() {
+        return attendanceFieldLists.get(0).size();
     }
 }

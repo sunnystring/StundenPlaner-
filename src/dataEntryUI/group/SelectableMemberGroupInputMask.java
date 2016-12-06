@@ -251,7 +251,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
     private void addEditStudentNameLabels() {
         for (int i = 0; i < allocatedMembers.size(); i++) {
             textLabel = new JLabel();
-            textLabel.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(0).getName());
+            textLabel.setText(allocatedMembers.get(i).getFirstName() + " " + allocatedMembers.get(i).getName());
             textLabel.setForeground(Colors.NAMEFIELD_SELECTED_COLOR);
             selectionArea.add(textLabel);
         }
@@ -347,7 +347,7 @@ public abstract class SelectableMemberGroupInputMask extends JDialog {
         if (profileName.equals(SDG_NAME)) {
             group.setProfileType(SDG);
         } else if (profileName.equals(KGU_NAME)) {
-            group.setProfileType(GROUP);
+            group.setProfileType(REGULAR_GROUP);
         }
         group.setProfileName(profileName);
         group.setLectionLengthInMinutes(lectionLength);

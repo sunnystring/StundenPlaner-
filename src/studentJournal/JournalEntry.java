@@ -20,11 +20,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
+import mainframe.MainFrame;
 import static utils.GUIConstants.*;
 
 /**
@@ -42,8 +41,9 @@ public class JournalEntry extends JDialog {
     private JTextPane displayArea;
     private StyledDocument document;
 
-    public JournalEntry(Database database) {
-        this.database = database;
+    public JournalEntry(MainFrame mainFrame) {
+        super(mainFrame);
+        database = mainFrame.getDatabase();
         setMinimumSize(new Dimension(250, 250));
         createAndAddWidgets();
         addButtonListeners();
@@ -110,7 +110,7 @@ public class JournalEntry extends JDialog {
 
     private void setDialogLocation() {
         Point location = MouseInfo.getPointerInfo().getLocation();
-        location.setLocation(location.getX() + 20.0, location.getY() + 20.0);
+        location.setLocation(location.getX() + 30.0, location.getY() + 20.0);
         setLocation(location);
     }
 }

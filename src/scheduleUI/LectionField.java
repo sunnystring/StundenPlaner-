@@ -80,7 +80,7 @@ public class LectionField extends JLabel implements TableCellRenderer, MouseInpu
             if (fieldData.getAllocatedTimeMark() == UNVALID) {
                 setBackground(UNVALID_COLOR);
             } else {
-                if (fieldData.getLectionProfileType() == GROUP) {
+                if (fieldData.getLectionProfileType() == REGULAR_GROUP) {
                     setBackground(GROUP_COLOR);
                 } else if (fieldData.getLectionProfileType() == SDG) {
                     setBackground(SDG_GROUP_COLOR);

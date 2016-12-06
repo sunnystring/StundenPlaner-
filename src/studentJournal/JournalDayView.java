@@ -25,10 +25,10 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import mainframe.MainFrame;
 import scheduleData.DayColumnData;
 import scheduleData.LectionData;
 import scheduleData.ScheduleData;
-import scheduleUI.DayField;
 import utils.Colors;
 import static utils.GUIConstants.*;
 
@@ -48,9 +48,10 @@ public class JournalDayView extends JDialog {
     private String journal;
     private String nameString;
 
-    public JournalDayView(Database database, ScheduleData scheduleData) {
-        this.database = database;
-        this.scheduleData = scheduleData;
+    public JournalDayView(MainFrame mainFrame) {
+        super(mainFrame);
+        database = mainFrame.getDatabase();
+        scheduleData = mainFrame.getScheduleData();
         setMinimumSize(new Dimension(250, 600));
         createAndAddWidgets();
         addStylesToDocument();
@@ -88,20 +89,20 @@ public class JournalDayView extends JDialog {
         add(BorderLayout.PAGE_END, bottomField);
     }
 
-    public void showStudentJournals(DayField dayField) {
+    public void showStudentJournals(int dayIndex) {
         textPane.setText("");
-        setTitle(dayField.getText());
+        setTitle(database.getDayNameAt(dayIndex));
         setDialogLocation();
-        DayColumnData dayColumn = scheduleData.getDayColumn(dayField.getDayIndex());
+        DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
         for (LectionData lectionData : dayColumn.getLectionMap().values()) {
             int profileID = lectionData.getProfileID();
             Profile profile = database.getProfile(profileID);
             nameString = profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName() + "\n";
-            journal = database.getJournalText(profileID) ;
+            journal = database.getJournalText(profileID);
             if (!journal.isEmpty()) {
                 try {
                     document.insertString(document.getLength(), nameString, document.getStyle("name"));
-                    document.insertString(document.getLength(), journal+ "\n\n", document.getStyle("journal"));
+                    document.insertString(document.getLength(), journal + "\n\n", document.getStyle("journal"));
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
