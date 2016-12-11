@@ -79,6 +79,8 @@ public class AttendanceListUI extends JDialog {
         deleteAllButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                JDialog attendanceListEdit = new AttendanceListEdit(mainFrame);
+                attendanceListEdit.setVisible(true);
             }
         });
         editButton.addActionListener(new ActionListener() {

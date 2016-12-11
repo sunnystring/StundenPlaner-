@@ -127,6 +127,18 @@ public class Database {
         }
     }
 
+    private void addAttendanceFieldList(int studentID) {
+        ArrayList<Integer> fieldList = new ArrayList<>();
+        for (int i = 0; i < getNumberOfWeeks(); i++) {
+            fieldList.add(AbsenceTypes.VALID_LESSON);
+        }
+        attendanceFieldLists.put(studentID, fieldList);
+    }
+
+    private void removeAttendanceFieldList(int studentID) {
+        attendanceFieldLists.remove(studentID);
+    }
+
     public void updateAfterFileEntry(ScheduleTimes scheduleTimes, FileIO fileIO) {
         this.scheduleTimes = scheduleTimes;
         setStudentDataList(fileIO.getStudentDataList());
