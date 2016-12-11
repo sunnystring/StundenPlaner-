@@ -88,7 +88,7 @@ public abstract class ProfileInputMask extends JPanel {
         firstnameField = new JTextField(" ");
         nameField = new JTextField(" ");
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
-        cancelButton = new JButton("abbrechen");
+        cancelButton = new JButton("Abbrechen");
         saveButton = new JButton();
         deleteButton = new JButton();
     }

@@ -24,11 +24,13 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
 
     private Database database;
     private ArrayList<ArrayList<AttendanceFieldData>> fieldDataMatrix;
+    private TreeMap<String, Integer> weekIndices;
     private int numberOfWeeks;
     private int numberOfValidProfiles;
 
     public AttendanceListData(Database database) {
         fieldDataMatrix = new ArrayList<>();
+        weekIndices = new TreeMap<>();
         this.database = database;
         numberOfWeeks = 0;
     }
@@ -37,6 +39,7 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
         fieldDataMatrix.clear();
         numberOfValidProfiles = 0;
         numberOfWeeks = database.getNumberOfWeeks();
+        initWeekIndices();
         for (int i = 0; i < database.getNumberOfValidDays(); i++) {
             TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(i);
             for (LectionData lectionData : lectionMap.values()) {
@@ -51,6 +54,13 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
                     }
                 }
             }
+        }
+    }
+
+    private void initWeekIndices() {
+        weekIndices.clear();
+        for (int i = 0; i < numberOfWeeks; i++) {
+            weekIndices.put(database.getWeekNames().get(i), i);
         }
     }
 
@@ -100,20 +110,20 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
 
     @Override
     public Class<?> getColumnClass(int col) {
-        if (col == 0) {
-            return String.class;
-        } else {
-            return AttendanceFieldData.class;
-        }
+        return AttendanceFieldData.class;
     }
 
     @Override
-    public Object getValueAt(int row, int col) {
+    public AttendanceFieldData getValueAt(int row, int col) {
         return fieldDataMatrix.get(row).get(col);
     }
 
     public int getNumberOfValidProfiles() {
         return numberOfValidProfiles;
+    }
+
+    public int getWeekIndex(String weekName) {
+        return weekIndices.get(weekName);
     }
 
     @Override

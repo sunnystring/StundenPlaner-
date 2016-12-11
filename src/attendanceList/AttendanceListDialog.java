@@ -8,16 +8,22 @@ package attendanceList;
 import core.Database;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import mainframe.MainFrame;
+import utils.Colors;
 import static utils.GUIConstants.*;
 
 /**
@@ -32,9 +38,9 @@ public class AttendanceListDialog extends JDialog {
     private AttendanceListUI attendanceListUI;
     private JPanel top, center, bottom;
     private JTextField weekNameEntry;
-    // private ArrayList<JRadioButton> weekSelection;
-    //  private ButtonGroup allSelections;
     private JButton cancelButton, createButton, renameButton, deleteButton;
+    private ButtonGroup weekSelection;
+    private int weekIndex;
 
     public AttendanceListDialog(MainFrame mainFrame) {
         super(mainFrame);
@@ -43,25 +49,19 @@ public class AttendanceListDialog extends JDialog {
         attendanceListData = mainFrame.getAttendanceListData();
         attendanceListUI = mainFrame.getAttendanceListUI();
         setTitle("Unterrichtswoche");
-        //  weekSelection = new ArrayList<>();
-        getWeeks();
         setModal(true);
         setResizable(false);
-        setMinimumSize(new Dimension(250, 250));
-        // setMinimumSize(DEFAULT_ENTRY_DIMENSION);
+        setMinimumSize(new Dimension(300, 150));
         createWidgets();
         addWidgets();
         addButtonListeners();
         pack();
     }
 
-    private void getWeeks() {
-    }
-
     private void createWidgets() {
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
-        top.setBorder(DEFAULT_BORDER);
+        top.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         center = new JPanel();
         center.setLayout(new BoxLayout(center, BoxLayout.PAGE_AXIS));
         center.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
@@ -69,42 +69,54 @@ public class AttendanceListDialog extends JDialog {
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(DEFAULT_BORDER);
         weekNameEntry = new JTextField();
-//        // ToDo footmark setzen statt tooltip....
-//        weekNameEntry.setToolTipText("Bezeichnung der Woche eingeben (zB. 17.12.16, Woche 3 usw.)");
-        //     createWeekSelection();
-        cancelButton = new JButton("abbrechen");
+        createWeekSelection();
+        cancelButton = new JButton("Abbrechen");
         deleteButton = new JButton("Löschen");
         deleteButton.setEnabled(false);
         renameButton = new JButton("Umbenennen");
         renameButton.setEnabled(false);
         createButton = new JButton("Erstellen");
+        createButton.setEnabled(true);
+
     }
 
-//    private void createWeekSelection() {
-//        allSelections = new ButtonGroup();
-//        for (int i = 0; i < 11; i++) {
-//            JRadioButton selectionButton = new JRadioButton("12.12.16"); //attendanceListData.getColumnName(i)
-//            selectionButton.addItemListener(new ItemListener() {
-//                @Override
-//                public void itemStateChanged(ItemEvent e) {
-//                    if (e.getStateChange() == ItemEvent.SELECTED) {
-//                        System.out.println(((JRadioButton) e.getSource()).getText());
-//                    }
-//                }
-//            });
-//            allSelections.add(selectionButton);
-//            center.add(selectionButton);
-//        }
-//    }
-    private void addWidgets() {
-        top.add(Box.createHorizontalStrut(70));
-        top.add(weekNameEntry);
-        top.add(Box.createHorizontalStrut(70));
-        bottom.add(Box.createHorizontalGlue());
-        bottom.add(cancelButton);
+    private void createWeekSelection() {
+        weekSelection = new ButtonGroup();
+        JRadioButton rButton;
+        for (int i = database.getNumberOfWeeks() - 1; i >= 0; i--) {
+            rButton = new JRadioButton(database.getWeekNameAt(i));
+            rButton.setForeground(Colors.VERY_DARK_GREEN);
+            rButton.setFont(this.getFont().deriveFont(Font.BOLD, 10));
+            rButton.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        String weekName = ((JRadioButton) e.getSource()).getText();
+                        weekIndex = attendanceListData.getWeekIndex(weekName);
+                        weekNameEntry.setText(weekName);
+                        weekNameEntry.requestFocusInWindow();
+                        setButtonEnabledState();
+                    }
+                }
+            });
+            weekSelection.add(rButton);
+            center.add(rButton);
+        }
+    }
 
-        // bottom.add(deleteButton);
-        //  bottom.add(renameButton);
+    private void setButtonEnabledState() {
+        deleteButton.setEnabled(weekSelection.getSelection() != null);
+        renameButton.setEnabled(weekSelection.getSelection() != null);
+        createButton.setEnabled(false);
+    }
+
+    private void addWidgets() {
+        top.add(Box.createHorizontalStrut(130));
+        top.add(weekNameEntry);
+        top.add(Box.createHorizontalStrut(130));
+        bottom.add(cancelButton);
+        bottom.add(deleteButton);
+        bottom.add(renameButton);
         bottom.add(createButton);
         setLayout(new BorderLayout());
         add(BorderLayout.PAGE_START, top);
@@ -122,23 +134,33 @@ public class AttendanceListDialog extends JDialog {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                database.removeWeek(weekIndex);
+                updateAttendanceListUI();
+                dispose();
             }
         });
         renameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                database.renameWeek(weekIndex, weekNameEntry.getText());
+                updateAttendanceListUI();
+                dispose();
             }
         });
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 database.addWeek(weekNameEntry.getText());
-                attendanceListData.update();
-                attendanceListUI.updateTable();
-                attendanceListData.fireTableDataChanged();
+                updateAttendanceListUI();
                 dispose();
             }
         });
+    }
+
+    private void updateAttendanceListUI() {
+        attendanceListData.update();
+        attendanceListUI.update();
+        attendanceListData.fireTableDataChanged();
     }
 
     public void setLocation() {

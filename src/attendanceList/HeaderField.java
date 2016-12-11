@@ -5,13 +5,11 @@
  */
 package attendanceList;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -24,15 +22,18 @@ import static utils.Colors.*;
  *
  * @author mathiaskielholz
  */
-public class HeaderField extends JLabel implements TableCellRenderer, MouseListener, MouseMotionListener {
+public class HeaderField extends JLabel implements TableCellRenderer, MouseMotionListener {
 
     private AttendanceTable attendanceTable;
+    //  private MainFrame mainFrame;
     private int movedCol;
 
     public HeaderField(AttendanceTable attendanceTable) {
         this.attendanceTable = attendanceTable;
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
         setPreferredSize(new Dimension(0, 25));
+        setForeground(BACKGROUND_COLOR);
+        setFont(this.getFont().deriveFont(Font.BOLD, 10));
         setOpaque(true);
     }
 
@@ -40,14 +41,10 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseListe
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         if (col == 0) {
             setBackground(NAMEFIELD_SELECTED_COLOR);
-            setForeground(BACKGROUND_COLOR);
             setHorizontalAlignment(SwingConstants.LEADING);
-            setFont(this.getFont().deriveFont(Font.BOLD, 10));
         } else {
             setHorizontalAlignment(SwingConstants.CENTER);
-            setFont(col == movedCol ? this.getFont().deriveFont(Font.BOLD, 10) : this.getFont().deriveFont(Font.PLAIN, 10));
-            setBackground(col == movedCol ? DAYFIELD_COLOR : BLUE_DEFAULT);
-            setForeground(col == movedCol ? BACKGROUND_COLOR : Color.BLACK);
+            setBackground(col == movedCol ? DARK_GREEN : DAYFIELD_COLOR);
         }
         String name = (String) value;
         setText(name);
@@ -61,29 +58,8 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseListe
         attendanceTable.getTableHeader().repaint();
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
     public void init() {
         movedCol = attendanceTable.getModel().getColumnCount() - 1;
-    }
-
-    // unused
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 
     @Override

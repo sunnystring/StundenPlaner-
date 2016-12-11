@@ -105,6 +105,6 @@ public class AttendanceField extends JLabel implements MouseMotionListener, Tabl
 
     public void init() {
         movedRow = 0;
-        movedCol = attendanceTable.getModel().getColumnCount() - 1;
+        movedCol = attendanceTable.getColumnCount() - 1;
     }
 }

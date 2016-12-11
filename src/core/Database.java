@@ -15,6 +15,7 @@ import io.FileIO;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import static core.ProfileTypes.*;
 
 /**
  *
@@ -112,7 +113,7 @@ public class Database {
             if (i > deletedProfileID) {
                 Profile profile = studentDataList.get(i);
                 profile.setID(i - 1);
-                if (profile.getProfileType() == ProfileTypes.REGULAR_GROUP) {
+                if (profile.getProfileType() == REGULAR_GROUP || profile.getProfileType() == SDG) {
                     ArrayList<Integer> kguMemberIDs = profile.getMemberIDs();
                     if (kguMemberIDs.size() > 0) {
                         for (int j = 0; j < kguMemberIDs.size(); j++) {
@@ -208,6 +209,17 @@ public class Database {
         for (ArrayList<Integer> absenceList : absenceLists) {
             absenceList.add(AbsenceTypes.EMPTY_LESSON);
         }
+    }
+
+    public void removeWeek(int weekIndex) {
+        weekNames.remove(weekIndex);
+        for (ArrayList<Integer> absenceList : absenceLists) {
+            absenceList.remove(weekIndex);
+        }
+    }
+
+    public void renameWeek(int weekIndex, String weekName) {
+        weekNames.set(weekIndex, weekName);
     }
 
     public int getNumberOfProfiles() {

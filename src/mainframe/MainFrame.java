@@ -258,7 +258,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 attendanceListData.update();
-                attendanceListUI.updateTable();
+                attendanceListUI.update();
                 attendanceListData.fireTableDataChanged();
                 attendanceListUI.setLocation();
                 attendanceListUI.setVisible(true);

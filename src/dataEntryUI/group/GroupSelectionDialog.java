@@ -138,6 +138,7 @@ public class GroupSelectionDialog extends JDialog {
                 selectedEntry.setInstrumentalformationProfile();
                 kguEntry = null;
                 sdgEntry = null;
+                
             }
         });
         chorSelection.addItemListener(new ItemListener() {
