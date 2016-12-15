@@ -5,8 +5,8 @@
  */
 package mainframe;
 
-import attendanceList.AttendanceListData;
-import attendanceList.AttendanceListUI;
+import attendanceListData.AttendanceListData;
+import attendanceListUI.AttendanceListUI;
 import core.Database;
 import core.DatabaseListener;
 import core.Profile;
@@ -47,6 +47,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import scheduleUI.DayField;
 import scheduleUI.Schedule;
+import studentJournal.JournalDayView;
+import studentJournal.JournalEntry;
 import studentlistUI.StudentList;
 import userUtilsUI.ColoredStudentDays;
 import utils.Icons;
@@ -78,6 +80,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
     private JFileChooser fileChooser;
     private FileIO fileIO;
     private ArrayList<ScheduleButton> scheduleButtons;
+    private JournalEntry journalEntry;
+    private JournalDayView journalDayView;
     private AttendanceListData attendanceListData;
     private AttendanceListUI attendanceListUI;
 
@@ -97,7 +101,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
         setScheduleDataParameters();
         setStudentListDataParameters();
         initFileChooser();
-        initAttendanceList();
         addListeners();
         setStudentButtonsEnabled(false);
         buttonState = false;
@@ -123,6 +126,12 @@ public class MainFrame extends JFrame implements DatabaseListener {
         studentInputMask = new StudentInputMask(database);
         groupInputMask = new GroupInputMask(database);
         fileChooser = new JFileChooser();
+        attendanceListData = new AttendanceListData(database);
+        attendanceListUI = new AttendanceListUI(this);
+        journalEntry = new JournalEntry(this);
+        scheduleData.setJournalEntry(journalEntry);
+        journalDayView = new JournalDayView(this);
+        schedule.setJournalDayView(journalDayView);
         createButtons();
     }
 
@@ -211,11 +220,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 return "StundenPlaner";
             }
         });
-    }
-
-    private void initAttendanceList() {
-        attendanceListData = new AttendanceListData(database);
-        attendanceListUI = new AttendanceListUI(this);
     }
 
     private void addListeners() {
@@ -506,6 +510,10 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public AttendanceListUI getAttendanceListUI() {
         return attendanceListUI;
+    }
+
+    public JournalEntry getJournalEntry() {
+        return journalEntry;
     }
 
     @Override

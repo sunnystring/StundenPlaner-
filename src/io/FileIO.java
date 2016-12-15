@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import utils.Dialogs;
 
 /**
@@ -69,7 +68,7 @@ public class FileIO {
         dataList.clear();
         dataList.add(database.getScheduleTimes());
         dataList.add(database.getStudentDataList());
-        dataList.add(database.getStudentJournals());
+        dataList.add(database.getCurrentStudentJournals());
         dataList.add(database.getAbsenceLists());
         dataList.add(database.getWeekNames());
         for (TreeMap<Time, LectionData> lectionMap : database.getLectionMaps()) {

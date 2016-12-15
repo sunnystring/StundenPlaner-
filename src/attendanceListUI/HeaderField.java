@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListUI;
 
+import attendanceListData.AttendanceListData;
+import attendanceListUI.AttendanceTable;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -25,11 +27,12 @@ import static utils.Colors.*;
 public class HeaderField extends JLabel implements TableCellRenderer, MouseMotionListener {
 
     private AttendanceTable attendanceTable;
-    //  private MainFrame mainFrame;
+    private AttendanceListData attendanceListData;
     private int movedCol;
 
     public HeaderField(AttendanceTable attendanceTable) {
         this.attendanceTable = attendanceTable;
+        attendanceListData = (AttendanceListData) attendanceTable.getModel();
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
         setPreferredSize(new Dimension(0, 25));
         setForeground(BACKGROUND_COLOR);
@@ -44,7 +47,15 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseMotio
             setHorizontalAlignment(SwingConstants.LEADING);
         } else {
             setHorizontalAlignment(SwingConstants.CENTER);
-            setBackground(col == movedCol ? DARK_GREEN : DAYFIELD_COLOR);
+            if (col == movedCol) {
+                setBackground(LIGHT_GREEN);
+            } else {
+                if (attendanceListData.isJournalArchiveEnabled()) {
+                    setBackground(col == attendanceListData.getCurrentWeekIndex() + 1 ? DAYFIELD_COLOR : DARK_GREEN);
+                } else {
+                    setBackground(DAYFIELD_COLOR);
+                }
+            }
         }
         String name = (String) value;
         setText(name);
@@ -52,7 +63,8 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseMotio
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(MouseEvent e
+    ) {
         Point point = e.getPoint();
         movedCol = attendanceTable.columnAtPoint(point);
         attendanceTable.getTableHeader().repaint();

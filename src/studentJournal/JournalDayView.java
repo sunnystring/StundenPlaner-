@@ -55,7 +55,7 @@ public class JournalDayView extends JDialog {
         setMinimumSize(new Dimension(250, 600));
         createAndAddWidgets();
         addStylesToDocument();
-        setResizable(false);
+        setResizable(true);
         pack();
     }
 
@@ -63,8 +63,10 @@ public class JournalDayView extends JDialog {
         document = textPane.getStyledDocument();
         Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
         document.addStyle("journal", defaultStyle);
+        StyleConstants.setFontSize(defaultStyle, 14);
         Style nameStyle = document.addStyle("name", defaultStyle);
         StyleConstants.setForeground(nameStyle, Colors.NAMEFIELD_SINGLE_COLOR);
+        StyleConstants.setFontSize(nameStyle, 14);
     }
 
     private void createAndAddWidgets() {
@@ -91,14 +93,14 @@ public class JournalDayView extends JDialog {
 
     public void showStudentJournals(int dayIndex) {
         textPane.setText("");
-        setTitle(database.getDayNameAt(dayIndex));
+        setTitle("Alle Journale von " + database.getDayNameAt(dayIndex));
         setDialogLocation();
         DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
         for (LectionData lectionData : dayColumn.getLectionMap().values()) {
             int profileID = lectionData.getProfileID();
             Profile profile = database.getProfile(profileID);
             nameString = profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName() + "\n";
-            journal = database.getJournalText(profileID);
+            journal = database.getCurrentJournalText(profileID);
             if (!journal.isEmpty()) {
                 try {
                     document.insertString(document.getLength(), nameString, document.getStyle("name"));

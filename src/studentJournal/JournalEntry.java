@@ -5,10 +5,12 @@
  */
 package studentJournal;
 
+import attendanceListData.AttendanceListData;
 import core.Database;
 import core.Profile;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -18,12 +20,17 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import mainframe.MainFrame;
+import utils.Colors;
 import static utils.GUIConstants.*;
 
 /**
@@ -33,10 +40,12 @@ import static utils.GUIConstants.*;
 public class JournalEntry extends JDialog {
 
     private Database database;
+    private AttendanceListData attendanceListData;
     private Profile profile;
     private String text;
+    private JLabel dateField1, nameField, dateField2;
     private JScrollPane centerField;
-    private JPanel bottomField;
+    private JPanel topField, bottomField;
     private JButton closeButton, eraseButton, saveButton;
     private JTextPane displayArea;
     private StyledDocument document;
@@ -44,11 +53,11 @@ public class JournalEntry extends JDialog {
     public JournalEntry(MainFrame mainFrame) {
         super(mainFrame);
         database = mainFrame.getDatabase();
-        setMinimumSize(new Dimension(250, 250));
+        attendanceListData = mainFrame.getAttendanceListData();
         createAndAddWidgets();
         addButtonListeners();
+        addStylesToDocument();
         setResizable(false);
-        pack();
     }
 
     private void createAndAddWidgets() {
@@ -58,7 +67,6 @@ public class JournalEntry extends JDialog {
         displayArea = new JTextPane();
         document = displayArea.getStyledDocument();
         centerField = new JScrollPane(displayArea);
-        centerField.setMinimumSize(displayArea.getPreferredSize());
         centerField.setBorder(BorderFactory.createEmptyBorder(1, 3, 0, 3));
         closeButton = new JButton("Schliessen");
         eraseButton = new JButton("Löschen");
@@ -67,8 +75,53 @@ public class JournalEntry extends JDialog {
         bottomField.add(Box.createHorizontalGlue());
         bottomField.add(eraseButton);
         bottomField.add(saveButton);
+        createTopField();
+        add(BorderLayout.PAGE_START, topField);
         add(BorderLayout.CENTER, centerField);
         add(BorderLayout.PAGE_END, bottomField);
+    }
+
+    private void createTopField() {
+        topField = new JPanel();
+        topField.setLayout(new BoxLayout(topField, BoxLayout.LINE_AXIS));
+        topField.setBorder(LIGHT_BORDER);
+        dateField1 = new JLabel();
+        dateField1.setForeground(Colors.DARK_GREEN);
+        dateField1.setFont(dateField1.getFont().deriveFont(Font.PLAIN, 14));
+        dateField1.setToolTipText("Woche der Erstellung");
+        nameField = new JLabel();
+        nameField.setForeground(Colors.NAMEFIELD_SINGLE_COLOR);
+        nameField.setFont(nameField.getFont().deriveFont(Font.PLAIN, 14));
+        dateField2 = new JLabel();
+        dateField2.setForeground(Colors.VERY_DARK_GREEN);
+        dateField2.setFont(dateField2.getFont().deriveFont(Font.PLAIN, 14));
+        dateField2.setToolTipText("Aktuelle Woche");
+        topField.add(Box.createHorizontalGlue());
+        topField.add(nameField);
+        topField.add(Box.createHorizontalGlue());
+        setMinimumSize(new Dimension(topField.getPreferredSize().width, 250));
+    }
+
+    private void addStylesToDocument() {
+        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+        document.addStyle("journal", defaultStyle);
+        StyleConstants.setFontSize(defaultStyle, 14);
+    }
+
+    private void addDateFields() {
+        topField.removeAll();
+        topField.add(dateField1);
+        topField.add(Box.createHorizontalGlue());
+        topField.add(nameField);
+        topField.add(Box.createHorizontalGlue());
+        topField.add(dateField2);
+    }
+
+    private void removeDateFields() {
+        topField.removeAll();
+        topField.add(Box.createHorizontalGlue());
+        topField.add(nameField);
+        topField.add(Box.createHorizontalGlue());
     }
 
     private void addButtonListeners() {
@@ -89,7 +142,7 @@ public class JournalEntry extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 text = displayArea.getText();
-                database.setJournalText(profile.getID(), text);
+                database.setCurrentJournalText(profile.getID(), text);
                 dispose();
             }
         });
@@ -98,14 +151,25 @@ public class JournalEntry extends JDialog {
     public void showTextOf(Profile profile) {
         displayArea.setText("");
         this.profile = profile;
-        setTitle(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
+        setTitle("Journal");
+        if (attendanceListData.isJournalArchiveEnabled()) {
+            addDateFields();
+            dateField1.setText("12.12.16");
+            dateField2.setText(database.getWeekNameAt(attendanceListData.getCurrentWeekIndex()));
+        } else {
+            removeDateFields();
+        }
+        nameField.setText("  " + profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName() + " ");
         setDialogLocation();
-        text = database.getJournalText(profile.getID());
+        text = database.getCurrentJournalText(profile.getID());
         try {
-            document.insertString(0, text, null);
+            document.insertString(0, text, document.getStyle("journal"));
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+        displayArea.setPreferredSize(new Dimension(250, 150));
+        setMinimumSize(new Dimension(topField.getPreferredSize().width, 250));
+        pack();
     }
 
     private void setDialogLocation() {

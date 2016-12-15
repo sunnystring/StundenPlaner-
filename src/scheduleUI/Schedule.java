@@ -43,7 +43,6 @@ public class Schedule extends JPanel {
         timeTable = new TimeTable(scheduleData, studentListData); // studentListData = Referenz für MouseListener
         scheduleZoom = new ScheduleZoom();
         headerFieldList = new ArrayList<>();
-        journalDayView = new JournalDayView(mainFrame);
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
         add(BorderLayout.NORTH, header);
@@ -121,4 +120,7 @@ public class Schedule extends JPanel {
         return headerFieldList;
     }
 
+    public void setJournalDayView(JournalDayView journalDayView) {
+        this.journalDayView = journalDayView;
+    }
 }

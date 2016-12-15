@@ -36,7 +36,6 @@ import studentJournal.JournalEntry;
 public class ScheduleData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
     private Database database;
-    private MainFrame mainFrame;
     private ScheduleTimes scheduleTimes;
     private StudentListData studentListData;
     private ArrayList<DayColumnData> dayColumnDataList;
@@ -49,14 +48,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private JournalEntry journalEntry;
 
     public ScheduleData(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();
         scheduleTimes = database.getScheduleTimes();
         studentListData = mainFrame.getStudentListData();
         dayColumnDataList = new ArrayList<>();
         timeFrame = new ScheduleTimeFrame();
         breakWatcher = new BreakWatcher(database, this);
-        journalEntry = new JournalEntry(mainFrame);
         numberOfValidDays = 0;
         dayIndex = -1;
         dayColumnFieldIndex = -1;
@@ -430,12 +427,12 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         return breakWatcher;
     }
 
-    public JournalEntry getJournalEntry() {
-        return journalEntry;
-    }
-
     public void setScheduleTimes(ScheduleTimes scheduleTimes) {
         this.scheduleTimes = scheduleTimes;
+    }
+
+    public void setJournalEntry(JournalEntry journalEntry) {
+        this.journalEntry = journalEntry;
     }
 
     @Override

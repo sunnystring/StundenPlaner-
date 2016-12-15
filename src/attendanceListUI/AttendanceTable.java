@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListUI;
 
+import attendanceListData.AttendanceListData;
 import javax.swing.JTable;
 import mainframe.MainFrame;
 import static utils.Colors.BACKGROUND_COLOR;

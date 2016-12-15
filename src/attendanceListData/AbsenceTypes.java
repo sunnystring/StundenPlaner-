@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListData;
 
 import java.awt.Color;
-import utils.Colors;
 import static utils.Colors.*;
 
 /**
@@ -33,9 +32,9 @@ public class AbsenceTypes {
             case 3:
                 return Color.BLACK;
             case 4:
-                return Color.MAGENTA;
+                return BACKGROUND_COLOR;
             default:
-                return Colors.BACKGROUND_COLOR;
+                return BACKGROUND_COLOR;
         }
     }
 

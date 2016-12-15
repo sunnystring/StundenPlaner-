@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListUI;
 
+import attendanceListData.AttendanceListData;
+import attendanceListData.AttendanceListEdit;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import mainframe.MainFrame;
@@ -31,6 +37,7 @@ public class AttendanceListUI extends JDialog {
     private JScrollPane centerField;
     private JPanel topField, buttonField;
     private JButton closeButton, deleteAllButton, createAndEditWeekButton, saveButton;
+    private JCheckBox journalCollectionEnabled;
 
     public AttendanceListUI(MainFrame mainFrame) {
         super(mainFrame);
@@ -60,6 +67,9 @@ public class AttendanceListUI extends JDialog {
         deleteAllButton = new JButton("Alle Einträge löschen");
         createAndEditWeekButton = new JButton("Woche erstellen oder bearbeiten");
         saveButton = new JButton("Einträge speichern");
+        journalCollectionEnabled = new JCheckBox("Journale archivieren");
+        journalCollectionEnabled.setSelected(false);
+        journalCollectionEnabled.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
     }
 
     private void addWidgets() {
@@ -67,6 +77,7 @@ public class AttendanceListUI extends JDialog {
         buttonField.add(closeButton);
         buttonField.add(deleteAllButton);
         buttonField.add(Box.createHorizontalGlue());
+        buttonField.add(journalCollectionEnabled);
         buttonField.add(createAndEditWeekButton);
         buttonField.add(saveButton);
         add(BorderLayout.PAGE_END, buttonField);
@@ -82,16 +93,34 @@ public class AttendanceListUI extends JDialog {
         deleteAllButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Dialogs.showAffirmDeletionAttendanceListMessage();
-
+                if (Dialogs.showAffirmDeleteAttendanceListMessage() == JOptionPane.YES_OPTION) {
+                    attendanceListData.deleteAll();
+                    dispose();
+                }
+            }
+        });
+        journalCollectionEnabled.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    attendanceListData.setJournalArchiveEnabled(true);
+                    attendanceListData.setCurrentWeekIndex(attendanceListData.getNumberOfWeeks()-1);
+                    attendanceListData.update();
+                    attendanceTable.getTableHeader().resizeAndRepaint();
+                } else {
+                    attendanceListData.setJournalArchiveEnabled(false);
+                    attendanceListData.setCurrentWeekIndex(-1);
+                    attendanceListData.update();
+                    attendanceTable.getTableHeader().resizeAndRepaint();
+                }
             }
         });
         createAndEditWeekButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AttendanceListDialog dialog = new AttendanceListDialog(mainFrame);
-                dialog.setLocation();
-                dialog.setVisible(true);
+                AttendanceListEdit editDialog = new AttendanceListEdit(mainFrame);
+                editDialog.setLocation();
+                editDialog.setVisible(true);
             }
         });
         saveButton.addActionListener(new ActionListener() {

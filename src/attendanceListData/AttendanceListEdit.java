@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListData;
 
+import attendanceListUI.AttendanceTable;
+import attendanceListUI.AttendanceListUI;
 import core.Database;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,31 +25,33 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import mainframe.MainFrame;
-import utils.Colors;
+import static utils.Colors.*;
 import static utils.GUIConstants.*;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class AttendanceListDialog extends JDialog {
+public class AttendanceListEdit extends JDialog {
 
     private MainFrame mainFrame;
     private Database database;
     private AttendanceListData attendanceListData;
     private AttendanceListUI attendanceListUI;
+    private AttendanceTable attendanceTable;
     private JPanel top, center, bottom;
     private JTextField weekNameEntry;
-    private JButton cancelButton, createButton, renameButton, deleteButton;
+    private JButton cancelButton, currentWeekButton, deleteButton, renameButton, createButton;
     private ButtonGroup weekSelection;
     private int weekIndex;
 
-    public AttendanceListDialog(MainFrame mainFrame) {
+    public AttendanceListEdit(MainFrame mainFrame) {
         super(mainFrame);
         this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();
         attendanceListData = mainFrame.getAttendanceListData();
         attendanceListUI = mainFrame.getAttendanceListUI();
+        attendanceTable = attendanceListUI.getAttendanceTable();
         setTitle("Unterrichtswoche");
         setModal(true);
         setResizable(false);
@@ -69,14 +73,16 @@ public class AttendanceListDialog extends JDialog {
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(DEFAULT_BORDER);
         weekNameEntry = new JTextField();
-        createWeekSelection();
         cancelButton = new JButton("Abbrechen");
+        currentWeekButton = new JButton("Aktuelle Woche");
+        currentWeekButton.setEnabled(false);
         deleteButton = new JButton("Löschen");
         deleteButton.setEnabled(false);
         renameButton = new JButton("Umbenennen");
         renameButton.setEnabled(false);
         createButton = new JButton("Erstellen");
         createButton.setEnabled(true);
+        createWeekSelection();
 
     }
 
@@ -85,7 +91,7 @@ public class AttendanceListDialog extends JDialog {
         JRadioButton rButton;
         for (int i = database.getNumberOfWeeks() - 1; i >= 0; i--) {
             rButton = new JRadioButton(database.getWeekNameAt(i));
-            rButton.setForeground(Colors.VERY_DARK_GREEN);
+            rButton.setForeground(i == attendanceListData.getCurrentWeekIndex() ? VERY_DARK_GREEN : DARK_GREEN);
             rButton.setFont(this.getFont().deriveFont(Font.BOLD, 10));
             rButton.addItemListener(new ItemListener() {
                 @Override
@@ -105,16 +111,29 @@ public class AttendanceListDialog extends JDialog {
     }
 
     private void setButtonEnabledState() {
-        deleteButton.setEnabled(weekSelection.getSelection() != null);
-        renameButton.setEnabled(weekSelection.getSelection() != null);
+        boolean weekSelected = weekSelection.getSelection() != null;
+        currentWeekButton.setEnabled(weekSelected);
+        deleteButton.setEnabled(weekSelected);
+        renameButton.setEnabled(weekSelected);
         createButton.setEnabled(false);
     }
 
     private void addWidgets() {
-        top.add(Box.createHorizontalStrut(130));
+        if (attendanceListData.isJournalArchiveEnabled()) {
+            top.add(Box.createHorizontalStrut(190));
+        } else {
+            top.add(Box.createHorizontalStrut(130));
+        }
         top.add(weekNameEntry);
-        top.add(Box.createHorizontalStrut(130));
+        if (attendanceListData.isJournalArchiveEnabled()) {
+            top.add(Box.createHorizontalStrut(190));
+        } else {
+            top.add(Box.createHorizontalStrut(130));
+        }
         bottom.add(cancelButton);
+        if (attendanceListData.isJournalArchiveEnabled()) {
+            bottom.add(currentWeekButton);
+        }
         bottom.add(deleteButton);
         bottom.add(renameButton);
         bottom.add(createButton);
@@ -131,11 +150,22 @@ public class AttendanceListDialog extends JDialog {
                 dispose();
             }
         });
+        currentWeekButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attendanceListData.setDefaultCurrentWeekIndex(false);
+                attendanceListData.setCurrentWeekIndex(weekIndex);
+                attendanceTable.getTableHeader().resizeAndRepaint();
+                dispose();
+            }
+        });
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 database.removeWeek(weekIndex);
+                updateCurrentWeekIndex();
                 updateAttendanceListUI();
+                attendanceTable.getTableHeader().resizeAndRepaint();
                 dispose();
             }
         });
@@ -155,6 +185,15 @@ public class AttendanceListDialog extends JDialog {
                 dispose();
             }
         });
+    }
+
+    private void updateCurrentWeekIndex() {
+        if (weekIndex == attendanceListData.getCurrentWeekIndex()) {
+            attendanceListData.setCurrentWeekIndex(attendanceListData.getNumberOfWeeks() - 2);
+        }
+        else if (weekIndex < attendanceListData.getCurrentWeekIndex()) {
+            attendanceListData.setCurrentWeekIndex(attendanceListData.getCurrentWeekIndex()-1);
+        }
     }
 
     private void updateAttendanceListUI() {

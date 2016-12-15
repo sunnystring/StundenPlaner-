@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package attendanceList;
+package attendanceListUI;
 
+import attendanceListData.AbsenceTypes;
+import attendanceListData.AttendanceFieldData;
 import static java.awt.Color.*;
 import java.awt.Component;
 import java.awt.Font;
@@ -61,6 +63,9 @@ public class AttendanceField extends JLabel implements MouseMotionListener, Tabl
             setForeground(AbsenceTypes.getColorOf(absenceType));
             if (row == movedRow && col == movedCol) {
                 setBackground(BACKGROUND_COLOR);
+                if (field.getAbsenceType() == AbsenceTypes.OFFICIAL) {
+                    setForeground(field.isDayMarked() ? VERY_LIGHT_GREEN : LIGHT_GRAY_COLOR);
+                }
             }
         }
         return this;
@@ -99,12 +104,12 @@ public class AttendanceField extends JLabel implements MouseMotionListener, Tabl
         }
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-    }
-
     public void init() {
         movedRow = 0;
         movedCol = attendanceTable.getColumnCount() - 1;
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
     }
 }
