@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -87,15 +88,18 @@ public class JournalEntry extends JDialog {
         topField.setBorder(LIGHT_BORDER);
         dateField1 = new JLabel();
         dateField1.setForeground(Colors.DARK_GREEN);
-        dateField1.setFont(dateField1.getFont().deriveFont(Font.PLAIN, 14));
+        dateField1.setFont(dateField1.getFont().deriveFont(Font.BOLD, 10));
+        dateField1.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
         dateField1.setToolTipText("Woche der Erstellung");
         nameField = new JLabel();
         nameField.setForeground(Colors.NAMEFIELD_SINGLE_COLOR);
         nameField.setFont(nameField.getFont().deriveFont(Font.PLAIN, 14));
         dateField2 = new JLabel();
         dateField2.setForeground(Colors.VERY_DARK_GREEN);
-        dateField2.setFont(dateField2.getFont().deriveFont(Font.PLAIN, 14));
+        dateField2.setFont(dateField2.getFont().deriveFont(Font.BOLD, 10));
+        dateField2.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
         dateField2.setToolTipText("Aktuelle Woche");
+
         topField.add(Box.createHorizontalGlue());
         topField.add(nameField);
         topField.add(Box.createHorizontalGlue());

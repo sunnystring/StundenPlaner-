@@ -16,17 +16,13 @@ import static utils.Colors.BACKGROUND_COLOR;
  */
 public class AttendanceTable extends JTable {
 
-   // private AttendanceListData attendanceListData;
     private AttendanceField attendanceField;
     private HeaderField headerField;
 
     public AttendanceTable(AttendanceListData attendanceListData, MainFrame mainFrame) {
-       // this.attendanceListData = attendanceListData;
         setModel(attendanceListData);
         headerField = new HeaderField(this);
         getTableHeader().setDefaultRenderer(headerField);
-       // getTableHeader().addMouseListener(headerField);
-      //  getTableHeader().addMouseMotionListener(headerField);
         addMouseMotionListener(headerField);
         attendanceField = new AttendanceField(this);
         addMouseListener(attendanceListData);
@@ -41,13 +37,11 @@ public class AttendanceTable extends JTable {
     public void update() {
         headerField.init();
         attendanceField.init();
-//        System.out.println(getColumnModel().getColumnCount());
         createDefaultColumnsFromModel();
         for (int i = 0; i < getColumnCount(); i++) {
             if (i == 0) {
                 getColumnModel().getColumn(i).setMinWidth(100);
                 getColumnModel().getColumn(i).setCellRenderer(attendanceField);
-
             } else {
                 getColumnModel().getColumn(i).setPreferredWidth(25);
                 getColumnModel().getColumn(i).setCellRenderer(attendanceField);

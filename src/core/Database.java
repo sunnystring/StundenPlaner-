@@ -32,6 +32,7 @@ public class Database {
     private ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
     private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
     private ArrayList<String> currentStudentJournals;
+    private ArrayList<ArrayList<String>> journalArchive;
     private ArrayList<ArrayList<Integer>> absenceLists;
     private ArrayList<String> weekNames;
     private int numberOfProfiles;
@@ -47,6 +48,7 @@ public class Database {
         sortedStudentDayLists = new ArrayList<>();
         studentIDMaps = new ArrayList<>();
         currentStudentJournals = new ArrayList<>();
+        journalArchive = new ArrayList<>();
         absenceLists = new ArrayList<>();
         weekNames = new ArrayList<>();
         numberOfProfiles = 0;
@@ -133,6 +135,7 @@ public class Database {
         setStudentDataList(fileIO.getStudentDataList());
         setLectionMaps(fileIO.getLectionMaps());
         setCurrentStudentJournals(fileIO.getStudentJournals());
+        setJournalArchive(fileIO.getJournalArchive());
         setAbsenceLists(fileIO.getAttendanceFieldLists());
         setWeekNames(fileIO.getWeekNames());
         updateLections();
@@ -312,6 +315,14 @@ public class Database {
 
     public void setCurrentStudentJournals(ArrayList<String> currentStudentJournals) {
         this.currentStudentJournals = currentStudentJournals;
+    }
+
+    public ArrayList<ArrayList<String>> getJournalArchive() {
+        return journalArchive;
+    }
+
+    public void setJournalArchive(ArrayList<ArrayList<String>> journalArchive) {
+        this.journalArchive = journalArchive;
     }
 
     public ArrayList<Integer> getAbsenceRowAt(int profileID) {

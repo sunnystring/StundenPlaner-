@@ -6,7 +6,6 @@
 package attendanceListUI;
 
 import attendanceListData.AttendanceListData;
-import attendanceListUI.AttendanceTable;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;

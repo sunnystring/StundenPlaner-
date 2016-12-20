@@ -8,6 +8,7 @@ package attendanceListData;
 import attendanceListUI.AttendanceTable;
 import core.Database;
 import core.Profile;
+import io.FileIO;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,6 +42,12 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
         currentWeekIndex = -1;
         defaultCurrentWeekIndex = true;
         journalArchiveEnabled = false;
+    }
+
+    public void updateAfterFileEntry(FileIO fileIO) {
+        defaultCurrentWeekIndex = false;
+        journalArchiveEnabled = fileIO.isJournalEnabled();
+        currentWeekIndex = fileIO.getCurrentWeekIndex();
     }
 
     public void update() {

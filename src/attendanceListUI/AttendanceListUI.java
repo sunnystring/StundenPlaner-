@@ -7,6 +7,7 @@ package attendanceListUI;
 
 import attendanceListData.AttendanceListData;
 import attendanceListData.AttendanceListEdit;
+import io.FileIO;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ public class AttendanceListUI extends JDialog {
     private JScrollPane centerField;
     private JPanel topField, buttonField;
     private JButton closeButton, deleteAllButton, createAndEditWeekButton, saveButton;
-    private JCheckBox journalCollectionEnabled;
+    private JCheckBox journalArchiveButton;
 
     public AttendanceListUI(MainFrame mainFrame) {
         super(mainFrame);
@@ -67,9 +68,9 @@ public class AttendanceListUI extends JDialog {
         deleteAllButton = new JButton("Alle Einträge löschen");
         createAndEditWeekButton = new JButton("Woche erstellen oder bearbeiten");
         saveButton = new JButton("Einträge speichern");
-        journalCollectionEnabled = new JCheckBox("Journale archivieren");
-        journalCollectionEnabled.setSelected(false);
-        journalCollectionEnabled.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        journalArchiveButton = new JCheckBox("Journale archivieren");
+        journalArchiveButton.setSelected(false);
+        journalArchiveButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
     }
 
     private void addWidgets() {
@@ -77,7 +78,7 @@ public class AttendanceListUI extends JDialog {
         buttonField.add(closeButton);
         buttonField.add(deleteAllButton);
         buttonField.add(Box.createHorizontalGlue());
-        buttonField.add(journalCollectionEnabled);
+        buttonField.add(journalArchiveButton);
         buttonField.add(createAndEditWeekButton);
         buttonField.add(saveButton);
         add(BorderLayout.PAGE_END, buttonField);
@@ -99,22 +100,6 @@ public class AttendanceListUI extends JDialog {
                 }
             }
         });
-        journalCollectionEnabled.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    attendanceListData.setJournalArchiveEnabled(true);
-                    attendanceListData.setCurrentWeekIndex(attendanceListData.getNumberOfWeeks()-1);
-                    attendanceListData.update();
-                    attendanceTable.getTableHeader().resizeAndRepaint();
-                } else {
-                    attendanceListData.setJournalArchiveEnabled(false);
-                    attendanceListData.setCurrentWeekIndex(-1);
-                    attendanceListData.update();
-                    attendanceTable.getTableHeader().resizeAndRepaint();
-                }
-            }
-        });
         createAndEditWeekButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,16 +117,37 @@ public class AttendanceListUI extends JDialog {
         });
     }
 
+    public void updateAfterFileEntry(FileIO fileIO) {
+        journalArchiveButton.setSelected(fileIO.isJournalEnabled());
+    }
+
+    public void update() {
+        attendanceTable.update();
+        journalArchiveButton.setEnabled(attendanceListData.getNumberOfWeeks() > 0);
+        journalArchiveButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    attendanceListData.setJournalArchiveEnabled(true);
+                    attendanceListData.setCurrentWeekIndex(attendanceListData.getNumberOfWeeks() - 1);
+                    attendanceListData.update();
+                    attendanceTable.getTableHeader().resizeAndRepaint();
+                } else {
+                    attendanceListData.setJournalArchiveEnabled(false);
+                    attendanceListData.setCurrentWeekIndex(-1);
+                    attendanceListData.update();
+                    attendanceTable.getTableHeader().resizeAndRepaint();
+                }
+            }
+        });
+    }
+
     public void setLocation() {
         super.setLocation(getXCoordinate(), mainFrame.getLocation().y);
     }
 
     private int getXCoordinate() {
         return (int) (mainFrame.getSize().getWidth() / 2) - (int) (this.getSize().getWidth() / 2);
-    }
-
-    public void update() {
-        attendanceTable.update();
     }
 
     public AttendanceTable getAttendanceTable() {
