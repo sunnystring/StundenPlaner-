@@ -39,6 +39,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -95,7 +96,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
         studentListData = new StudentListData(this);
         scheduleData = new ScheduleData(this);
         attendanceListData = new AttendanceListData(database);
-        fileIO = new FileIO(database, attendanceListData);
+        fileIO = new FileIO(database);
         scheduleButtons = new ArrayList<>();
         createWidgets();
         addWidgets();
@@ -205,6 +206,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     private void initFileChooser() {
+        fileChooser.setLocale(Locale.GERMAN);
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
@@ -214,7 +216,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 }
                 return fileIO.isValidExtension(f);
             }
-
             @Override
             public String getDescription() {
                 return "StundenPlaner";
@@ -363,7 +364,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
         database.updateAfterFileEntry(scheduleTimes, fileIO);
         scheduleData.setScheduleTimes(scheduleTimes);
         studentListData.setNumberOfProfiles(database.getNumberOfProfiles());
-        attendanceListData.updateAfterFileEntry(fileIO);
     }
 
     private void updateWidgetsAfterFileEntry() {
@@ -375,7 +375,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
         printButton.setEnabled(true);
         saveButton.setEnabled(true);
         attendanceListButton.setEnabled(true);
-        attendanceListUI.updateAfterFileEntry(fileIO);
     }
 
     private void showStundenPlaner() {

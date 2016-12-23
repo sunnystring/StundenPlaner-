@@ -6,18 +6,13 @@
 package attendanceListUI;
 
 import attendanceListData.AttendanceListData;
-import attendanceListData.AttendanceListEdit;
-import io.FileIO;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,7 +33,6 @@ public class AttendanceListUI extends JDialog {
     private JScrollPane centerField;
     private JPanel topField, buttonField;
     private JButton closeButton, deleteAllButton, createAndEditWeekButton, saveButton;
-    private JCheckBox journalArchiveButton;
 
     public AttendanceListUI(MainFrame mainFrame) {
         super(mainFrame);
@@ -66,11 +60,8 @@ public class AttendanceListUI extends JDialog {
         buttonField.setBorder(LIGHT_BORDER);
         closeButton = new JButton("Schliessen");
         deleteAllButton = new JButton("Alle Einträge löschen");
-        createAndEditWeekButton = new JButton("Woche erstellen oder bearbeiten");
+        createAndEditWeekButton = new JButton("Woche erstellen oder löschen");
         saveButton = new JButton("Einträge speichern");
-        journalArchiveButton = new JCheckBox("Journale archivieren");
-        journalArchiveButton.setSelected(false);
-        journalArchiveButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
     }
 
     private void addWidgets() {
@@ -78,7 +69,6 @@ public class AttendanceListUI extends JDialog {
         buttonField.add(closeButton);
         buttonField.add(deleteAllButton);
         buttonField.add(Box.createHorizontalGlue());
-        buttonField.add(journalArchiveButton);
         buttonField.add(createAndEditWeekButton);
         buttonField.add(saveButton);
         add(BorderLayout.PAGE_END, buttonField);
@@ -117,29 +107,8 @@ public class AttendanceListUI extends JDialog {
         });
     }
 
-    public void updateAfterFileEntry(FileIO fileIO) {
-        journalArchiveButton.setSelected(fileIO.isJournalEnabled());
-    }
-
     public void update() {
         attendanceTable.update();
-        journalArchiveButton.setEnabled(attendanceListData.getNumberOfWeeks() > 0);
-        journalArchiveButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    attendanceListData.setJournalArchiveEnabled(true);
-                    attendanceListData.setCurrentWeekIndex(attendanceListData.getNumberOfWeeks() - 1);
-                    attendanceListData.update();
-                    attendanceTable.getTableHeader().resizeAndRepaint();
-                } else {
-                    attendanceListData.setJournalArchiveEnabled(false);
-                    attendanceListData.setCurrentWeekIndex(-1);
-                    attendanceListData.update();
-                    attendanceTable.getTableHeader().resizeAndRepaint();
-                }
-            }
-        });
     }
 
     public void setLocation() {

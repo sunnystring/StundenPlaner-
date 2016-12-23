@@ -11,6 +11,7 @@ import core.Profile;
 import core.ScheduleTimes;
 import core.StudentTimes;
 import exceptions.IllegalTimeSlotException;
+import exceptions.NameDuplicateException;
 import exceptions.OutOfBoundException;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -45,6 +47,8 @@ public abstract class ProfileInputMask extends JPanel {
     protected Profile profile;
     private ScheduleTimes scheduleTimes;
     private StudentTimes studentTimes;
+    private MainFrame mainFrame;
+    private ScheduleTimeFrame scheduleTimeFrame;
     private String firstName, name;
     protected String lectionLength;
     protected String[] lectionTypes;
@@ -147,7 +151,7 @@ public abstract class ProfileInputMask extends JPanel {
             @Override
             public void caretUpdate(CaretEvent ce) {
                 JTextField f = (JTextField) ce.getSource();
-                firstName = f.getText();
+                firstName = f.getText().trim();
             }
         });
         firstnameField.addFocusListener(new FocusAdapter() {
@@ -160,7 +164,7 @@ public abstract class ProfileInputMask extends JPanel {
             @Override
             public void caretUpdate(CaretEvent ce) {
                 JTextField f = (JTextField) ce.getSource();
-                name = f.getText();
+                name = f.getText().trim();
             }
         });
         nameField.addFocusListener(new FocusAdapter() {
@@ -182,19 +186,27 @@ public abstract class ProfileInputMask extends JPanel {
     }
 
     private void addSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
-        ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
+        mainFrame = dataEntryAndEdit.getMainFrame();
+        scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.initAndCheckScheduleBounds(scheduleTimeFrame, getLectionLengthInFields());
+                    checkNameDuplicates();
+                    checkTimeEntry();
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    correctInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
+                    correctInvalidEntryTimes(ex.getMessage(), mainFrame);
                     return;
+                } catch (NameDuplicateException ex) {
+                    int choice = Dialogs.showNameDuplicateMessage(firstName + " " + name);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        clearMask();
+                        return;
+                    }
+
                 }
                 studentTimes.setValidStudentDays();
                 setProfileData();
@@ -206,19 +218,25 @@ public abstract class ProfileInputMask extends JPanel {
     }
 
     private void addEditSaveButtonListener(DataEntryAndEdit dataEntryAndEdit) {
-        ScheduleTimeFrame scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
+        mainFrame = dataEntryAndEdit.getMainFrame();
+        scheduleTimeFrame = dataEntryAndEdit.getScheduleTimeFrame();
         saveButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    studentTimes.checkAndCorrectTimeEntries();
-                    studentTimes.initAndCheckScheduleBounds(scheduleTimeFrame, getLectionLengthInFields());
+                    checkTimeEntry();
                 } catch (IllegalTimeSlotException ex) {
                     Dialogs.showStudentTimeSlotError();
                     return;
                 } catch (OutOfBoundException ex) {
-                    correctInvalidEntryTimes(ex.getMessage(), dataEntryAndEdit.getMainFrame());
+                    correctInvalidEntryTimes(ex.getMessage(), mainFrame);
                     return;
+                } catch (NameDuplicateException ex) {
+                    int choice = Dialogs.showNameDuplicateMessage(firstName + " " + name);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        clearMask();
+                        return;
+                    }
                 }
                 studentTimes.updateValidStudentDays();
                 setProfileData();
@@ -227,6 +245,34 @@ public abstract class ProfileInputMask extends JPanel {
             }
         };
         saveButton.addActionListener(saveButtonListener);
+    }
+
+    private void checkTimeEntry() {
+        studentTimes.checkAndCorrectTimeEntries();
+        studentTimes.initAndCheckScheduleBounds(scheduleTimeFrame, getLectionLengthInFields());
+    }
+
+    private void checkNameDuplicates() {
+        ArrayList<Profile> studentList = database.getStudentDataList();
+        for (int i = 0; i < studentList.size(); i++) {
+            String existingFirstName = studentList.get(i).getFirstName();
+            String existingName = studentList.get(i).getName();
+            boolean isFirstNameDuplicate = existingFirstName.equalsIgnoreCase(firstName);
+            boolean isNameDuplicate = existingName.equalsIgnoreCase(name);
+            if (isFirstNameDuplicate && isNameDuplicate) {
+                throw new NameDuplicateException();
+            }
+        }
+    }
+
+    private void clearMask() {
+        firstnameField.setText("");
+        firstnameField.requestFocusInWindow();
+        nameField.setText("");
+        for (int i = 0; i < studentTimes.getRowCount(); i++) {
+            studentTimes.getDaySelectionListAt(i).resetAllTimes();
+        }
+        studentTimes.fireTableDataChanged();
     }
 
     private void correctInvalidEntryTimes(String msg, MainFrame mainFrame) {

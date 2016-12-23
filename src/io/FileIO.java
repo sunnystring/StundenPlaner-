@@ -5,7 +5,6 @@
  */
 package io;
 
-import attendanceListData.AttendanceListData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -28,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import studentJournal.JournalData;
 import utils.Dialogs;
 
 /**
@@ -37,7 +37,6 @@ import utils.Dialogs;
 public class FileIO {
 
     private Database database;
-    private AttendanceListData attendanceListData;
     public static final String VALID_EXTENSION = "stdpl";
     private GsonBuilder gsonBuilder;
     private Gson gson;
@@ -45,21 +44,18 @@ public class FileIO {
     private ScheduleTimes scheduleTimes;
     private ArrayList<Profile> studentDataList;
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
-    private ArrayList<String> studentJournals;
-    private ArrayList<ArrayList<String>> journalArchive;
-    private ArrayList<ArrayList<Integer>> attendanceFieldLists;
+    private ArrayList<JournalData> currentStudentJournals;
+    private ArrayList<ArrayList<JournalData>> journalArchive;
+    private ArrayList<ArrayList<Integer>> absenceLists;
     private ArrayList<String> weekNames;
-    private boolean journalEnabled;
-    private int currentWeekIndex;
 
-    public FileIO(Database database, AttendanceListData attendanceListData) {
+    public FileIO(Database database) {
         this.database = database;
-        this.attendanceListData = attendanceListData;
         initGson();
         dataList = new ArrayList();
         lectionMaps = new ArrayList<>();
-        studentJournals = new ArrayList<>();
-        attendanceFieldLists = new ArrayList<>();
+        currentStudentJournals = new ArrayList<>();
+        absenceLists = new ArrayList<>();
         weekNames = new ArrayList<>();
     }
 
@@ -75,11 +71,9 @@ public class FileIO {
         dataList.add(database.getScheduleTimes());
         dataList.add(database.getStudentDataList());
         dataList.add(database.getCurrentStudentJournals());
+        dataList.add(database.getJournalArchive());
         dataList.add(database.getAbsenceLists());
         dataList.add(database.getWeekNames());
-        dataList.add(database.getJournalArchive());
-        dataList.add(attendanceListData.isJournalArchiveEnabled());
-        dataList.add(attendanceListData.getCurrentWeekIndex());
         for (TreeMap<Time, LectionData> lectionMap : database.getLectionMaps()) { // lectionMap length = DAYS = 6
             dataList.add(lectionMap);
         }
@@ -104,18 +98,16 @@ public class FileIO {
             scheduleTimes = gson.fromJson(array.get(0), ScheduleTimes.class);
             studentDataList = gson.fromJson(array.get(1), new TypeToken<ArrayList<Profile>>() {
             }.getType());
-            studentJournals = gson.fromJson(array.get(2), new TypeToken<ArrayList<String>>() {
+            currentStudentJournals = gson.fromJson(array.get(2), new TypeToken<ArrayList<JournalData>>() {
             }.getType());
-            attendanceFieldLists = gson.fromJson(array.get(3), new TypeToken<ArrayList<ArrayList<Integer>>>() {
+            journalArchive = gson.fromJson(array.get(3), new TypeToken<ArrayList<ArrayList<JournalData>>>() {
             }.getType());
-            weekNames = gson.fromJson(array.get(4), new TypeToken<ArrayList<String>>() {
+            absenceLists = gson.fromJson(array.get(4), new TypeToken<ArrayList<ArrayList<Integer>>>() {
             }.getType());
-            journalArchive = gson.fromJson(array.get(5), new TypeToken<ArrayList<ArrayList<String>>>() {
+            weekNames = gson.fromJson(array.get(5), new TypeToken<ArrayList<String>>() {
             }.getType());
-            journalEnabled = gson.fromJson(array.get(6), Boolean.class);
-            currentWeekIndex = gson.fromJson(array.get(7), Integer.class);
             for (int i = 0; i < DAYS; i++) {
-                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 8), new TypeToken<TreeMap<Time, LectionData>>() {
+                TreeMap<Time, LectionData> lectionMap = gson.fromJson(array.get(i + 6), new TypeToken<TreeMap<Time, LectionData>>() {
                 }.getType());
                 lectionMaps.add(lectionMap);
             }
@@ -146,28 +138,19 @@ public class FileIO {
         return lectionMaps;
     }
 
-    public ArrayList<String> getStudentJournals() {
-        return studentJournals;
+    public ArrayList<JournalData> getStudentJournals() {
+        return currentStudentJournals;
     }
 
-    public ArrayList<ArrayList<Integer>> getAttendanceFieldLists() {
-        return attendanceFieldLists;
+    public ArrayList<ArrayList<Integer>> getAbsenceLists() {
+        return absenceLists;
     }
 
     public ArrayList<String> getWeekNames() {
         return weekNames;
     }
 
-    public ArrayList<ArrayList<String>> getJournalArchive() {
+    public ArrayList<ArrayList<JournalData>> getJournalArchive() {
         return journalArchive;
     }
-
-    public boolean isJournalEnabled() {
-        return journalEnabled;
-    }
-
-    public int getCurrentWeekIndex() {
-        return currentWeekIndex;
-    }
-
 }

@@ -40,12 +40,12 @@ public class JournalDayView extends JDialog {
 
     private Database database;
     private ScheduleData scheduleData;
-    private StyledDocument document;
-    private JScrollPane centerField;
+    protected StyledDocument document;
+    protected JScrollPane centerField;
     private JPanel bottomField;
     private JButton closeButton;
-    private JTextPane textPane;
-    private String journal;
+    protected JTextPane textPane;
+    private String journalText;
     private String nameString;
 
     public JournalDayView(MainFrame mainFrame) {
@@ -54,19 +54,8 @@ public class JournalDayView extends JDialog {
         scheduleData = mainFrame.getScheduleData();
         setMinimumSize(new Dimension(250, 600));
         createAndAddWidgets();
-        addStylesToDocument();
         setResizable(true);
         pack();
-    }
-
-    private void addStylesToDocument() {
-        document = textPane.getStyledDocument();
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-        document.addStyle("journal", defaultStyle);
-        StyleConstants.setFontSize(defaultStyle, 14);
-        Style nameStyle = document.addStyle("name", defaultStyle);
-        StyleConstants.setForeground(nameStyle, Colors.NAMEFIELD_SINGLE_COLOR);
-        StyleConstants.setFontSize(nameStyle, 14);
     }
 
     private void createAndAddWidgets() {
@@ -92,24 +81,35 @@ public class JournalDayView extends JDialog {
     }
 
     public void showStudentJournals(int dayIndex) {
+        addStylesToDocument();
         textPane.setText("");
-        setTitle("Alle Journale von " + database.getDayNameAt(dayIndex));
+        setTitle(database.getDayNameAt(dayIndex));
         setDialogLocation();
         DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
         for (LectionData lectionData : dayColumn.getLectionMap().values()) {
             int profileID = lectionData.getProfileID();
             Profile profile = database.getProfile(profileID);
             nameString = profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName() + "\n";
-            journal = database.getCurrentJournalText(profileID);
-            if (!journal.isEmpty()) {
+            journalText = database.getCurrentJournalOf(profile.getID()).getText();
+            if (!journalText.isEmpty()) {
                 try {
                     document.insertString(document.getLength(), nameString, document.getStyle("name"));
-                    document.insertString(document.getLength(), journal + "\n\n", document.getStyle("journal"));
+                    document.insertString(document.getLength(), journalText + "\n\n", document.getStyle("journal"));
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void addStylesToDocument() {
+        document = textPane.getStyledDocument();
+        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+        document.addStyle("journal", defaultStyle);
+        StyleConstants.setFontSize(defaultStyle, 14);
+        Style nameStyle = document.addStyle("name", defaultStyle);
+        StyleConstants.setForeground(nameStyle, Colors.NAMEFIELD_SINGLE_COLOR);
+        StyleConstants.setFontSize(nameStyle, 14);
     }
 
     private void setDialogLocation() {

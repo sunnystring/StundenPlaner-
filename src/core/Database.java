@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static core.ProfileTypes.*;
+import studentJournal.JournalData;
 
 /**
  *
@@ -31,8 +32,8 @@ public class Database {
     private HashMap<Integer, LectionData> lectionIDMap;
     private ArrayList<ArrayList<StudentDay>> sortedStudentDayLists;
     private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
-    private ArrayList<String> currentStudentJournals;
-    private ArrayList<ArrayList<String>> journalArchive;
+    private ArrayList<JournalData> currentStudentJournals;
+    private ArrayList<ArrayList<JournalData>> journalArchive;
     private ArrayList<ArrayList<Integer>> absenceLists;
     private ArrayList<String> weekNames;
     private int numberOfProfiles;
@@ -64,7 +65,8 @@ public class Database {
     public void addProfile(Profile profile) {
         profile.setID(numberOfProfiles);
         studentDataList.add(profile);
-        currentStudentJournals.add(numberOfProfiles, "");
+        currentStudentJournals.add(numberOfProfiles, new JournalData("", ""));
+        journalArchive.add(new ArrayList<>());
         addAbsenceRow();
         numberOfProfiles = studentDataList.size();
         if (profile.isStudent()) {
@@ -84,9 +86,11 @@ public class Database {
     }
 
     public void deleteProfile(Profile profile) {
-        currentStudentJournals.remove(profile.getID());
+        int profileID = profile.getID();
+        currentStudentJournals.remove(profileID);
+        journalArchive.remove(profileID);
         removeAbsenceRow(profile);
-        updateProfileIDs(profile.getID());
+        updateProfileIDs(profileID);
         studentDataList.remove(profile);
         numberOfProfiles = studentDataList.size();
         if (profile.isStudent()) {
@@ -136,7 +140,7 @@ public class Database {
         setLectionMaps(fileIO.getLectionMaps());
         setCurrentStudentJournals(fileIO.getStudentJournals());
         setJournalArchive(fileIO.getJournalArchive());
-        setAbsenceLists(fileIO.getAttendanceFieldLists());
+        setAbsenceLists(fileIO.getAbsenceLists());
         setWeekNames(fileIO.getWeekNames());
         updateLections();
         updateNumberOfSingleStudents();
@@ -205,6 +209,16 @@ public class Database {
             sortedStudentDayLists.add(sortedStudentDays);
             studentIDMaps.add(studentIDMap);
         }
+    }
+
+    public void addJournalToArchive(int profileID, JournalData archiveJournal) {
+        journalArchive.get(profileID).add(archiveJournal);
+    }
+
+    public void updateCurrentJournalInArchive(int profileID, JournalData currentJournal) {
+        ArrayList<JournalData> studentArchive = journalArchive.get(profileID);
+        JournalData lastArchiveJournal = studentArchive.get(studentArchive.size() - 1);
+        lastArchiveJournal.setText(currentJournal.getText());
     }
 
     public void addWeek(String weekName) {
@@ -301,31 +315,31 @@ public class Database {
         return lectionIDMap;
     }
 
-    public String getCurrentJournalText(int id) {
-        return currentStudentJournals.get(id);
+    public JournalData getCurrentJournalOf(int profileID) {
+        return currentStudentJournals.get(profileID);
     }
 
-    public void setCurrentJournalText(int id, String text) {
-        currentStudentJournals.set(id, text);
-    }
-
-    public ArrayList<String> getCurrentStudentJournals() {
+    public ArrayList<JournalData> getCurrentStudentJournals() {
         return currentStudentJournals;
     }
 
-    public void setCurrentStudentJournals(ArrayList<String> currentStudentJournals) {
+    public void setCurrentStudentJournals(ArrayList<JournalData> currentStudentJournals) {
         this.currentStudentJournals = currentStudentJournals;
     }
 
-    public ArrayList<ArrayList<String>> getJournalArchive() {
+    public ArrayList<JournalData> getJournalArchiveOf(int profileID) {
+        return journalArchive.get(profileID);
+    }
+
+    public ArrayList<ArrayList<JournalData>> getJournalArchive() {
         return journalArchive;
     }
 
-    public void setJournalArchive(ArrayList<ArrayList<String>> journalArchive) {
+    public void setJournalArchive(ArrayList<ArrayList<JournalData>> journalArchive) {
         this.journalArchive = journalArchive;
     }
 
-    public ArrayList<Integer> getAbsenceRowAt(int profileID) {
+    public ArrayList<Integer> getAbsenceRowOf(int profileID) {
         return absenceLists.get(profileID);
     }
 

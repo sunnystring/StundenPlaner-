@@ -8,7 +8,6 @@ package attendanceListData;
 import attendanceListUI.AttendanceTable;
 import core.Database;
 import core.Profile;
-import io.FileIO;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -30,24 +29,12 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
     private TreeMap<String, Integer> weekIndices;
     private int numberOfWeeks;
     private int numberOfValidProfiles;
-    private int currentWeekIndex;
-    private boolean defaultCurrentWeekIndex;
-    private boolean journalArchiveEnabled;
 
     public AttendanceListData(Database database) {
         fieldDataMatrix = new ArrayList<>();
         weekIndices = new TreeMap<>();
         this.database = database;
         numberOfWeeks = 0;
-        currentWeekIndex = -1;
-        defaultCurrentWeekIndex = true;
-        journalArchiveEnabled = false;
-    }
-
-    public void updateAfterFileEntry(FileIO fileIO) {
-        defaultCurrentWeekIndex = false;
-        journalArchiveEnabled = fileIO.isJournalEnabled();
-        currentWeekIndex = fileIO.getCurrentWeekIndex();
     }
 
     public void update() {
@@ -55,7 +42,6 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
         numberOfValidProfiles = 0;
         numberOfWeeks = database.getNumberOfWeeks();
         initWeekIndices();
-        setCurrentWeekIndex();
         for (int i = 0; i < database.getNumberOfValidDays(); i++) {
             TreeMap<Time, LectionData> lectionMap = database.getLectionMapAt(i);
             for (LectionData lectionData : lectionMap.values()) {
@@ -80,21 +66,13 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
         }
     }
 
-    private void setCurrentWeekIndex() {
-        if (journalArchiveEnabled) {
-            if (defaultCurrentWeekIndex) {
-                currentWeekIndex = numberOfWeeks - 1;
-            }
-        }
-    }
-
     private void addRow(Profile profile, int dayIndex) {
         ArrayList<AttendanceFieldData> fieldList = new ArrayList<>();
         AttendanceFieldData field = new AttendanceFieldData();
         field.setNameString(profile.getFirstName() + " " + profile.getName());
         fieldList.add(field);
         if (numberOfWeeks > 0) {
-            for (Integer absenceType : database.getAbsenceRowAt(profile.getID())) {
+            for (Integer absenceType : database.getAbsenceRowOf(profile.getID())) {
                 field = new AttendanceFieldData();
                 field.setAbsenceType(absenceType);
                 field.setProfileID(profile.getID());
@@ -110,7 +88,7 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
             ArrayList<AttendanceFieldData> fieldRow = fieldDataMatrix.get(i);
             for (int j = 1; j < getColumnCount(); j++) {
                 AttendanceFieldData field = fieldRow.get(j);
-                database.getAbsenceRowAt(field.getProfileID()).set(j - 1, field.getAbsenceType());
+                database.getAbsenceRowOf(field.getProfileID()).set(j - 1, field.getAbsenceType());
             }
         }
     }
@@ -161,30 +139,6 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
 
     public int getWeekIndex(String weekName) {
         return weekIndices.get(weekName);
-    }
-
-    public void setCurrentWeekIndex(int currentWeekIndex) {
-        this.currentWeekIndex = currentWeekIndex;
-    }
-
-    public int getCurrentWeekIndex() {
-        return currentWeekIndex;
-    }
-
-    public boolean isDefaultCurrentWeekIndex() {
-        return defaultCurrentWeekIndex;
-    }
-
-    public void setDefaultCurrentWeekIndex(boolean currentWeekIndexState) {
-        this.defaultCurrentWeekIndex = currentWeekIndexState;
-    }
-
-    public boolean isJournalArchiveEnabled() {
-        return journalArchiveEnabled;
-    }
-
-    public void setJournalArchiveEnabled(boolean journalArchiveEnabled) {
-        this.journalArchiveEnabled = journalArchiveEnabled;
     }
 
     @Override

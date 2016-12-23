@@ -47,14 +47,17 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseMotio
         } else {
             setHorizontalAlignment(SwingConstants.CENTER);
             if (col == movedCol) {
-                setBackground(LIGHT_GREEN);
+                setBackground(DARK_GREEN);
             } else {
-                if (attendanceListData.isJournalArchiveEnabled()) {
-                    setBackground(col == attendanceListData.getCurrentWeekIndex() + 1 ? DAYFIELD_COLOR : DARK_GREEN);
-                } else {
-                    setBackground(DAYFIELD_COLOR);
-                }
+                setBackground(DAYFIELD_COLOR);
             }
+//            {
+//                if (attendanceListData.isJournalArchiveEnabled()) {
+//                    setBackground(col == attendanceListData.getCurrentWeekIndex() + 1 ? DAYFIELD_COLOR : DARK_GREEN);
+//                } else {
+//                    setBackground(DAYFIELD_COLOR);
+//                }
+//            }
         }
         String name = (String) value;
         setText(name);

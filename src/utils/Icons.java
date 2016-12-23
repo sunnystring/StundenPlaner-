@@ -32,10 +32,6 @@ public class Icons {
 
     public static ImageIcon getIcon(String name) {
         Image img = getImage(name);
-        //  img = img.getScaledInstance(25, 25, Image.SCALE_DEFAULT);
-//        if (name.equals("disk.png")) {
-//            img = img.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
-//        }
         return new ImageIcon(img);
     }
 }

@@ -26,6 +26,12 @@ public class Dialogs {
                 + "Anfangszeit leer oder grösser als Schlusszeit", "Schülerliste", JOptionPane.ERROR_MESSAGE);
     }
 
+    public static int showNameDuplicateMessage(String name) {
+        Object[] options = {"Eingabe löschen", "Profil trotzdem speichern"};
+        return JOptionPane.showOptionDialog(null, "Der Name \"" + name + "\" existiert bereits!", "Nameneingabe",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+    }
+
     public static void showNoInputError(String msg) {
         JOptionPane.showMessageDialog(null, msg, "Ungültige Zeiten", JOptionPane.ERROR_MESSAGE);
     }
@@ -49,7 +55,7 @@ public class Dialogs {
     }
 
     public static int showStudentTimesOutOfBoundOptionMessage(String msg) {
-        msg = "Die Schülerzeiten liegen ausserhalb des Stundenplans!\n\n"+ msg;
+        msg = "Die Schülerzeiten liegen ausserhalb des Stundenplans!\n\n" + msg;
         Object[] options = {"Stundenplan anpassen", "Schülerzeit anpassen"};
         return JOptionPane.showOptionDialog(null, msg, "Zeiteingabe",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
@@ -83,9 +89,9 @@ public class Dialogs {
         return JOptionPane.showOptionDialog(null, msg, "StundenPlaner beenden",
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }
-    
-     public static int showAffirmDeleteAttendanceListMessage() {
-        String  msg = "Soll wirklich die ganze Unterrichtskontrolle gelöscht werden!\n";
+
+    public static int showAffirmDeleteAttendanceListMessage() {
+        String msg = "Soll wirklich die ganze Unterrichtskontrolle gelöscht werden!\n";
         Object[] options = {"Löschen", "Abbrechen"};
         return JOptionPane.showOptionDialog(null, msg, "Unterrichtskontrolle",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
