@@ -14,6 +14,7 @@ import exceptions.IllegalTimeSlotException;
 import exceptions.NameDuplicateException;
 import exceptions.OutOfBoundException;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -79,6 +80,7 @@ public abstract class ProfileInputMask extends JPanel {
         top = new JPanel();
         top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
         top.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        top.setPreferredSize(new Dimension(500, 45));
         center = new JScrollPane(timeSelectionTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bottom = new JPanel();
@@ -90,7 +92,9 @@ public abstract class ProfileInputMask extends JPanel {
         footnote = new JLabel("* Beginn der Lektion");
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
         firstnameField = new JTextField(" ");
+        firstnameField.setMinimumSize(new Dimension(150, 32));
         nameField = new JTextField(" ");
+        nameField.setMinimumSize(new Dimension(150, 32));
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         cancelButton = new JButton("Abbrechen");
         saveButton = new JButton();

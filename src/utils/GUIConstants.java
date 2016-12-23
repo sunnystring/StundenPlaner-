@@ -16,7 +16,7 @@ import javax.swing.border.Border;
 public class GUIConstants {
 
     public static final Dimension KGU_DIMENSION = new Dimension(400, 300);
-    public static final Dimension DEFAULT_ENTRY_DIMENSION = new Dimension(400, 200);
+    public static final Dimension DEFAULT_ENTRY_DIMENSION = new Dimension(400, 250);
     public static final Dimension SCHEDULE_DIMENSION = new Dimension(250, 200);
     public static final Dimension BIG_DIALOG_DIMENSION = new Dimension(1400, 750);
     public static final Dimension ATTENDANCELIST_DIMENSION = new Dimension(800, 500);

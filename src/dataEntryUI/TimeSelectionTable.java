@@ -28,7 +28,7 @@ public class TimeSelectionTable extends JTable {
         this.scheduleTimes = scheduleTimes;
         KGUselected = false;
         setModel(scheduleTimes);
-        setRowHeight(25);
+        setRowHeight(32);
         setShowGrid(true);
         putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
         setDefaultEditor(String.class, new TimeStringEditor());

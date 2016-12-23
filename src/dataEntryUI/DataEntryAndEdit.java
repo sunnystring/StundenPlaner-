@@ -9,6 +9,8 @@ import utils.GUIConstants;
 import dataEntryUI.student.StudentInputMask;
 import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.group.GroupInputMask;
+import dataEntryUI.schedule.ScheduleEdit;
+import dataEntryUI.schedule.ScheduleEntry;
 import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
