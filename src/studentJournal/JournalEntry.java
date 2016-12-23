@@ -81,6 +81,14 @@ public class JournalEntry extends JDialog {
         bottomField.setBorder(LIGHT_BORDER);
         textPane = new JTextPane();
         textPane.setFont(textPane.getFont().deriveFont(Font.PLAIN, 14));
+        textPane.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    dispose();
+                }
+            }
+        });
         centerField = new JScrollPane(textPane);
         centerField.setBorder(BorderFactory.createEmptyBorder(1, 3, 0, 3));
         closeButton = new JButton("Schliessen");
@@ -146,7 +154,7 @@ public class JournalEntry extends JDialog {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    ArchiveView archiveView = new ArchiveView(mainFrame);
+                    JournalArchiveView archiveView = new JournalArchiveView(mainFrame);
                     archiveView.setLocation(getArchiveViewLocation());
                     archiveView.showArchiveOf(profile);
                     archiveView.setVisible(true);

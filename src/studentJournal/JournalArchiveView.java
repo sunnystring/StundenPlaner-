@@ -26,13 +26,13 @@ import utils.GUIConstants;
  *
  * @author mathiaskielholz
  */
-public class ArchiveView extends JournalDayView {
+public class JournalArchiveView extends JournalDayView {
 
     private Database database;
     private JPanel topField;
     private JLabel nameField;
 
-    public ArchiveView(MainFrame mainFrame) {
+    public JournalArchiveView(MainFrame mainFrame) {
         super(mainFrame);
         database = mainFrame.getDatabase();
         setTitle("Journal-Archiv");
