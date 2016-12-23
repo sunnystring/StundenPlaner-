@@ -5,6 +5,7 @@
  */
 package utils;
 
+import java.awt.Component;
 import javax.swing.JOptionPane;
 
 /**
@@ -94,6 +95,13 @@ public class Dialogs {
         String msg = "Soll wirklich die ganze Unterrichtskontrolle gelöscht werden!\n";
         Object[] options = {"Löschen", "Abbrechen"};
         return JOptionPane.showOptionDialog(null, msg, "Unterrichtskontrolle",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+    }
+
+    public static int showAffirmDeleteJournalArchiveMessage(Component parent, String name) {
+        String msg = "Sollen wirklich alle Journale von\n" + name + " gelöscht werden!\n";
+        Object[] options = {"Löschen", "Abbrechen"};
+        return JOptionPane.showOptionDialog(parent, msg, "Journal-Archiv",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     }
 }

@@ -9,10 +9,15 @@ import core.Database;
 import core.Profile;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -20,19 +25,22 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import mainframe.MainFrame;
 import utils.Colors;
+import utils.Dialogs;
 import utils.GUIConstants;
 
 /**
  *
  * @author mathiaskielholz
  */
-public class ArchiveView extends JournalDayView {
+public class JournalArchiveView extends JournalDayView {
 
     private Database database;
+    private Profile profile;
     private JPanel topField;
     private JLabel nameField;
+    private JButton deleteArchiveButton;
 
-    public ArchiveView(MainFrame mainFrame) {
+    public JournalArchiveView(MainFrame mainFrame) {
         super(mainFrame);
         database = mainFrame.getDatabase();
         setTitle("Journal-Archiv");
@@ -50,10 +58,23 @@ public class ArchiveView extends JournalDayView {
         topField.add(Box.createHorizontalGlue());
         topField.add(nameField);
         topField.add(Box.createHorizontalGlue());
+        deleteArchiveButton = new JButton("Archiv löschen");
+        deleteArchiveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Dialogs.showAffirmDeleteJournalArchiveMessage(textPane, profile.getFirstName()
+                        + " " + profile.getName()) == JOptionPane.YES_OPTION) {
+                    database.getJournalArchiveOf(profile.getID()).clear();
+                    dispose();
+                }
+            }
+        });
+        bottomField.add(deleteArchiveButton);
         add(BorderLayout.PAGE_START, topField);
     }
 
     public void showArchiveOf(Profile profile) {
+        this.profile = profile;
         addStylesToDocument();
         nameField.setText(profile.getFirstName() + " " + profile.getName() + " " + profile.getThirdName());
         ArrayList<JournalData> archive = database.getJournalArchiveOf(profile.getID());
@@ -77,7 +98,7 @@ public class ArchiveView extends JournalDayView {
         document.addStyle("journalArchive", defaultStyle);
         StyleConstants.setFontSize(defaultStyle, 14);
         Style dateStyle = document.addStyle("date", defaultStyle);
-        StyleConstants.setForeground(dateStyle, Colors.VERY_DARK_GREEN);
+        StyleConstants.setForeground(dateStyle, Colors.DARK_GREEN);
         StyleConstants.setFontSize(dateStyle, 14);
         StyleConstants.setBold(dateStyle, true);
     }

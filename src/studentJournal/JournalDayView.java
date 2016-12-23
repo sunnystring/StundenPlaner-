@@ -13,6 +13,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,6 +21,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -42,8 +45,8 @@ public class JournalDayView extends JDialog {
     private ScheduleData scheduleData;
     protected StyledDocument document;
     protected JScrollPane centerField;
-    private JPanel bottomField;
-    private JButton closeButton;
+    protected JPanel bottomField;
+    protected JButton closeButton;
     protected JTextPane textPane;
     private String journalText;
     private String nameString;
@@ -64,6 +67,12 @@ public class JournalDayView extends JDialog {
         bottomField.setBorder(LIGHT_BORDER);
         textPane = new JTextPane();
         textPane.setEditable(false);
+        textPane.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                dispose();
+            }
+        });
         centerField = new JScrollPane(textPane);
         centerField.setMinimumSize(textPane.getPreferredSize());
         centerField.setBorder(VERY_LIGHT_BORDER);
@@ -74,8 +83,8 @@ public class JournalDayView extends JDialog {
                 setVisible(false);
             }
         });
-        bottomField.add(Box.createHorizontalGlue());
         bottomField.add(closeButton);
+        bottomField.add(Box.createHorizontalGlue());
         add(BorderLayout.CENTER, centerField);
         add(BorderLayout.PAGE_END, bottomField);
     }

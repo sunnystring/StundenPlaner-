@@ -146,7 +146,7 @@ public class JournalEntry extends JDialog {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    ArchiveView archiveView = new ArchiveView(mainFrame);
+                    JournalArchiveView archiveView = new JournalArchiveView(mainFrame);
                     archiveView.setLocation(getArchiveViewLocation());
                     archiveView.showArchiveOf(profile);
                     archiveView.setVisible(true);

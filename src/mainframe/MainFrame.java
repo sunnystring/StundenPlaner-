@@ -216,6 +216,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 }
                 return fileIO.isValidExtension(f);
             }
+
             @Override
             public String getDescription() {
                 return "StundenPlaner";
@@ -316,9 +317,25 @@ public class MainFrame extends JFrame implements DatabaseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog infoFrame = new JDialog(MainFrame.this);
-                JScrollPane pane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
+                infoFrame.setLocation(20, 60);
                 infoFrame.setMinimumSize(GUIConstants.BIG_DIALOG_DIMENSION);
-                infoFrame.add(pane);
+                JScrollPane screenshotPane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
+                JPanel mainPanel = new JPanel(new BorderLayout());
+                JPanel bottom = new JPanel();
+                bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
+                bottom.setBorder(GUIConstants.LIGHT_BORDER);
+                JButton closeButton = new JButton("Schliessen");
+                closeButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        infoFrame.dispose();
+                    }
+                });
+                bottom.add(closeButton);
+                bottom.add(Box.createHorizontalGlue());
+                mainPanel.add(BorderLayout.CENTER, screenshotPane);
+                mainPanel.add(BorderLayout.PAGE_END, bottom);
+                infoFrame.add(mainPanel);
                 infoFrame.setVisible(true);
             }
         });
