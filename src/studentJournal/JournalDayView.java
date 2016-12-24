@@ -21,7 +21,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -37,7 +36,7 @@ import static utils.GUIConstants.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Gesamtsicht der laufenden Journale von {@link JournalEntry} aller Schüler eines Tages
  */
 public class JournalDayView extends JDialog {
 

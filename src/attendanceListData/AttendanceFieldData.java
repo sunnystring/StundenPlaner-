@@ -5,9 +5,11 @@
  */
 package attendanceListData;
 
+import attendanceListUI.AttendanceField;
+
 /**
  *
- * @author mathiaskielholz
+ *  Model von {@link AttendanceField}
  */
 public class AttendanceFieldData {
 

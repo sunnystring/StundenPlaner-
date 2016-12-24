@@ -13,7 +13,7 @@ import utils.Dialogs;
 
 /**
  *
- * Editor-Component von {@link SelectionTable} mit User-Input-Validation
+ * Editor-Component von {@link TimeSelectionTable} mit User-Input-Validation
  */
 public class TimeStringEditor extends DefaultCellEditor {
 

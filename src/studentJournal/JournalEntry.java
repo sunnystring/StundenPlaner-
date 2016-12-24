@@ -38,7 +38,9 @@ import static utils.GUIConstants.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Eingabe-Dialogfenster für den laufenden Journaltext, dieser wird bei der
+ * Speicherung auch ins Archiv übernommen, am selben Tag gemachte Änderungen
+ * werden angepasst, ab dem folgenden Tag archiviert
  */
 public class JournalEntry extends JDialog {
 

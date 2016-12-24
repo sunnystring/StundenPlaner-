@@ -10,7 +10,7 @@ import static core.ProfileTypes.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Datenbestand eines Schülers bzw einer Gruppe
  */
 public class Profile {
 

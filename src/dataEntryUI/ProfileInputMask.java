@@ -10,6 +10,12 @@ import core.Database;
 import core.Profile;
 import core.ScheduleTimes;
 import core.StudentTimes;
+import dataEntryUI.group.GroupInputMask;
+import dataEntryUI.group.profiles.GroupEdit;
+import dataEntryUI.group.profiles.GroupEntry;
+import dataEntryUI.student.StudentEdit;
+import dataEntryUI.student.StudentEntry;
+import dataEntryUI.student.StudentInputMask;
 import exceptions.IllegalTimeSlotException;
 import exceptions.NameDuplicateException;
 import exceptions.OutOfBoundException;
@@ -37,10 +43,13 @@ import javax.swing.event.CaretListener;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
 import utils.Dialogs;
+import utils.GUIConstants;
 
 /**
  *
- * @author mathiaskielholz
+ * Superklasse von {@link StudentInputMask}, {@link GroupInputMask} (= Eingabemasken-UI von
+ * von {@link StudentEntry}, {@link StudentEdit}, {@link GroupEntry}, {@link GroupEdit}
+ * 
  */
 public abstract class ProfileInputMask extends JPanel {
 
@@ -70,6 +79,7 @@ public abstract class ProfileInputMask extends JPanel {
         scheduleTimes = database.getScheduleTimes();
         lectionTypes = new String[]{"30", "40", "50", "KGU", "SDG"}; // = default
         setLayout(new BorderLayout());
+        setBorder(GUIConstants.LIGHT_BORDER);
         createWidgets();
         addWidgets();
         addTextFieldListeners();

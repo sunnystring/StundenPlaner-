@@ -7,7 +7,7 @@ package core;
 
 /**
  *
- * @author mathiaskielholz
+ * Sammlung aller Profil-Konstanten
  */
 public class ProfileTypes {
 

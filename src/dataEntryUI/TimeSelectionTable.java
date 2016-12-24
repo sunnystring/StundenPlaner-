@@ -7,6 +7,7 @@ package dataEntryUI;
 
 import core.ScheduleTimes;
 import core.StudentTimes;
+import dataEntryUI.schedule.ScheduleInputMask;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -15,8 +16,8 @@ import utils.Colors;
 
 /**
  *
- * Sub-UI für die Zeiteinträge, das von {@link ScheduleInputMask} und
- * {@link StudentInputMask} benutzt wird
+ * Sub-UI für die Zeiteinträge von {@link ScheduleInputMask} und
+ * {@link ProfileInputMask}
  */
 public class TimeSelectionTable extends JTable {
 
@@ -61,7 +62,7 @@ public class TimeSelectionTable extends JTable {
         setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
-                boolean isValidTimeslot2 =!(KGUselected && (col == 3 || col == 4));
+                boolean isValidTimeslot2 = !(KGUselected && (col == 3 || col == 4));
                 setText(studentTimes.getValueAt(row, col).toString());
                 if (scheduleTimes.isValidDay(row) && isValidTimeslot2) {
                     setBackground(Colors.BACKGROUND_COLOR);

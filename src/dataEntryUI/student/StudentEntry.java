@@ -11,7 +11,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * Eingabe eines neuen Schülerprofils
+ * Dialogfenster Eingabe eines neuen Schülerprofils
  */
 public class StudentEntry extends DataEntryAndEdit {
 

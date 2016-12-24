@@ -21,17 +21,15 @@ import static utils.Colors.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Renderer-Component für {@link AttendanceTable}
  */
 public class HeaderField extends JLabel implements TableCellRenderer, MouseMotionListener {
 
     private AttendanceTable attendanceTable;
-    private AttendanceListData attendanceListData;
     private int movedCol;
 
     public HeaderField(AttendanceTable attendanceTable) {
         this.attendanceTable = attendanceTable;
-        attendanceListData = (AttendanceListData) attendanceTable.getModel();
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, BACKGROUND_COLOR));
         setPreferredSize(new Dimension(0, 25));
         setForeground(BACKGROUND_COLOR);
@@ -51,13 +49,6 @@ public class HeaderField extends JLabel implements TableCellRenderer, MouseMotio
             } else {
                 setBackground(DAYFIELD_COLOR);
             }
-//            {
-//                if (attendanceListData.isJournalArchiveEnabled()) {
-//                    setBackground(col == attendanceListData.getCurrentWeekIndex() + 1 ? DAYFIELD_COLOR : DARK_GREEN);
-//                } else {
-//                    setBackground(DAYFIELD_COLOR);
-//                }
-//            }
         }
         String name = (String) value;
         setText(name);

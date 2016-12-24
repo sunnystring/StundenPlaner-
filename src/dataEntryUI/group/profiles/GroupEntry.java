@@ -12,7 +12,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+  * Dialogfenster Eingabe neues Gruppenprofil
  */
 public class GroupEntry extends DataEntryAndEdit {
 

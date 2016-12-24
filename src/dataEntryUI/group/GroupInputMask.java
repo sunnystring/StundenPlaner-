@@ -8,13 +8,15 @@ package dataEntryUI.group;
 import core.Database;
 import core.Profile;
 import dataEntryUI.ProfileInputMask;
+import dataEntryUI.group.profiles.GroupEdit;
+import dataEntryUI.group.profiles.GroupEntry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 /**
  *
- * @author mathiaskielholz
+ * Eingabemaske Gruppenprofil von {@link GroupEntry}, {@link GroupEdit}
  */
 public class GroupInputMask extends ProfileInputMask {
 

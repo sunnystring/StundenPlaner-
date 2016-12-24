@@ -5,7 +5,6 @@
  */
 package core;
 
-import com.google.gson.annotations.Expose;
 import utils.Time;
 
 /**

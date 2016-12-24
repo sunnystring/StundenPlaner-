@@ -12,7 +12,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster KGU-Profil ändern oder löschen
  */
 public class KGUEdit extends SelectableMemberGroupInputMask {
 

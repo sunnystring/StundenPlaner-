@@ -12,7 +12,7 @@ import static utils.Colors.BACKGROUND_COLOR;
 
 /**
  *
- * @author mathiaskielholz
+ * Absenzenliste-UI in {@link AttendanceListUI}
  */
 public class AttendanceTable extends JTable {
 

@@ -10,7 +10,7 @@ import static utils.Colors.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Sammlung aller Absenzentypen-Konstanten mit den zugeordneten Characters/Farben
  */
 public class AbsenceTypes {
 

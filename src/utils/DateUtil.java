@@ -14,7 +14,7 @@ import java.util.Locale;
 
 /**
  *
- * @author mathiaskielholz
+ * Statische Hilfsklasse zur Konvertierung von Date/String-Objekten
  */
 public class DateUtil {
 

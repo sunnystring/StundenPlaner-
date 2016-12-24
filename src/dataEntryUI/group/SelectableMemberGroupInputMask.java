@@ -9,7 +9,9 @@ import static core.ProfileTypes.*;
 import core.Database;
 import core.Profile;
 import core.StudentDay;
+import dataEntryUI.group.kgu.KGUEdit;
 import dataEntryUI.group.kgu.KGUEntry;
+import dataEntryUI.group.sdg.SDGEdit;
 import dataEntryUI.group.sdg.SDGEntry;
 import dataEntryUI.schedule.ScheduleEdit;
 import static utils.GUIConstants.*;
@@ -43,7 +45,8 @@ import utils.Dialogs;
 
 /**
  *
- * @author mathiaskielholz
+ * Superklasse von {@link KGUEntry}, {@link KGUEdit}, {@link SDGEntry}, {@link SDGEdit}
+ * (Dialogfenster und Eingabemasken-UI aller "selectableMember"-Gruppen)
  */
 public abstract class SelectableMemberGroupInputMask extends JDialog {
 

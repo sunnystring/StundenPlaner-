@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author mathiaskielholz
+ * Factory für alle JOptionPane-Dialoge
  */
 public class Dialogs {
 

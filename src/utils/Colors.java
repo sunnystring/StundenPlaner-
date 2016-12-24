@@ -9,7 +9,7 @@ import java.awt.Color;
 
 /**
  *
- * @author Mathias
+ * Sammlung aller StundenPlaner-Farb-Konstanten
  */
 public class Colors {
 

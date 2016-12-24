@@ -15,7 +15,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author Mathias
+ * Statische Getter für Images und Icons
  */
 public class Icons {
 

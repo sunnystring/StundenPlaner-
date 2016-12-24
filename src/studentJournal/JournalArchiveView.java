@@ -12,7 +12,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,7 +29,7 @@ import utils.GUIConstants;
 
 /**
  *
- * @author mathiaskielholz
+ * Gesamtsicht aller Journale eines Schülers, die über {@link JournalEntry} gespeichert wurden
  */
 public class JournalArchiveView extends JournalDayView {
 

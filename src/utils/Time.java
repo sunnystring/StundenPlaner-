@@ -234,7 +234,7 @@ public class Time implements Cloneable, Comparable<Time> {
         int minutes = this.hour * 60 + this.minute;
         int numberOfFields = minutes / 5;
         int numberOfIncrements = numberOfFields / t;
-        if (minutes % t != 0 && roundUp) {
+        if (numberOfFields % t != 0 && roundUp) {
             numberOfIncrements++;
         }
         for (int i = 0; i < numberOfIncrements; i++) {

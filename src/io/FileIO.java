@@ -32,7 +32,7 @@ import utils.Dialogs;
 
 /**
  *
- * Speichern und Laden der Schüler- und Lection-Daten über JSON
+ * Speichern und Laden aller Schüler- und Lection-Daten mit JSON
  */
 public class FileIO {
 

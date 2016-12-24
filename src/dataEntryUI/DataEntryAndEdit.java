@@ -9,8 +9,12 @@ import utils.GUIConstants;
 import dataEntryUI.student.StudentInputMask;
 import dataEntryUI.schedule.ScheduleInputMask;
 import dataEntryUI.group.GroupInputMask;
+import dataEntryUI.group.profiles.GroupEdit;
+import dataEntryUI.group.profiles.GroupEntry;
 import dataEntryUI.schedule.ScheduleEdit;
 import dataEntryUI.schedule.ScheduleEntry;
+import dataEntryUI.student.StudentEdit;
+import dataEntryUI.student.StudentEntry;
 import javax.swing.JDialog;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
@@ -18,9 +22,8 @@ import studentListData.StudentListData;
 
 /**
  *
- * Superklasse von
- * {@link ScheduleEntry}, {@link ScheduleEdit}, {@link StudentEntry} und
- * {@link StudentEdit}
+ * Superklasse aller Eingabe-Dialogfenster {@link ScheduleEntry}, {@link ScheduleEdit}, {@link StudentEntry}, {@link StudentEdit},
+ *  {@link GroupEntry}, {@link GroupEdit}
  */
 public abstract class DataEntryAndEdit extends JDialog {
 

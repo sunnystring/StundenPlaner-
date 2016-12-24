@@ -12,7 +12,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster Gruppenprofil ändern oder löschen
  */
 public class GroupEdit extends DataEntryAndEdit {
 

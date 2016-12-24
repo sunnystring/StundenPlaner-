@@ -22,7 +22,7 @@ import static utils.Colors.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Renderer-Component für {@link AttendanceTable}
  */
 public class AttendanceField extends JLabel implements MouseMotionListener, TableCellRenderer {
 

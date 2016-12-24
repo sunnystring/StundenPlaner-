@@ -23,7 +23,7 @@ import static utils.GUIConstants.*;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster der Unterrichtskontrolle für die Eingabe der Absenzen
  */
 public class AttendanceListUI extends JDialog {
 

@@ -12,7 +12,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster "Selbstdefinierte Gruppe" ändern oder löschen
  */
 public class SDGEdit extends SelectableMemberGroupInputMask {
 

@@ -7,7 +7,7 @@ package studentJournal;
 
 /**
  *
- * @author mathiaskielholz
+ * Datenbestand eines Journals
  */
 public class JournalData {
 

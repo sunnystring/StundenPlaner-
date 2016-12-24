@@ -13,7 +13,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster Eingabe neue "Selbstdefinierte Gruppe"
  */
 public class SDGEntry extends SelectableMemberGroupInputMask {
 

@@ -11,7 +11,7 @@ import javax.swing.border.Border;
 
 /**
  *
- * @author mathiaskielholz
+ * Sammlung von Border- und Dimension-Konstanten
  */
 public class GUIConstants {
 

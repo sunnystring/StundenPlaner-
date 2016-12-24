@@ -21,7 +21,8 @@ import studentJournal.JournalData;
 /**
  *
  * Verwaltung aller relevanten Daten für die permanente Speicherung:
- * Schülerdatenbestand, Unterrichtstage/-zeiten, eingeteilte Lektionen
+ * Schülerdatenbestand, Unterrichtstage/-zeiten, eingeteilte Lektionen,
+ * Journale/Journal-Archiv, Absenzenliste
  */
 public class Database {
 

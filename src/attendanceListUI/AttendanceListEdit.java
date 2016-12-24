@@ -6,7 +6,6 @@
 package attendanceListUI;
 
 import attendanceListData.AttendanceListData;
-import attendanceListUI.AttendanceListUI;
 import com.toedter.calendar.JCalendar;
 import core.Database;
 import java.awt.BorderLayout;
@@ -28,7 +27,7 @@ import utils.DateUtil;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster für das Erstellen/Löschen der Unterrichtswochen in {@link AttendanceListUI}
  */
 public class AttendanceListEdit extends JDialog {
 

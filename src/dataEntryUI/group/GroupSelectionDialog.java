@@ -27,7 +27,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Auswahl-Dialogfenster für alle Gruppenprofile    
  */
 public class GroupSelectionDialog extends JDialog {
 

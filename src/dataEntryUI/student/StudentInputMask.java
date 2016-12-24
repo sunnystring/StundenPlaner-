@@ -11,6 +11,11 @@ import core.ProfileTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ *
+ * Eingabemaske Schülerprofil von {@link StudentEntry}, {@link StudentEdit} 
+ */
+
 public class StudentInputMask extends ProfileInputMask {
 
     public StudentInputMask(Database database) {

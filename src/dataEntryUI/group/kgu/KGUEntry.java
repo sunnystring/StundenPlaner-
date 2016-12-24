@@ -13,7 +13,7 @@ import mainframe.MainFrame;
 
 /**
  *
- * @author mathiaskielholz
+ * Dialogfenster Eingabe neues KGU-Profil
  */
 public class KGUEntry extends SelectableMemberGroupInputMask {
 

@@ -29,10 +29,11 @@ import javax.swing.JOptionPane;
 import mainframe.MainFrame;
 import scheduleData.ScheduleData;
 import utils.Dialogs;
+import utils.GUIConstants;
 
 /**
  *
- * UI, das von {@link ScheduleEntry} und {@link ScheduleEdit} benutzt wird
+ * UI von {@link ScheduleEntry} und {@link ScheduleEdit}
  */
 public class ScheduleInputMask extends JPanel {
 
@@ -53,6 +54,7 @@ public class ScheduleInputMask extends JPanel {
         scheduleData = mainFrame.getScheduleData();
         scheduleTimes = database.getScheduleTimes();
         setLayout(new BorderLayout());
+        setBorder(GUIConstants.LIGHT_BORDER);
         createWidgets();
         addWidgets();
     }

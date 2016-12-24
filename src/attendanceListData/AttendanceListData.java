@@ -20,7 +20,8 @@ import utils.Time;
 
 /**
  *
- * @author mathiaskielholz
+ * TableModel für {@link AttendanceTable}, jede Zelle ist in der fieldDataMatrix als
+ * {@link AttendanceFieldData} abgebildet
  */
 public class AttendanceListData extends AbstractTableModel implements MouseListener {
 

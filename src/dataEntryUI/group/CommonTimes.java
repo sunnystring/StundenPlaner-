@@ -13,7 +13,7 @@ import static utils.Time.ABSOLUTE_END;
 
 /**
  *
- * @author mathiaskielholz
+ * Hilfsklasse für die "selectableMember"-Gruppen (KGU und "Selbstdefinierte Gruppe") 
  */
 public class CommonTimes {
 
