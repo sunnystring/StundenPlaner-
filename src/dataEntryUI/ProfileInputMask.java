@@ -37,6 +37,7 @@ import javax.swing.event.CaretListener;
 import mainframe.MainFrame;
 import scheduleData.ScheduleTimeFrame;
 import utils.Dialogs;
+import utils.GUIConstants;
 
 /**
  *
@@ -70,6 +71,7 @@ public abstract class ProfileInputMask extends JPanel {
         scheduleTimes = database.getScheduleTimes();
         lectionTypes = new String[]{"30", "40", "50", "KGU", "SDG"}; // = default
         setLayout(new BorderLayout());
+        setBorder(GUIConstants.LIGHT_BORDER);
         createWidgets();
         addWidgets();
         addTextFieldListeners();

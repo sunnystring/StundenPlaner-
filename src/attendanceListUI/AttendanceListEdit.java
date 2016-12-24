@@ -6,7 +6,6 @@
 package attendanceListUI;
 
 import attendanceListData.AttendanceListData;
-import attendanceListUI.AttendanceListUI;
 import com.toedter.calendar.JCalendar;
 import core.Database;
 import java.awt.BorderLayout;

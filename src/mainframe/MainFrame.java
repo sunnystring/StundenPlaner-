@@ -319,6 +319,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
                 JDialog infoFrame = new JDialog(MainFrame.this);
                 infoFrame.setLocation(20, 60);
                 infoFrame.setMinimumSize(GUIConstants.BIG_DIALOG_DIMENSION);
+                infoFrame.setTitle("Screenshot: Alle wichtigen Klicks auf einen Blick");
                 JScrollPane screenshotPane = new JScrollPane(new JLabel(Icons.getIcon("screenshot.png")));
                 JPanel mainPanel = new JPanel(new BorderLayout());
                 JPanel bottom = new JPanel();
@@ -395,6 +396,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     private void showStundenPlaner() {
+        String filename = fileChooser.getSelectedFile().getName();
+        setTitle("StundenPlaner: " + filename.substring(0, filename.lastIndexOf(".")));
         scheduleData.updateTableData();
         updateSchedule();
         studentListData.updateAfterFileEntry();

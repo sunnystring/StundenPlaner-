@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import utils.Colors;
 import utils.Time;
+import static utils.Time.*;
 
 /**
  *
@@ -24,7 +25,7 @@ public class StudentTimesDistribution {
     public static final int COLOR_RANGE = 5;
     private ScheduleTimes scheduleTimes;
     private ArrayList<TreeMap> blueMaps, redMaps, purpleMaps;
-    private Time inc, timeMark;
+    private Time timeStep, timeMark;
     private Color color;
 
     public StudentTimesDistribution(ScheduleTimes scheduleTimes) {
@@ -47,12 +48,16 @@ public class StudentTimesDistribution {
 
     private void createColorMaps() {
         for (int i = 0; i < scheduleTimes.getNumberOfValidDays(); i++) {
-            setTimeComponents(scheduleTimes.getValidScheduleDayAt(i));
+            ScheduleDay scheduleDay = scheduleTimes.getValidScheduleDayAt(i);
+            setTimeComponents(scheduleDay);
             TreeMap<Time, Color> blueMap = new TreeMap<>();
             TreeMap<Time, Color> redMap = new TreeMap<>();
             TreeMap<Time, Color> purpleMap = new TreeMap<>();
             for (int j = 0; j < COLOR_RANGE; j++) {
-                timeMark = timeMark.plus(inc);
+                timeMark = timeMark.plus(timeStep);
+                if (j == COLOR_RANGE - 1) { 
+                    timeMark = scheduleDay.getValidEnd(); // Rundungsfehler 
+                }
                 color = Colors.getBlue(j);
                 blueMap.put(timeMark, color);
                 color = Colors.getRed(j);
@@ -69,8 +74,8 @@ public class StudentTimesDistribution {
     private void setTimeComponents(ScheduleDay scheduleDay) {
         timeMark = new Time();
         timeMark = scheduleDay.getValidStart().clone();
-        inc = new Time();
-        inc = (scheduleDay.getValidEnd().minus(scheduleDay.getValidStart())).divBy(COLOR_RANGE, Time.ROUND_UP);
+        timeStep = new Time();
+        timeStep = (scheduleDay.getValidEnd().minus(scheduleDay.getValidStart())).divBy(COLOR_RANGE, ROUND_UP);
     }
 
     public Color getBlue(Time time, int dayIndex) {
