@@ -8,14 +8,12 @@ package utils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import mainframe.MainFrame;
 
 /**
  *
- * Statische Getter für Images und Icons
+ * Hilfsklasse für Images/Icons
  */
 public class Icons {
 
@@ -23,7 +21,7 @@ public class Icons {
 
     public static BufferedImage getImage(String name) {
         try {
-            bufImg = ImageIO.read(MainFrame.class.getClassLoader().getResourceAsStream("images/" + name));
+            bufImg = ImageIO.read(ClassLoader.getSystemResource("images/" + name));
         } catch (IOException e) {
             e.printStackTrace();
         }

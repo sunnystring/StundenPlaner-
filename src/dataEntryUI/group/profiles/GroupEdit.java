@@ -19,36 +19,14 @@ public class GroupEdit extends DataEntryAndEdit {
     private Profile group;
 
     public GroupEdit(MainFrame mainFrame, Profile group) {
-        super(mainFrame, group.getProfileName() + "-Profil ändern oder löschen");
+        super(mainFrame, "Gruppenprofil ändern oder löschen");
         this.group = group;
         setUpMask();
         pack();
     }
 
     public void selectProfile() {
-        switch (group.getProfileName()) {
-            case ProfileTypes.KGU_NAME:
-                //....
-                break;
-            case ProfileTypes.WORKSHOP_NAME:
-                groupInputMask.restoreWorkshopProfile();
-                break;
-            case ProfileTypes.INSTR_FORMATION_NAME:
-                groupInputMask.restoreInstrumentalformationProfile(group);
-                break;
-            case ProfileTypes.CHOR_NAME:
-                groupInputMask.restoreChorProfile(group);
-                break;
-            case ProfileTypes.GRUNDSCHULUNG_NAME:
-                groupInputMask.restoreGrundschulungProfile();
-                break;
-            case ProfileTypes.ANDERES_NAME:
-                groupInputMask.restoreOtherProfile(group);
-                break;
-            default:
-                break;
-
-        }
+        groupInputMask.restoreSelectionEntry(group);
     }
 
     @Override

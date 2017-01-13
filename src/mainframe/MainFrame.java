@@ -7,6 +7,7 @@ package mainframe;
 
 import attendanceListData.AttendanceListData;
 import attendanceListUI.AttendanceListUI;
+import com.apple.eawt.Application;
 import core.Database;
 import core.DatabaseListener;
 import core.Profile;
@@ -40,6 +41,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -88,7 +90,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public MainFrame() {
         setTitle("StundenPlaner");
-        setIconImage(Icons.getImage("table.png"));
+        // setIconImage(Icons.getImage("mainIcon.png"));
+        Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();

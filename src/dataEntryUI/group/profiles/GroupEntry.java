@@ -12,7 +12,7 @@ import mainframe.MainFrame;
 
 /**
  *
-  * Dialogfenster Eingabe neues Gruppenprofil
+ * Dialogfenster Eingabe neues Gruppenprofil
  */
 public class GroupEntry extends DataEntryAndEdit {
 
@@ -25,24 +25,8 @@ public class GroupEntry extends DataEntryAndEdit {
         pack();
     }
 
-    public void setWorkshopProfile() {
-        groupInputMask.workshopProfile();
-    }
-
-    public void setInstrumentalformationProfile() {
-        groupInputMask.instrumentalformationProfile();
-    }
-
-    public void setChorProfile() {
-        groupInputMask.chorProfile();
-    }
-
-    public void setGrundschulungProfile() {
-        groupInputMask.grundschulungProfile();
-    }
-
-    public void setOtherProfile() {
-        groupInputMask.otherProfile();
+    public void setGroupProfileMask() {
+        groupInputMask.createSelectionEntry();
     }
 
     @Override

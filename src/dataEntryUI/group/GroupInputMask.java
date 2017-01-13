@@ -32,118 +32,41 @@ public class GroupInputMask extends ProfileInputMask {
         nameLabel.setText(" Zusatz:");
     }
 
-    public void workshopProfile() {
-        removeExistingLectionTypeEntry();
-        lectionLength = "50";
-    }
-
-    public void instrumentalformationProfile() {
+    public void createSelectionEntry() {
         removeExistingLectionTypeEntry();
         lectionLength = "45";
-        lectionTypes = new String[]{"45", "60", "90", "105", "120", "180"};
+        lectionTypes = new String[]{"45", "50", "60", "75", "90", "105", "120", "180"};
         lectiontypeSelectionBox = new JComboBox(lectionTypes);
         addNewLectionTypeEntry();
     }
 
-    public void chorProfile() {
-        removeExistingLectionTypeEntry();
-        lectionLength = "30";
-        lectionTypes = new String[]{"30", "45", "60", "90", "120"};
-        lectiontypeSelectionBox = new JComboBox(lectionTypes);
-        addNewLectionTypeEntry();
-    }
-
-    public void grundschulungProfile() {
-        lectionLength = "45";
-        removeExistingLectionTypeEntry();
-    }
-
-    public void otherProfile() {
-        removeExistingLectionTypeEntry();
-        lectionLength = "45";
-        lectionTypes = new String[]{"45", "60", "75", "90"};
-        lectiontypeSelectionBox = new JComboBox(lectionTypes);
-        addNewLectionTypeEntry();
-    }
-
-    public void restoreWorkshopProfile() {
-        workshopProfile();
-    }
-
-    public void restoreInstrumentalformationProfile(Profile group) {
-        instrumentalformationProfile();
+    public void restoreSelectionEntry(Profile group) {
+        createSelectionEntry();
         lectionLength = String.valueOf(group.getLectionLengthInMinutes());
         switch (lectionLength) {
             case "45":
                 lectiontypeSelectionBox.setSelectedIndex(0);
                 break;
-            case "60":
-                lectiontypeSelectionBox.setSelectedIndex(1);
-                break;
-            case "90":
-                lectiontypeSelectionBox.setSelectedIndex(2);
-                break;
-            case "105":
-                lectiontypeSelectionBox.setSelectedIndex(3);
-                break;
-            case "120":
-                lectiontypeSelectionBox.setSelectedIndex(4);
-                break;
-            case "180":
-                lectiontypeSelectionBox.setSelectedIndex(5);
-                break;
-            default:
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-        }
-        addNewLectionTypeEntry();
-    }
-
-    public void restoreChorProfile(Profile group) {
-        chorProfile();
-        lectionLength = String.valueOf(group.getLectionLengthInMinutes());
-        switch (lectionLength) {
-            case "30":
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-            case "45":
+            case "50":
                 lectiontypeSelectionBox.setSelectedIndex(1);
                 break;
             case "60":
                 lectiontypeSelectionBox.setSelectedIndex(2);
-                break;
-            case "90":
-                lectiontypeSelectionBox.setSelectedIndex(3);
-                break;
-            case "120":
-                lectiontypeSelectionBox.setSelectedIndex(4);
-                break;
-            default:
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-        }
-        addNewLectionTypeEntry();
-    }
-
-    public void restoreGrundschulungProfile() {
-        grundschulungProfile();
-    }
-
-    public void restoreOtherProfile(Profile group) {
-        otherProfile();
-        lectionLength = String.valueOf(group.getLectionLengthInMinutes());
-        switch (lectionLength) {
-            case "45":
-                lectiontypeSelectionBox.setSelectedIndex(0);
-                break;
-            case "60":
-                lectiontypeSelectionBox.setSelectedIndex(1);
                 break;
             case "75":
-                lectiontypeSelectionBox.setSelectedIndex(2);
+                lectiontypeSelectionBox.setSelectedIndex(3);
                 break;
             case "90":
-                lectiontypeSelectionBox.setSelectedIndex(3);
+                lectiontypeSelectionBox.setSelectedIndex(4);
+                break;
+            case "105":
+                lectiontypeSelectionBox.setSelectedIndex(5);
+                break;
+            case "120":
+                lectiontypeSelectionBox.setSelectedIndex(6);
+                break;
+            case "180":
+                lectiontypeSelectionBox.setSelectedIndex(7);
                 break;
             default:
                 lectiontypeSelectionBox.setSelectedIndex(0);

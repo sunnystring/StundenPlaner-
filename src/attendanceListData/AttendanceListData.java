@@ -70,7 +70,7 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
     private void addRow(Profile profile, int dayIndex) {
         ArrayList<AttendanceFieldData> fieldList = new ArrayList<>();
         AttendanceFieldData field = new AttendanceFieldData();
-        field.setNameString(profile.getFirstName() + " " + profile.getName());
+        field.setNameString(" "+profile.getFirstName() + " " + profile.getName());
         fieldList.add(field);
         if (numberOfWeeks > 0) {
             for (Integer absenceType : database.getAbsenceRowOf(profile.getID())) {

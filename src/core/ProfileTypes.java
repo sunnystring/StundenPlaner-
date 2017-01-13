@@ -18,12 +18,7 @@ public class ProfileTypes {
             SDG = 4;
 
     public static final String SINGLE_LECTION_NAME = "Einzelunterricht",
-            KGU_NAME = "Kleingruppe",
-            WORKSHOP_NAME = "Workshop/Semesterkurs",
-            INSTR_FORMATION_NAME = "Instrumentalformation",
-            CHOR_NAME = "Singschule/Chor",
-            GRUNDSCHULUNG_NAME = "Musikalische Grundschulung",
-            ANDERES_NAME = "Anderes",
+            KGU_NAME = "Kleingruppe", GROUP_NAME = "Gruppe", 
             SDG_NAME = "Selbstdefinierte Gruppe";
 
 }
