@@ -67,7 +67,7 @@ public class ScheduleInputMask extends JPanel {
         bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        footnote = new JLabel("* 10-Minuten-Auflösung");
+        footnote = new JLabel("* 10 Minuten-Auflösung");
         footnote.setFont(footnote.getFont().deriveFont(Font.PLAIN, 9));
         footnote.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         cancelButton = new JButton("Abbrechen");

@@ -129,6 +129,7 @@ public class AttendanceListEdit extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 database.removeWeek(selectedDateIndex);
                 updateAttendanceListUI();
+                mainFrame.saveCurrentEntriesToFile();
                 dispose();
             }
         });
@@ -137,6 +138,7 @@ public class AttendanceListEdit extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 database.addWeek(selectedDateString);
                 updateAttendanceListUI();
+                mainFrame.saveCurrentEntriesToFile();
                 dispose();
             }
         });

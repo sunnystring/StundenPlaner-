@@ -125,6 +125,7 @@ public class JournalEntry extends JDialog {
                 } else {
                     updateJournalAndAddToArchive(currentJournal);
                 }
+                mainFrame.saveCurrentEntriesToFile();
                 dispose();
             }
         });

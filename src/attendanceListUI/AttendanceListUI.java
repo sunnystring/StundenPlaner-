@@ -86,6 +86,7 @@ public class AttendanceListUI extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if (Dialogs.showAffirmDeleteAttendanceListMessage() == JOptionPane.YES_OPTION) {
                     attendanceListData.deleteAll();
+                    mainFrame.saveCurrentEntriesToFile();
                     dispose();
                 }
             }
@@ -102,6 +103,7 @@ public class AttendanceListUI extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 attendanceListData.saveAbsenceEntries();
+                mainFrame.saveCurrentEntriesToFile();
                 dispose();
             }
         });

@@ -90,8 +90,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public MainFrame() {
         setTitle("StundenPlaner");
-        // setIconImage(Icons.getImage("mainIcon.png"));
-        Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
+        setIconImage(Icons.getImage("mainIcon.png")); // Windows
+        //    Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
@@ -345,21 +345,6 @@ public class MainFrame extends JFrame implements DatabaseListener {
         });
     }
 
-    private void openFile() {
-        if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-            fileIO.load(fileChooser.getSelectedFile());
-            updateDataAfterFileEntry();
-            updateWidgetsAfterFileEntry();
-            showStundenPlaner();
-        }
-    }
-
-    private void saveFile() {
-        if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-            fileIO.save(fileChooser.getSelectedFile());
-        }
-    }
-
     private void closeStundenPlaner() {
         int option = Dialogs.showSaveOptionMessage();
         File file = fileChooser.getSelectedFile();
@@ -377,6 +362,25 @@ public class MainFrame extends JFrame implements DatabaseListener {
         if (option == JOptionPane.NO_OPTION) {
             System.exit(0);
         }
+    }
+
+    private void openFile() {
+        if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+            fileIO.load(fileChooser.getSelectedFile());
+            updateDataAfterFileEntry();
+            updateWidgetsAfterFileEntry();
+            showStundenPlaner();
+        }
+    }
+
+    private void saveFile() {
+        if (fileChooser.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+            fileIO.save(fileChooser.getSelectedFile());
+        }
+    }
+
+    public void saveCurrentEntriesToFile() {
+        fileIO.save(fileChooser.getSelectedFile());
     }
 
     private void updateDataAfterFileEntry() {
@@ -538,6 +542,14 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public JournalEntry getJournalEntry() {
         return journalEntry;
+    }
+
+    public JFileChooser getFileChooser() {
+        return fileChooser;
+    }
+
+    public FileIO getFileIO() {
+        return fileIO;
     }
 
     @Override

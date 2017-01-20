@@ -50,7 +50,7 @@ public class GroupSelectionDialog extends JDialog {
         kguEntry = null;
         sdgEntry = null;
         setTitle("Gruppenprofil auswählen");
-        profileDescription = "Instrumentalformation, Band, Ensemble, MEZ, Theater, Chor usw.";
+        profileDescription = "Instrumentalformation, Ensemble, MEZ, Theater, Chor usw.";
         setModal(true);
         setLocation((int) (mainFrame.getSize().getWidth() / 2), 200);
         setResizable(false);
@@ -119,7 +119,7 @@ public class GroupSelectionDialog extends JDialog {
         selfDefinedGroupSelection.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                sdgEntry = new SDGEntry(mainFrame, group, "Selbstdefiniertes Gruppen-Profil erstellen");
+                sdgEntry = new SDGEntry(mainFrame, group, "Selbstdefiniertes Gruppenprofil erstellen");
                 selectedEntry = null;
                 kguEntry = null;
             }
