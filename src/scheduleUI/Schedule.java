@@ -82,6 +82,7 @@ public class Schedule extends JPanel {
                 journalDayView.dispose();
                 journalDayView.showStudentJournals(dayField.getDayIndex());
                 journalDayView.setVisible(true);
+                scheduleData.setJournalDayViewSelected(true);
             }
         };
         dayField.addMouseListener(headerListener);

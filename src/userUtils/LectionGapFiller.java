@@ -48,8 +48,8 @@ public class LectionGapFiller {
                 StudentDay studentDay = dayList.get(i);
                 int studentID = database.getStudentID(dayIndex, studentDay);
                 Profile profile = database.getProfile(studentID);
-                LectionData lection = database.getLectionByID(studentID);
-                if (gap.matchesTimeOf(studentDay, profile, isGapAdjacentTo(lection, dayIndex))) {
+                LectionData lection = database.getLectionOf(studentID);
+                if (gap.matchesTimeOf(studentDay, profile, lection, dayIndex)) {
                     if (profile.isAllocated()) {
                         if (lection != null && lection.getProfileID() == studentID) {
                             lection.setGapFillerMarkEnabled(true);
@@ -59,14 +59,6 @@ public class LectionGapFiller {
                     }
                 }
             }
-        }
-    }
-
-    private boolean isGapAdjacentTo(LectionData lection, int dayIndex) {
-        if (lection == null) {
-            return false;
-        } else {
-            return lection.start().equals(gap.end().plus(5)) && lection.getDayIndex() == dayIndex;
         }
     }
 

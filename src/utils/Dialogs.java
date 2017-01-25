@@ -91,8 +91,7 @@ public class Dialogs {
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }
 
-    public static int showAffirmDeleteAttendanceListMessage() {
-        String msg = "Soll wirklich die ganze Unterrichtskontrolle gelöscht werden!\n";
+    public static int showAffirmDeleteAttendanceListMessage(String msg) {
         Object[] options = {"Löschen", "Abbrechen"};
         return JOptionPane.showOptionDialog(null, msg, "Unterrichtskontrolle",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);

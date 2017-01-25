@@ -7,6 +7,7 @@ package userUtils;
 
 import core.Profile;
 import core.StudentDay;
+import scheduleData.LectionData;
 import utils.Time;
 
 /**
@@ -16,13 +17,13 @@ import utils.Time;
  */
 public class LectionGap {
 
-    private Time start, end;
+    private Time gapStart, gapEnd;
     private int gapLength;
     private int dayIndex;
 
     public LectionGap(Time start, Time end, int dayIndex) {
-        this.start = start;
-        this.end = end;
+        this.gapStart = start;
+        this.gapEnd = end;
         gapLength = end.minus(start).getNumberOfFields(Time.ROUND_DOWN) + 1;
         this.dayIndex = dayIndex;
     }
@@ -32,32 +33,36 @@ public class LectionGap {
     }
 
     public void reset() {
-        start = new Time();
-        end = new Time();
+        gapStart = new Time();
+        gapEnd = new Time();
         dayIndex = -1;
         gapLength = 0;
     }
 
-    public boolean matchesTimeOf(StudentDay studentDay, Profile profile, boolean isAdjacentToLection) {
+    public boolean matchesTimeOf(StudentDay studentDay, Profile profile, LectionData lection, int dayIndex) {
         if (studentDay.isEmpty()) {
             return false;
         }
+        boolean isAdjacentToLection = isAdjacentTo(lection, dayIndex);
         int lectionLength = profile.getLectionLengthInFields();
-        if (gapLength < lectionLength) {
+        if (gapLength < lectionLength && !isAdjacentToLection) {
             return false;
         }
-        boolean outOfBounds = studentDay.latestEnd().plusLengthOf(lectionLength).lessThan(start)
-                || studentDay.earliestStart().greaterThan(end);
+        boolean outOfBounds = studentDay.latestEnd().plusLengthOf(lectionLength).lessThan(gapStart)
+                || studentDay.earliestStart().greaterThan(gapEnd);
         if (outOfBounds) {
             return false;
         } else {
             boolean match = false;
             for (StudentDay.ValidTimes validTimes : studentDay.getValidTimes()) {
                 Time validStart = validTimes.start().plusLengthOf(lectionLength - 1);
+                Time validEnd = validTimes.end();
+                boolean within = validStart.lessEqualsThan(gapEnd) && validEnd.greaterEqualsThan(gapStart);
                 if (isAdjacentToLection) {
                     validStart = validTimes.start();
+                    validEnd = validTimes.end().plusLengthOf(lectionLength - 1);
+                    within = validStart.lessEqualsThan(gapEnd) && validEnd.greaterEqualsThan(gapStart);
                 }
-                boolean within = validStart.lessEqualsThan(end) && validTimes.end().greaterEqualsThan(start);
                 if (within) {
                     match = true;
                 }
@@ -66,20 +71,30 @@ public class LectionGap {
         }
     }
 
+    private boolean isAdjacentTo(LectionData lection, int dayIndex) {
+        if (lection == null) {
+            return false;
+        } else if (lection.getDayIndex() != dayIndex) {
+            return false;
+        } else {
+            return lection.start().equals(gapEnd.plus(5)) || lection.end().plus(5).equals(gapStart);
+        }
+    }
+
     public Time start() {
-        return start;
+        return gapStart;
     }
 
     public Time end() {
-        return end;
+        return gapEnd;
     }
 
-    public void setStart(Time start) {
-        this.start = start;
+    public void setStart(Time gapStart) {
+        this.gapStart = gapStart;
     }
 
-    public void setEnd(Time end) {
-        this.end = end;
+    public void setEnd(Time gapEnd) {
+        this.gapEnd = gapEnd;
     }
 
     public int getDayIndex() {
@@ -93,6 +108,6 @@ public class LectionGap {
     @Override
     public boolean equals(Object obj) {
         LectionGap gap = (LectionGap) obj;
-        return start.equals(gap.start) && end.equals(gap.end()) && this.dayIndex == gap.getDayIndex();
+        return gapStart.equals(gap.start()) && gapEnd.equals(gap.end()) && this.dayIndex == gap.getDayIndex();
     }
 }

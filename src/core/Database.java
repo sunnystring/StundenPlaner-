@@ -292,7 +292,7 @@ public class Database {
         return lectionMaps.get(scheduleTimes.getAbsoluteDayIndexOf(scheduleDay));
     }
 
-    public LectionData getLectionByID(int studentID) {
+    public LectionData getLectionOf(int studentID) {
         return lectionIDMap.get(studentID);
     }
 

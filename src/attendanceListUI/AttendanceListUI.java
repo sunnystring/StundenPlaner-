@@ -84,7 +84,8 @@ public class AttendanceListUI extends JDialog {
         deleteAllButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Dialogs.showAffirmDeleteAttendanceListMessage() == JOptionPane.YES_OPTION) {
+                String msg = "Soll wirklich die ganze Unterrichtskontrolle gelöscht werden?\n";
+                if (Dialogs.showAffirmDeleteAttendanceListMessage(msg) == JOptionPane.YES_OPTION) {
                     attendanceListData.deleteAll();
                     mainFrame.saveCurrentEntriesToFile();
                     dispose();
