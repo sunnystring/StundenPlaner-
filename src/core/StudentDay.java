@@ -24,7 +24,6 @@ public class StudentDay implements Comparable<StudentDay> {
     private boolean isEmpty;
     private boolean noStart1, noStart2, endSmallerStart1, endSmallerStart2, onlyStart1, onlyStart2;
     private Time earliestStart, latestStart, earliestEnd, latestEnd; // Timebounds
-
     private final ArrayList<ValidTimes> validTimes; // für IncompatibleStudentTimes (K = startTime, V = endTime)
 
     public StudentDay() {

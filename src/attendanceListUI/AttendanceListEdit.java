@@ -21,13 +21,16 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import mainframe.MainFrame;
 import utils.DateUtil;
+import utils.Dialogs;
 
 /**
  *
- * Dialogfenster für das Erstellen/Löschen der Unterrichtswochen in {@link AttendanceListUI}
+ * Dialogfenster für das Erstellen/Löschen der Unterrichtswochen in
+ * {@link AttendanceListUI}
  */
 public class AttendanceListEdit extends JDialog {
 
@@ -127,10 +130,14 @@ public class AttendanceListEdit extends JDialog {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                database.removeWeek(selectedDateIndex);
-                updateAttendanceListUI();
-                mainFrame.saveCurrentEntriesToFile();
-                dispose();
+                String msg = "Soll die Woche vom " + database.getWeekNameAt(selectedDateIndex) + " wirklich gelöscht werden?\n"
+                        + "Ev. müssen dann auch nachfolgende Wochen/Einträge gelöscht werden!";
+                if (Dialogs.showAffirmDeleteAttendanceListMessage(msg) == JOptionPane.YES_OPTION) {
+                    database.removeWeek(selectedDateIndex);
+                    updateAttendanceListUI();
+                    mainFrame.saveCurrentEntriesToFile();
+                    dispose();
+                }
             }
         });
         createButton.addActionListener(new ActionListener() {

@@ -46,6 +46,8 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
     private int dayIndex;
     private int dayColumnFieldIndex;
     private JournalEntry journalEntry;
+    private boolean journalEntrySelected = false;  // verhindert lästiges Aufblinken von LectionGapFiller
+    private boolean journalDayViewSelected = false; // während dem Löschen von Journal-Pop-Ups
 
     public ScheduleData(MainFrame mainFrame) {
         database = mainFrame.getDatabase();
@@ -233,6 +235,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS
                                 || fieldData.getLectionPanelAreaMark() == LAST_ROW) { // JournalEntry öffnen
                             journalEntry.dispose();
+                            journalEntrySelected = true;
                             journalEntry.showTextOf(profile);
                             journalEntry.setVisible(true);
                             return;
@@ -247,17 +250,24 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                     studentListData.setIncompatibleStudentDays();
                     lectionGapFiller.clear();
                     breakWatcher.check(dayIndex);
-                } else if (!fieldData.isLectionAllocated()) {  // LectionGapFiller aktivieren/deaktivieren
+                } else if (!fieldData.isLectionAllocated() && !journalEntrySelected && !journalDayViewSelected) {
                     lectionGapFiller.showAvailableTimes(fieldData.getFieldTime(), dayIndex);
                 }
-                journalEntry.setVisible(false);
+                resetJournal();
+                journalDayViewSelected = false;
                 fireTableDataChanged();
                 studentListData.fireTableDataChanged();
             }
-            journalEntry.setVisible(false);
+            journalDayViewSelected = false;
+            resetJournal();
         } else {
-            journalEntry.setVisible(false);
+            resetJournal();
         }
+    }
+
+    private void resetJournal() {
+        journalEntrySelected = false;
+        journalEntry.setVisible(false);
     }
 
     /* gesetzte Lections sperren, Sperrzonen setzen, der restliche Schedule einteilbar machen und current Student global setzen*/
@@ -433,6 +443,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
 
     public void setJournalEntry(JournalEntry journalEntry) {
         this.journalEntry = journalEntry;
+    }
+
+    public void setJournalDayViewSelected(boolean journalDayViewSelected) {
+        this.journalDayViewSelected = journalDayViewSelected;
     }
 
     @Override
