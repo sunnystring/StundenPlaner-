@@ -91,7 +91,7 @@ public class MainFrame extends JFrame implements DatabaseListener {
     public MainFrame() {
         setTitle("StundenPlaner");
         setIconImage(Icons.getImage("mainIcon.png")); // Windows
-        //    Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
+         //   Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
