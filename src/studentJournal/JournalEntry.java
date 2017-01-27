@@ -54,7 +54,7 @@ public class JournalEntry extends JDialog {
     private JButton closeButton, eraseButton, saveButton;
     private JTextPane textPane;
     private StyledDocument document;
-    private double currentX;
+    // private double currentX, currentY;
 
     public JournalEntry(MainFrame mainFrame) {
         super(mainFrame);
@@ -65,6 +65,7 @@ public class JournalEntry extends JDialog {
         addButtonListeners();
         setupArchiveView();
         setResizable(false);
+        pack();
     }
 
     private void createAndAddWidgets() {
@@ -101,6 +102,7 @@ public class JournalEntry extends JDialog {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                resetJournalEntryFlag();
                 dispose();
             }
         });
@@ -126,6 +128,7 @@ public class JournalEntry extends JDialog {
                     updateJournalAndAddToArchive(currentJournal);
                 }
                 mainFrame.saveCurrentEntriesToFile();
+                resetJournalEntryFlag();
                 dispose();
             }
         });
@@ -150,7 +153,8 @@ public class JournalEntry extends JDialog {
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     JournalArchiveView archiveView = new JournalArchiveView(mainFrame);
-                    archiveView.setLocation(getArchiveViewLocation());
+                    // archiveView.setLocation(getArchiveViewLocation());
+                    archiveView.setLocationRelativeTo(mainFrame.getSchedule());
                     archiveView.showArchiveOf(profile);
                     archiveView.setVisible(true);
 
@@ -174,8 +178,7 @@ public class JournalEntry extends JDialog {
         }
         textPane.setPreferredSize(new Dimension(250, 150));
         setMinimumSize(new Dimension(topField.getPreferredSize().width, 250));
-        pack();
-        setLocation(getEntryDialogLocation());
+        setLocationRelativeTo(mainFrame.getSchedule());
     }
 
     private void addStylesToDocument() {
@@ -185,17 +188,26 @@ public class JournalEntry extends JDialog {
         StyleConstants.setFontSize(defaultStyle, 14);
     }
 
-    private Point getEntryDialogLocation() {
-        Point location = MouseInfo.getPointerInfo().getLocation();
-        location.setLocation(location.getX() + 30.0, location.getY() + 20.0);
-        currentX = location.getX();
-        return location;
+    private void resetJournalEntryFlag() {
+        mainFrame.getScheduleData().setJournalEntrySelected(false);
     }
 
-    private Point getArchiveViewLocation() {
-        Point location = MouseInfo.getPointerInfo().getLocation();
-        location.setLocation(currentX, 20);
-        return location;
-    }
-
+//    private Point getEntryDialogLocation() {
+//        Point location = MouseInfo.getPointerInfo().getLocation();
+//        currentX = location.getX();
+//        currentY = location.getY() + 20.0;
+//        double lowerFrameBound = mainFrame.getSize().height;
+//        double lowerEntryBound = currentY + getSize().height;
+//        if (lowerEntryBound > lowerFrameBound) {
+//            currentY = lowerEntryBound - getSize().height;
+//        }
+//        location.setLocation(currentX + 30.0, currentY);
+//        return location;
+//    }
+//
+//    private Point getArchiveViewLocation() {
+//        Point location = MouseInfo.getPointerInfo().getLocation();
+//        location.setLocation(currentX, 20.0);
+//        return location;
+//    }
 }

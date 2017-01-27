@@ -51,7 +51,7 @@ public class Schedule extends JPanel {
 
     public void createHeader() {
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
-            DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            DayField dayField = new DayField(scheduleData, i);
             dayField.setDayIndex(i);
             addHeaderListener(dayField);
             addDayViewRefsToHeader();
@@ -63,7 +63,7 @@ public class Schedule extends JPanel {
     public void updateHeader() {
         removeHeader();
         for (int i = 0; i < scheduleData.getNumberOfValidDays(); i++) {
-            DayField dayField = new DayField(scheduleData.getDayNameAt(i));
+            DayField dayField = new DayField(scheduleData,i);
             dayField.setDayIndex(i);
             dayField.removeMouseListener(headerListener);
             addHeaderListener(dayField);
@@ -79,9 +79,10 @@ public class Schedule extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 DayField dayField = (DayField) e.getSource();
-                journalDayView.dispose();
                 journalDayView.showStudentJournals(dayField.getDayIndex());
-                journalDayView.setVisible(true);
+                if (!scheduleData.isJournalDayViewSelected()) {
+                    journalDayView.setVisible(true);
+                }
                 scheduleData.setJournalDayViewSelected(true);
             }
         };

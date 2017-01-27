@@ -234,10 +234,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                         }
                         if (SwingUtilities.isLeftMouseButton(m) && fieldData.getLectionPanelAreaMark() == JOURNAL_ROWS
                                 || fieldData.getLectionPanelAreaMark() == LAST_ROW) { // JournalEntry öffnen
-                            journalEntry.dispose();
-                            journalEntrySelected = true;
                             journalEntry.showTextOf(profile);
                             journalEntry.setVisible(true);
+                            journalEntrySelected = true;
+                            journalDayViewSelected = false;
                             return;
                         }
                         if (SwingUtilities.isRightMouseButton(m)) { // Einteilung rückgängig
@@ -446,8 +446,16 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
         this.journalEntry = journalEntry;
     }
 
+    public void setJournalEntrySelected(boolean journalEntrySelected) {
+        this.journalEntrySelected = journalEntrySelected;
+    }
+
     public void setJournalDayViewSelected(boolean journalDayViewSelected) {
         this.journalDayViewSelected = journalDayViewSelected;
+    }
+
+    public boolean isJournalDayViewSelected() {
+        return journalDayViewSelected;
     }
 
     @Override

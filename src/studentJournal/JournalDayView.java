@@ -36,10 +36,12 @@ import static utils.GUIConstants.*;
 
 /**
  *
- * Gesamtsicht der laufenden Journale von {@link JournalEntry} aller Schüler eines Tages
+ * Gesamtsicht der laufenden Journale von {@link JournalEntry} aller Schüler
+ * eines Tages
  */
 public class JournalDayView extends JDialog {
 
+    private MainFrame mainFrame;
     private Database database;
     private ScheduleData scheduleData;
     protected StyledDocument document;
@@ -52,6 +54,7 @@ public class JournalDayView extends JDialog {
 
     public JournalDayView(MainFrame mainFrame) {
         super(mainFrame);
+        this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();
         scheduleData = mainFrame.getScheduleData();
         setMinimumSize(new Dimension(250, 600));
@@ -69,6 +72,7 @@ public class JournalDayView extends JDialog {
         textPane.addMouseListener(new MouseInputAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                scheduleData.setJournalDayViewSelected(false);
                 dispose();
             }
         });
@@ -80,6 +84,7 @@ public class JournalDayView extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
+                scheduleData.setJournalDayViewSelected(false);
             }
         });
         bottomField.add(closeButton);
@@ -92,7 +97,6 @@ public class JournalDayView extends JDialog {
         addStylesToDocument();
         textPane.setText("");
         setTitle(database.getDayNameAt(dayIndex));
-        setDialogLocation();
         DayColumnData dayColumn = scheduleData.getDayColumn(dayIndex);
         for (LectionData lectionData : dayColumn.getLectionMap().values()) {
             int profileID = lectionData.getProfileID();
@@ -108,6 +112,7 @@ public class JournalDayView extends JDialog {
                 }
             }
         }
+        setDialogLocation();
     }
 
     private void addStylesToDocument() {
@@ -121,9 +126,8 @@ public class JournalDayView extends JDialog {
     }
 
     private void setDialogLocation() {
-        Point location = MouseInfo.getPointerInfo().getLocation();
-        location.setLocation(location.getX(), location.getY() + 20.0);
-        setLocation(location);
+        int x = (int) (mainFrame.getSchedule().getSize().getWidth() - getSize().width) / 2;
+        int y = 120;
+        setLocation(x, y);
     }
-
 }

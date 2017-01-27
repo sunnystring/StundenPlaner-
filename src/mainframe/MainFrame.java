@@ -90,8 +90,8 @@ public class MainFrame extends JFrame implements DatabaseListener {
 
     public MainFrame() {
         setTitle("StundenPlaner");
-        setIconImage(Icons.getImage("mainIcon.png")); // Windows
-         //   Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
+       // setIconImage(Icons.getImage("mainIcon.png")); // Windows
+          Application.getApplication().setDockIconImage(Icons.getImage("mainIcon.png")); // Mac OS
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1000, 400));
         database = new Database();
@@ -380,7 +380,10 @@ public class MainFrame extends JFrame implements DatabaseListener {
     }
 
     public void saveCurrentEntriesToFile() {
-        fileIO.save(fileChooser.getSelectedFile());
+        File file = fileChooser.getSelectedFile();
+        if (file != null) {
+            fileIO.save(file);
+        }
     }
 
     private void updateDataAfterFileEntry() {
