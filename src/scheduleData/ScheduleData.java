@@ -220,10 +220,10 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
             col = timeTable.columnAtPoint(p);
             if (row >= 0 && col % 2 == 1) { // keine Events aus TimeColumn
                 ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(row, col);
-                Profile profile = fieldData.getProfile();
                 int dayIndex = col / 4;
                 LectionGapFiller lectionGapFiller = dayColumnDataList.get(dayIndex).getLectionGapFiller();
                 if (fieldData.isMoveEnabled()) {
+                    Profile profile = fieldData.getProfile();
                     convertTableToDayColumnCoordinates(row, col);
                     if (fieldData.isLectionAllocated()) {
                         if (SwingUtilities.isLeftMouseButton(m) && (fieldData.getLectionPanelAreaMark() == HEAD
@@ -244,6 +244,7 @@ public class ScheduleData extends AbstractTableModel implements DatabaseListener
                             eraseLection(profile.getLectionLengthInFields());
                         }
                     } else { // in AllocatedMode wechseln
+                        profile.setAllocated(true);
                         createLection(profile.getLectionLengthInFields());
                         setAllocatedMode();
                     }

@@ -34,7 +34,7 @@ import scheduleData.ScheduleFieldConstants;
  */
 public class StudentListData extends AbstractTableModel implements DatabaseListener, MouseListener {
 
-    private  Database database;
+    private Database database;
     private MainFrame mainFrame;
     private StudentList studentList;
     private ScheduleData scheduleData;
@@ -274,9 +274,9 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
             if (selectedRow >= 0 && selectedCol % 2 == 1) { // keine Events aus TimeColumn 
                 ScheduleFieldData fieldData = timeTable.getScheduleFieldDataAt(selectedRow, selectedCol);
                 int allocatedRow = fieldData.getProfileID();
-                Profile profile = fieldData.getProfile();
                 if (fieldData.isMoveEnabled()) {
                     if (fieldData.isLectionAllocated()) { // in MoveMode wechseln
+                        Profile profile = fieldData.getProfile();
                         if (fieldData.getLectionPanelAreaMark() == ScheduleFieldConstants.HEAD) {
                             blockStudentList();
                             mainFrame.setDataEntryButtonsEnabled(false);
@@ -293,7 +293,6 @@ public class StudentListData extends AbstractTableModel implements DatabaseListe
                     } else {  // in AllocatedMode wechseln
                         setRowAllocated(allocatedRow, true);
                         studentListReleased = false;
-                        profile.setAllocated(true);
                         releaseStudentListAtModelCoordinates(allocatedRow);
                         mainFrame.setDataEntryButtonsEnabled(true);
                         mainFrame.setFileButtonsEnabled(true);
