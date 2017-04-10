@@ -5,6 +5,8 @@
  */
 package attendanceListUI;
 
+import attendanceListData.AbsenceTypes;
+import attendanceListData.AttendanceFieldData;
 import attendanceListData.AttendanceListData;
 import com.toedter.calendar.JCalendar;
 import core.Database;
@@ -38,6 +40,7 @@ public class AttendanceListEdit extends JDialog {
     private Database database;
     private AttendanceListData attendanceListData;
     private AttendanceListUI attendanceListUI;
+    private AttendanceFieldData attendanceField;
     private JPanel center, bottom;
     private JButton cancelButton, deleteButton, createButton;
     private JCalendar dateChooser;
@@ -51,19 +54,42 @@ public class AttendanceListEdit extends JDialog {
         attendanceListData = mainFrame.getAttendanceListData();
         attendanceListUI = mainFrame.getAttendanceListUI();
         selectedDateString = DateUtil.getTodayString();
-        setTitle("Datum Unterrichtswoche auswählen");
         setModal(true);
         setResizable(false);
         setMinimumSize(new Dimension(450, 400));
+    }
+
+    public void setupWeekEdit() {
+        setTitle("Datum Unterrichtswoche auswählen");
         createWidgets();
+        initWeekEditDateChooser();
+        setButtonsEnabledState();
+        deleteButton.setText("Woche löschen");
+        createButton.setText("Woche erstellen");
         addWidgets();
-        addButtonListeners();
+        addCancelButtonListener();
+        addWeekEditButtonListeners();
+        pack();
+    }
+
+    public void setupLectionReplacementEdit(AttendanceFieldData attendanceField) {
+        this.attendanceField = attendanceField;
+        setTitle("Datum vor-/nachgeholte Lektion auswählen");
+        createWidgets();
+        initLectionReplacementDateChooser();
+        deleteButton.setText("Feld rücksetzen");
+        createButton.setText("Datum einfügen");
+        addWidgets();
+        addCancelButtonListener();
+        addLectionReplacementButtonListeners();
         pack();
     }
 
     private void createWidgets() {
         dateChooser = new JCalendar();
-        initDateChooser();
+        dateChooser.setFont(this.getFont().deriveFont(Font.BOLD, 10));
+        dateChooser.setLocale(Locale.GERMAN);
+        dateChooser.setWeekOfYearVisible(false);
         center = new JPanel();
         center.setLayout(new BoxLayout(center, BoxLayout.PAGE_AXIS));
         center.setBorder(BorderFactory.createEmptyBorder(20, 10, 0, 10));
@@ -71,15 +97,11 @@ public class AttendanceListEdit extends JDialog {
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.LINE_AXIS));
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         cancelButton = new JButton("Abbrechen");
-        deleteButton = new JButton("Woche löschen");
-        createButton = new JButton("Woche erstellen");
-        setButtonsEnabledState();
+        deleteButton = new JButton();
+        createButton = new JButton();
     }
 
-    private void initDateChooser() {
-        dateChooser.setFont(this.getFont().deriveFont(Font.BOLD, 10));
-        dateChooser.setLocale(Locale.GERMAN);
-        dateChooser.setWeekOfYearVisible(false);
+    private void initWeekEditDateChooser() {
         dateChooser.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
@@ -109,6 +131,17 @@ public class AttendanceListEdit extends JDialog {
         createButton.setEnabled(!isDuplicate && !isOutOfChronology);
     }
 
+    private void initLectionReplacementDateChooser() {
+        dateChooser.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals("calendar")) {
+                    selectedDateString = DateUtil.getDateStringOf(dateChooser.getDate());
+                }
+            }
+        });
+    }
+
     private void addWidgets() {
         center.add(dateChooser);
         bottom.add(cancelButton);
@@ -120,13 +153,16 @@ public class AttendanceListEdit extends JDialog {
         add(BorderLayout.PAGE_END, bottom);
     }
 
-    private void addButtonListeners() {
+    private void addCancelButtonListener() {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
+    }
+
+    private void addWeekEditButtonListeners() {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,6 +182,25 @@ public class AttendanceListEdit extends JDialog {
                 database.addWeek(selectedDateString);
                 updateAttendanceListUI();
                 mainFrame.saveCurrentEntriesToFile();
+                dispose();
+            }
+        });
+    }
+
+    private void addLectionReplacementButtonListeners() {
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attendanceField.setAbsenceTypeCharacter();
+                attendanceField.setLectionReplaced(false);
+                dispose();
+            }
+        });
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attendanceField.setAbsenceTypeString(selectedDateString);
+                attendanceField.setLectionReplaced(true);
                 dispose();
             }
         });

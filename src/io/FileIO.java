@@ -5,6 +5,7 @@
  */
 package io;
 
+import attendanceListData.AttendanceFieldData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -46,7 +47,7 @@ public class FileIO {
     private ArrayList<TreeMap<Time, LectionData>> lectionMaps;
     private ArrayList<JournalData> currentStudentJournals;
     private ArrayList<ArrayList<JournalData>> journalArchive;
-    private ArrayList<ArrayList<Integer>> absenceLists;
+    private ArrayList<ArrayList<AttendanceFieldData>> attendanceList;
     private ArrayList<String> weekNames;
 
     public FileIO(Database database) {
@@ -55,7 +56,7 @@ public class FileIO {
         dataList = new ArrayList();
         lectionMaps = new ArrayList<>();
         currentStudentJournals = new ArrayList<>();
-        absenceLists = new ArrayList<>();
+        attendanceList = new ArrayList<>();
         weekNames = new ArrayList<>();
     }
 
@@ -72,7 +73,7 @@ public class FileIO {
         dataList.add(database.getStudentDataList());
         dataList.add(database.getCurrentStudentJournals());
         dataList.add(database.getJournalArchive());
-        dataList.add(database.getAbsenceLists());
+        dataList.add(database.getAttendanceList());
         dataList.add(database.getWeekNames());
         for (TreeMap<Time, LectionData> lectionMap : database.getLectionMaps()) { // lectionMap length = DAYS = 6
             dataList.add(lectionMap);
@@ -102,7 +103,7 @@ public class FileIO {
             }.getType());
             journalArchive = gson.fromJson(array.get(3), new TypeToken<ArrayList<ArrayList<JournalData>>>() {
             }.getType());
-            absenceLists = gson.fromJson(array.get(4), new TypeToken<ArrayList<ArrayList<Integer>>>() {
+            attendanceList = gson.fromJson(array.get(4), new TypeToken<ArrayList<ArrayList<AttendanceFieldData>>>() {
             }.getType());
             weekNames = gson.fromJson(array.get(5), new TypeToken<ArrayList<String>>() {
             }.getType());
@@ -142,8 +143,8 @@ public class FileIO {
         return currentStudentJournals;
     }
 
-    public ArrayList<ArrayList<Integer>> getAbsenceLists() {
-        return absenceLists;
+    public ArrayList<ArrayList<AttendanceFieldData>> getAttendanceList() {
+        return attendanceList;
     }
 
     public ArrayList<String> getWeekNames() {

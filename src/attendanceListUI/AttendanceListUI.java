@@ -95,15 +95,15 @@ public class AttendanceListUI extends JDialog {
         createAndEditWeekButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AttendanceListEdit editDialog = new AttendanceListEdit(mainFrame);
-                editDialog.setLocation();
-                editDialog.setVisible(true);
+                AttendanceListEdit weekEditDialog = new AttendanceListEdit(mainFrame);
+                weekEditDialog.setupWeekEdit();
+                weekEditDialog.setLocation();
+                weekEditDialog.setVisible(true);
             }
         });
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                attendanceListData.saveAbsenceEntries();
                 mainFrame.saveCurrentEntriesToFile();
                 dispose();
             }

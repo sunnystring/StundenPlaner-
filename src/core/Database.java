@@ -6,6 +6,7 @@
 package core;
 
 import attendanceListData.AbsenceTypes;
+import attendanceListData.AttendanceFieldData;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import scheduleData.LectionData;
@@ -35,7 +36,7 @@ public class Database {
     private ArrayList<HashMap<StudentDay, Integer>> studentIDMaps;
     private ArrayList<JournalData> currentStudentJournals;
     private ArrayList<ArrayList<JournalData>> journalArchive;
-    private ArrayList<ArrayList<Integer>> absenceLists;
+    private ArrayList<ArrayList<AttendanceFieldData>> attendanceList;
     private ArrayList<String> weekNames;
     private int numberOfProfiles;
     private int numberOfStudents;
@@ -51,7 +52,7 @@ public class Database {
         studentIDMaps = new ArrayList<>();
         currentStudentJournals = new ArrayList<>();
         journalArchive = new ArrayList<>();
-        absenceLists = new ArrayList<>();
+        attendanceList = new ArrayList<>();
         weekNames = new ArrayList<>();
         numberOfProfiles = 0;
         numberOfStudents = 0;
@@ -68,7 +69,7 @@ public class Database {
         studentDataList.add(profile);
         currentStudentJournals.add(numberOfProfiles, new JournalData("", ""));
         journalArchive.add(new ArrayList<>());
-        addAbsenceRow();
+        addAttendanceListRow(profile);
         numberOfProfiles = studentDataList.size();
         if (profile.isStudent()) {
             numberOfStudents++;
@@ -90,7 +91,7 @@ public class Database {
         int profileID = profile.getID();
         currentStudentJournals.remove(profileID);
         journalArchive.remove(profileID);
-        removeAbsenceRow(profile);
+        removeAttendanceListRow(profile);
         updateProfileIDs(profileID);
         studentDataList.remove(profile);
         numberOfProfiles = studentDataList.size();
@@ -103,16 +104,19 @@ public class Database {
         }
     }
 
-    private void addAbsenceRow() {
-        ArrayList<Integer> absenceList = new ArrayList<>();
+    private void addAttendanceListRow(Profile profile) {
+        ArrayList<AttendanceFieldData> row = new ArrayList<>();
         for (int i = 0; i < getNumberOfWeeks(); i++) {
-            absenceList.add(AbsenceTypes.EMPTY_LESSON);
+            AttendanceFieldData field = new AttendanceFieldData();
+            field.setAbsenceType(AbsenceTypes.EMPTY_LESSON);
+            field.setProfileID(profile.getID());
+            row.add(field);
         }
-        absenceLists.add(absenceList);
+        attendanceList.add(row);
     }
 
-    private void removeAbsenceRow(Profile profile) {
-        absenceLists.remove(profile.getID());
+    private void removeAttendanceListRow(Profile profile) {
+        attendanceList.remove(profile.getID());
     }
 
     private void updateProfileIDs(int deletedProfileID) {
@@ -141,7 +145,7 @@ public class Database {
         setLectionMaps(fileIO.getLectionMaps());
         setCurrentStudentJournals(fileIO.getStudentJournals());
         setJournalArchive(fileIO.getJournalArchive());
-        setAbsenceLists(fileIO.getAbsenceLists());
+        setAttendanceList(fileIO.getAttendanceList());
         setWeekNames(fileIO.getWeekNames());
         updateLections();
         updateNumberOfSingleStudents();
@@ -224,15 +228,17 @@ public class Database {
 
     public void addWeek(String weekName) {
         weekNames.add(weekName);
-        for (ArrayList<Integer> absenceList : absenceLists) {
-            absenceList.add(AbsenceTypes.EMPTY_LESSON);
+        for (ArrayList<AttendanceFieldData> studentRow : attendanceList) {
+            AttendanceFieldData absenceField = new AttendanceFieldData();
+            absenceField.setAbsenceType(AbsenceTypes.EMPTY_LESSON);
+            studentRow.add(absenceField);
         }
     }
 
     public void removeWeek(int weekIndex) {
         weekNames.remove(weekIndex);
-        for (ArrayList<Integer> absenceList : absenceLists) {
-            absenceList.remove(weekIndex);
+        for (ArrayList<AttendanceFieldData> studentRow : attendanceList) {
+            studentRow.remove(weekIndex);
         }
     }
 
@@ -340,16 +346,16 @@ public class Database {
         this.journalArchive = journalArchive;
     }
 
-    public ArrayList<Integer> getAbsenceRowOf(int profileID) {
-        return absenceLists.get(profileID);
+    public void setAttendanceList(ArrayList<ArrayList<AttendanceFieldData>> attendanceList) {
+        this.attendanceList = attendanceList;
     }
 
-    public void setAbsenceLists(ArrayList<ArrayList<Integer>> absenceLists) {
-        this.absenceLists = absenceLists;
+    public ArrayList<ArrayList<AttendanceFieldData>> getAttendanceList() {
+        return attendanceList;
     }
 
-    public ArrayList<ArrayList<Integer>> getAbsenceLists() {
-        return absenceLists;
+    public ArrayList<AttendanceFieldData> getAttendanceListRowOf(int profileID) {
+        return attendanceList.get(profileID);
     }
 
     public String getWeekNameAt(int weekIndex) {

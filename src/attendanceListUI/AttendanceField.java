@@ -56,14 +56,18 @@ public class AttendanceField extends JLabel implements MouseMotionListener, Tabl
         // Absenzenfelder
         if (col > 0) {
             int absenceType = field.getAbsenceType();
-            setText(AbsenceTypes.getCharacterOf(absenceType));
+            setText(field.getAbsenceTypeString());
             setHorizontalAlignment(SwingConstants.CENTER);
-            setFont(this.getFont().deriveFont(Font.BOLD, 20));
+            if (field.isLectionReplaced()) {
+                setFont(this.getFont().deriveFont(Font.BOLD, 10));
+            } else {
+                setFont(this.getFont().deriveFont(Font.BOLD, 20));
+            }
             setBackground(field.isDayMarked() ? VERY_LIGHT_GREEN : LIGHT_GRAY_COLOR);
             setForeground(AbsenceTypes.getColorOf(absenceType));
             if (row == movedRow && col == movedCol) {
                 setBackground(BACKGROUND_COLOR);
-                if (field.getAbsenceType() == AbsenceTypes.OFFICIAL) {
+                if (absenceType == AbsenceTypes.OFFICIAL) {
                     setForeground(field.isDayMarked() ? VERY_LIGHT_GREEN : LIGHT_GRAY_COLOR);
                 }
             }

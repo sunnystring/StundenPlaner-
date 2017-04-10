@@ -27,20 +27,22 @@ import static utils.GUIConstants.*;
  */
 public class PrinterDialog extends JDialog {
 
+    private MainFrame mainFrame;
     private PrinterTextPane textPane;
-    JButton cancelButton, printButton;
+    private JButton cancelButton, printButton;
 
     public PrinterDialog(MainFrame mainFrame, Database database) {
         super(mainFrame);
+        this.mainFrame = mainFrame;
         textPane = new PrinterTextPane(database);
         setTitle("Druckansicht");
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(350, 500));
         setModal(true);
-        setLocationRelativeTo(mainFrame);
         createAndAddWidgets();
         addListeners();
         pack();
+        setDialogLocation();
     }
 
     private void createAndAddWidgets() {
@@ -77,5 +79,11 @@ public class PrinterDialog extends JDialog {
                 }
             }
         });
+    }
+
+    private void setDialogLocation() {
+        int x = (int) (mainFrame.getSize().getWidth() - getSize().width) / 2;
+        int y = 120;
+        setLocation(x, y);
     }
 }

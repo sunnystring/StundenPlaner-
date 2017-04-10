@@ -5,6 +5,7 @@
  */
 package attendanceListData;
 
+import attendanceListUI.AttendanceListEdit;
 import attendanceListUI.AttendanceTable;
 import core.Database;
 import core.Profile;
@@ -15,26 +16,29 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import mainframe.MainFrame;
 import scheduleData.LectionData;
 import utils.Time;
 
 /**
  *
- * TableModel für {@link AttendanceTable}, jede Zelle ist in der fieldDataMatrix als
- * {@link AttendanceFieldData} abgebildet
+ * TableModel für {@link AttendanceTable}, jede Zelle ist in der fieldDataMatrix
+ * als {@link AttendanceFieldData} abgebildet
  */
 public class AttendanceListData extends AbstractTableModel implements MouseListener {
 
     private Database database;
+    private MainFrame mainFrame;
     private ArrayList<ArrayList<AttendanceFieldData>> fieldDataMatrix;
     private TreeMap<String, Integer> weekIndices;
     private int numberOfWeeks;
     private int numberOfValidProfiles;
 
-    public AttendanceListData(Database database) {
+    public AttendanceListData(Database database, MainFrame mainframe) {
         fieldDataMatrix = new ArrayList<>();
         weekIndices = new TreeMap<>();
         this.database = database;
+        this.mainFrame = mainframe;
         numberOfWeeks = 0;
     }
 
@@ -68,36 +72,23 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
     }
 
     private void addRow(Profile profile, int dayIndex) {
-        ArrayList<AttendanceFieldData> fieldList = new ArrayList<>();
-        AttendanceFieldData field = new AttendanceFieldData();
-        field.setNameString(" "+profile.getFirstName() + " " + profile.getName());
-        fieldList.add(field);
+        ArrayList<AttendanceFieldData> row = new ArrayList<>();
+        AttendanceFieldData nameField = new AttendanceFieldData();
+        nameField.setNameString(" " + profile.getFirstName() + " " + profile.getName());
+        row.add(nameField);
         if (numberOfWeeks > 0) {
-            for (Integer absenceType : database.getAbsenceRowOf(profile.getID())) {
-                field = new AttendanceFieldData();
-                field.setAbsenceType(absenceType);
-                field.setProfileID(profile.getID());
-                field.setDayMarked(dayIndex % 2 == 1);
-                fieldList.add(field);
+            for (AttendanceFieldData storedField : database.getAttendanceListRowOf(profile.getID())) {
+                storedField.setDayMarked(dayIndex % 2 == 1);
+                row.add(storedField);
             }
         }
-        fieldDataMatrix.add(fieldList);
-    }
-
-    public void saveAbsenceEntries() {
-        for (int i = 0; i < getRowCount(); i++) {
-            ArrayList<AttendanceFieldData> fieldRow = fieldDataMatrix.get(i);
-            for (int j = 1; j < getColumnCount(); j++) {
-                AttendanceFieldData field = fieldRow.get(j);
-                database.getAbsenceRowOf(field.getProfileID()).set(j - 1, field.getAbsenceType());
-            }
-        }
+        fieldDataMatrix.add(row);
     }
 
     public void deleteAll() {
         database.getWeekNames().clear();
-        for (ArrayList<Integer> attendanceRow : database.getAbsenceLists()) {
-            attendanceRow.clear();
+        for (ArrayList<AttendanceFieldData> studentRow : database.getAttendanceList()) {
+            studentRow.clear();
         }
     }
 
@@ -150,11 +141,14 @@ public class AttendanceListData extends AbstractTableModel implements MouseListe
         selectedRow = attendanceTable.rowAtPoint(p);
         selectedCol = attendanceTable.columnAtPoint(p);
         AttendanceFieldData field = (AttendanceFieldData) attendanceTable.getValueAt(selectedRow, selectedCol);
-        boolean countUp = true;
-        if (SwingUtilities.isRightMouseButton(e)) {
-            countUp = false;
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            field.setNextAbsenceType();
+        } else if (SwingUtilities.isRightMouseButton(e) && field.isReplaceableAbsenceType()) {
+            AttendanceListEdit lectionReplacementDialog = new AttendanceListEdit(mainFrame);
+            lectionReplacementDialog.setupLectionReplacementEdit(field);
+            lectionReplacementDialog.setLocation();
+            lectionReplacementDialog.setVisible(true);
         }
-        field.setNextAbsenceType(countUp);
         fireTableCellUpdated(selectedRow, selectedCol);
     }
 
