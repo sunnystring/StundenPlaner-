@@ -48,7 +48,7 @@ public class AttendanceListEdit extends JDialog {
     private int selectedDateIndex;
 
     public AttendanceListEdit(MainFrame mainFrame) {
-        super(mainFrame);
+        super(mainFrame.getAttendanceListUI());
         this.mainFrame = mainFrame;
         database = mainFrame.getDatabase();
         attendanceListData = mainFrame.getAttendanceListData();
